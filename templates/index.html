@@ -33,29 +33,6 @@
     --shadow: 0 4px 24px rgba(0,0,0,0.4);
   }
 
-  /* ── LIGHT MODE ── */
-  html.light {
-    --bg-deep:      #f0f4f8;
-    --bg-main:      #ffffff;
-    --bg-panel:     #f8fafc;
-    --bg-card:      #ffffff;
-    --bg-hover:     #e8edf5;
-    --bg-active:    #dbeafe;
-    --border:       #d1dae8;
-    --border-light: #b8c6da;
-    --accent-blue:  #2563eb;
-    --accent-cyan:  #0891b2;
-    --accent-green: #059669;
-    --accent-amber: #d97706;
-    --accent-red:   #dc2626;
-    --text-main:    #1a2332;
-    --text-muted:   #4a6080;
-    --text-dim:     #8fa3be;
-    --header-col:   #2563eb;
-    --row-alt:      #f1f5fb;
-    --shadow:       0 4px 24px rgba(0,0,0,0.08);
-  }
-
   * { margin:0; padding:0; box-sizing:border-box; }
   
   body {
@@ -81,21 +58,40 @@
     position: relative;
     z-index: 100;
   }
-  .topbar-brand { display: flex; align-items: center; gap: 12px; }
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
   .brand-icon {
-    width: 38px; height: 38px;
+    width: 38px;
+    height: 38px;
     background: #ffffff;
     border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 18px;
     box-shadow: 0 2px 12px rgba(255,255,255,0.25);
+}
+  .brand-text h1 {
+    font-size: 15px; font-weight: 600; color: var(--text-main);
+    letter-spacing: 0.3px;
   }
-  .brand-text h1 { font-size: 15px; font-weight: 600; color: var(--text-main); letter-spacing: 0.3px; }
-  .brand-text p  { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
-  .topbar-right  { display: flex; align-items: center; gap: 16px; }
-  .clock { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-muted); letter-spacing: 1px; }
-  .topbar-actions { display: flex; gap: 8px; }
-
+  .brand-text p {
+    font-size: 11px; color: var(--text-muted); margin-top: 1px;
+  }
+  .topbar-right {
+    display: flex; align-items: center; gap: 16px;
+  }
+  .clock {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+  .topbar-actions {
+    display: flex; gap: 8px;
+  }
   .btn {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 6px 14px; border: none; border-radius: 7px;
@@ -103,223 +99,359 @@
     cursor: pointer; transition: all 0.18s;
     white-space: nowrap;
   }
-  .btn-primary  { background: var(--accent-blue); color: #fff; }
-  .btn-primary:hover  { background: #2563eb; transform: translateY(-1px); }
-  .btn-success  { background: var(--accent-green); color: #fff; }
-  .btn-success:hover  { background: #059669; transform: translateY(-1px); }
-  .btn-warning  { background: var(--accent-amber); color: #000; }
-  .btn-warning:hover  { background: #d97706; transform: translateY(-1px); }
-  .btn-danger   { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
-  .btn-danger:hover   { background: rgba(239,68,68,0.28); transform: translateY(-1px); }
+  .btn-primary { background: var(--accent-blue); color: #fff; }
+  .btn-primary:hover { background: #2563eb; transform: translateY(-1px); }
+  .btn-success { background: var(--accent-green); color: #fff; }
+  .btn-success:hover { background: #059669; transform: translateY(-1px); }
+  .btn-warning { background: var(--accent-amber); color: #000; }
+  .btn-warning:hover { background: #d97706; transform: translateY(-1px); }
   .btn-ghost {
     background: var(--bg-card); color: var(--text-muted);
     border: 1px solid var(--border);
   }
   .btn-ghost:hover { background: var(--bg-hover); color: var(--text-main); }
-  .btn-about { background:#ffffff; color:#0d1117; font-weight:600; }
-  .btn-about:hover { background:#e2e8f0; transform:translateY(-1px); }
-  .btn-logout { background:rgba(239,68,68,0.15); color:#fca5a5; border:1px solid rgba(239,68,68,0.3); font-weight:600; }
-  .btn-logout:hover { background:rgba(239,68,68,0.28); transform:translateY(-1px); }
 
   /* ── LAYOUT ── */
-  .layout { display: flex; flex: 1; overflow: hidden; min-height: 0; }
+  .layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+  }
 
   /* ── SIDEBAR ── */
   .sidebar {
     width: 220px;
     background: var(--bg-main);
     border-right: 1px solid var(--border);
-    display: flex; flex-direction: column;
-    flex-shrink: 0; overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow-y: auto;
   }
-  .sidebar-section { padding: 14px 12px 8px; }
+  .sidebar-section {
+    padding: 14px 12px 8px;
+  }
   .sidebar-label {
     font-size: 10px; font-weight: 600;
     color: var(--text-dim); text-transform: uppercase;
     letter-spacing: 1.2px; padding: 0 6px; margin-bottom: 6px;
   }
-  .month-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; padding: 0 6px; }
-  .month-pill {
-    padding: 7px 6px; border-radius: 8px;
-    border: 1px solid var(--border); background: var(--bg-card);
-    color: var(--text-muted); font-size: 11.5px; font-weight: 500;
-    cursor: pointer; transition: all 0.15s; text-align: center;
-  }
-  .month-pill:hover { border-color: var(--accent-blue); color: var(--text-main); background: var(--bg-hover); }
-  .month-pill.active { background: var(--accent-blue); border-color: var(--accent-blue); color: #fff; box-shadow: 0 2px 12px rgba(59,130,246,0.35); }
-  .month-pill .num { display: block; font-size: 9px; opacity: 0.6; margin-top: 1px; }
 
-  .file-selector { display: flex; flex-direction: column; gap: 5px; padding: 0 6px; }
+  /* Month pills */
+  .month-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    padding: 0 6px;
+  }
+  .month-pill {
+    padding: 7px 6px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-muted);
+    font-size: 11.5px; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    position: relative;
+  }
+  .month-pill:hover {
+    border-color: var(--accent-blue);
+    color: var(--text-main);
+    background: var(--bg-hover);
+  }
+  .month-pill.active {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: #fff;
+    box-shadow: 0 2px 12px rgba(59,130,246,0.35);
+  }
+  .month-pill .num {
+    display: block;
+    font-size: 9px; opacity: 0.6; margin-top: 1px;
+  }
+
+  /* File selector */
+  .file-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 0 6px;
+  }
   .file-item {
     display: flex; align-items: center; gap: 10px;
-    padding: 9px 12px; border-radius: 8px;
-    border: 1px solid var(--border); background: var(--bg-card);
-    cursor: pointer; transition: all 0.15s;
-    color: var(--text-muted); font-size: 13px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--text-muted);
+    font-size: 13px;
   }
-  .file-item:hover { border-color: var(--accent-blue); color: var(--text-main); background: var(--bg-hover); }
-  .file-item.active { border-color: var(--accent-cyan); background: var(--bg-active); color: var(--accent-cyan); }
-  .file-item .fi-icon { font-size: 16px; flex-shrink: 0; }
+  .file-item:hover {
+    border-color: var(--accent-blue);
+    color: var(--text-main);
+    background: var(--bg-hover);
+  }
+  .file-item.active {
+    border-color: var(--accent-cyan);
+    background: var(--bg-active);
+    color: var(--accent-cyan);
+  }
+  .file-item .fi-icon {
+    font-size: 16px; flex-shrink: 0;
+  }
 
-  .sheet-tabs-list { display: flex; flex-direction: column; gap: 3px; padding: 0 6px; }
+  /* Sheet tabs */
+  .sheet-tabs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 0 6px;
+  }
   .sheet-tab {
-    padding: 8px 12px; border-radius: 7px;
-    cursor: pointer; font-size: 12px; color: var(--text-muted);
-    transition: all 0.15s; border: 1px solid transparent;
+    padding: 8px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 12px; color: var(--text-muted);
+    transition: all 0.15s;
+    border: 1px solid transparent;
     display: flex; align-items: center; gap: 8px;
   }
-  .sheet-tab:hover { background: var(--bg-hover); color: var(--text-main); }
-  .sheet-tab.active { background: var(--bg-active); border-color: var(--border-light); color: #fff; }
-  .sheet-tab .st-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-blue); flex-shrink: 0; }
+  .sheet-tab:hover {
+    background: var(--bg-hover);
+    color: var(--text-main);
+  }
+  .sheet-tab.active {
+    background: var(--bg-active);
+    border-color: var(--border-light);
+    color: #fff;
+  }
+  .sheet-tab .st-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent-blue);
+    flex-shrink: 0;
+  }
   .sheet-tab.active .st-dot { background: var(--accent-cyan); }
 
   /* ── MAIN CONTENT ── */
-  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; background: var(--bg-deep); }
-
-  .content-header {
-    background: var(--bg-panel); border-bottom: 1px solid var(--border);
-    padding: 12px 20px; display: flex; align-items: center;
-    justify-content: space-between; flex-shrink: 0;
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+    background: var(--bg-deep);
   }
-  .content-title { display: flex; align-items: center; gap: 10px; }
+
+  /* Content header */
+  .content-header {
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .content-title {
+    display: flex; align-items: center; gap: 10px;
+  }
   .content-title .ct-icon {
     width: 30px; height: 30px;
     background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(6,182,212,0.2));
     border: 1px solid rgba(59,130,246,0.3);
-    border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
   }
-  .content-title h2 { font-size: 15px; font-weight: 600; }
-  .content-title .breadcrumb { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-  .content-meta { display: flex; align-items: center; gap: 12px; }
-  .badge { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
-  .badge-blue  { background: rgba(59,130,246,0.15);  color: var(--accent-blue);  border: 1px solid rgba(59,130,246,0.3); }
-  .badge-green { background: rgba(16,185,129,0.15);  color: var(--accent-green); border: 1px solid rgba(16,185,129,0.3); }
-  .badge-edit  { background: rgba(245,158,11,0.15);  color: var(--accent-amber); border: 1px solid rgba(245,158,11,0.3); }
+  .content-title h2 {
+    font-size: 15px; font-weight: 600;
+  }
+  .content-title .breadcrumb {
+    font-size: 11px; color: var(--text-muted); margin-top: 2px;
+  }
+  .content-meta {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px; font-weight: 500;
+  }
+  .badge-blue { background: rgba(59,130,246,0.15); color: var(--accent-blue); border: 1px solid rgba(59,130,246,0.3); }
+  .badge-green { background: rgba(16,185,129,0.15); color: var(--accent-green); border: 1px solid rgba(16,185,129,0.3); }
 
-  /* Edit mode toggle */
-  .edit-toggle {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 12px; color: var(--text-muted);
-  }
-  .toggle-switch {
-    position: relative; width: 36px; height: 20px;
-    cursor: pointer;
-  }
-  .toggle-switch input { opacity: 0; width: 0; height: 0; }
-  .toggle-slider {
-    position: absolute; inset: 0;
-    background: var(--border); border-radius: 20px;
-    transition: 0.2s;
-  }
-  .toggle-slider:before {
-    content: ''; position: absolute;
-    width: 14px; height: 14px; left: 3px; bottom: 3px;
-    background: #fff; border-radius: 50%; transition: 0.2s;
-  }
-  input:checked + .toggle-slider { background: var(--accent-amber); }
-  input:checked + .toggle-slider:before { transform: translateX(16px); }
-
+  /* Search bar */
   .toolbar {
-    background: var(--bg-panel); border-bottom: 1px solid var(--border);
-    padding: 10px 20px; display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
   }
-  .search-wrap { position: relative; flex: 1; max-width: 360px; }
+  .search-wrap {
+    position: relative;
+    flex: 1; max-width: 360px;
+  }
   .search-wrap .s-icon {
     position: absolute; left: 11px; top: 50%;
-    transform: translateY(-50%); color: var(--text-muted); font-size: 14px; pointer-events: none;
+    transform: translateY(-50%);
+    color: var(--text-muted); font-size: 14px; pointer-events: none;
   }
   .search-input {
-    width: 100%; background: var(--bg-card);
-    border: 1px solid var(--border); border-radius: 8px;
-    padding: 7px 12px 7px 34px; color: var(--text-main);
-    font-family: inherit; font-size: 13px; outline: none;
-    transition: border-color 0.15s; direction: ltr;
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 12px 7px 34px;
+    color: var(--text-main);
+    font-family: inherit; font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+    direction: ltr;
   }
   .search-input::placeholder { color: var(--text-dim); }
   .search-input:focus { border-color: var(--accent-blue); }
 
-  .table-wrap { flex: 1; overflow: auto; min-height: 0; padding: 0; }
-
-  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  .data-table thead { position: sticky; top: 0; z-index: 10; }
+  /* Table area */
+  .table-wrap {
+    flex: 1;
+    overflow: auto;
+    min-height: 0;
+    padding: 0;
+  }
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .data-table thead {
+    position: sticky; top: 0; z-index: 10;
+  }
   .data-table thead th {
-    background: var(--bg-panel); color: var(--header-col);
-    font-weight: 600; padding: 11px 16px; text-align: center;
-    border-bottom: 2px solid var(--border); border-right: 1px solid var(--border);
-    white-space: nowrap; font-size: 12.5px; letter-spacing: 0.3px;
+    background: var(--bg-panel);
+    color: var(--header-col);
+    font-weight: 600;
+    padding: 11px 16px;
+    text-align: center;
+    border-bottom: 2px solid var(--border);
+    border-right: 1px solid var(--border);
+    white-space: nowrap;
+    font-size: 12.5px;
+    letter-spacing: 0.3px;
   }
   .data-table thead th:last-child { border-right: none; }
-  .data-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
+  .data-table tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s;
+  }
   .data-table tbody tr:nth-child(even) { background: var(--row-alt); }
   .data-table tbody tr:hover { background: var(--bg-hover); }
   .data-table tbody td {
-    padding: 9px 16px; text-align: center;
-    border-right: 1px solid var(--border); color: var(--text-main); font-size: 13px;
+    padding: 9px 16px;
+    text-align: center;
+    border-right: 1px solid var(--border);
+    color: var(--text-main);
+    font-size: 13px;
   }
   .data-table tbody td:last-child { border-right: none; }
 
   /* Special cells */
-  .cell-date { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-muted); }
-  .cell-in   { color: var(--accent-green); font-weight: 600; }
-  .cell-out  { color: var(--accent-red); font-weight: 600; }
+  .cell-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--text-muted);
+  }
+  .cell-in { color: var(--accent-green); font-weight: 600; }
+  .cell-out { color: var(--accent-red); font-weight: 600; }
   .cell-balance { font-weight: 600; color: var(--accent-cyan); }
   .cell-null { color: var(--text-dim); }
-  .row-num { color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-size: 11px; min-width: 40px; }
 
-  /* Editable cell */
-  td.editable { cursor: pointer; position: relative; }
-  td.editable:hover::after {
-    content: '✎';
-    position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
-    font-size: 11px; color: var(--accent-amber); opacity: 0.7;
-  }
-  td.editable input, td.editable select {
-    width: 100%; background: var(--bg-card);
-    border: 1px solid var(--accent-amber); border-radius: 5px;
-    padding: 4px 8px; color: var(--text-main);
-    font-family: inherit; font-size: 13px; text-align: center; outline: none;
+  /* Row numbering */
+  .row-num {
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    min-width: 40px;
   }
 
-  /* Action cell (IN / OUT buttons per row) */
-  .action-cell { white-space: nowrap; }
-  .btn-in, .btn-out, .btn-del {
-    padding: 3px 10px; border: none; border-radius: 5px;
-    font-size: 11px; font-weight: 600; cursor: pointer;
-    transition: all 0.15s; font-family: inherit;
-  }
-  .btn-in  { background: rgba(16,185,129,0.15); color: var(--accent-green); border: 1px solid rgba(16,185,129,0.3); margin-right: 4px; }
-  .btn-in:hover  { background: rgba(16,185,129,0.3); }
-  .btn-out { background: rgba(239,68,68,0.15);  color: var(--accent-red);   border: 1px solid rgba(239,68,68,0.3); margin-right: 4px; }
-  .btn-out:hover { background: rgba(239,68,68,0.3); }
-  .btn-del { background: rgba(100,100,120,0.15); color: var(--text-muted);  border: 1px solid rgba(100,100,120,0.3); }
-  .btn-del:hover { background: rgba(239,68,68,0.2); color: var(--accent-red); border-color: rgba(239,68,68,0.4); }
-
-  /* Empty / loading states */
+  /* Empty state */
   .empty-state {
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    height: 100%; color: var(--text-muted); gap: 12px; padding: 60px; text-align: center;
+    height: 100%;
+    color: var(--text-muted);
+    gap: 12px;
+    padding: 60px;
+    text-align: center;
   }
-  .empty-state .es-icon { font-size: 52px; opacity: 0.3; }
-  .empty-state h3 { font-size: 16px; font-weight: 500; color: var(--text-muted); }
-  .empty-state p  { font-size: 13px; color: var(--text-dim); max-width: 300px; }
-  .loading { display: flex; align-items: center; justify-content: center; height: 100%; gap: 12px; color: var(--text-muted); }
-  .spinner { width: 22px; height: 22px; border: 2px solid var(--border); border-top-color: var(--accent-blue); border-radius: 50%; animation: spin 0.7s linear infinite; }
+  .empty-state .es-icon {
+    font-size: 52px; opacity: 0.3;
+  }
+  .empty-state h3 {
+    font-size: 16px; font-weight: 500;
+    color: var(--text-muted);
+  }
+  .empty-state p {
+    font-size: 13px; color: var(--text-dim); max-width: 300px;
+  }
+
+  /* Loading */
+  .loading {
+    display: flex; align-items: center; justify-content: center;
+    height: 100%; gap: 12px; color: var(--text-muted);
+  }
+  .spinner {
+    width: 22px; height: 22px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent-blue);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .no-data-row td { text-align: center; color: var(--text-dim); padding: 30px; font-style: italic; }
 
   /* Status bar */
   .statusbar {
-    background: var(--bg-main); border-top: 1px solid var(--border);
-    padding: 5px 20px; display: flex; align-items: center;
-    justify-content: space-between; flex-shrink: 0;
+    background: var(--bg-main);
+    border-top: 1px solid var(--border);
+    padding: 5px 20px;
+    display: flex; align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
   }
-  .statusbar-left, .statusbar-right { display: flex; align-items: center; gap: 16px; font-size: 11.5px; color: var(--text-dim); }
-  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
+  .statusbar-left, .statusbar-right {
+    display: flex; align-items: center; gap: 16px;
+    font-size: 11.5px; color: var(--text-dim);
+  }
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent-green);
+    box-shadow: 0 0 6px var(--accent-green);
+  }
+
+  /* No data row */
+  .no-data-row td {
+    text-align: center;
+    color: var(--text-dim);
+    padding: 30px;
+    font-style: italic;
+  }
 
   /* Transitions */
-  .fade-in { animation: fadeIn 0.25s ease; }
-  @keyframes fadeIn { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
+  .fade-in {
+    animation: fadeIn 0.25s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
   /* Scrollbar */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -327,139 +459,19 @@
   ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
 
-  /* ── MODALS ── */
-  .modal-overlay {
-    display: none; position: fixed; inset: 0; z-index: 9999;
-    background: rgba(0,0,0,0.65); backdrop-filter: blur(5px);
-    align-items: center; justify-content: center;
-  }
-  .modal-overlay.open { display: flex; }
-  .modal-box {
-    background: var(--bg-panel); border: 1px solid var(--border-light);
-    border-radius: 18px; padding: 32px 36px; min-width: 340px; max-width: 440px;
-    box-shadow: 0 12px 48px rgba(0,0,0,0.7);
-    animation: modalIn 0.22s cubic-bezier(.34,1.56,.64,1);
-    position: relative;
-  }
-  @keyframes modalIn { from{opacity:0;transform:scale(0.9) translateY(12px);} to{opacity:1;transform:scale(1) translateY(0);} }
-  .modal-close {
-    position: absolute; top: 14px; right: 16px;
-    background: none; border: none; color: var(--text-dim);
-    font-size: 17px; cursor: pointer; transition: color 0.15s;
-  }
-  .modal-close:hover { color: var(--text-main); }
-  .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-  .modal-subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 22px; }
-  .modal-info-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px;
-  }
-  .modal-info-item {
-    background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: 8px; padding: 8px 12px;
-  }
-  .modal-info-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.8px; }
-  .modal-info-value { font-size: 13px; font-weight: 500; margin-top: 2px; }
-  .modal-field label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; font-weight: 500; }
-  .modal-field input {
-    width: 100%; background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: 8px; padding: 10px 14px; color: var(--text-main);
-    font-family: 'JetBrains Mono', monospace; font-size: 15px; text-align: center; outline: none;
-    transition: border-color 0.15s;
-  }
-  .modal-field input:focus { border-color: var(--accent-blue); }
-  .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
-  .modal-actions .btn { flex: 1; justify-content: center; padding: 10px; font-size: 13px; }
-  .btn-in-modal  { background: var(--accent-green); color: #fff; }
-  .btn-in-modal:hover  { background: #059669; }
-  .btn-out-modal { background: var(--accent-red); color: #fff; }
-  .btn-out-modal:hover { background: #dc2626; }
-
-  /* Toast */
-  #toast {
-    position: fixed; bottom: 24px; right: 24px; z-index: 99999;
-    background: var(--bg-card); border: 1px solid var(--border-light);
-    border-radius: 10px; padding: 12px 20px;
-    font-size: 13px; color: var(--text-main);
-    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
-    transform: translateY(80px); opacity: 0;
-    transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
-    pointer-events: none;
-  }
-  #toast.show { transform: translateY(0); opacity: 1; }
-  #toast.toast-ok  { border-color: var(--accent-green); }
-  #toast.toast-err { border-color: var(--accent-red); }
-
   /* Tooltip */
   .tooltip-wrap { position: relative; display: inline-flex; }
-  .tooltip-wrap:hover .tooltip { opacity: 1; }
+  .tooltip-wrap:hover .tooltip { opacity: 1; pointer-events: none; }
   .tooltip {
     opacity: 0; transition: opacity 0.15s;
-    position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+    position: absolute; bottom: calc(100% + 6px);
+    left: 50%; transform: translateX(-50%);
     background: var(--bg-card); border: 1px solid var(--border);
-    padding: 4px 8px; border-radius: 5px; font-size: 11px; color: var(--text-main);
-    white-space: nowrap; pointer-events: none;
+    padding: 4px 8px; border-radius: 5px;
+    font-size: 11px; color: var(--text-main);
+    white-space: nowrap;
+    pointer-events: none;
   }
-
-  /* ── THEME TOGGLE ── */
-  body { transition: background 0.25s, color 0.25s; }
-  .topbar, .sidebar, .content-header, .toolbar, .statusbar, .modal-box, .login-card {
-    transition: background 0.25s, border-color 0.25s;
-  }
-  .theme-btn {
-    width: 34px; height: 34px;
-    border-radius: 8px;
-    border: 1px solid var(--border-light);
-    background: var(--bg-card);
-    color: var(--text-muted);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.15s;
-    flex-shrink: 0;
-  }
-  .theme-btn:hover { background: var(--bg-hover); color: var(--text-main); transform: rotate(15deg); }
-  .theme-btn .icon-sun  { display: block; }
-  .theme-btn .icon-moon { display: none; }
-  html.light .theme-btn .icon-sun  { display: none; }
-  html.light .theme-btn .icon-moon { display: block; }
-  html.light .btn-danger  { color: #dc2626; }
-  html.light .btn-logout  { color: #dc2626; }
-  html.light .data-table tbody tr:nth-child(even) { background: var(--row-alt); }
-
-  /* ── CUSTOM LOGOUT MODAL ── */
-  .logout-overlay {
-    display: none; position: fixed; inset: 0; z-index: 99999;
-    background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
-    align-items: center; justify-content: center;
-  }
-  .logout-overlay.open { display: flex; }
-  .logout-box {
-    background: var(--bg-panel);
-    border: 1px solid var(--border-light);
-    border-radius: 18px;
-    padding: 36px 40px 28px;
-    min-width: 320px; max-width: 400px;
-    box-shadow: 0 16px 56px rgba(0,0,0,0.7);
-    animation: modalIn 0.22s cubic-bezier(.34,1.56,.64,1);
-    text-align: center;
-  }
-  .logout-icon {
-    width: 52px; height: 52px; border-radius: 50%;
-    background: rgba(239,68,68,0.12);
-    border: 1px solid rgba(239,68,68,0.3);
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 18px; font-size: 22px;
-  }
-  .logout-title { font-size: 17px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
-  .logout-msg   { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 28px; }
-  .logout-actions { display: flex; gap: 10px; justify-content: center; }
-  .logout-actions .btn { min-width: 110px; justify-content: center; padding: 10px 20px; font-size: 13px; }
-
-  /* ── HAMZA NAME PULSE ── */
-  @keyframes namePulse {
-    0%, 100% { opacity: 1; text-shadow: none; }
-    50%       { opacity: 0.7; text-shadow: 0 0 18px rgba(59,130,246,0.65); }
-  }
-  .name-pulse { animation: namePulse 2.4s ease-in-out infinite; }
 </style>
 </head>
 <body>
@@ -468,8 +480,8 @@
 <div class="topbar">
   <div class="topbar-brand">
     <div class="brand-icon">
-      <img src="/static/low.ico" style="width:24px;height:24px;object-fit:contain;">
-    </div>
+  <img src="/static/low.ico" style="width:24px; height:24px; object-fit:contain;">
+</div> <!--هيدر زاوية-->
     <div class="brand-text">
       <h1>Inventory Management System</h1>
       <p>Alestesharia Animal Nutrition</p>
@@ -478,21 +490,11 @@
   <div class="topbar-right">
     <span class="clock" id="clock">--:-- --</span>
     <div class="topbar-actions">
-      <button class="theme-btn" id="themeBtn" title="Toggle light/dark mode">
-        <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-        <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      </button>
-      <button class="btn btn-primary"  onclick="refreshData()">Refresh</button>
-      <button class="btn btn-warning"  onclick="printTable()">Print</button>
-      <button class="btn btn-success"  onclick="exportCSV()">Export CSV</button>
-      <button class="btn btn-about"    onclick="showAbout()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-        About
-      </button>
-      <button class="btn btn-logout" onclick="confirmLogout()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        Logout
-      </button>
+      <button class="btn btn-primary" onclick="refreshData()">Refresh</button>
+      <button class="btn btn-warning" onclick="printTable()">Print</button>
+      <button class="btn btn-success" onclick="exportCSV()">Export CSV</button>
+      <button class="btn btn-about" onclick="showAbout()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> About</button>
+      <button class="btn btn-logout" onclick="confirmLogout()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout</button>
     </div>
   </div>
 </div>
@@ -500,75 +502,58 @@
 <!-- ABOUT MODAL -->
 <div id="aboutModal" onclick="if(event.target===this)closeAbout()" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.65);backdrop-filter:blur(5px);align-items:center;justify-content:center;">
   <div style="background:var(--bg-panel);border:1px solid var(--border-light);border-radius:18px;padding:38px 44px;min-width:320px;max-width:400px;box-shadow:0 12px 48px rgba(0,0,0,0.7);text-align:center;position:relative;animation:modalIn 0.22s cubic-bezier(.34,1.56,.64,1);">
-    <button onclick="closeAbout()" style="position:absolute;top:14px;left:16px;background:none;border:none;color:var(--text-dim);font-size:17px;cursor:pointer;line-height:1;transition:color 0.15s;">✕</button>
-    <div style="width:58px;height:58px;margin:0 auto 20px;border-radius:15px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(59,130,246,0.4);">
-      <img src="/static/low.ico" style="width:100%;height:100%;object-fit:contain;border-radius:15px;">
-    </div>
-    <div style="font-size:17px;font-weight:700;color:var(--text-main);margin-bottom:4px;">EST Inventory System</div>
+    <button onclick="closeAbout()" style="position:absolute;top:14px;left:16px;background:none;border:none;color:var(--text-dim);font-size:17px;cursor:pointer;line-height:1;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
+<div style="width:58px;height:58px;margin:0 auto 20px;border-radius:15px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(59,130,246,0.4);">
+  <img src="/static/low.ico" style="width:100%;height:100%;object-fit:contain;border-radius:15px;">
+</div>    <div style="font-size:17px;font-weight:700;color:var(--text-main);margin-bottom:4px;">EST Inventory System</div>
     <div style="font-size:11px;color:var(--accent-cyan);letter-spacing:1.2px;margin-bottom:22px;text-transform:uppercase;">Alestesharia Animal Nutrition</div>
     <div style="height:1px;background:var(--border);margin-bottom:22px;"></div>
     <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;letter-spacing:0.3px;">Created by</div>
-    <div style="font-size:22px;font-weight:700;color:var(--text-main);letter-spacing:0.5px;margin-bottom:22px;" class="name-pulse">Hamza K. Ghareb</div>
-    <div style="display:inline-block;background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:5px 18px;font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;">v3.0 — 2026</div>
+    <div style="font-size:22px;font-weight:700;color:var(--text-main);letter-spacing:0.5px;margin-bottom:22px;">Hamza K. Ghareb</div>
+    <div style="display:inline-block;background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:5px 18px;font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;">v2.0 — 2026</div>
   </div>
 </div>
-
-<!-- ══ LOGOUT CONFIRM MODAL ══ -->
-<div class="logout-overlay" id="logoutModal" onclick="if(event.target===this)closeLogout()">
-  <div class="logout-box">
-    <div class="logout-icon">⚠️</div>
-    <div class="logout-title">Logout</div>
-    <div class="logout-msg">Are you sure you want to logout?</div>
-    <div class="logout-actions">
-      <button class="btn btn-danger" onclick="doLogout()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        Yes, Logout
-      </button>
-      <button class="btn btn-ghost" onclick="closeLogout()">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ TRANSACTION MODAL (IN / OUT) ══ -->
-<div class="modal-overlay" id="txModal" onclick="if(event.target===this)closeTxModal()">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeTxModal()">✕</button>
-    <div class="modal-title" id="txTitle">Transaction</div>
-    <div class="modal-subtitle" id="txSubtitle">Enter quantity</div>
-    <div class="modal-info-grid" id="txInfoGrid"></div>
-    <div class="modal-field">
-      <label>Quantity</label>
-      <input type="number" id="txQty" min="0" step="0.01" placeholder="0"
-             onkeydown="if(event.key==='Enter')submitTx()">
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-in-modal"  id="txConfirmBtn" onclick="submitTx()">Confirm</button>
-      <button class="btn btn-ghost"     onclick="closeTxModal()">Cancel</button>
-    </div>
-  </div>
-</div>
+<style>
+@keyframes modalIn { from{opacity:0;transform:scale(0.9) translateY(12px);} to{opacity:1;transform:scale(1) translateY(0);} }
+.btn-about { background:#ffffff; color:#0d1117; font-weight:600; }
+.btn-about:hover { background:#e2e8f0; transform:translateY(-1px); }
+.btn-logout { background:rgba(239,68,68,0.15); color:#fca5a5; border:1px solid rgba(239,68,68,0.3); font-weight:600; }
+.btn-logout:hover { background:rgba(239,68,68,0.28); transform:translateY(-1px); }
+</style>
 
 <!-- LAYOUT -->
 <div class="layout">
 
   <!-- SIDEBAR -->
   <div class="sidebar">
+    <!-- MONTHS -->
     <div class="sidebar-section">
       <div class="sidebar-label">Months</div>
-      <div class="month-grid" id="monthGrid"></div>
+      <div class="month-grid" id="monthGrid">
+        <!-- filled by JS -->
+      </div>
     </div>
+
+    <!-- FILES -->
     <div class="sidebar-section" id="fileSection" style="display:none">
       <div class="sidebar-label">Files</div>
-      <div class="file-selector" id="fileList"></div>
+      <div class="file-selector" id="fileList">
+        <!-- filled by JS -->
+      </div>
     </div>
+
+    <!-- SHEETS -->
     <div class="sidebar-section" id="sheetSection" style="display:none">
       <div class="sidebar-label">Sheets</div>
-      <div class="sheet-tabs-list" id="sheetList"></div>
+      <div class="sheet-tabs-list" id="sheetList">
+        <!-- filled by JS -->
+      </div>
     </div>
   </div>
 
   <!-- MAIN -->
   <div class="main">
+    <!-- CONTENT HEADER -->
     <div class="content-header">
       <div class="content-title">
         <div class="ct-icon">📋</div>
@@ -578,27 +563,21 @@
         </div>
       </div>
       <div class="content-meta" id="contentMeta">
-        <span class="badge badge-blue"  id="recordCount">0 records</span>
-        <span class="badge badge-edit"  id="editBadge" style="display:none">✎ Edit Mode</span>
-        <label class="edit-toggle" id="editToggleWrap" style="display:none">
-          <span>Edit Mode</span>
-          <label class="toggle-switch">
-            <input type="checkbox" id="editToggle" onchange="toggleEditMode()">
-            <span class="toggle-slider"></span>
-          </label>
-        </label>
+        <span class="badge badge-blue" id="recordCount">0 records</span>
       </div>
     </div>
 
+    <!-- TOOLBAR -->
     <div class="toolbar">
       <div class="search-wrap">
         <span class="s-icon">🔍</span>
         <input type="text" class="search-input" id="searchInput"
                placeholder="Search data..." oninput="filterTable(this.value)">
       </div>
-      <span style="font-size:12px;color:var(--text-dim)" id="filterInfo"></span>
+      <span style="font-size:12px; color:var(--text-dim)" id="filterInfo"></span>
     </div>
 
+    <!-- TABLE -->
     <div class="table-wrap" id="tableWrap">
       <div class="empty-state">
         <div class="es-icon">📂</div>
@@ -607,6 +586,7 @@
       </div>
     </div>
 
+    <!-- STATUS BAR -->
     <div class="statusbar">
       <div class="statusbar-left">
         <div class="status-dot"></div>
@@ -614,14 +594,11 @@
       </div>
       <div class="statusbar-right">
         <span id="pathInfo" style="direction:ltr">—</span>
-        <span>Inventory Management System v3.0</span>
+        <span>Inventory Management System v2.0</span>
       </div>
     </div>
   </div>
 </div>
-
-<!-- TOAST -->
-<div id="toast"></div>
 
 <script>
 // ── STATE ──
@@ -634,57 +611,44 @@ const state = {
   allRows: [],
   headers: [],
   filePath: null,
-  editMode: false,
-  isInventorySheet: false,
-  sheetOptions: { colors: [], types: [], sizes: [], categories: [] },   // ← dropdown options from Excel
 };
 
-const MONTH_NUMS = { January:1,February:2,March:3,April:4,May:5,June:6,July:7,August:8,September:9,October:10,November:11,December:12 };
-const FILE_ICONS  = { 'Other+': '-', 'Sacks': '-' };
+const MONTH_NUMS = {
+  January:1, February:2, March:3, April:4, May:5, June:6,
+  July:7, August:8, September:9, October:10, November:11, December:12
+};
+// Months displayed in English
+const FILE_ICONS = { 'Other+': '-', 'Sacks': '-' };
 const FILE_LABELS = { 'Other+': 'Other+', 'Sacks': 'Sacks' };
-
-// Columns that should NOT be directly editable (managed by transaction logic)
-const READ_ONLY_COLS = ['Current Balance', 'IN', 'OUT', '__row__'];
-// Columns that identify it as an inventory sheet
-const NON_INVENTORY_SHEETS = ['Stocktaking'];
-
-// ── THEME ──
-(function() {
-  const saved = localStorage.getItem('est-theme');
-  if (saved === 'light') document.documentElement.classList.add('light');
-})();
-document.getElementById('themeBtn').addEventListener('click', function() {
-  const isLight = document.documentElement.classList.toggle('light');
-  localStorage.setItem('est-theme', isLight ? 'light' : 'dark');
-});
 
 // ── CLOCK ──
 function updateClock() {
   const now = new Date();
+
   const d = now.toISOString().split('T')[0];
-  const t = now.toLocaleTimeString('en-US', { hour12:true, hour:'2-digit', minute:'2-digit', second:'2-digit' });
+
+  const t = now.toLocaleTimeString('en-US', {
+    hour12: true,
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+
   document.getElementById('clock').textContent = `${d}  ${t}`;
 }
+
 setInterval(updateClock, 1000);
 updateClock();
-
-// ── TOAST ──
-let _toastTimer;
-function toast(msg, ok=true) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = 'show ' + (ok ? 'toast-ok' : 'toast-err');
-  clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(() => { el.className = ''; }, 3000);
-}
 
 // ── INIT ──
 async function init() {
   const res = await fetch('/api/structure');
   state.structure = await res.json();
+  
   const years = Object.keys(state.structure);
   if (!years.length) return;
   state.selectedYear = years[0];
+  
   buildMonthGrid();
 }
 
@@ -692,6 +656,7 @@ async function init() {
 function buildMonthGrid() {
   const grid = document.getElementById('monthGrid');
   grid.innerHTML = '';
+  
   const months = Object.keys(state.structure[state.selectedYear] || {});
   months.forEach(month => {
     const num = MONTH_NUMS[month] || 0;
@@ -709,13 +674,22 @@ function selectMonth(month) {
   state.selectedMonth = month;
   state.selectedFile = null;
   state.selectedSheet = null;
-  document.querySelectorAll('.month-pill').forEach(p => p.classList.toggle('active', p.dataset.month === month));
+  
+  // Update pills
+  document.querySelectorAll('.month-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.month === month);
+  });
+  
+  // Show file section
   const files = state.structure[state.selectedYear][month] || {};
   buildFileList(files);
   document.getElementById('fileSection').style.display = '';
   document.getElementById('sheetSection').style.display = 'none';
+  
+  // Clear table
   showEmptyState(`Select a file from ${month} files`);
   updateHeader('Select a file', `2026 → ${month}`);
+  
   document.getElementById('pathInfo').textContent = `2026 / ${month}`;
 }
 
@@ -739,14 +713,28 @@ async function selectFile(fname, fpath) {
   state.selectedFile = fname;
   state.selectedSheet = null;
   state.filePath = fpath;
-  document.querySelectorAll('.file-item').forEach(i => i.classList.toggle('active', i.dataset.name === fname));
+  
+  document.querySelectorAll('.file-item').forEach(i =>
+    i.classList.toggle('active', i.dataset.name === fname));
+  
   setStatus(`Loading sheets for ${fname}...`);
+  
   const res = await fetch(`/api/sheets?path=${encodeURIComponent(fpath)}`);
   const data = await res.json();
-  if (data.error || !data.sheets) { setStatus('Error reading file'); return; }
+  
+  if (data.error || !data.sheets) {
+    setStatus('Error reading file');
+    return;
+  }
+  
   buildSheetList(data.sheets);
   document.getElementById('sheetSection').style.display = '';
-  if (data.sheets.length > 0) selectSheet(data.sheets[0]);
+  
+  // Auto-select first sheet
+  if (data.sheets.length > 0) {
+    selectSheet(data.sheets[0]);
+  }
+  
   updateHeader(fname, `2026 → ${state.selectedMonth} → ${fname}`);
 }
 
@@ -766,414 +754,81 @@ function buildSheetList(sheets) {
 
 // ── SELECT SHEET ──
 async function selectSheet(sheet) {
-  const switchingSheet = state.selectedSheet !== sheet;
-  // Only reset edit mode when actively switching to a different sheet
-  if (switchingSheet) {
-    state.editMode = false;
-    const toggle = document.getElementById('editToggle');
-    if (toggle) toggle.checked = false;
-  }
   state.selectedSheet = sheet;
-
-  document.querySelectorAll('.sheet-tab').forEach(t => t.classList.toggle('active', t.dataset.sheet === sheet));
+  
+  document.querySelectorAll('.sheet-tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.sheet === sheet));
+  
   setStatus(`Loading data for ${sheet}...`);
   showLoading();
-
+  
   const res = await fetch(`/api/data?path=${encodeURIComponent(state.filePath)}&sheet=${encodeURIComponent(sheet)}`);
   const data = await res.json();
-
-  if (data.error) { showEmptyState('Error reading data'); setStatus('Error reading data'); return; }
-
-  state.headers  = data.headers || [];
-  state.allRows  = data.rows    || [];
-  state.isInventorySheet = !NON_INVENTORY_SHEETS.includes(sheet);
-
-  // Fetch Color/Type dropdown options from the Excel file
-  state.sheetOptions = { colors: [], types: [] };
-  if (state.isInventorySheet) {
-    try {
-      const optRes = await fetch(`/api/options?path=${encodeURIComponent(state.filePath)}&sheet=${encodeURIComponent(sheet)}`);
-      const optData = await optRes.json();
-      if (!optData.error) state.sheetOptions = optData;
-    } catch(e) {}
+  
+  if (data.error) {
+    showEmptyState('Error reading data');
+    setStatus('Error reading data');
+    return;
   }
-
+  
+  state.headers = data.headers || [];
+  state.allRows = data.rows || [];
+  
   renderTable(state.headers, state.allRows);
   updateHeader(sheet, `2026 → ${state.selectedMonth} → ${state.selectedFile} → ${sheet}`);
+  
   document.getElementById('recordCount').textContent = `${data.count} records`;
   setStatus(`Loaded ${state.selectedFile} / ${sheet}`);
-  document.getElementById('pathInfo').textContent = `2026 / ${state.selectedMonth} / ${state.selectedFile}.xlsm / ${sheet}`;
+  document.getElementById('pathInfo').textContent =
+    `2026 / ${state.selectedMonth} / ${state.selectedFile}.xlsm / ${sheet}`;
+  
   document.getElementById('searchInput').value = '';
   document.getElementById('filterInfo').textContent = '';
-
-  // Show edit toggle for all sheets except Stocktaking
-  const wrap = document.getElementById('editToggleWrap');
-  const toggle = document.getElementById('editToggle');
-  if (wrap) wrap.style.display = state.isInventorySheet ? '' : 'none';
-  if (toggle) toggle.checked = state.editMode;
-  document.getElementById('editBadge').style.display = state.editMode ? '' : 'none';
-}
-
-// ── TOGGLE EDIT MODE ──
-function toggleEditMode() {
-  state.editMode = document.getElementById('editToggle').checked;
-  document.getElementById('editBadge').style.display = state.editMode ? '' : 'none';
-  renderTable(state.headers, state.allRows);
-  if (state.editMode) toast('✎ Edit mode ON — click any cell or use IN/OUT buttons', true);
 }
 
 // ── RENDER TABLE ──
 function renderTable(headers, rows) {
   const wrap = document.getElementById('tableWrap');
-  if (!headers.length) { showEmptyState('No data in this sheet'); return; }
-
-  const showActions = state.editMode && state.isInventorySheet;
-  const visHeaders = headers.filter(h => h !== '__row__');
-
-  let html = `<table class="data-table fade-in"><thead><tr><th class="row-num">#</th>`;
-  visHeaders.forEach(h => { html += `<th>${h}</th>`; });
-  if (showActions) html += `<th>Actions</th>`;
+  
+  if (!headers.length) {
+    showEmptyState('No data in this sheet');
+    return;
+  }
+  
+  let html = `<table class="data-table fade-in"><thead><tr>
+    <th class="row-num">#</th>`;
+  
+  headers.forEach(h => {
+    html += `<th>${h}</th>`;
+  });
   html += `</tr></thead><tbody>`;
-
+  
   if (!rows.length) {
-    html += `<tr class="no-data-row"><td colspan="${visHeaders.length + 1 + (showActions?1:0)}">No data entered yet in this sheet</td></tr>`;
+    html += `<tr class="no-data-row"><td colspan="${headers.length + 1}">No data entered yet in this sheet</td></tr>`;
   } else {
     rows.forEach((row, i) => {
-      const excelRow = row['__row__'];
-      html += `<tr data-row="${i}" data-excel-row="${excelRow || ''}">`;
+      html += `<tr data-row="${i}">`;
       html += `<td class="row-num">${i + 1}</td>`;
-      visHeaders.forEach(h => {
+      headers.forEach(h => {
         const val = row[h];
-        const hLower = h.toLowerCase();
         let cls = '';
+        const hLower = h.toLowerCase();
         if (hLower === 'date' || hLower === 'التاريخ') cls = 'cell-date';
         else if (hLower === 'in') cls = 'cell-in';
         else if (hLower === 'out') cls = 'cell-out';
         else if (hLower.includes('balance')) cls = 'cell-balance';
-
+        
         const display = (val === null || val === undefined || val === '') ?
-          `<span class="cell-null">—</span>` : escHtml(String(val));
-
-        const isReadOnly = READ_ONLY_COLS.some(ro => hLower.includes(ro.toLowerCase()));
-        const editable   = state.editMode && !isReadOnly;
-
-        if (editable) {
-          html += `<td class="${cls} editable" data-col="${escAttr(h)}" data-excel-row="${excelRow || ''}"
-                       onclick="startEdit(this, ${excelRow}, '${escAttr(h)}')">${display}</td>`;
-        } else {
-          html += `<td class="${cls}">${display}</td>`;
-        }
+          `<span class="cell-null">—</span>` :
+          escHtml(String(val));
+        html += `<td class="${cls}">${display}</td>`;
       });
-      if (showActions) {
-        html += `<td class="action-cell">
-          <button class="btn-in"  onclick="openTxModal(${excelRow}, 'IN')">+IN</button>
-          <button class="btn-out" onclick="openTxModal(${excelRow}, 'OUT')">-OUT</button>
-          <button class="btn-del" onclick="confirmClearRow(${excelRow})" title="Clear row data">🗑</button>
-        </td>`;
-      }
       html += `</tr>`;
     });
   }
+  
   html += `</tbody></table>`;
   wrap.innerHTML = html;
-}
-
-// ── INLINE CELL EDIT ──
-function _buildDropdown(options, currentText, excelRow, colName) {
-  let optHtml = `<option value="">— اختر —</option>`;
-  let found = false;
-  options.forEach(o => {
-    const sel = o === currentText ? ' selected' : '';
-    if (sel) found = true;
-    optHtml += `<option value="${escAttr(o)}"${sel}>${escHtml(o)}</option>`;
-  });
-  if (currentText && !found) {
-    optHtml += `<option value="${escAttr(currentText)}" selected>${escHtml(currentText)}</option>`;
-  }
-  optHtml += `<option value="__new__">✏️ إضافة قيمة جديدة…</option>`;
-  return `<select
-    onchange="handleDDChange(this,${excelRow},'${escAttr(colName)}')"
-    onblur="handleDDBlur(this,${excelRow},'${escAttr(colName)}')"
-    onkeydown="if(event.key==='Escape'){event.preventDefault();cancelEdit(this);}"
-  >${optHtml}</select>`;
-}
-
-function startEdit(td, excelRow, colName) {
-  if (td.querySelector('input') || td.querySelector('select')) return;
-  const currentText = td.innerText.trim() === '—' ? '' : td.innerText.trim();
-  const colLower = colName.toLowerCase();
-
-  const ddMap = {
-    'color':    state.sheetOptions.colors,
-    'type':     state.sheetOptions.types,
-    'size':     state.sheetOptions.sizes,
-    'category': state.sheetOptions.categories,
-  };
-  const ddKey = Object.keys(ddMap).find(k => colLower.includes(k));
-  if (ddKey && ddMap[ddKey].length > 0) {
-    td.innerHTML = _buildDropdown(ddMap[ddKey], currentText, excelRow, colName);
-    td.querySelector('select').focus();
-    return;
-  }
-  if (colLower.includes('basic')) {
-    td.innerHTML = `<input type="number" step="0.01" value="${escAttr(currentText)}"
-      onblur="commitEdit(this,${excelRow},'${escAttr(colName)}')"
-      onkeydown="if(event.key==='Enter'){this.blur();}if(event.key==='Escape'){cancelEdit(this);}">`;
-    td.querySelector('input').focus();
-    return;
-  }
-  td.innerHTML = `<input type="text" value="${escAttr(currentText)}"
-    onblur="commitEdit(this,${excelRow},'${escAttr(colName)}')"
-    onkeydown="if(event.key==='Enter'){this.blur();}if(event.key==='Escape'){cancelEdit(this);}">`;
-  td.querySelector('input').focus();
-}
-
-function handleDDChange(select, excelRow, colName) {
-  if (select.value !== '__new__') return;
-  // Prevent blur from firing during prompt
-  select._prompting = true;
-  const newVal = prompt(`أضف قيمة جديدة لـ ${colName}:`);
-  select._prompting = false;
-  if (newVal && newVal.trim()) {
-    const v = newVal.trim();
-    const opt = document.createElement('option');
-    opt.value = v; opt.textContent = v; opt.selected = true;
-    select.insertBefore(opt, select.lastElementChild);
-    select.value = v;
-    // Immediately commit the new value
-    commitEditSelect(select, excelRow, colName);
-  } else {
-    const prev = select.options[0].value;
-    select.value = prev === '__new__' ? '' : prev;
-    if (!select.value) cancelEdit(select);
-  }
-}
-
-function handleDDBlur(select, excelRow, colName) {
-  if (select._prompting) return;
-  if (select.value === '__new__' || select.value === '') {
-    cancelEdit(select);
-    return;
-  }
-  commitEditSelect(select, excelRow, colName);
-}
-
-function cancelEdit(el) {
-  renderTable(state.headers, state.allRows);
-}
-
-async function _applyAutoBalance(excelRow, colorValue) {
-  // Fetch last current balance for this color (from rows BEFORE this row)
-  const params = new URLSearchParams({
-    path:       state.filePath,
-    sheet:      state.selectedSheet,
-    color:      colorValue,
-    before_row: excelRow,
-  });
-  try {
-    const res  = await fetch(`/api/color_balance?${params}`);
-    const data = await res.json();
-    if (data.found && data.balance !== null) {
-      // Write Basic + Current both = last current balance
-      const r2 = await fetch('/api/set_opening_balance', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          filepath: state.filePath,
-          sheet:    state.selectedSheet,
-          row:      excelRow,
-          balance:  data.balance,
-        })
-      });
-      const d2 = await r2.json();
-      if (d2.success) {
-        // Update local state
-        const rowObj = state.allRows.find(r => r['__row__'] === excelRow);
-        if (rowObj) {
-          const basicKey   = Object.keys(rowObj).find(k => k.toLowerCase().includes('basic'));
-          const currentKey = Object.keys(rowObj).find(k => k.toLowerCase().includes('current'));
-          if (basicKey)   rowObj[basicKey]   = data.balance;
-          if (currentKey) rowObj[currentKey] = data.balance;
-        }
-        toast(`✓ Color: ${colorValue} — رصيد افتتاحي: ${data.balance}`, true);
-        renderTable(state.headers, state.allRows);
-        return;
-      }
-    }
-    // No previous balance found — just toast color saved, leave Basic/Current empty
-    toast(`✓ Color: ${colorValue} — لا يوجد رصيد سابق لهذا الصنف`, true);
-  } catch(e) {
-    // silently ignore
-  }
-}
-
-async function commitEditSelect(select, excelRow, colName) {
-  const newValue = select.value;
-  if (!newValue || newValue === '__new__') { renderTable(state.headers, state.allRows); return; }
-  const td = select.parentElement;
-  td.textContent = newValue;
-
-  const res = await fetch('/api/update_cell', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      filepath: state.filePath,
-      sheet:    state.selectedSheet,
-      row:      excelRow,
-      col_name: colName,
-      value:    newValue,
-    })
-  });
-  const d = await res.json();
-  if (d.success) {
-    const rowObj = state.allRows.find(r => r['__row__'] === excelRow);
-    if (rowObj) rowObj[colName] = newValue;
-
-    // If Color was just set → auto-fill Basic + Current from last balance
-    if (colName.toLowerCase() === 'color') {
-      await _applyAutoBalance(excelRow, newValue);
-    } else {
-      toast(`✓ Saved: ${colName} = ${newValue}`);
-    }
-  } else {
-    toast(`✗ Error: ${d.error}`, false);
-    renderTable(state.headers, state.allRows);
-  }
-}
-
-async function commitEdit(input, excelRow, colName) {
-  const newValue = input.value.trim();
-  const td = input.parentElement;
-
-  // Optimistic UI
-  td.textContent = newValue || '—';
-
-  const res = await fetch('/api/update_cell', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      filepath: state.filePath,
-      sheet:    state.selectedSheet,
-      row:      excelRow,
-      col_name: colName,
-      value:    newValue,
-    })
-  });
-  const data = await res.json();
-  if (data.success) {
-    toast(`✓ Saved: ${colName} = ${newValue}`);
-    // Update local state so re-render is correct
-    const rowObj = state.allRows.find(r => r['__row__'] === excelRow);
-    if (rowObj) rowObj[colName] = newValue;
-  } else {
-    toast(`✗ Error: ${data.error}`, false);
-    renderTable(state.headers, state.allRows); // revert
-  }
-}
-
-// ── CLEAR ROW ──
-async function confirmClearRow(excelRow) {
-  const rowObj = state.allRows.find(r => r['__row__'] === excelRow) || {};
-  const colorVal = Object.entries(rowObj).find(([k]) => k.toLowerCase() === 'color')?.[1];
-  const label = colorVal ? `(Color: ${colorVal})` : `(Row ${excelRow})`;
-  if (!confirm(`حذف بيانات الصف ${label}؟\nهذا سيمسح جميع القيم — هل أنت متأكد؟`)) return;
-
-  const res = await fetch('/api/clear_row', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ filepath: state.filePath, sheet: state.selectedSheet, row: excelRow })
-  });
-  const d = await res.json();
-  if (d.success) {
-    toast('✓ تم مسح بيانات الصف');
-    await selectSheet(state.selectedSheet);
-  } else {
-    toast(`✗ ${d.error}`, false);
-  }
-}
-
-// ── TRANSACTION MODAL ──
-let _txRow = null, _txOp = null;
-
-function openTxModal(excelRow, operation) {
-  _txRow = excelRow;
-  _txOp  = operation;
-
-  // Find row data
-  const rowObj = state.allRows.find(r => r['__row__'] === excelRow) || {};
-
-  // Enforce Color must be set
-  const colorKey = Object.keys(rowObj).find(k => k.toLowerCase() === 'color');
-  const colorVal = colorKey ? rowObj[colorKey] : null;
-  if (!colorVal || String(colorVal).trim() === '' || String(colorVal).trim().toLowerCase() === 'null') {
-    toast('⚠️ يجب تحديد اللون (Color) أولاً قبل إجراء أي عملية', false);
-    return;
-  }
-
-  document.getElementById('txTitle').textContent    = operation === 'IN' ? '➕ IN — Add Stock' : '➖ OUT — Remove Stock';
-  document.getElementById('txSubtitle').textContent = `${state.selectedFile} / ${state.selectedSheet} — Row ${excelRow}`;
-
-  // Info grid
-  const infoFields = ['Color', 'Size', 'Type', 'Category', 'Current Balance', 'Basic'];
-  let grid = '';
-  infoFields.forEach(f => {
-    const key = Object.keys(rowObj).find(k => k.toLowerCase().includes(f.toLowerCase()));
-    if (key && rowObj[key] !== null && rowObj[key] !== undefined && rowObj[key] !== '') {
-      grid += `<div class="modal-info-item">
-        <div class="modal-info-label">${f}</div>
-        <div class="modal-info-value">${escHtml(String(rowObj[key]))}</div>
-      </div>`;
-    }
-  });
-  document.getElementById('txInfoGrid').innerHTML = grid;
-
-  const btn = document.getElementById('txConfirmBtn');
-  btn.className = `btn ${operation === 'IN' ? 'btn-in-modal' : 'btn-out-modal'}`;
-  btn.textContent = operation === 'IN' ? '✓ Add Stock' : '✓ Remove Stock';
-
-  document.getElementById('txQty').value = '';
-  document.getElementById('txModal').classList.add('open');
-  setTimeout(() => document.getElementById('txQty').focus(), 100);
-}
-
-function closeTxModal() {
-  document.getElementById('txModal').classList.remove('open');
-  _txRow = null; _txOp = null;
-}
-
-async function submitTx() {
-  const qty = parseFloat(document.getElementById('txQty').value);
-  if (isNaN(qty) || qty < 0) { toast('أدخل كمية صحيحة (0 أو أكثر)', false); return; }
-  if (!_txRow || !_txOp) return;
-
-  const btn = document.getElementById('txConfirmBtn');
-  btn.disabled = true;
-  btn.textContent = 'Saving...';
-
-  const res = await fetch('/api/transaction', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      filepath:  state.filePath,
-      sheet:     state.selectedSheet,
-      row:       _txRow,
-      operation: _txOp,
-      qty:       qty,
-    })
-  });
-  const data = await res.json();
-
-  btn.disabled = false;
-  btn.textContent = _txOp === 'IN' ? '✓ Add Stock' : '✓ Remove Stock';
-
-  if (data.success) {
-    toast(`✓ ${_txOp} ${qty} — New balance: ${data.new_balance}`);
-    closeTxModal();
-    // Refresh to show updated Current Balance across all rows with same Color
-    await selectSheet(state.selectedSheet);
-  } else {
-    toast(`✗ ${data.error}`, false);
-  }
 }
 
 // ── FILTER ──
@@ -1181,13 +836,20 @@ function filterTable(query) {
   const q = query.trim().toLowerCase();
   const rows = document.querySelectorAll('.data-table tbody tr[data-row]');
   let visible = 0;
+  
   rows.forEach(tr => {
-    const show = !q || tr.textContent.toLowerCase().includes(q);
+    const text = tr.textContent.toLowerCase();
+    const show = !q || text.includes(q);
     tr.style.display = show ? '' : 'none';
     if (show) visible++;
   });
+  
   const info = document.getElementById('filterInfo');
-  info.textContent = q ? `${visible} of ${state.allRows.length} results` : '';
+  if (q) {
+    info.textContent = `${visible} of ${state.allRows.length} results`;
+  } else {
+    info.textContent = '';
+  }
 }
 
 // ── HELPERS ──
@@ -1199,30 +861,38 @@ function showEmptyState(msg) {
       <p>Select a month, file and sheet from the sidebar</p>
     </div>`;
 }
+
 function showLoading() {
   document.getElementById('tableWrap').innerHTML = `
-    <div class="loading"><div class="spinner"></div><span>Loading data...</span></div>`;
+    <div class="loading">
+      <div class="spinner"></div>
+      <span>Loading data...</span>
+    </div>`;
 }
-function setStatus(msg) { document.getElementById('statusMsg').textContent = msg; }
+
+function setStatus(msg) {
+  document.getElementById('statusMsg').textContent = msg;
+}
+
 function updateHeader(title, breadcrumb) {
   document.getElementById('contentTitle').textContent = title;
-  document.getElementById('breadcrumb').textContent   = breadcrumb;
+  document.getElementById('breadcrumb').textContent = breadcrumb;
 }
+
 function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
-function escAttr(s) {
-  return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;');
-}
 
 // ── ACTIONS ──
-function refreshData() { if (state.selectedSheet) selectSheet(state.selectedSheet); }
+function refreshData() {
+  if (state.selectedSheet) selectSheet(state.selectedSheet);
+}
 
 function printTable() {
   const table = document.querySelector('.data-table');
   if (!table) return alert('No data to print');
   const win = window.open('', '_blank');
-  win.document.write(`<html><head><title>EST Inventory System</title>
+  win.document.write(`<html><head><title>EST Inventory Systemt</title>
     <style>
       body { font-family: Arial, sans-serif; direction: ltr; font-size: 12px; }
       h2 { margin-bottom: 10px; }
@@ -1230,7 +900,6 @@ function printTable() {
       th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: center; }
       th { background: #1a3a5c; color: white; }
       tr:nth-child(even) { background: #f5f5f5; }
-      .action-cell { display: none; }
     </style></head><body>`);
   win.document.write(`<h2>${state.selectedFile} / ${state.selectedSheet} — ${state.selectedMonth} 2026</h2>`);
   win.document.write(table.outerHTML);
@@ -1241,47 +910,54 @@ function printTable() {
 
 function exportCSV() {
   if (!state.headers.length) return alert('No data to export');
-  const visHeaders = state.headers.filter(h => h !== '__row__');
-  let csv = '\uFEFF';
-  csv += visHeaders.join(',') + '\n';
+  
+  let csv = '\uFEFF'; // BOM for Excel compatibility
+  csv += state.headers.join(',') + '\n';
   state.allRows.forEach(row => {
-    const vals = visHeaders.map(h => {
+    const vals = state.headers.map(h => {
       const v = row[h];
       if (v === null || v === undefined) return '';
       const s = String(v);
-      return s.includes(',') || s.includes('"') || s.includes('\n') ? `"${s.replace(/"/g,'""')}"` : s;
+      return s.includes(',') || s.includes('"') || s.includes('\n') ?
+        `"${s.replace(/"/g,'""')}"` : s;
     });
     csv += vals.join(',') + '\n';
   });
+  
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href = url; a.download = `${state.selectedFile}_${state.selectedSheet}_${state.selectedMonth}_2026.csv`;
-  a.click(); URL.revokeObjectURL(url);
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${state.selectedFile}_${state.selectedSheet}_${state.selectedMonth}_2026.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 // ── KEYBOARD ──
 document.addEventListener('keydown', e => {
-  if (e.ctrlKey && e.key === 'f') { e.preventDefault(); document.getElementById('searchInput').focus(); }
-  if (e.key === 'Escape') { closeTxModal(); closeAbout(); }
+  if (e.ctrlKey && e.key === 'f') {
+    e.preventDefault();
+    document.getElementById('searchInput').focus();
+  }
 });
 
-// ── ABOUT ──
-function showAbout()  { document.getElementById('aboutModal').style.display = 'flex'; }
-function closeAbout() { document.getElementById('aboutModal').style.display = 'none'; }
-
-function confirmLogout() {
-  document.getElementById('logoutModal').classList.add('open');
+// ── ABOUT MODAL ──
+function showAbout() {
+  const m = document.getElementById('aboutModal');
+  m.style.display = 'flex';
 }
-function closeLogout() {
-  document.getElementById('logoutModal').classList.remove('open');
+function closeAbout() {
+  document.getElementById('aboutModal').style.display = 'none';
 }
-function doLogout() {
-  window.location.href = '/logout';
-}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAbout(); });
 
 // ── START ──
 init();
+function confirmLogout() {
+  if (confirm('Are You Sure You Want To Logout?')) {
+    window.location.href = '/logout';
+  }
+}
 </script>
 </body>
 </html>
