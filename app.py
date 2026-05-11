@@ -29,9 +29,7 @@ app.secret_key = os.getenv("LARALOLO")
 import os
 
 USERS = {
-    os.getenv("USER1"): os.getenv("PASS1"),
-    os.getenv("USER2"): os.getenv("PASS2"),
-    os.getenv("USER3"): os.getenv("PASS3"),
+    os.getenv("APP_USERNAME"): os.getenv("APP_PASSWORD")
 }
 # ───────────────────────────────────────────────────────────────────
 
