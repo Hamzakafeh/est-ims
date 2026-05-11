@@ -23,12 +23,12 @@ except ImportError:
 app = Flask(__name__, static_folder='static')
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-app.secret_key = 'EST-IMS-SecretKey-2026'
-
+app.secret_key = 'LARALOLO'
 # ── بيانات الدخول ──────────────────────────────────────────────────
+import os
+
 USERS = {
-    'Mlo5': '192.168.100.1',
-    'EST':   'Kafeh',
+    os.getenv("APP_USERNAME"): os.getenv("APP_PASSWORD")
 }
 # ───────────────────────────────────────────────────────────────────
 
