@@ -153,21 +153,98 @@
     padding: 40px 20px;
   }
 
+  /* ── PARTICLES CANVAS ── */
+  #particleCanvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan), var(--accent-blue));
+    background-size: 200% 100%;
+    border-radius: 0 2px 2px 0;
+    z-index: 9999;
+    animation: progressShimmer 1.5s linear infinite;
+    display: none;
+  }
+  @keyframes progressShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ── FROSTED GLASS CARD ── */
   .login-card {
-    background: var(--bg-panel);
-    border: 1px solid var(--border-light);
-    border-radius: 18px;
+    background: rgba(28, 34, 48, 0.72);
+    backdrop-filter: blur(24px) saturate(1.4);
+    -webkit-backdrop-filter: blur(24px) saturate(1.4);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
     padding: 44px 48px;
     width: 100%;
     max-width: 400px;
-    box-shadow: var(--card-shadow);
-    animation: cardIn 0.28s cubic-bezier(.34,1.56,.64,1);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05), inset 0 1px 0 rgba(255,255,255,0.08);
+    animation: cardIn 0.45s cubic-bezier(.34,1.56,.64,1);
     transition: background 0.25s, border-color 0.25s, box-shadow 0.25s;
+    position: relative;
   }
+  html.light .login-card {
+    background: rgba(255,255,255,0.78);
+    border: 1px solid rgba(0,0,0,0.08);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);
+  }
+  .login-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 20%; right: 20%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(59,130,246,0.6), rgba(6,182,212,0.6), transparent);
+    border-radius: 1px;
+  }
+
   @keyframes cardIn {
-    from { opacity:0; transform: scale(0.92) translateY(16px); }
-    to   { opacity:1; transform: scale(1)    translateY(0);    }
+    from { opacity:0; transform: scale(0.88) translateY(24px); filter: blur(4px); }
+    to   { opacity:1; transform: scale(1) translateY(0); filter: blur(0); }
   }
+
+  /* ── SHAKE ANIMATION ── */
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    15%      { transform: translateX(-8px) rotate(-0.5deg); }
+    30%      { transform: translateX(7px)  rotate(0.5deg); }
+    45%      { transform: translateX(-6px); }
+    60%      { transform: translateX(5px); }
+    75%      { transform: translateX(-3px); }
+    90%      { transform: translateX(2px); }
+  }
+  .login-card.shake {
+    animation: shake 0.55s cubic-bezier(.36,.07,.19,.97) both;
+  }
+
+  /* ── WELCOME MESSAGE ── */
+  .welcome-msg {
+    text-align: center;
+    font-size: 12px;
+    color: var(--accent-cyan);
+    margin-bottom: 6px;
+    opacity: 0.85;
+    letter-spacing: 0.3px;
+    animation: fadeSlideIn 0.6s ease 0.2s both;
+  }
+  @keyframes fadeSlideIn {
+    from { opacity:0; transform: translateY(-8px); }
+    to   { opacity:0.85; transform: translateY(0); }
+  }
+
+  /* ── FIELD ICON FOCUS GLOW ── */
+  .field-icon { transition: color 0.2s, transform 0.2s; }
+  .field-wrap:focus-within .field-icon { color: var(--accent-blue); transform: translateY(-50%) scale(1.15); }
 
   .login-logo {
     width: 64px; height: 64px;
@@ -247,13 +324,22 @@
     border: none; border-radius: 10px;
     font-family: inherit; font-size: 14px; font-weight: 600;
     cursor: pointer;
-    transition: all 0.18s;
+    transition: all 0.2s;
     display: flex; align-items: center; justify-content: center; gap: 8px;
     margin-top: 8px;
+    position: relative; overflow: hidden;
   }
-  .btn-login:hover:not(:disabled) { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(59,130,246,0.4); }
-  .btn-login:active:not(:disabled) { transform: translateY(0); }
+  .btn-login::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .btn-login:hover:not(:disabled) { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(59,130,246,0.45), 0 0 0 1px rgba(59,130,246,0.3); }
+  .btn-login:active:not(:disabled) { transform: translateY(0); box-shadow: none; }
   .btn-login:disabled { opacity: 0.55; cursor: not-allowed; }
+  .btn-login.success { background: var(--accent-green) !important; transform: none !important; box-shadow: 0 4px 20px rgba(16,185,129,0.4) !important; }
 
   /* error box */
   .error-box {
@@ -286,15 +372,15 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px; color: var(--text-dim);
   }
-
-  /* ── HAMZA NAME PULSE ── */
-  @keyframes namePulse {
-    0%, 100% { opacity: 1; text-shadow: none; }
-    50%       { opacity: 0.7; text-shadow: 0 0 18px rgba(59,130,246,0.65); }
-  }
 </style>
 </head>
 <body>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- PARTICLES -->
+<canvas id="particleCanvas"></canvas>
 
 <!-- BACKGROUND -->
 <div class="bg-image"></div>
@@ -332,28 +418,7 @@
       </svg>
     </button>
 
-    <button onclick="showAbout()" style="background:#ffffff;color:#0d1117;font-weight:600;border:none;border-radius:7px;padding:6px 14px;font-family:inherit;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all 0.18s;" onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#ffffff'">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-      About
-    </button>
-
     <span class="clock" id="clock">--:-- --</span>
-  </div>
-</div>
-
-<!-- ABOUT MODAL -->
-<div id="aboutModal" onclick="if(event.target===this)closeAbout()" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.65);backdrop-filter:blur(5px);align-items:center;justify-content:center;">
-  <div style="background:var(--bg-panel);border:1px solid var(--border-light);border-radius:18px;padding:38px 44px;min-width:320px;max-width:400px;box-shadow:0 12px 48px rgba(0,0,0,0.7);text-align:center;position:relative;animation:cardIn 0.22s cubic-bezier(.34,1.56,.64,1);">
-    <button onclick="closeAbout()" style="position:absolute;top:14px;left:16px;background:none;border:none;color:var(--text-dim);font-size:17px;cursor:pointer;line-height:1;transition:color 0.15s;">✕</button>
-    <div style="width:58px;height:58px;margin:0 auto 20px;border-radius:15px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(59,130,246,0.4);">
-      <img src="/static/low.ico" style="width:100%;height:100%;object-fit:contain;border-radius:15px;">
-    </div>
-    <div style="font-size:17px;font-weight:700;color:var(--text-main);margin-bottom:4px;">EST Inventory System</div>
-    <div style="font-size:11px;color:#06b6d4;letter-spacing:1.2px;margin-bottom:22px;text-transform:uppercase;">Alestesharia Animal Nutrition</div>
-    <div style="height:1px;background:var(--border);margin-bottom:22px;"></div>
-    <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;letter-spacing:0.3px;">Created by</div>
-    <div style="font-size:22px;font-weight:700;color:var(--text-main);letter-spacing:0.5px;margin-bottom:22px;animation:namePulse 2.4s ease-in-out infinite;">Hamza K. Ghareb</div>
-    <div style="display:inline-block;background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:5px 18px;font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;">v3.0 — 2026</div>
   </div>
 </div>
 
@@ -366,6 +431,7 @@
     </div>
 
     <div class="login-title">EST Inventory System</div>
+    <div class="welcome-msg" id="welcomeMsg">Good morning ☀️</div>
     <div class="login-subtitle">Secure Access</div>
     <div class="divider"></div>
 
@@ -418,10 +484,15 @@ document.getElementById('themeBtn').addEventListener('click', function() {
   localStorage.setItem('est-theme', isLight ? 'light' : 'dark');
 });
 
-// ── ABOUT ──
-function showAbout()  { document.getElementById('aboutModal').style.display = 'flex'; }
-function closeAbout() { document.getElementById('aboutModal').style.display = 'none'; }
-document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeAbout(); });
+// ── WELCOME MESSAGE ──
+(function() {
+  const h = new Date().getHours();
+  const el = document.getElementById('welcomeMsg');
+  if (h >= 5 && h < 12)      el.textContent = 'Good morning ☀️';
+  else if (h >= 12 && h < 17) el.textContent = 'Good afternoon 🌤️';
+  else if (h >= 17 && h < 21) el.textContent = 'Good evening 🌆';
+  else                         el.textContent = 'Good night 🌙';
+})();
 
 // ── CLOCK ──
 function updateClock() {
@@ -451,6 +522,43 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'Enter') doLogin();
 });
 
+// ── PROGRESS BAR ──
+function startProgress() {
+  const bar = document.getElementById('progressBar');
+  bar.style.display = 'block';
+  bar.style.transition = 'none';
+  bar.style.width = '0%';
+  setTimeout(() => {
+    bar.style.transition = 'width 1.8s ease';
+    bar.style.width = '85%';
+  }, 10);
+}
+function finishProgress(success) {
+  const bar = document.getElementById('progressBar');
+  bar.style.transition = 'width 0.3s ease';
+  bar.style.width = '100%';
+  if (success) bar.style.background = 'linear-gradient(90deg,#10b981,#34d399)';
+  else bar.style.background = 'linear-gradient(90deg,#ef4444,#f87171)';
+  setTimeout(() => {
+    bar.style.opacity = '0';
+    bar.style.transition = 'opacity 0.4s';
+    setTimeout(() => {
+      bar.style.display = 'none';
+      bar.style.opacity = '1';
+      bar.style.background = '';
+    }, 400);
+  }, 500);
+}
+
+// ── SHAKE CARD ──
+function shakeCard() {
+  const card = document.querySelector('.login-card');
+  card.classList.remove('shake');
+  void card.offsetWidth; // reflow
+  card.classList.add('shake');
+  setTimeout(() => card.classList.remove('shake'), 600);
+}
+
 // ── LOGIN ──
 async function doLogin() {
   const username = document.getElementById('username').value.trim();
@@ -464,9 +572,11 @@ async function doLogin() {
 
   if (!username || !password) {
     showError('يرجى إدخال اسم المستخدم وكلمة المرور');
+    shakeCard();
     return;
   }
 
+  startProgress();
   spinner.style.display = 'block';
   btnText.textContent = 'Signing in...';
   loginBtn.disabled = true;
@@ -479,15 +589,21 @@ async function doLogin() {
     });
     const data = await res.json();
     if (data.success) {
+      finishProgress(true);
       btnText.textContent = '✓ Success';
       spinner.style.display = 'none';
-      setTimeout(() => { window.location.href = '/'; }, 300);
+      loginBtn.classList.add('success');
+      setTimeout(() => { window.location.href = '/'; }, 600);
     } else {
+      finishProgress(false);
       showError(data.message || 'اسم المستخدم أو كلمة المرور غير صحيحة');
+      shakeCard();
       resetBtn();
     }
   } catch(e) {
+    finishProgress(false);
     showError('Connection error. Please try again.');
+    shakeCard();
     resetBtn();
   }
 }
@@ -504,6 +620,90 @@ function resetBtn() {
   document.getElementById('btnText').textContent = 'Sign In';
   document.getElementById('loginBtn').disabled = false;
 }
+
+// ── PARTICLES ──
+(function() {
+  const canvas = document.getElementById('particleCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], mouse = { x: -999, y: -999 };
+  const isLight = () => document.documentElement.classList.contains('light');
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function Particle() {
+    this.x  = Math.random() * W;
+    this.y  = Math.random() * H;
+    this.vx = (Math.random() - 0.5) * 0.4;
+    this.vy = (Math.random() - 0.5) * 0.4;
+    this.r  = Math.random() * 1.8 + 0.4;
+    this.alpha = Math.random() * 0.5 + 0.1;
+  }
+
+  Particle.prototype.update = function() {
+    this.x += this.vx;
+    this.y += this.vy;
+    if (this.x < 0) this.x = W;
+    if (this.x > W) this.x = 0;
+    if (this.y < 0) this.y = H;
+    if (this.y > H) this.y = 0;
+    // mouse repel
+    const dx = this.x - mouse.x, dy = this.y - mouse.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist < 100) {
+      this.x += dx / dist * 1.2;
+      this.y += dy / dist * 1.2;
+    }
+  };
+
+  function init() {
+    resize();
+    particles = [];
+    const count = Math.floor((W * H) / 14000);
+    for (let i = 0; i < count; i++) particles.push(new Particle());
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const light = isLight();
+    const dotColor   = light ? 'rgba(37,99,235,'   : 'rgba(59,130,246,';
+    const lineColor  = light ? 'rgba(37,99,235,'   : 'rgba(59,130,246,';
+    const maxDist = 130;
+
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      p.update();
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = dotColor + p.alpha + ')';
+      ctx.fill();
+
+      for (let j = i + 1; j < particles.length; j++) {
+        const q = particles[j];
+        const dx = p.x - q.x, dy = p.y - q.y;
+        const d = Math.sqrt(dx*dx + dy*dy);
+        if (d < maxDist) {
+          const a = (1 - d / maxDist) * 0.18 * (light ? 1 : 0.7);
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(q.x, q.y);
+          ctx.strokeStyle = lineColor + a + ')';
+          ctx.lineWidth = 0.6;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', init);
+  window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+  window.addEventListener('mouseleave', () => { mouse.x = -999; mouse.y = -999; });
+  init();
+  draw();
+})();
 </script>
 </body>
 </html>
