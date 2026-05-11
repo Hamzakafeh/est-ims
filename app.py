@@ -117,34 +117,77 @@ LOG_COL_SIZE     = 6
 LOG_COL_ITEMTYPE = 7
 LOG_COL_CATEGORY = 8
 
-def get_base_path():
+def get_years_root():
+    """Return the path to the 'years' folder that contains year subfolders."""
     script_dir = os.path.dirname(os.path.abspath(__file__))
     candidates = [
-        os.path.join(script_dir, '2026'),
-        os.path.join(os.path.dirname(script_dir), '2026'),
+        os.path.join(script_dir, 'years'),
+        os.path.join(os.path.dirname(script_dir), 'years'),
     ]
     for c in candidates:
         if os.path.isdir(c):
             return c
     return None
 
-def get_structure():
-    base = get_base_path()
-    if not base:
+def get_base_path(year=None):
+    """Return the path to a specific year folder (default: first available year)."""
+    root = get_years_root()
+    if root:
+        years = sorted([d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d)) and d.isdigit()])
+        if not years:
+            return None
+        target = str(year) if year else years[0]
+        candidate = os.path.join(root, target)
+        if os.path.isdir(candidate):
+            return candidate
+    # Fallback: legacy single-year folders next to app.py
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    for folder in ['2026', '2027', '2028', '2029', '2030']:
+        c = os.path.join(script_dir, folder)
+        if os.path.isdir(c):
+            return c
+    return None
+
+def get_available_years():
+    """Return sorted list of available year strings."""
+    root = get_years_root()
+    if root:
+        years = sorted([d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d)) and d.isdigit()])
+        if years:
+            return years
+    # Fallback: scan next to app.py
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    years = sorted([d for d in os.listdir(script_dir) if os.path.isdir(os.path.join(script_dir, d)) and d.isdigit()])
+    return years
+
+def get_structure(year=None):
+    """Return file structure for all years or a specific year."""
+    available_years = get_available_years()
+    if not available_years:
         return {}
-    year = os.path.basename(base)
-    result = {year: {}}
-    for month in sorted(os.listdir(base), key=lambda m: MONTH_ORDER.get(m, 99)):
-        month_path = os.path.join(base, month)
-        if not os.path.isdir(month_path):
+
+    result = {}
+    target_years = [str(year)] if year else available_years
+
+    for yr in target_years:
+        base = get_base_path(yr)
+        if not base or not os.path.isdir(base):
+            result[yr] = {}
             continue
-        files = {}
-        for fname in ['Other+', 'Sacks']:
-            fpath = os.path.join(month_path, f'{fname}.xlsm')
-            if os.path.exists(fpath):
-                files[fname] = fpath
-        if files:
-            result[year][month] = files
+        result[yr] = {}
+        for month_folder in sorted(os.listdir(base), key=lambda m: MONTH_ORDER.get(m.split('-')[-1] if '-' in m else m, 99)):
+            month_path = os.path.join(base, month_folder)
+            if not os.path.isdir(month_path):
+                continue
+            # Extract month name (handle "01-January" or "January")
+            month_name = month_folder.split('-')[-1] if '-' in month_folder else month_folder
+            files = {}
+            for fname in ['Other+', 'Sacks']:
+                fpath = os.path.join(month_path, f'{fname}.xlsm')
+                if os.path.exists(fpath):
+                    files[fname] = fpath
+            if files:
+                result[yr][month_name] = files
     return result
 
 def read_sheet_data(filepath, sheet_name):
@@ -381,13 +424,21 @@ def _recalc_stocktaking(wb):
 @app.route('/')
 @login_required
 def index():
-    return render_template('index.html', structure=get_structure(),
+    structure = get_structure()
+    available_years = get_available_years()
+    return render_template('index.html', structure=structure,
+                           available_years=available_years,
                            base_path=get_base_path() or 'Not found', month_ar=MONTH_AR)
 
 @app.route('/api/structure')
 @login_required
 def api_structure():
     return jsonify(get_structure())
+
+@app.route('/api/years')
+@login_required
+def api_years():
+    return jsonify({'years': get_available_years()})
 
 @app.route('/api/sheets')
 @login_required
