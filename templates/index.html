@@ -886,19 +886,29 @@ function toggleEditMode() {
 }
 
 // ── PASSWORD MODAL ──
-function confirmPwd() {
+async function confirmPwd() {
   const val = document.getElementById('pwdInput').value;
-  if (val === '2001024400') {
-    document.getElementById('pwdModal').classList.remove('open');
-    state.editMode = true;
-    document.getElementById('editToggle').checked = true;
-    document.getElementById('editBadge').style.display = '';
-    renderTable(state.headers, state.allRows);
-    toast('✎ Edit mode ON — click any cell or use IN/OUT buttons', true);
-  } else {
-    document.getElementById('pwdError').textContent = '✗ Incorrect password';
-    document.getElementById('pwdInput').value = '';
-    document.getElementById('pwdInput').focus();
+  try {
+    const res = await fetch('/api/verify_edit_password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: val })
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('pwdModal').classList.remove('open');
+      state.editMode = true;
+      document.getElementById('editToggle').checked = true;
+      document.getElementById('editBadge').style.display = '';
+      renderTable(state.headers, state.allRows);
+      toast('✎ Edit mode ON — click any cell or use IN/OUT buttons', true);
+    } else {
+      document.getElementById('pwdError').textContent = '✗ Incorrect password';
+      document.getElementById('pwdInput').value = '';
+      document.getElementById('pwdInput').focus();
+    }
+  } catch (e) {
+    document.getElementById('pwdError').textContent = '✗ Connection error';
   }
 }
 function cancelPwdModal() {

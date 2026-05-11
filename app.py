@@ -33,6 +33,7 @@ USERS = {
     os.getenv("USER2"): os.getenv("PASS2"),
     os.getenv("USER3"): os.getenv("PASS3"),
 }
+EDIT_PASSWORD = os.getenv("EDIT_PASSWORD")
 # ───────────────────────────────────────────────────────────────────
 
 from flask import send_from_directory
@@ -67,6 +68,15 @@ def do_login():
         session['username'] = username
         return jsonify({'success': True})
     return jsonify({'success': False, 'message': 'اسم المستخدم أو كلمة المرور غير صحيحة'}), 401
+
+@app.route('/api/verify_edit_password', methods=['POST'])
+@login_required
+def verify_edit_password():
+    data = request.get_json(silent=True) or {}
+    password = data.get('password', '')
+    if EDIT_PASSWORD and password == EDIT_PASSWORD:
+        return jsonify({'success': True})
+    return jsonify({'success': False}), 401
 
 @app.route('/logout')
 def logout():
