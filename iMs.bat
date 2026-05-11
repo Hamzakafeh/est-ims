@@ -67,6 +67,8 @@ set PASS2=1234
 set USER3=EST
 set PASS3=est2025
 
+set EDIT_PASSWORD=2001024400
+
 set SECRET_KEY=LARALOLO
 
 echo  [*] Starting server...
