@@ -551,7 +551,7 @@ async function doLogin() {
   errorBox.classList.add('hidden');
 
   if (!username || !password) {
-    showError('يرجى إدخال اسم المستخدم وكلمة المرور');
+    showError('Please enter your username and password.     ');
     shakeCard();
     return;
   }
@@ -576,7 +576,7 @@ async function doLogin() {
       setTimeout(() => { window.location.href = '/'; }, 600);
     } else {
       finishProgress(false);
-      showError(data.message || 'اسم المستخدم أو كلمة المرور غير صحيحة');
+      showError(data.message || '  Incorrect username or password    ');
       shakeCard();
       resetBtn();
     }
