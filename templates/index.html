@@ -125,12 +125,51 @@
   .layout { display: flex; flex: 1; overflow: hidden; min-height: 0; }
 
   /* ── SIDEBAR ── */
+  .sidebar-wrapper {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+  }
   .sidebar {
     width: 220px;
     background: var(--bg-main);
     border-right: 1px solid var(--border);
     display: flex; flex-direction: column;
     flex-shrink: 0; overflow-y: auto;
+    transition: transform 0.28s cubic-bezier(.4,0,.2,1), width 0.28s cubic-bezier(.4,0,.2,1);
+    overflow-x: hidden;
+  }
+  .sidebar.collapsed {
+    transform: translateX(-220px);
+    width: 0;
+    border-right: none;
+  }
+  .sidebar-toggle-btn {
+    position: absolute;
+    top: 50%;
+    right: -14px;
+    transform: translateY(-50%);
+    z-index: 50;
+    width: 14px;
+    height: 52px;
+    background: var(--bg-main);
+    border: 1px solid var(--border);
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 10px;
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+  }
+  .sidebar-toggle-btn:hover { background: var(--bg-hover); color: var(--text-main); }
+  .sidebar.collapsed + .sidebar-toggle-btn {
+    right: -14px;
+    border-left: 1px solid var(--border);
+    border-radius: 8px;
   }
   .sidebar-section { padding: 14px 12px 8px; }
   .sidebar-label {
@@ -421,9 +460,31 @@
   .theme-btn .icon-moon { display: none; }
   html.light .theme-btn .icon-sun  { display: none; }
   html.light .theme-btn .icon-moon { display: block; }
-  html.light .btn-danger  { color: #dc2626; }
-  html.light .btn-logout  { color: #dc2626; }
+  html.light .btn-danger  { color: #dc2626; background: rgba(220,38,38,0.1); border-color: rgba(220,38,38,0.35); }
+  html.light .btn-logout  { color: #dc2626; background: rgba(220,38,38,0.1); border-color: rgba(220,38,38,0.35); }
+  html.light .btn-logout:hover { background: rgba(220,38,38,0.2); }
+  html.light .btn-primary { background: #2563eb; color: #fff; box-shadow: 0 2px 8px rgba(37,99,235,0.25); }
+  html.light .btn-primary:hover { background: #1d4ed8; box-shadow: 0 4px 14px rgba(37,99,235,0.35); }
+  html.light .btn-success { background: #059669; color: #fff; box-shadow: 0 2px 8px rgba(5,150,105,0.25); }
+  html.light .btn-success:hover { background: #047857; }
+  html.light .btn-warning { background: #d97706; color: #fff; box-shadow: 0 2px 8px rgba(217,119,6,0.25); }
+  html.light .btn-warning:hover { background: #b45309; }
+  html.light .btn-about   { background: #1e293b; color: #fff; }
+  html.light .btn-about:hover { background: #0f172a; }
+  html.light .btn-ghost   { background: #fff; color: #334155; border-color: #cbd5e1; }
+  html.light .btn-ghost:hover { background: #f1f5f9; color: #1e293b; }
   html.light .data-table tbody tr:nth-child(even) { background: var(--row-alt); }
+  html.light .month-pill  { color: #374151; border-color: #c7d2e0; }
+  html.light .month-pill:hover { border-color: #2563eb; color: #1e40af; }
+  html.light .brand-text h1 { color: #1e293b; font-weight: 700; }
+  html.light .brand-text p  { color: #64748b; }
+  html.light .clock { color: #374151; }
+  html.light .topbar { background: #fff; border-bottom-color: #e2e8f0; box-shadow: 0 1px 8px rgba(0,0,0,0.06); }
+  html.light .sidebar { background: #f8fafc; border-right-color: #e2e8f0; }
+  html.light .sidebar-toggle-btn { background: #f8fafc; border-color: #e2e8f0; }
+  html.light .statusbar { background: #fff; border-top-color: #e2e8f0; }
+  html.light .content-header { background: #f1f5f9; border-bottom-color: #e2e8f0; }
+  html.light .toolbar { background: #f8fafc; border-bottom-color: #e2e8f0; }
 
   /* ── CUSTOM LOGOUT MODAL ── */
   .logout-overlay {
@@ -489,7 +550,37 @@
   .pwd-actions { display: flex; gap: 10px; justify-content: center; }
   .pwd-actions .btn { min-width: 110px; justify-content: center; padding: 10px 20px; font-size: 13px; }
 
-  /* ── HAMZA NAME PULSE ── */
+  /* ── PRINT MODAL ── */
+  #printModal {
+    display: none; position: fixed; inset: 0; z-index: 9999;
+    background: rgba(0,0,0,0.65); backdrop-filter: blur(5px);
+    align-items: center; justify-content: center;
+  }
+  #printModal.open { display: flex; }
+  .print-modal-box {
+    background: var(--bg-panel); border: 1px solid var(--border-light);
+    border-radius: 18px; padding: 38px 44px; min-width: 340px; max-width: 480px;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.7); text-align: center; position: relative;
+    animation: modalIn 0.22s cubic-bezier(.34,1.56,.64,1);
+  }
+  .print-modal-icon {
+    width: 56px; height: 56px; border-radius: 14px;
+    background: linear-gradient(135deg,rgba(245,158,11,0.18),rgba(59,130,246,0.18));
+    border: 1px solid rgba(245,158,11,0.3);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px; font-size: 24px;
+  }
+  .print-modal-title { font-size: 17px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+  .print-modal-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 22px; line-height: 1.5; }
+  .print-modal-info {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 18px; margin-bottom: 24px; text-align: left;
+  }
+  .print-modal-info-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 4px 0; }
+  .print-modal-info-row .pmi-label { color: var(--text-muted); }
+  .print-modal-info-row .pmi-val   { color: var(--text-main); font-weight: 500; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .print-modal-actions { display: flex; gap: 10px; justify-content: center; }
+  .print-modal-actions .btn { min-width: 120px; justify-content: center; padding: 10px 20px; font-size: 13px; }
   @keyframes namePulse {
     0%, 100% { opacity: 1; text-shadow: none; }
     50%       { opacity: 0.7; text-shadow: 0 0 18px rgba(59,130,246,0.65); }
@@ -625,7 +716,7 @@
     </div>
     <div class="beta-title">This version is under testing. </div>
     <div class="beta-credit">Created By Hamza K. Ghareb</div>
-    <button class="beta-btn" onclick="document.getElementById('betaOverlay').style.animation='overlayOut 0.25s ease both';setTimeout(()=>document.getElementById('betaOverlay').remove(),250)">
+    <button class="beta-btn" onclick="closeBetaOverlay()">
      Okay!
     </button>
   </div>
@@ -657,8 +748,11 @@
         <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
+      <button class="theme-btn" id="homeBtn" title="Go to Home" onclick="window.location.href='/'">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </button>
       <button class="btn btn-primary"  onclick="refreshData()">Refresh</button>
-      <button class="btn btn-warning"  onclick="printTable()">Print</button>
+      <button class="btn btn-warning"  onclick="openPrintModal()">Print</button>
       <button class="btn btn-success"  onclick="exportCSV()">Export CSV</button>
       <button class="btn btn-about"    onclick="showAbout()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
@@ -685,6 +779,29 @@
     <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;letter-spacing:0.3px;">Created by</div>
     <div style="font-size:22px;font-weight:700;color:var(--text-main);letter-spacing:0.5px;margin-bottom:22px;" class="name-pulse">Hamza K. Ghareb</div>
     <div style="display:inline-block;background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:5px 18px;font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;">v3.0 — 2026</div>
+  </div>
+</div>
+
+<!-- ══ PRINT MODAL ══ -->
+<div id="printModal" onclick="if(event.target===this)closePrintModal()">
+  <div class="print-modal-box">
+    <button onclick="closePrintModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text-dim);font-size:17px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
+    <div class="print-modal-icon">🖨️</div>
+    <div class="print-modal-title">Print Data</div>
+    <div class="print-modal-sub" id="printModalSub">Ready to print the current sheet</div>
+    <div class="print-modal-info">
+      <div class="print-modal-info-row"><span class="pmi-label">File</span><span class="pmi-val" id="printInfoFile">—</span></div>
+      <div class="print-modal-info-row"><span class="pmi-label">Sheet</span><span class="pmi-val" id="printInfoSheet">—</span></div>
+      <div class="print-modal-info-row"><span class="pmi-label">Period</span><span class="pmi-val" id="printInfoPeriod">—</span></div>
+      <div class="print-modal-info-row"><span class="pmi-label">Records</span><span class="pmi-val" id="printInfoRecords">—</span></div>
+    </div>
+    <div class="print-modal-actions">
+      <button class="btn btn-warning" onclick="doPrint()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Print Now
+      </button>
+      <button class="btn btn-ghost" onclick="closePrintModal()">Cancel</button>
+    </div>
   </div>
 </div>
 
@@ -727,7 +844,8 @@
 <div class="layout">
 
   <!-- SIDEBAR -->
-  <div class="sidebar">
+  <div class="sidebar-wrapper">
+  <div class="sidebar" id="sidebar">
     <div class="sidebar-section">
       <div class="sidebar-label">Year</div>
       <div style="padding: 0 6px; margin-bottom: 4px;">
@@ -751,6 +869,8 @@
       <div class="sidebar-label">Sheets</div>
       <div class="sheet-tabs-list" id="sheetList"></div>
     </div>
+  </div>
+  <button class="sidebar-toggle-btn" id="sidebarToggleBtn" title="Toggle sidebar" onclick="toggleSidebar()">◀</button>
   </div>
 
   <!-- MAIN -->
@@ -801,6 +921,7 @@
       <div class="statusbar-right">
         <span id="pathInfo" style="direction:ltr">—</span>
         <span>Inventory Management System v3.0</span>
+        <span style="color:var(--text-dim);font-size:11px;border-left:1px solid var(--border);padding-left:14px;margin-left:2px;">© EST-iMs 2026</span>
       </div>
     </div>
   </div>
@@ -828,6 +949,60 @@
 <div id="toast"></div>
 
 <script>
+// ── BETA POPUP (show only once per session) ──
+function closeBetaOverlay() {
+  const overlay = document.getElementById('betaOverlay');
+  if (!overlay) return;
+  overlay.style.animation = 'overlayOut 0.25s ease both';
+  setTimeout(() => overlay.remove(), 250);
+}
+(function() {
+  const overlay = document.getElementById('betaOverlay');
+  if (!overlay) return;
+  if (sessionStorage.getItem('est-beta-seen')) {
+    overlay.remove();
+  }
+  // Mark as seen for this session
+  sessionStorage.setItem('est-beta-seen', '1');
+})();
+
+// ── LOGIN SOUND ──
+(function() {
+  try {
+    const audio = new Audio('/static/id.mp3');
+    audio.volume = 0.7;
+    audio.play().catch(() => {});
+  } catch(e) {}
+})();
+
+// ── SIDEBAR TOGGLE ──
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const btn = document.getElementById('sidebarToggleBtn');
+  const collapsed = sidebar.classList.toggle('collapsed');
+  btn.textContent = collapsed ? '▶' : '◀';
+  btn.title = collapsed ? 'Show sidebar' : 'Hide sidebar';
+}
+
+// ── PRINT MODAL ──
+function openPrintModal() {
+  const table = document.querySelector('.data-table');
+  if (!table) { toast('⚠️ No data to print', false); return; }
+  document.getElementById('printInfoFile').textContent = state.selectedFile || '—';
+  document.getElementById('printInfoSheet').textContent = state.selectedSheet || '—';
+  document.getElementById('printInfoPeriod').textContent = (state.selectedMonth && state.selectedYear) ? `${state.selectedMonth} ${state.selectedYear}` : '—';
+  document.getElementById('printInfoRecords').textContent = state.allRows.length ? `${state.allRows.length} rows` : '—';
+  document.getElementById('printModalSub').textContent = `Printing: ${state.selectedFile || ''} / ${state.selectedSheet || ''}`;
+  document.getElementById('printModal').classList.add('open');
+}
+function closePrintModal() {
+  document.getElementById('printModal').classList.remove('open');
+}
+function doPrint() {
+  closePrintModal();
+  printTable();
+}
+
 // ── STATE ──
 const state = {
   structure: {},
@@ -1538,7 +1713,7 @@ function exportCSV() {
 // ── KEYBOARD ──
 document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.key === 'f') { e.preventDefault(); document.getElementById('searchInput').focus(); }
-  if (e.key === 'Escape') { closeTxModal(); closeAbout(); cancelPwdModal(); }
+  if (e.key === 'Escape') { closeTxModal(); closeAbout(); cancelPwdModal(); closePrintModal(); closeLogout(); }
 });
 
 // ── ABOUT ──
