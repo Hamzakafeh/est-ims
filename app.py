@@ -422,6 +422,10 @@ def _recalc_stocktaking(wb):
             cell.value = last_result if last_result is not None else cell.value
 
 @app.route('/')
+def welcome():
+    return render_template('welcome.html')
+
+@app.route('/index')
 @login_required
 def index():
     structure = get_structure()
