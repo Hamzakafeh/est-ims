@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>EST-IMS® — Welcome</title>
+<link rel="icon" type="image/x-icon" href="/static/low.ico">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Sora:wght@300;400;600;700;800&display=swap');
+
+  :root {
+    --bg-deep:      #0d1117;
+    --bg-card:      #21283a;
+    --bg-hover:     #2a3347;
+    --border:       #2d3748;
+    --border-light: #3d4f6a;
+    --accent-blue:  #3b82f6;
+    --accent-cyan:  #06b6d4;
+    --accent-green: #10b981;
+    --text-main:    #e2e8f0;
+    --text-muted:   #8b9db8;
+    --text-dim:     #4a5568;
+  }
+  html.light {
+    --bg-deep:      #f0f4f8;
+    --bg-card:      #f8fafc;
+    --bg-hover:     #e8edf5;
+    --border:       #d1dae8;
+    --border-light: #b8c6da;
+    --accent-blue:  #2563eb;
+    --accent-cyan:  #0891b2;
+    --accent-green: #059669;
+    --text-main:    #1a2332;
+    --text-muted:   #4a6080;
+    --text-dim:     #8fa3be;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-main);
+    min-height: 100vh;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ── PARTICLES ── */
+  #particleCanvas {
+    position: fixed; inset: 0;
+    z-index: 0; pointer-events: none;
+  }
+
+  /* ── AMBIENT BLOBS ── */
+  .blob {
+    position: fixed; border-radius: 50%;
+    filter: blur(90px); opacity: 0.06;
+    pointer-events: none; z-index: 0;
+  }
+  html.light .blob { opacity: 0.08; }
+  .blob-1 {
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, #3b82f6, transparent 70%);
+    top: -200px; left: -200px;
+    animation: bd1 20s ease-in-out infinite;
+  }
+  .blob-2 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, #06b6d4, transparent 70%);
+    bottom: -160px; right: -160px;
+    animation: bd2 24s ease-in-out infinite;
+  }
+  .blob-3 {
+    width: 450px; height: 450px;
+    background: radial-gradient(circle, #6366f1, transparent 70%);
+    top: 38%; left: 52%;
+    animation: bd3 18s ease-in-out infinite;
+  }
+  @keyframes bd1 { 0%,100%{transform:translate(0,0)scale(1);} 50%{transform:translate(70px,50px)scale(1.1);} }
+  @keyframes bd2 { 0%,100%{transform:translate(0,0)scale(1);} 50%{transform:translate(-60px,-40px)scale(1.08);} }
+  @keyframes bd3 { 0%,100%{transform:translate(0,0)scale(1);} 50%{transform:translate(-50px,60px)scale(1.12);} }
+
+  /* ── GRID ── */
+  .grid-overlay {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(59,130,246,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,0.035) 1px, transparent 1px);
+    background-size: 52px 52px;
+    mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black 30%, transparent 100%);
+  }
+  html.light .grid-overlay {
+    background-image:
+      linear-gradient(rgba(37,99,235,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(37,99,235,0.05) 1px, transparent 1px);
+  }
+
+  /* ── THEME BTN ── */
+  .theme-btn {
+    position: fixed; top: 22px; right: 22px; z-index: 100;
+    width: 40px; height: 40px; border-radius: 11px;
+    border: 1px solid var(--border-light);
+    background: rgba(28,34,48,0.6);
+    backdrop-filter: blur(12px);
+    color: var(--text-muted); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.18s, color 0.18s, transform 0.18s;
+  }
+  html.light .theme-btn { background: rgba(255,255,255,0.7); }
+  .theme-btn:hover { color: var(--text-main); transform: rotate(18deg); }
+  .theme-btn .icon-sun  { display: block; }
+  .theme-btn .icon-moon { display: none; }
+  html.light .theme-btn .icon-sun  { display: none; }
+  html.light .theme-btn .icon-moon { display: block; }
+
+  /* ── PAGE CONTENT ── */
+  .page {
+    position: relative; z-index: 10;
+    display: flex; flex-direction: column;
+    align-items: center; text-align: center;
+    padding: 40px 24px; width: 100%;
+  }
+
+  /* ── LOGO ── */
+  .logo-wrap {
+    width: 76px; height: 76px; border-radius: 22px;
+    background: linear-gradient(135deg, rgba(59,130,246,0.18), rgba(6,182,212,0.12));
+    border: 1px solid rgba(59,130,246,0.25);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 32px;
+    box-shadow: 0 8px 36px rgba(59,130,246,0.22), inset 0 1px 0 rgba(255,255,255,0.08);
+    animation: logoFloat 4s ease-in-out infinite, fadeUp 0.6s ease 0.1s both;
+  }
+  html.light .logo-wrap {
+    background: linear-gradient(135deg, rgba(37,99,235,0.12), rgba(8,145,178,0.07));
+    border-color: rgba(37,99,235,0.2);
+    box-shadow: 0 8px 28px rgba(37,99,235,0.13);
+  }
+  .logo-wrap img { width: 46px; height: 46px; object-fit: contain; border-radius: 12px; }
+  @keyframes logoFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
+
+  /* ── WELCOME CHIP ── */
+  .welcome-chip {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 500;
+    color: var(--accent-cyan);
+    letter-spacing: 3.5px; text-transform: uppercase;
+    margin-bottom: 18px;
+    opacity: 0; animation: fadeUp 0.5s ease 0.25s both;
+  }
+  .welcome-chip::before, .welcome-chip::after {
+    content: ''; display: block;
+    width: 36px; height: 1px;
+    background: var(--accent-cyan); opacity: 0.35;
+  }
+
+  /* ── SUB HEADING ── */
+  .sub-heading {
+    font-family: 'Sora', sans-serif;
+    font-size: 14px; font-weight: 400;
+    color: var(--text-muted); letter-spacing: 1px;
+    margin-bottom: 14px;
+    opacity: 0; animation: fadeUp 0.5s ease 0.35s both;
+  }
+
+  /* ── BRAND NAME ── */
+  .brand-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 10vw, 112px);
+    font-weight: 400; line-height: 1;
+    letter-spacing: 10px;
+    margin-bottom: 14px;
+    background: linear-gradient(135deg, #60a5fa 0%, #06b6d4 35%, #818cf8 70%, #60a5fa 100%);
+    background-size: 250% 250%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradShift 6s ease infinite;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 1.15em;
+  }
+  html.light .brand-name {
+    background: linear-gradient(135deg, #1d4ed8 0%, #0891b2 35%, #4f46e5 70%, #1d4ed8 100%);
+    background-size: 250% 250%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: gradShift 6s ease infinite;
+  }
+  @keyframes gradShift { 0%,100%{background-position:0% 50%;} 50%{background-position:100% 50%;} }
+
+  .brand-text-inner { display: inline; }
+
+  /* blinking cursor */
+  .type-cursor {
+    display: inline-block;
+    width: 4px; height: 0.72em;
+    margin-left: 5px;
+    vertical-align: middle;
+    border-radius: 2px;
+    background: #60a5fa;
+    animation: cursorBlink 0.85s step-end infinite;
+    flex-shrink: 0;
+  }
+  html.light .type-cursor { background: #2563eb; }
+  @keyframes cursorBlink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+
+  /* ── SUFFIX ── */
+  .brand-suffix {
+    font-family: 'Sora', sans-serif;
+    font-size: 17px; font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 4px; text-transform: uppercase;
+    margin-bottom: 18px;
+    opacity: 0; animation: fadeUp 0.5s ease 0.55s both;
+  }
+
+  /* ── TAGLINE ── */
+  .tagline {
+    font-size: 13px; line-height: 1.7;
+    color: var(--text-dim); max-width: 420px;
+    margin-bottom: 46px;
+    opacity: 0; animation: fadeUp 0.5s ease 0.65s both;
+  }
+
+  /* ── DIVIDER ── */
+  .divider-line {
+    width: 300px; max-width: 80vw; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-light), transparent);
+    margin-bottom: 42px;
+    opacity: 0; animation: fadeUp 0.5s ease 0.7s both;
+  }
+
+  /* ── CTA BUTTON ── */
+  .cta-btn {
+    position: relative;
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 16px 56px;
+    background: var(--accent-blue);
+    color: #fff; border: none; border-radius: 16px;
+    font-family: 'Sora', sans-serif;
+    font-size: 16px; font-weight: 700; letter-spacing: 0.5px;
+    cursor: pointer; text-decoration: none;
+    box-shadow: 0 8px 32px rgba(59,130,246,0.38), 0 0 0 1px rgba(59,130,246,0.18);
+    transition: transform 0.22s cubic-bezier(.34,1.56,.64,1), box-shadow 0.22s, background 0.18s;
+    overflow: hidden;
+    opacity: 0; animation: fadeUp 0.6s ease 0.8s both;
+  }
+  .cta-btn::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.14) 0%, transparent 55%);
+    pointer-events: none;
+  }
+  .cta-btn:hover {
+    transform: translateY(-4px) scale(1.04);
+    box-shadow: 0 18px 48px rgba(59,130,246,0.48), 0 0 0 1px rgba(59,130,246,0.3);
+    background: #2563eb;
+  }
+  html.light .cta-btn:hover { background: #1d4ed8; }
+  .cta-btn:active { transform: translateY(-1px) scale(1.01); }
+  .cta-arrow { transition: transform 0.22s; flex-shrink: 0; }
+  .cta-btn:hover .cta-arrow { transform: translateX(5px); }
+
+  /* ── VERSION ── */
+  .version-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--text-dim);
+    margin-top: 32px;
+    display: flex; align-items: center; gap: 8px;
+    opacity: 0; animation: fadeUp 0.5s ease 0.95s both;
+  }
+  .v-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent-green);
+    box-shadow: 0 0 7px var(--accent-green);
+    animation: vPulse 2.2s ease-in-out infinite;
+  }
+  @keyframes vPulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(0.65);} }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+<div class="grid-overlay"></div>
+<canvas id="particleCanvas"></canvas>
+
+<!-- Theme toggle -->
+<button class="theme-btn" id="themeBtn" title="Toggle light/dark mode">
+  <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"/>
+    <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+    <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+  </svg>
+  <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  </svg>
+</button>
+
+<!-- PAGE -->
+<div class="page">
+
+  <div class="logo-wrap">
+    <img src="/static/low.ico" alt="EST-IMS">
+  </div>
+
+  <div class="welcome-chip">Welcome</div>
+
+  <div class="sub-heading">Inventory Management System</div>
+
+  <div class="brand-name" id="brandName">
+    <span class="brand-text-inner" id="brandText"></span><span class="type-cursor" id="typeCursor"></span>
+  </div>
+
+  <div class="brand-suffix">Animal Nutrition</div>
+
+  <div class="tagline">
+    Streamlined inventory tracking, real‑time stock management,<br>
+    and precise reporting — all in one place.
+  </div>
+
+  <div class="divider-line"></div>
+
+  <a class="cta-btn" href="/login">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+      <polyline points="10 17 15 12 10 7"/>
+      <line x1="15" y1="12" x2="3" y2="12"/>
+    </svg>
+    Log In
+    <svg class="cta-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="9 18 15 12 9 6"/>
+    </svg>
+  </a>
+
+  <div class="version-tag">
+    <span class="v-dot"></span>
+    EST-iMs v3.0 — 2026 &nbsp;·&nbsp; © EST-iMs 2026
+  </div>
+
+</div>
+
+<script>
+// ── THEME ──
+(function() {
+  if (localStorage.getItem('est-theme') === 'light')
+    document.documentElement.classList.add('light');
+})();
+document.getElementById('themeBtn').addEventListener('click', function() {
+  const isLight = document.documentElement.classList.toggle('light');
+  localStorage.setItem('est-theme', isLight ? 'light' : 'dark');
+});
+
+// ── TYPEWRITER LOOP ──
+(function() {
+  const word        = 'ALESTESHARIA';
+  const el          = document.getElementById('brandText');
+  const wrap        = document.getElementById('brandName');
+
+  const typeSpeed   = 155;   // ms per char — typing
+  const deleteSpeed = 85;    // ms per char — deleting
+  const pauseFull   = 2400;  // ms pause when fully typed
+  const pauseEmpty  = 550;   // ms pause before retyping
+
+  // fade in brand row
+  wrap.style.opacity   = '0';
+  wrap.style.transform = 'translateY(16px)';
+  wrap.style.transition = 'opacity 0.55s ease, transform 0.55s ease';
+
+  setTimeout(() => {
+    wrap.style.opacity   = '1';
+    wrap.style.transform = 'translateY(0)';
+
+    let i = 0;
+    let deleting = false;
+
+    function tick() {
+      if (!deleting) {
+        i++;
+        el.textContent = word.slice(0, i);
+        if (i === word.length) {
+          setTimeout(() => { deleting = true; tick(); }, pauseFull);
+        } else {
+          setTimeout(tick, typeSpeed);
+        }
+      } else {
+        i--;
+        el.textContent = word.slice(0, i);
+        if (i === 0) {
+          deleting = false;
+          setTimeout(tick, pauseEmpty);
+        } else {
+          setTimeout(tick, deleteSpeed);
+        }
+      }
+    }
+
+    tick();
+  }, 500);
+})();
+
+// ── PARTICLES ──
+(function() {
+  const canvas = document.getElementById('particleCanvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H, particles = [], mouse = { x: -999, y: -999 };
+  const isLight = () => document.documentElement.classList.contains('light');
+
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+
+  function Particle() {
+    this.x     = Math.random() * W;
+    this.y     = Math.random() * H;
+    this.vx    = (Math.random() - 0.5) * 0.35;
+    this.vy    = (Math.random() - 0.5) * 0.35;
+    this.r     = Math.random() * 1.6 + 0.4;
+    this.alpha = Math.random() * 0.4 + 0.08;
+  }
+
+  Particle.prototype.update = function() {
+    this.x += this.vx; this.y += this.vy;
+    if (this.x < 0) this.x = W; if (this.x > W) this.x = 0;
+    if (this.y < 0) this.y = H; if (this.y > H) this.y = 0;
+    const dx = this.x - mouse.x, dy = this.y - mouse.y;
+    const d  = Math.sqrt(dx*dx + dy*dy);
+    if (d < 110) { this.x += dx/d*1.4; this.y += dy/d*1.4; }
+  };
+
+  function init() {
+    resize(); particles = [];
+    const n = Math.floor((W * H) / 13000);
+    for (let i = 0; i < n; i++) particles.push(new Particle());
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const light = isLight();
+    const dc = light ? 'rgba(37,99,235,' : 'rgba(59,130,246,';
+    const lc = light ? 'rgba(37,99,235,' : 'rgba(59,130,246,';
+    const md = 135;
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      p.update();
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = dc + p.alpha + ')'; ctx.fill();
+      for (let j = i+1; j < particles.length; j++) {
+        const q  = particles[j];
+        const dx = p.x - q.x, dy = p.y - q.y;
+        const d  = Math.sqrt(dx*dx + dy*dy);
+        if (d < md) {
+          const a = (1 - d/md) * 0.15 * (light ? 1 : 0.65);
+          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
+          ctx.strokeStyle = lc + a + ')'; ctx.lineWidth = 0.6; ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', init);
+  window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+  window.addEventListener('mouseleave', () => { mouse.x = -999; mouse.y = -999; });
+  init(); draw();
+})();
+</script>
+</body>
+</html>

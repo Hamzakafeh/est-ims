@@ -969,9 +969,14 @@ function closeBetaOverlay() {
 // ── LOGIN SOUND ──
 (function() {
   try {
-    const audio = new Audio('/static/id.mp3');
-    audio.volume = 0.7;
-    audio.play().catch(() => {});
+  
+    if (!sessionStorage.getItem('loginSoundPlayed')) {
+      const audio = new Audio('/static/id.mp3');
+      audio.volume = 0.7;
+      audio.play().catch(() => {});
+
+      sessionStorage.setItem('loginSoundPlayed', 'true');
+    }
   } catch(e) {}
 })();
 
