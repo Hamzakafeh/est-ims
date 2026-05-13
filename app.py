@@ -24,7 +24,10 @@ except ImportError:
 app = Flask(__name__, static_folder='static')
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-app.secret_key = os.getenv("SECRET_KEY", "LARALOLO")
+app.secret_key = os.getenv("SECRET_KEY", os.urandom(24))
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['PERMANENT_SESSION_LIFETIME'] = 3600
 # ── بيانات الدخول ──────────────────────────────────────────────────
 import os
 
@@ -83,7 +86,9 @@ def verify_edit_password():
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('login_page'))
+    response = redirect(url_for('login_page'))
+    response.delete_cookie('session')
+    return response
 
 MONTH_ORDER = {
     'January': 1, 'February': 2, 'March': 3, 'April': 4,

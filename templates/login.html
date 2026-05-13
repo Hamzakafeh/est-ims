@@ -548,7 +548,7 @@ async function doLogin() {
       btnText.textContent = '✓ Success';
       spinner.style.display = 'none';
       loginBtn.classList.add('success');
-      setTimeout(() => { window.location.href = '/index'; }, 600);
+      setTimeout(() => { window.location.replace('/index'); }, 600);
     } else {
       finishProgress(false);
       showError(data.message || '  Incorrect username or password    ');
