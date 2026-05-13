@@ -57,7 +57,9 @@ def login_page():
     if session.get('logged_in'):
         return redirect(url_for('index'))
     return render_template('login.html')
-
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
 @app.route('/login', methods=['POST'])
 def do_login():
     data = request.get_json(silent=True) or {}
