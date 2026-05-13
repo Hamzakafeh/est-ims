@@ -24,8 +24,10 @@ except ImportError:
 app = Flask(__name__, static_folder='static')
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-app.secret_key = os.getenv("SECRET_KEY", os.urandom(24))
+# SECRET_KEY لازم تحطه في Environment Variables على Render — لا تتركه فاضي
+app.secret_key = os.getenv("SECRET_KEY", "fallback-not-secure-change-me")
 app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SECURE'] = True   # Render بيستخدم HTTPS دايماً
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['PERMANENT_SESSION_LIFETIME'] = 3600
 # ── بيانات الدخول ──────────────────────────────────────────────────
