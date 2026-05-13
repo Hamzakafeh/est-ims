@@ -61,7 +61,12 @@ def login_required(f):
 def login_page():
     if session.get('logged_in'):
         return redirect(url_for('index'))
-    return render_template('login.html')
+    from flask import make_response
+    resp = make_response(render_template('login.html'))
+    resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    resp.headers['Pragma'] = 'no-cache'
+    resp.headers['Expires'] = '0'
+    return resp
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
@@ -439,9 +444,14 @@ def welcome():
 def index():
     structure = get_structure()
     available_years = get_available_years()
-    return render_template('index.html', structure=structure,
-                           available_years=available_years,
-                           base_path=get_base_path() or 'Not found', month_ar=MONTH_AR)
+    from flask import make_response
+    resp = make_response(render_template('index.html', structure=structure,
+                                         available_years=available_years,
+                                         base_path=get_base_path() or 'Not found', month_ar=MONTH_AR))
+    resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    resp.headers['Pragma'] = 'no-cache'
+    resp.headers['Expires'] = '0'
+    return resp
 
 @app.route('/api/structure')
 @login_required
