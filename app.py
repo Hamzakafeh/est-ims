@@ -24,12 +24,7 @@ except ImportError:
 app = Flask(__name__, static_folder='static')
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-# SECRET_KEY لازم تحطه في Environment Variables على Render — لا تتركه فاضي
-app.secret_key = os.getenv("SECRET_KEY", "fallback-not-secure-change-me")
-app.config['SESSION_COOKIE_HTTPONLY'] = True
-app.config['SESSION_COOKIE_SECURE'] = True   # Render بيستخدم HTTPS دايماً
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-app.config['PERMANENT_SESSION_LIFETIME'] = 3600
+app.secret_key = os.getenv("SECRET_KEY", "LARALOLO")
 # ── بيانات الدخول ──────────────────────────────────────────────────
 import os
 
@@ -61,12 +56,7 @@ def login_required(f):
 def login_page():
     if session.get('logged_in'):
         return redirect(url_for('index'))
-    from flask import make_response
-    resp = make_response(render_template('login.html'))
-    resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
-    resp.headers['Pragma'] = 'no-cache'
-    resp.headers['Expires'] = '0'
-    return resp
+    return render_template('login.html')
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
@@ -93,9 +83,7 @@ def verify_edit_password():
 @app.route('/logout')
 def logout():
     session.clear()
-    response = redirect(url_for('login_page'))
-    response.delete_cookie('session')
-    return response
+    return redirect(url_for('login_page'))
 
 MONTH_ORDER = {
     'January': 1, 'February': 2, 'March': 3, 'April': 4,
@@ -444,14 +432,9 @@ def welcome():
 def index():
     structure = get_structure()
     available_years = get_available_years()
-    from flask import make_response
-    resp = make_response(render_template('index.html', structure=structure,
-                                         available_years=available_years,
-                                         base_path=get_base_path() or 'Not found', month_ar=MONTH_AR))
-    resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
-    resp.headers['Pragma'] = 'no-cache'
-    resp.headers['Expires'] = '0'
-    return resp
+    return render_template('index.html', structure=structure,
+                           available_years=available_years,
+                           base_path=get_base_path() or 'Not found', month_ar=MONTH_AR)
 
 @app.route('/api/structure')
 @login_required
