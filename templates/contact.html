@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us — EST-IMS®</title>
+<link rel="icon" type="image/x-icon" href="/static/low.ico">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Sora:wght@300;400;600;700;800&display=swap');
+
+  :root {
+    --bg-deep:      #0d1117;
+    --bg-card:      #1c2230;
+    --bg-item:      #21283a;
+    --bg-hover:     #2a3347;
+    --border:       #2d3748;
+    --border-light: #3d4f6a;
+    --accent-blue:  #3b82f6;
+    --accent-cyan:  #06b6d4;
+    --accent-green: #10b981;
+    --text-main:    #e2e8f0;
+    --text-muted:   #8b9db8;
+    --text-dim:     #4a5568;
+  }
+  html.light {
+    --bg-deep:      #f0f4f8;
+    --bg-card:      #ffffff;
+    --bg-item:      #f8fafc;
+    --bg-hover:     #e8edf5;
+    --border:       #d1dae8;
+    --border-light: #b8c6da;
+    --accent-blue:  #2563eb;
+    --accent-cyan:  #0891b2;
+    --accent-green: #059669;
+    --text-main:    #1a2332;
+    --text-muted:   #4a6080;
+    --text-dim:     #8fa3be;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ── PARTICLES ── */
+  #particleCanvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+  /* ── BLOBS ── */
+  .blob { position: fixed; border-radius: 50%; filter: blur(90px); opacity: 0.06; pointer-events: none; z-index: 0; }
+  html.light .blob { opacity: 0.08; }
+  .blob-1 { width:700px;height:700px;background:radial-gradient(circle,#3b82f6,transparent 70%);top:-200px;left:-200px;animation:bd1 20s ease-in-out infinite; }
+  .blob-2 { width:600px;height:600px;background:radial-gradient(circle,#06b6d4,transparent 70%);bottom:-160px;right:-160px;animation:bd2 24s ease-in-out infinite; }
+  .blob-3 { width:450px;height:450px;background:radial-gradient(circle,#6366f1,transparent 70%);top:38%;left:52%;animation:bd3 18s ease-in-out infinite; }
+  @keyframes bd1 { 0%,100%{transform:translate(0,0)scale(1);}50%{transform:translate(70px,50px)scale(1.1);} }
+  @keyframes bd2 { 0%,100%{transform:translate(0,0)scale(1);}50%{transform:translate(-60px,-40px)scale(1.08);} }
+  @keyframes bd3 { 0%,100%{transform:translate(0,0)scale(1);}50%{transform:translate(-50px,60px)scale(1.12);} }
+
+  /* ── GRID ── */
+  .grid-overlay {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: linear-gradient(rgba(59,130,246,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,0.035) 1px,transparent 1px);
+    background-size: 52px 52px;
+    mask-image: radial-gradient(ellipse 75% 75% at 50% 50%,black 30%,transparent 100%);
+  }
+  html.light .grid-overlay {
+    background-image: linear-gradient(rgba(37,99,235,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,0.05) 1px,transparent 1px);
+  }
+
+  /* ── SIDE DOCK ── */
+  .side-dock { position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:6px;padding:10px 0; }
+  .dock-item { position:relative;display:flex;align-items:center;cursor:pointer;height:44px; }
+  .dock-icon {
+    width:44px;height:44px;border-radius:0 12px 12px 0;
+    background:rgba(28,34,48,0.75);backdrop-filter:blur(14px);
+    border:1px solid var(--border-light);border-left:none;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--text-muted);transition:background 0.2s,color 0.2s;
+    position:relative;z-index:2;flex-shrink:0;
+  }
+  html.light .dock-icon { background:rgba(255,255,255,0.8); }
+  .dock-item:hover .dock-icon { background:var(--accent-blue);color:#fff;border-color:var(--accent-blue); }
+  .dock-label {
+    position:absolute;left:44px;white-space:nowrap;
+    font-size:12px;font-weight:600;color:var(--text-main);
+    background:rgba(28,34,48,0.85);backdrop-filter:blur(14px);
+    border:1px solid var(--border-light);border-left:none;
+    border-radius:0 10px 10px 0;padding:0 16px;height:36px;
+    display:flex;align-items:center;pointer-events:none;
+    opacity:0;transform:translateX(-8px);
+    transition:opacity 0.2s,transform 0.2s;z-index:1;
+  }
+  html.light .dock-label { background:rgba(255,255,255,0.9); }
+  .dock-item:hover .dock-label { opacity:1;transform:translateX(0); }
+  .dock-icon .icon-sun  { display:block; }
+  .dock-icon .icon-moon { display:none;  }
+  html.light .dock-icon .icon-sun  { display:none;  }
+  html.light .dock-icon .icon-moon { display:block; }
+
+  /* ── MAIN CARD ── */
+  .contact-card {
+    position: relative; z-index: 10;
+    width: min(640px, calc(100vw - 80px));
+    padding: 52px 56px 44px;
+    background: rgba(28,34,48,0.7);
+    backdrop-filter: blur(28px) saturate(1.5);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 28px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.07);
+    animation: cardIn 0.65s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  html.light .contact-card {
+    background: rgba(255,255,255,0.78);
+    border: 1px solid rgba(0,0,0,0.07);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.1);
+  }
+  /* top glow line */
+  .contact-card::before {
+    content:'';position:absolute;top:0;left:10%;right:10%;height:1.5px;
+    background:linear-gradient(90deg,transparent,rgba(59,130,246,0.7),rgba(6,182,212,0.6),transparent);
+    border-radius:2px;
+  }
+  @keyframes cardIn {
+    from { opacity:0;transform:scale(0.9) translateY(28px);filter:blur(4px); }
+    to   { opacity:1;transform:scale(1) translateY(0);filter:blur(0); }
+  }
+
+  /* ── HEADER ── */
+  .card-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 36px;
+  }
+  .header-icon {
+    width: 52px; height: 52px; border-radius: 15px; flex-shrink: 0;
+    background: linear-gradient(135deg,rgba(59,130,246,0.2),rgba(6,182,212,0.12));
+    border: 1px solid rgba(59,130,246,0.3);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent-blue);
+    box-shadow: 0 6px 24px rgba(59,130,246,0.2);
+  }
+  html.light .header-icon { background:linear-gradient(135deg,rgba(37,99,235,0.12),rgba(8,145,178,0.07));border-color:rgba(37,99,235,0.25); }
+  .header-text { display:flex;flex-direction:column;gap:3px; }
+  .header-chip {
+    font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;
+    color:var(--accent-cyan);letter-spacing:2.5px;text-transform:uppercase;
+  }
+  .header-title {
+    font-family:'Sora',sans-serif;font-size:24px;font-weight:700;
+    color:var(--text-main);line-height:1.1;
+  }
+
+  /* ── DIVIDER ── */
+  .card-divider {
+    height:1px;background:var(--border);margin-bottom:30px;
+    background:linear-gradient(90deg,transparent,var(--border-light),transparent);
+  }
+
+  /* ── CONTACT ITEMS GRID ── */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 30px;
+  }
+  .contact-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 16px 18px;
+    background: var(--bg-item);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    transition: border-color 0.2s, background 0.2s, transform 0.18s;
+    cursor: default;
+  }
+  .contact-item:hover {
+    border-color: var(--accent-blue);
+    background: var(--bg-hover);
+    transform: translateY(-2px);
+  }
+  .ci-icon {
+    width: 38px; height: 38px; flex-shrink: 0; border-radius: 10px;
+    background: linear-gradient(135deg,rgba(59,130,246,0.18),rgba(6,182,212,0.1));
+    border: 1px solid rgba(59,130,246,0.2);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent-blue);
+    margin-top: 1px;
+  }
+  html.light .ci-icon { background:linear-gradient(135deg,rgba(37,99,235,0.1),rgba(8,145,178,0.06));border-color:rgba(37,99,235,0.18); }
+  .ci-text { display:flex;flex-direction:column;gap:3px; }
+  .ci-label {
+    font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;
+    color:var(--accent-cyan);letter-spacing:2px;text-transform:uppercase;
+  }
+  .ci-value {
+    font-size:13px;font-weight:500;color:var(--text-main);line-height:1.5;
+  }
+  .ci-value a { color:inherit;text-decoration:none; }
+  .ci-value a:hover { color:var(--accent-blue); }
+
+  /* ── FOLLOW US ── */
+  .follow-section { margin-top: 4px; }
+  .follow-label {
+    font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;
+    color:var(--text-dim);letter-spacing:2.5px;text-transform:uppercase;
+    margin-bottom:14px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .follow-label::after { content:'';flex:1;height:1px;background:var(--border); }
+
+  .social-row { display:flex;gap:10px; }
+  .social-btn {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: var(--bg-item);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(.34,1.56,.64,1);
+  }
+  .social-btn:hover { transform:translateY(-3px) scale(1.08); color:#fff; border-color:transparent; }
+  .social-btn.fb:hover   { background:#1877f2; box-shadow:0 6px 20px rgba(24,119,242,0.4); }
+  .social-btn.li:hover   { background:#0a66c2; box-shadow:0 6px 20px rgba(10,102,194,0.4); }
+  .social-btn.ig:hover   { background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af); box-shadow:0 6px 20px rgba(221,42,123,0.4); }
+  .social-btn.yt:hover   { background:#ff0000; box-shadow:0 6px 20px rgba(255,0,0,0.4); }
+
+  /* ── BACK BUTTON ── */
+  .back-btn {
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:12px;font-weight:600;color:var(--text-dim);
+    background:none;border:none;cursor:pointer;
+    padding:0;margin-bottom:28px;
+    transition:color 0.18s;font-family:'Inter',sans-serif;
+  }
+  .back-btn:hover { color:var(--accent-blue); }
+
+  /* ── COPYRIGHT ── */
+  .copy-line {
+    margin-top:28px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;color:var(--text-dim);
+    text-align:center;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+  }
+  .copy-dot {
+    width:5px;height:5px;border-radius:50%;
+    background:var(--accent-green);
+    box-shadow:0 0 6px var(--accent-green);
+    animation:pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.65);} }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);} }
+</style>
+</head>
+<body>
+
+<canvas id="particleCanvas"></canvas>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+<div class="grid-overlay"></div>
+
+<!-- SIDE DOCK -->
+<div class="side-dock">
+  <div class="dock-item" onclick="history.back()">
+    <div class="dock-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </div>
+    <div class="dock-label">Go Back</div>
+  </div>
+
+  <div class="dock-item" onclick="toggleTheme()">
+    <div class="dock-icon">
+      <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </div>
+    <div class="dock-label" id="dockThemeLabel">Light Mode</div>
+  </div>
+
+  <div class="dock-item" onclick="window.location.href='/login'">
+    <div class="dock-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+        <polyline points="10 17 15 12 10 7"/>
+        <line x1="15" y1="12" x2="3" y2="12"/>
+      </svg>
+    </div>
+    <div class="dock-label">Log In</div>
+  </div>
+</div>
+
+<!-- CONTACT CARD -->
+<div class="contact-card">
+
+  <div class="card-header">
+    <div class="header-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+        <circle cx="12" cy="10" r="3"/>
+      </svg>
+    </div>
+    <div class="header-text">
+      <div class="header-chip">Alestesharia Animal Nutrition</div>
+      <div class="header-title">Contact Us</div>
+    </div>
+  </div>
+
+  <div class="card-divider"></div>
+
+  <!-- CONTACT GRID -->
+  <div class="contact-grid">
+
+    <div class="contact-item">
+      <div class="ci-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+      </div>
+      <div class="ci-text">
+        <div class="ci-label">Address</div>
+        <div class="ci-value">Box 244, Amman<br>19378, Jordan</div>
+      </div>
+    </div>
+
+    <div class="contact-item">
+      <div class="ci-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+      </div>
+      <div class="ci-text">
+        <div class="ci-label">Working Hours</div>
+        <div class="ci-value">Weekdays · 9AM to 7PM<br>Weekends · Off</div>
+      </div>
+    </div>
+
+    <div class="contact-item">
+      <div class="ci-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.08 6.08l.88-.88a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+      </div>
+      <div class="ci-text">
+        <div class="ci-label">Phone & Fax</div>
+        <div class="ci-value">Tel +962 6 532 0131<br>Fax +962 6 532 0133</div>
+      </div>
+    </div>
+
+    <div class="contact-item">
+      <div class="ci-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+      </div>
+      <div class="ci-text">
+        <div class="ci-label">Email</div>
+        <div class="ci-value"><a href="mailto:info@alestesharia.com.jo">info@alestesharia.com.jo</a></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOLLOW US -->
+  <div class="follow-section">
+    <div class="follow-label">Follow Us</div>
+    <div class="social-row">
+
+      <a class="social-btn fb" href="https://web.facebook.com/alestesharia" target="_blank" title="Facebook">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+        </svg>
+      </a>
+
+      <a class="social-btn li" href="https://jo.linkedin.com/company/alestesharia-animal-nutrition" target="_blank" title="LinkedIn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+          <rect x="2" y="9" width="4" height="12"/>
+          <circle cx="4" cy="4" r="2"/>
+        </svg>
+      </a>
+
+      <a class="social-btn ig" href="https://www.instagram.com/alestesharia/" target="_blank" title="Instagram">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+        </svg>
+      </a>
+
+      <a class="social-btn yt" href="https://www.youtube.com/@alesteshariaanimalnutrition" target="_blank" title="YouTube">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/>
+          <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="var(--bg-deep,#0d1117)"/>
+        </svg>
+      </a>
+
+    </div>
+  </div>
+
+  <div class="copy-line">
+    <span class="copy-dot"></span>
+    © EST-iMs 2026
+  </div>
+
+</div>
+
+<script>
+// ── THEME ──
+(function() {
+  if (localStorage.getItem('est-theme') === 'light')
+    document.documentElement.classList.add('light');
+  updateDockTheme();
+})();
+function updateDockTheme() {
+  const isLight = document.documentElement.classList.contains('light');
+  const label = document.getElementById('dockThemeLabel');
+  if (label) label.textContent = isLight ? 'Dark Mode' : 'Light Mode';
+}
+function toggleTheme() {
+  const isLight = document.documentElement.classList.toggle('light');
+  localStorage.setItem('est-theme', isLight ? 'light' : 'dark');
+  updateDockTheme();
+}
+
+// ── PARTICLES ──
+(function() {
+  const canvas = document.getElementById('particleCanvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H, particles = [], mouse = { x:-999, y:-999 };
+  const isLight = () => document.documentElement.classList.contains('light');
+
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+
+  function Particle() {
+    this.x=Math.random()*W; this.y=Math.random()*H;
+    this.vx=(Math.random()-0.5)*0.35; this.vy=(Math.random()-0.5)*0.35;
+    this.r=Math.random()*1.6+0.4; this.alpha=Math.random()*0.4+0.08;
+  }
+  Particle.prototype.update = function() {
+    this.x+=this.vx; this.y+=this.vy;
+    if(this.x<0)this.x=W; if(this.x>W)this.x=0;
+    if(this.y<0)this.y=H; if(this.y>H)this.y=0;
+    const dx=this.x-mouse.x, dy=this.y-mouse.y, d=Math.sqrt(dx*dx+dy*dy);
+    if(d<110){this.x+=dx/d*1.4; this.y+=dy/d*1.4;}
+  };
+
+  function init() {
+    resize(); particles=[];
+    const n=Math.floor((W*H)/13000);
+    for(let i=0;i<n;i++) particles.push(new Particle());
+  }
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    const light=isLight();
+    const dc=light?'rgba(37,99,235,':'rgba(59,130,246,';
+    const md=135;
+    for(let i=0;i<particles.length;i++){
+      const p=particles[i]; p.update();
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=dc+p.alpha+')'; ctx.fill();
+      for(let j=i+1;j<particles.length;j++){
+        const q=particles[j];
+        const dx=p.x-q.x,dy=p.y-q.y,d=Math.sqrt(dx*dx+dy*dy);
+        if(d<md){
+          const a=(1-d/md)*0.15*(light?1:0.65);
+          ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
+          ctx.strokeStyle=dc+a+')'; ctx.lineWidth=0.6; ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',init);
+  window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
+  window.addEventListener('mouseleave',()=>{mouse.x=-999;mouse.y=-999;});
+  init(); draw();
+})();
+</script>
+</body>
+</html>
