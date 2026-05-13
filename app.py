@@ -48,7 +48,7 @@ def login_required(f):
         if not session.get('logged_in'):
             if request.is_json or request.path.startswith('/api/'):
                 return jsonify({'error': 'Unauthorized'}), 401
-            return redirect(url_for('welcome'))
+            return redirect(url_for('login_page'))
         return f(*args, **kwargs)
     return decorated
 
@@ -83,7 +83,7 @@ def verify_edit_password():
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('login_page'))
+    return redirect(url_for('welcome'))
 
 MONTH_ORDER = {
     'January': 1, 'February': 2, 'March': 3, 'April': 4,
