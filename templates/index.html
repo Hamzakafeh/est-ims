@@ -557,6 +557,12 @@
     align-items: center; justify-content: center;
   }
   #printModal.open { display: flex; }
+  #csvModal {
+    display: none; position: fixed; inset: 0; z-index: 9999;
+    background: rgba(0,0,0,0.65); backdrop-filter: blur(5px);
+    align-items: center; justify-content: center;
+  }
+  #csvModal.open { display: flex; }
   .print-modal-box {
     background: var(--bg-panel); border: 1px solid var(--border-light);
     border-radius: 18px; padding: 38px 44px; min-width: 340px; max-width: 480px;
@@ -715,7 +721,7 @@
      EST iMs
     </div>
     <div class="beta-title">This version is under testing. </div>
-    <div class="beta-credit">Created By Hamza K. Ghareb</div>
+    <div class="beta-credit">Developed By Hamza K. Ghareb</div>
     <button class="beta-btn" onclick="closeBetaOverlay()">
      Okay!
     </button>
@@ -801,6 +807,29 @@
         Print Now
       </button>
       <button class="btn btn-ghost" onclick="closePrintModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CSV EXPORT MODAL ══ -->
+<div id="csvModal" onclick="if(event.target===this)closeCsvModal()">
+  <div class="print-modal-box">
+    <button onclick="closeCsvModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text-dim);font-size:17px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
+    <div class="print-modal-icon">📥</div>
+    <div class="print-modal-title">Export CSV</div>
+    <div class="print-modal-sub" id="csvModalSub">Ready to export the current sheet</div>
+    <div class="print-modal-info">
+      <div class="print-modal-info-row"><span class="pmi-label">File</span><span class="pmi-val" id="csvInfoFile">—</span></div>
+      <div class="print-modal-info-row"><span class="pmi-label">Sheet</span><span class="pmi-val" id="csvInfoSheet">—</span></div>
+      <div class="print-modal-info-row"><span class="pmi-label">Period</span><span class="pmi-val" id="csvInfoPeriod">—</span></div>
+      <div class="print-modal-info-row"><span class="pmi-label">Records</span><span class="pmi-val" id="csvInfoRecords">—</span></div>
+    </div>
+    <div class="print-modal-actions">
+      <button class="btn btn-success" onclick="doExportCSV()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export Now
+      </button>
+      <button class="btn btn-ghost" onclick="closeCsvModal()">Cancel</button>
     </div>
   </div>
 </div>
@@ -1705,7 +1734,19 @@ function printTable() {
 }
 
 function exportCSV() {
-  if (!state.headers.length) return alert('No data to export');
+  if (!state.headers.length) { toast('⚠️ No data to export', false); return; }
+  document.getElementById('csvInfoFile').textContent = state.selectedFile || '—';
+  document.getElementById('csvInfoSheet').textContent = state.selectedSheet || '—';
+  document.getElementById('csvInfoPeriod').textContent = (state.selectedMonth && state.selectedYear) ? `${state.selectedMonth} ${state.selectedYear}` : '—';
+  document.getElementById('csvInfoRecords').textContent = state.allRows.length ? `${state.allRows.length} rows` : '—';
+  document.getElementById('csvModalSub').textContent = `Exporting: ${state.selectedFile || ''} / ${state.selectedSheet || ''}`;
+  document.getElementById('csvModal').classList.add('open');
+}
+function closeCsvModal() {
+  document.getElementById('csvModal').classList.remove('open');
+}
+function doExportCSV() {
+  closeCsvModal();
   const visHeaders = state.headers.filter(h => h !== '__row__');
   let csv = '\uFEFF';
   csv += visHeaders.join(',') + '\n';
@@ -1728,7 +1769,7 @@ function exportCSV() {
 // ── KEYBOARD ──
 document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.key === 'f') { e.preventDefault(); document.getElementById('searchInput').focus(); }
-  if (e.key === 'Escape') { closeTxModal(); closeAbout(); cancelPwdModal(); closePrintModal(); closeLogout(); }
+  if (e.key === 'Escape') { closeTxModal(); closeAbout(); cancelPwdModal(); closePrintModal(); closeLogout(); closeCsvModal(); }
 });
 
 // ── ABOUT ──
