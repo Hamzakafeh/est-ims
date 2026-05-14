@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>EST-IMS® — Welcome</title>
+<title>EST-iMS®</title>
 <link rel="icon" type="image/x-icon" href="/static/low.ico">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Sora:wght@300;400;600;700;800&display=swap');
@@ -358,6 +358,17 @@
     from { opacity: 0; transform: translateY(16px); }
     to   { opacity: 1; transform: translateY(0); }
   }
+  .dev-name {
+  cursor: pointer;
+  color: inherit;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.dev-name:hover {
+  color: #3b82f6;
+  text-decoration: underline;
+}
 </style>
 </head>
 <body>
@@ -459,13 +470,13 @@
 
   <div class="version-tag">
 <span class="v-dot green"></span>
-     EST-iMs © 2026 
+     EST-iMS®  2026 
   </div>
   <div class="version-tag">
-<span class="v-dot red"></span>
-     Developed by Hamza K. Ghareb 
-  </div>
-
+  <span class="v-dot red"></span>
+<strong class="dev-name" onclick="openProfile()">
+  Hamza K. Ghareb
+</strong>
 </div>
 
 <script>
@@ -599,6 +610,85 @@ function toggleTheme() {
   window.addEventListener('mouseleave', () => { mouse.x = -999; mouse.y = -999; });
   init(); draw();
 })();
+</script>
+<div id="profileModal" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 60px;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.3s;
+  z-index: 9999;
+">
+
+  <div style="
+    display: flex;
+    gap: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px;
+    width: 420px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    transform: translateX(-20px);
+    transition: 0.3s;
+  " id="profileCard">
+
+    <img src="/static/me.jpg" style="
+      width: 110px;
+      height: 110px;
+      border-radius: 14px;
+      object-fit: cover;
+      border: 1px solid var(--border-light);
+    ">
+
+    <div>
+      <h2 style="margin-bottom:10px;">Hamza K. Ghareb</h2>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:6px;">
+        <b>Study:</b> Master of Business Administration
+      </p>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:6px;">
+        <b>Position:</b> Warehouse Keeper - IT
+      </p>
+
+      <button onclick="closeProfile()" style="
+        margin-top:10px;
+        padding:6px 12px;
+        border:none;
+        border-radius:8px;
+        background:var(--accent-blue);
+        color:white;
+        cursor:pointer;
+      ">
+        Close
+      </button>
+    </div>
+
+  </div>
+</div>
+<script>
+function openProfile() {
+  const modal = document.getElementById('profileModal');
+  const card = document.getElementById('profileCard');
+
+  modal.style.opacity = '1';
+  modal.style.pointerEvents = 'auto';
+  card.style.transform = 'translateX(0)';
+}
+
+function closeProfile() {
+  const modal = document.getElementById('profileModal');
+  const card = document.getElementById('profileCard');
+
+  modal.style.opacity = '0';
+  modal.style.pointerEvents = 'none';
+  card.style.transform = 'translateX(-20px)';
+}
 </script>
 </body>
 </html>
