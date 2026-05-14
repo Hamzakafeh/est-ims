@@ -125,7 +125,7 @@ def zones_page():
                            zones=ZONES)
 
 @app.route('/api/zone_login', methods=['POST'])
-@zone_required
+@login_required
 def api_zone_login():
     data     = request.get_json(silent=True) or {}
     zone_id  = data.get('zone_id', '').strip()
