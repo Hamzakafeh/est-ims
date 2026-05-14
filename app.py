@@ -42,7 +42,7 @@ ZONES = [
     {'id': 'zone3', 'name': 'Zone 3', 'label': 'زون 3',   'icon': '🏭'},
     {'id': 'zone4', 'name': 'Zone 4', 'label': 'زون 4',   'icon': '🏭'},
     {'id': 'zone5', 'name': 'Zone 5', 'label': 'زون 5',   'icon': '🏭'},
-    {'id': 'admin', 'name': 'Admin',  'label': 'الإدارة', 'icon': '🏢'},
+    {'id': 'admin', 'name': 'Admin',  'label': 'Admin', 'icon': '🏢'},
     {'id': 'dev',   'name': 'Dev',    'label': 'Dev',      'icon': '💻'},
 ]
 
@@ -239,11 +239,10 @@ LOG_COL_ITEMTYPE = 7
 LOG_COL_CATEGORY = 8
 
 def get_years_root():
-    """Return the path to the 'years' folder that contains year subfolders."""
     script_dir = os.path.dirname(os.path.abspath(__file__))
     candidates = [
-        os.path.join(script_dir, 'years'),
-        os.path.join(os.path.dirname(script_dir), 'years'),
+        os.path.join(script_dir, 'zones'),
+        os.path.join(os.path.dirname(script_dir), 'zones'),
     ]
     for c in candidates:
         if os.path.isdir(c):
