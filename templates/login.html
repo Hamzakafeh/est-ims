@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>EST-iMs®</title>
+<title>EST-iMs® — Login</title>
 <link rel="icon" type="image/x-icon" href="/static/low.ico">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
@@ -425,7 +425,7 @@
 <!-- SIDE DOCK -->
 <div class="side-dock">
 
-  <div class="dock-item" onclick="window.location.href='/'">
+  <div class="dock-item" onclick="window.location.href='/welcome'">
     <div class="dock-icon">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     </div>
@@ -619,7 +619,7 @@ async function doLogin() {
       btnText.textContent = '✓ Success';
       spinner.style.display = 'none';
       loginBtn.classList.add('success');
-      setTimeout(() => { window.location.href = '/index'; }, 600);
+      setTimeout(() => { window.location.href = data.redirect || '/zones'; }, 600);
     } else {
       finishProgress(false);
       showError(data.message || '  Incorrect username or password    ');

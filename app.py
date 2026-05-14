@@ -34,6 +34,32 @@ USERS = {
     os.getenv("USER3"): os.getenv("PASS3"),
 }
 EDIT_PASSWORD = os.getenv("EDIT_PASSWORD")
+
+# ── Zone passwords ──────────────────────────────────────────────────
+ZONES = [
+    {'id': 'zone1', 'name': 'Zone 1', 'label': 'زون 1',   'icon': '🏭'},
+    {'id': 'zone2', 'name': 'Zone 2', 'label': 'زون 2',   'icon': '🏭'},
+    {'id': 'zone3', 'name': 'Zone 3', 'label': 'زون 3',   'icon': '🏭'},
+    {'id': 'zone4', 'name': 'Zone 4', 'label': 'زون 4',   'icon': '🏭'},
+    {'id': 'zone5', 'name': 'Zone 5', 'label': 'زون 5',   'icon': '🏭'},
+    {'id': 'admin', 'name': 'Admin',  'label': 'الإدارة', 'icon': '🏢'},
+    {'id': 'dev',   'name': 'Dev',    'label': 'Dev',      'icon': '💻'},
+]
+
+ZONE_PASSWORDS = {
+    'zone1': os.getenv("ZONE1_PASSWORD"),
+    'zone2': os.getenv("ZONE2_PASSWORD"),
+    'zone3': os.getenv("ZONE3_PASSWORD"),
+    'zone4': os.getenv("ZONE4_PASSWORD"),
+    'zone5': os.getenv("ZONE5_PASSWORD"),
+    'admin': os.getenv("ADMIN_PASSWORD"),
+    'dev':   os.getenv("DEV_PASSWORD"),
+}
+
+# Zones that can see all 5 zones and switch between them
+SUPER_ZONES = {'admin', 'dev'}
+# Zones that can use edit mode
+EDIT_ZONES  = {'dev'}
 # ───────────────────────────────────────────────────────────────────
 
 from flask import send_from_directory
@@ -52,14 +78,30 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated
 
+def zone_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not session.get('logged_in'):
+            if request.is_json or request.path.startswith('/api/'):
+                return jsonify({'error': 'Unauthorized'}), 401
+            return redirect(url_for('login_page'))
+        if not session.get('zone'):
+            return redirect(url_for('zones_page'))
+        return f(*args, **kwargs)
+    return decorated
+
 @app.route('/login', methods=['GET'])
 def login_page():
     if session.get('logged_in'):
-        return redirect(url_for('index'))
+        if session.get('zone'):
+            return redirect(url_for('index'))
+        return redirect(url_for('zones_page'))
     return render_template('login.html')
+
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
+
 @app.route('/login', methods=['POST'])
 def do_login():
     data = request.get_json(silent=True) or {}
@@ -67,13 +109,77 @@ def do_login():
     password = data.get('password', '').strip()
     if USERS.get(username) == password:
         session['logged_in'] = True
-        session['username'] = username
-        return jsonify({'success': True})
+        session['username']  = username
+        session.pop('zone', None)   # always pick zone after login
+        return jsonify({'success': True, 'redirect': '/zones'})
     return jsonify({'success': False, 'message': 'اسم المستخدم أو كلمة المرور غير صحيحة'}), 401
 
-@app.route('/api/verify_edit_password', methods=['POST'])
+# ── ZONES PAGE ──────────────────────────────────────────────────────
+@app.route('/zones')
 @login_required
+def zones_page():
+    if session.get('zone'):
+        return redirect(url_for('index'))
+    return render_template('zones.html',
+                           username=session.get('username', ''),
+                           zones=ZONES)
+
+@app.route('/api/zone_login', methods=['POST'])
+@zone_required
+def api_zone_login():
+    data     = request.get_json(silent=True) or {}
+    zone_id  = data.get('zone_id', '').strip()
+    password = data.get('password', '').strip()
+
+    zone = next((z for z in ZONES if z['id'] == zone_id), None)
+    if not zone:
+        return jsonify({'success': False, 'message': 'زون غير معروف'}), 400
+
+    expected = ZONE_PASSWORDS.get(zone_id)
+    if not expected or password != expected:
+        return jsonify({'success': False, 'message': 'كلمة السر غير صحيحة'}), 401
+
+    session['zone']        = zone_id
+    session['zone_name']   = zone['name']
+    session['zone_label']  = zone['label']
+    session['can_edit']    = zone_id in EDIT_ZONES
+    session['is_super']    = zone_id in SUPER_ZONES
+    return jsonify({'success': True})
+
+@app.route('/api/switch_zone', methods=['POST'])
+@zone_required
+def api_switch_zone():
+    """Super zones (admin/dev) can switch to any of the 5 warehouse zones."""
+    if not session.get('is_super'):
+        return jsonify({'success': False, 'message': 'غير مصرح'}), 403
+    data    = request.get_json(silent=True) or {}
+    zone_id = data.get('zone_id', '').strip()
+    if zone_id not in ('zone1','zone2','zone3','zone4','zone5'):
+        return jsonify({'success': False, 'message': 'زون غير صحيح'}), 400
+    zone = next((z for z in ZONES if z['id'] == zone_id), None)
+    session['active_view_zone']      = zone_id
+    session['active_view_zone_name'] = zone['name'] if zone else zone_id
+    return jsonify({'success': True})
+
+@app.route('/api/session_info')
+@zone_required
+def api_session_info():
+    return jsonify({
+        'username':         session.get('username', ''),
+        'zone':             session.get('zone', ''),
+        'zone_name':        session.get('zone_name', ''),
+        'zone_label':       session.get('zone_label', ''),
+        'can_edit':         session.get('can_edit', False),
+        'is_super':         session.get('is_super', False),
+        'active_view_zone': session.get('active_view_zone', session.get('zone', '')),
+        'zones':            [z for z in ZONES if z['id'] not in SUPER_ZONES],
+    })
+
+@app.route('/api/verify_edit_password', methods=['POST'])
+@zone_required
 def verify_edit_password():
+    if not session.get('can_edit'):
+        return jsonify({'success': False, 'message': 'غير مصرح لهذا الزون'}), 403
     data = request.get_json(silent=True) or {}
     password = data.get('password', '')
     if EDIT_PASSWORD and password == EDIT_PASSWORD:
@@ -84,6 +190,19 @@ def verify_edit_password():
 def logout():
     session.clear()
     return redirect(url_for('welcome'))
+
+@app.route('/logout_zone')
+@login_required
+def logout_zone():
+    """Go back to zone selection without full logout."""
+    session.pop('zone', None)
+    session.pop('zone_name', None)
+    session.pop('zone_label', None)
+    session.pop('can_edit', None)
+    session.pop('is_super', None)
+    session.pop('active_view_zone', None)
+    session.pop('active_view_zone_name', None)
+    return redirect(url_for('zones_page'))
 
 MONTH_ORDER = {
     'January': 1, 'February': 2, 'March': 3, 'April': 4,
@@ -428,26 +547,77 @@ def welcome():
     return render_template('welcome.html')
 
 @app.route('/index')
-@login_required
+@zone_required
 def index():
     structure = get_structure()
     available_years = get_available_years()
-    return render_template('index.html', structure=structure,
+    zone        = session.get('zone', '')
+    is_super    = session.get('is_super', False)
+    can_edit    = session.get('can_edit', False)
+    zone_label  = session.get('zone_label', '')
+    username    = session.get('username', '')
+    return render_template('index.html',
+                           structure=structure,
                            available_years=available_years,
-                           base_path=get_base_path() or 'Not found', month_ar=MONTH_AR)
+                           base_path=get_base_path() or 'Not found',
+                           month_ar=MONTH_AR,
+                           zone=zone,
+                           zone_label=zone_label,
+                           is_super=is_super,
+                           can_edit=can_edit,
+                           username=username)
 
 @app.route('/api/structure')
-@login_required
+@zone_required
 def api_structure():
-    return jsonify(get_structure())
+    zone     = session.get('zone', '')
+    is_super = session.get('is_super', False)
+    # Super zones can request a specific view zone
+    if is_super:
+        view_zone = request.args.get('zone') or session.get('active_view_zone', 'zone1')
+    else:
+        view_zone = zone
+    return jsonify(get_filtered_structure(view_zone))
 
 @app.route('/api/years')
-@login_required
+@zone_required
 def api_years():
     return jsonify({'years': get_available_years()})
 
+def get_filtered_structure(zone_id):
+    """Return structure filtered to only files belonging to zone_id folder."""
+    full = get_structure()
+    # Zone folder names: zone1->Zone 1, zone2->Zone 2 ... or 'Zone 1' folder
+    zone_num = zone_id.replace('zone', '')
+    folder_names = [
+        f'zone{zone_num}', f'Zone{zone_num}', f'zone {zone_num}', f'Zone {zone_num}',
+        f'ZONE{zone_num}', f'زون {zone_num}',
+    ]
+    result = {}
+    for yr, months in full.items():
+        result[yr] = {}
+        for month, files in months.items():
+            filtered = {
+                fname: fpath for fname, fpath in files.items()
+                if any(fn.lower() in fpath.lower() for fn in folder_names)
+                   or any(fn.lower() in fname.lower() for fn in folder_names)
+            }
+            # Fallback: if no zone folders found at all, return all (single-zone legacy setup)
+            if not filtered:
+                # Check if any path has a zone folder pattern at all
+                has_zones = any(
+                    any(f'zone{i}' in fp.lower() or f'zone {i}' in fp.lower()
+                        for i in range(1, 6))
+                    for fp in files.values()
+                )
+                if not has_zones:
+                    filtered = files
+            if filtered:
+                result[yr][month] = filtered
+    return result
+
 @app.route('/api/sheets')
-@login_required
+@zone_required
 def api_sheets():
     filepath = request.args.get('path')
     if not filepath or not os.path.exists(filepath):
@@ -460,7 +630,7 @@ def api_sheets():
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/data')
-@login_required
+@zone_required
 def api_data():
     filepath = request.args.get('path')
     sheet    = request.args.get('sheet','')
@@ -483,7 +653,7 @@ def api_data():
 #    qty       : positive number
 # ══════════════════════════════════════════════════════════════════
 @app.route('/api/transaction', methods=['POST'])
-@login_required
+@zone_required
 def api_transaction():
     data = request.get_json(silent=True) or {}
     filepath  = data.get('filepath', '')
@@ -579,7 +749,7 @@ def api_transaction():
 #    value    : new value (string; numbers auto-cast)
 # ══════════════════════════════════════════════════════════════════
 @app.route('/api/update_cell', methods=['POST'])
-@login_required
+@zone_required
 def api_update_cell():
     data      = request.get_json(silent=True) or {}
     filepath  = data.get('filepath', '')
@@ -649,7 +819,7 @@ def api_update_cell():
 #  Query params: path, sheet, color, before_row (optional)
 # ══════════════════════════════════════════════════════════════════
 @app.route('/api/color_balance')
-@login_required
+@zone_required
 def api_color_balance():
     filepath   = request.args.get('path', '')
     sheet      = request.args.get('sheet', '')
@@ -709,7 +879,7 @@ def api_color_balance():
 #  Body: filepath, sheet, row, balance (number)
 # ══════════════════════════════════════════════════════════════════
 @app.route('/api/set_opening_balance', methods=['POST'])
-@login_required
+@zone_required
 def api_set_opening_balance():
     data     = request.get_json(silent=True) or {}
     filepath = data.get('filepath', '')
@@ -766,7 +936,7 @@ def _col_letter_to_index(letter):
     return result
 
 @app.route('/api/options')
-@login_required
+@zone_required
 def api_options():
     """Read Data Validation lists from the Excel sheet for Color, Type, Size, Category."""
     filepath = request.args.get('path', '')
@@ -827,7 +997,7 @@ def api_options():
 
 
 @app.route('/api/clear_row', methods=['POST'])
-@login_required
+@zone_required
 def api_clear_row():
     """Clear all data cells in a given Excel row (does NOT delete the row itself)."""
     data     = request.get_json(silent=True) or {}
@@ -861,7 +1031,7 @@ def api_clear_row():
 
 
 @app.route('/api/add_row', methods=['POST'])
-@login_required
+@zone_required
 def api_add_row():
     data     = request.get_json(silent=True) or {}
     filepath = data.get('filepath', '')
