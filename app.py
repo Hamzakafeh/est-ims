@@ -249,65 +249,78 @@ def get_years_root():
             return c
     return None
 
-def get_base_path(year=None):
-    """Return the path to a specific year folder (default: first available year)."""
+def get_base_path(year=None, zone_id=None):
+    """Return path to a year folder inside a zone. zones/zone1/2026/"""
     root = get_years_root()
-    if root:
-        years = sorted([d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d)) and d.isdigit()])
-        if not years:
+    if not root:
+        return None
+    if zone_id:
+        zone_folder = os.path.join(root, zone_id)
+    else:
+        zone_folders = sorted([d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d)) and d.startswith('zone')])
+        if not zone_folders:
             return None
-        target = str(year) if year else years[0]
-        candidate = os.path.join(root, target)
-        if os.path.isdir(candidate):
-            return candidate
-    # Fallback: legacy single-year folders next to app.py
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    for folder in ['2026', '2027', '2028', '2029', '2030']:
-        c = os.path.join(script_dir, folder)
-        if os.path.isdir(c):
-            return c
-    return None
+        zone_folder = os.path.join(root, zone_folders[0])
+    if not os.path.isdir(zone_folder):
+        return None
+    years = sorted([d for d in os.listdir(zone_folder) if os.path.isdir(os.path.join(zone_folder, d)) and d.isdigit()])
+    if not years:
+        return None
+    target = str(year) if year else years[0]
+    candidate = os.path.join(zone_folder, target)
+    return candidate if os.path.isdir(candidate) else None
 
 def get_available_years():
-    """Return sorted list of available year strings."""
+    """Return sorted list of available year strings scanned across all zones."""
     root = get_years_root()
-    if root:
-        years = sorted([d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d)) and d.isdigit()])
-        if years:
-            return years
-    # Fallback: scan next to app.py
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    years = sorted([d for d in os.listdir(script_dir) if os.path.isdir(os.path.join(script_dir, d)) and d.isdigit()])
-    return years
+    if not root:
+        return []
+    years = set()
+    for zone_folder in os.listdir(root):
+        zone_path = os.path.join(root, zone_folder)
+        if not os.path.isdir(zone_path):
+            continue
+        for d in os.listdir(zone_path):
+            if os.path.isdir(os.path.join(zone_path, d)) and d.isdigit():
+                years.add(d)
+    return sorted(years)
 
-def get_structure(year=None):
-    """Return file structure for all years or a specific year."""
+def get_structure(year=None, zone_id=None):
+    """Return file structure scoped to a zone: {year: {month: {fname: fpath}}}
+    Disk layout: zones/zone1/2026/01-January/Other+.xlsm
+    """
+    root = get_years_root()
+    if not root:
+        return {}
     available_years = get_available_years()
     if not available_years:
         return {}
-
-    result = {}
     target_years = [str(year)] if year else available_years
-
+    if zone_id:
+        zone_folders = [zone_id]
+    else:
+        zone_folders = sorted([d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d)) and d.startswith('zone')])
+    result = {}
     for yr in target_years:
-        base = get_base_path(yr)
-        if not base or not os.path.isdir(base):
-            result[yr] = {}
-            continue
         result[yr] = {}
-        for month_folder in sorted(os.listdir(base), key=lambda m: MONTH_ORDER.get(m.split('-')[-1] if '-' in m else m, 99)):
-            month_path = os.path.join(base, month_folder)
-            if not os.path.isdir(month_path):
+        for zf in zone_folders:
+            year_path = os.path.join(root, zf, yr)
+            if not os.path.isdir(year_path):
                 continue
-            # Extract month name (handle "01-January" or "January")
-            month_name = month_folder.split('-')[-1] if '-' in month_folder else month_folder
-            files = {}
-            for fname in ['Other+', 'Sacks']:
-                fpath = os.path.join(month_path, f'{fname}.xlsm')
-                if os.path.exists(fpath):
-                    files[fname] = fpath
-            if files:
-                result[yr][month_name] = files
+            for month_folder in sorted(os.listdir(year_path), key=lambda m: MONTH_ORDER.get(m.split('-')[-1] if '-' in m else m, 99)):
+                month_path = os.path.join(year_path, month_folder)
+                if not os.path.isdir(month_path):
+                    continue
+                month_name = month_folder.split('-')[-1] if '-' in month_folder else month_folder
+                files = {}
+                for fname in ['Other+', 'Sacks']:
+                    fpath = os.path.join(month_path, f'{fname}.xlsm')
+                    if os.path.exists(fpath):
+                        files[fname] = fpath
+                if files:
+                    if month_name not in result[yr]:
+                        result[yr][month_name] = {}
+                    result[yr][month_name].update(files)
     return result
 
 def read_sheet_data(filepath, sheet_name):
@@ -584,36 +597,8 @@ def api_years():
     return jsonify({'years': get_available_years()})
 
 def get_filtered_structure(zone_id):
-    """Return structure filtered to only files belonging to zone_id folder."""
-    full = get_structure()
-    # Zone folder names: zone1->Zone 1, zone2->Zone 2 ... or 'Zone 1' folder
-    zone_num = zone_id.replace('zone', '')
-    folder_names = [
-        f'zone{zone_num}', f'Zone{zone_num}', f'zone {zone_num}', f'Zone {zone_num}',
-        f'ZONE{zone_num}', f'زون {zone_num}',
-    ]
-    result = {}
-    for yr, months in full.items():
-        result[yr] = {}
-        for month, files in months.items():
-            filtered = {
-                fname: fpath for fname, fpath in files.items()
-                if any(fn.lower() in fpath.lower() for fn in folder_names)
-                   or any(fn.lower() in fname.lower() for fn in folder_names)
-            }
-            # Fallback: if no zone folders found at all, return all (single-zone legacy setup)
-            if not filtered:
-                # Check if any path has a zone folder pattern at all
-                has_zones = any(
-                    any(f'zone{i}' in fp.lower() or f'zone {i}' in fp.lower()
-                        for i in range(1, 6))
-                    for fp in files.values()
-                )
-                if not has_zones:
-                    filtered = files
-            if filtered:
-                result[yr][month] = filtered
-    return result
+    """Return structure for a specific zone directly from disk."""
+    return get_structure(zone_id=zone_id)
 
 @app.route('/api/sheets')
 @zone_required
