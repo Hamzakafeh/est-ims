@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>EST-iMs® — Select Zone</title>
+<title>EST-iMs®</title>
 <link rel="icon" type="image/x-icon" href="/static/low.ico">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
@@ -56,7 +56,8 @@
     justify-content: center;
     transition: background 0.25s, color 0.25s;
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   /* ── BLOBS ── */
@@ -188,25 +189,48 @@
   .zone-card.super-card { opacity:0.82; }
   .zone-card.super-card:hover { opacity:1; }
 
-  /* ── PASSWORD PANEL ── */
-  .pw-panel {
-    width:100%;max-width:360px;
-    background:rgba(28,34,48,0.72);
-    backdrop-filter:blur(18px);
-    border:1px solid rgba(255,255,255,0.07);
-    border-radius:18px;
-    padding:28px 32px;
-    margin-top:6px;
-    position:relative;
+  /* ── PASSWORD MODAL OVERLAY ── */
+  .pw-overlay {
+    position:fixed;inset:0;z-index:1000;
     display:none;
-    animation:pwIn 0.3s cubic-bezier(.34,1.56,.64,1);
+    align-items:center;justify-content:center;
+    background:rgba(0,0,0,0.45);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    animation:overlayIn 0.2s ease;
   }
-  html.light .pw-panel { background:rgba(255,255,255,0.78);border-color:rgba(0,0,0,0.08); }
-  @keyframes pwIn { from{opacity:0;transform:scale(0.94) translateY(10px);} to{opacity:1;transform:scale(1) translateY(0);} }
+  .pw-overlay.open { display:flex; }
+  @keyframes overlayIn { from{opacity:0;} to{opacity:1;} }
+
+  .pw-panel {
+    width:calc(100% - 40px);max-width:380px;
+    background:rgba(22,27,34,0.88);
+    backdrop-filter:blur(28px);
+    -webkit-backdrop-filter:blur(28px);
+    border:1px solid rgba(255,255,255,0.10);
+    border-radius:20px;
+    padding:32px 36px;
+    position:relative;
+    animation:pwIn 0.32s cubic-bezier(.34,1.56,.64,1);
+    box-shadow:0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(59,130,246,0.08);
+  }
+  html.light .pw-panel { background:rgba(255,255,255,0.88);border-color:rgba(0,0,0,0.10);box-shadow:0 32px 80px rgba(0,0,0,0.15); }
+  @keyframes pwIn { from{opacity:0;transform:scale(0.90) translateY(16px);} to{opacity:1;transform:scale(1) translateY(0);} }
   .pw-panel::before {
     content:'';position:absolute;top:0;left:20%;right:20%;height:1px;
     background:linear-gradient(90deg,transparent,rgba(59,130,246,0.6),rgba(6,182,212,0.5),transparent);
+    border-radius:2px;
   }
+  /* Close button */
+  .pw-close-btn {
+    position:absolute;top:14px;right:14px;
+    width:28px;height:28px;border-radius:8px;
+    background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;color:var(--text-muted);transition:all 0.15s;
+  }
+  html.light .pw-close-btn { background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.08); }
+  .pw-close-btn:hover { background:rgba(239,68,68,0.15);color:#ef4444;border-color:rgba(239,68,68,0.3); }
 
   .pw-panel-title { font-size:14px;font-weight:700;color:var(--text-main);margin-bottom:4px;text-align:center; }
   .pw-panel-sub   { font-size:11px;color:var(--text-muted);margin-bottom:20px;text-align:center; }
@@ -339,8 +363,14 @@
     </div>
   </div>
 
-  <!-- Password Panel -->
+  <!-- Password Modal -->
+</div><!-- close zones-wrapper here -->
+
+<div class="pw-overlay" id="pwOverlay">
   <div class="pw-panel" id="pwPanel">
+    <div class="pw-close-btn" onclick="closeModal()" title="Close">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </div>
     <div class="pw-panel-title" id="pwTitle">Enter Zone Password</div>
     <div class="pw-panel-sub" id="pwSub">Enter the password for this zone</div>
     <div class="pw-error" id="pwError">
@@ -357,9 +387,8 @@
       <div class="btn-spinner" id="btnSpinner"></div>
       <span id="btnText">Enter Zone</span>
     </button>
-  </div>
-
-</div>
+  </div><!-- end pw-panel -->
+</div><!-- end pw-overlay -->
 
 <script>
 // ── THEME ──
@@ -406,6 +435,7 @@ function selectZone(zoneId) {
   };
 
   const panel = document.getElementById('pwPanel');
+  const overlay = document.getElementById('pwOverlay');
   document.getElementById('pwTitle').textContent = names[zoneId] || zoneId;
   document.getElementById('pwSub').textContent = `Enter password for ${names[zoneId] || zoneId} — ${labels[zoneId] || ''}`;
   document.getElementById('pwInput').value = '';
@@ -414,8 +444,7 @@ function selectZone(zoneId) {
   document.getElementById('enterBtn').disabled = false;
   document.getElementById('enterBtn').classList.remove('success');
 
-  panel.style.display = 'block';
-  setTimeout(() => panel.style.animation = 'pwIn 0.3s cubic-bezier(.34,1.56,.64,1)', 10);
+  overlay.classList.add('open');
   setTimeout(() => document.getElementById('pwInput').focus(), 120);
 }
 
@@ -465,6 +494,12 @@ async function submitZone() {
   }
 }
 
+function closeModal() {
+  selectedZone = null;
+  document.getElementById('pwOverlay').classList.remove('open');
+  document.querySelectorAll('.zone-card').forEach(c => c.classList.remove('active'));
+}
+
 function shakePanel() {
   const panel = document.getElementById('pwPanel');
   panel.classList.remove('shake');
@@ -488,11 +523,12 @@ document.getElementById('pwToggle').addEventListener('click', function() {
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && selectedZone) submitZone();
-  if (e.key === 'Escape') {
-    selectedZone = null;
-    document.getElementById('pwPanel').style.display = 'none';
-    document.querySelectorAll('.zone-card').forEach(c => c.classList.remove('active'));
-  }
+  if (e.key === 'Escape') closeModal();
+});
+
+// Click on overlay backdrop to close
+document.getElementById('pwOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
 });
 
 // ── PARTICLES ──
