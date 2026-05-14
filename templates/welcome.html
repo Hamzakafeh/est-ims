@@ -260,11 +260,22 @@
     opacity: 0; animation: fadeUp 0.5s ease 0.95s both;
   }
   .v-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--accent-green);
-    box-shadow: 0 0 7px var(--accent-green);
-    animation: vPulse 2.2s ease-in-out infinite;
-  }
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  animation: vPulse 2.2s ease-in-out infinite;
+}
+
+.v-dot.green {
+  background: var(--accent-green);
+  box-shadow: 0 0 7px var(--accent-green);
+}
+
+.v-dot.red {
+  background: #ef4444;
+  box-shadow: 0 0 7px #ef4444;
+}
   @keyframes vPulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(0.65);} }
 
   /* ── SIDE DOCK ── */
@@ -447,8 +458,12 @@
   </a>
 
   <div class="version-tag">
-    <span class="v-dot"></span>
-    © EST-iMs 2026
+<span class="v-dot green"></span>
+     EST-iMs © 2026 
+  </div>
+  <div class="version-tag">
+<span class="v-dot red"></span>
+     Developed by Hamza K. Ghareb 
   </div>
 
 </div>
