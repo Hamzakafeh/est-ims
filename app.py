@@ -150,6 +150,10 @@ def login_page():
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
+    
+    @app.route('/help')
+def help_page():
+    return render_template('help.html')
 
 @app.route('/login', methods=['POST'])
 def do_login():
