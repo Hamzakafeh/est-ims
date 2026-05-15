@@ -105,35 +105,63 @@
   }
   @keyframes wrapIn { from{opacity:0;transform:translateY(20px)scale(0.97);} to{opacity:1;transform:translateY(0)scale(1);} }
 
+  /* ── TOP-LEFT USER CHIP ── */
+  .user-corner {
+    position: fixed;
+    top: 18px;
+    left: 62px; /* clear the side dock */
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(28,34,48,0.75);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 7px 14px 7px 10px;
+    animation: fadeDown 0.5s cubic-bezier(.34,1.56,.64,1) 0.1s both;
+  }
+  html.light .user-corner {
+    background: rgba(255,255,255,0.82);
+  }
+  @keyframes fadeDown {
+    from { opacity:0; transform:translateY(-10px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .user-corner-avatar {
+    width: 26px; height: 26px; border-radius: 8px;
+    background: linear-gradient(135deg, rgba(59,130,246,0.3), rgba(6,182,212,0.2));
+    border: 1px solid rgba(59,130,246,0.35);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent-blue);
+    flex-shrink: 0;
+  }
+  .user-corner-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 500;
+    color: var(--text-main);
+    letter-spacing: 0.3px;
+  }
+  .user-corner-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent-green);
+    box-shadow: 0 0 6px var(--accent-green);
+    animation: cornerDotPulse 2.2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes cornerDotPulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(0.65);} }
+
   /* ── HEADER ── */
   .zones-header {
     text-align:center;margin-bottom:36px;
   }
-  .zones-logo {
-    width:60px;height:60px;border-radius:16px;margin:0 auto 18px;
-    display:flex;align-items:center;justify-content:center;overflow:hidden;
-    box-shadow:0 4px 20px rgba(59,130,246,0.3);
-  }
-  .zones-logo img { width:100%;height:100%;object-fit:contain;border-radius:16px; }
   .zones-title {
     font-size:22px;font-weight:700;color:var(--text-main);margin-bottom:4px;
-  }
-  .zones-welcome {
-    font-family:'JetBrains Mono',monospace;
-    font-size:12px;color:var(--accent-cyan);
-    letter-spacing:1px;margin-bottom:6px;
   }
   .zones-sub {
     font-size:12px;color:var(--text-muted);
   }
-  .username-badge {
-    display:inline-flex;align-items:center;gap:6px;
-    background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.25);
-    border-radius:20px;padding:4px 14px;
-    font-size:12px;font-weight:600;color:var(--accent-blue);
-    margin-bottom:6px;
-  }
-  html.light .username-badge { background:rgba(37,99,235,0.08);border-color:rgba(37,99,235,0.2); }
 
   /* ── ZONE GRID ── */
   .zone-grid {
@@ -207,10 +235,19 @@
     width:100%;max-width:900px;
     display:flex;align-items:center;gap:14px;
     margin:4px 0 16px;
-    font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;
+    font-size:11px;font-family:'JetBrains Mono',monospace;
     letter-spacing:1px;
   }
   .zones-divider::before,.zones-divider::after { content:'';flex:1;height:1px;background:var(--border); }
+  .zones-divider-text {
+    color: var(--accent-blue);
+    animation: mgmtPulse 2.2s ease-in-out infinite;
+    white-space: nowrap;
+  }
+  @keyframes mgmtPulse {
+    0%,100% { opacity:1; text-shadow: 0 0 0px transparent; }
+    50%      { opacity:0.45; text-shadow: 0 0 12px rgba(59,130,246,0.8); }
+  }
 
   /* Super zones (admin/dev) row */
   .zone-grid-super {
@@ -408,18 +445,19 @@
   </div>
 </div>
 
+<!-- USER CORNER -->
+<div class="user-corner">
+  <div class="user-corner-avatar">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  </div>
+  <span class="user-corner-name">{{ username }}</span>
+  <span class="user-corner-dot"></span>
+</div>
+
 <!-- MAIN -->
 <div class="zones-wrapper">
 
   <div class="zones-header">
-    <div class="zones-logo">
-      <img src="/static/low.ico" onerror="this.style.display='none'">
-    </div>
-    <div class="zones-welcome" id="welcomeGreet">Good morning ☀️</div>
-    <div class="username-badge">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      {{ username }}
-    </div>
     <div class="zones-title">Select Your Zone</div>
     <div class="zones-sub">Choose the warehouse zone you want to access</div>
   </div>
@@ -448,7 +486,7 @@
     </div>
   </div>
 
-  <div class="zones-divider">Management</div>
+  <div class="zones-divider"><span class="zones-divider-text">Management</span></div>
 
   <!-- Admin / Dev -->
   <div class="zone-grid-super">
@@ -512,16 +550,6 @@ function toggleTheme() {
   localStorage.setItem('est-theme', isLight ? 'light' : 'dark');
   updateDockTheme();
 }
-
-// ── GREETING ──
-(function() {
-  const h = new Date().getHours();
-  const el = document.getElementById('welcomeGreet');
-  if (h >= 5 && h < 12)       el.textContent = 'Good morning ☀️';
-  else if (h >= 12 && h < 17) el.textContent = 'Good afternoon 🌤️';
-  else if (h >= 17 && h < 21) el.textContent = 'Good evening 🌆';
-  else                          el.textContent = 'Good night 🌙';
-})();
 
 // ── ZONE SELECTION ──
 let selectedZone = null;

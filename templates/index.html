@@ -68,12 +68,29 @@
     overflow: hidden;
   }
 
+  /* ── GLOBAL BACKGROUND LAYERS (blobs + grid) ── */
+  .bg-blob { position:fixed; border-radius:50%; filter:blur(90px); opacity:0.06; pointer-events:none; z-index:0; }
+  html.light .bg-blob { opacity:0.08; }
+  .bg-blob-1 { width:700px;height:700px;background:radial-gradient(circle,#3b82f6,transparent 70%);top:-200px;left:-200px;animation:gbd1 20s ease-in-out infinite; }
+  .bg-blob-2 { width:600px;height:600px;background:radial-gradient(circle,#06b6d4,transparent 70%);bottom:-160px;right:-160px;animation:gbd2 24s ease-in-out infinite; }
+  .bg-blob-3 { width:450px;height:450px;background:radial-gradient(circle,#6366f1,transparent 70%);top:38%;left:52%;animation:gbd3 18s ease-in-out infinite; }
+  @keyframes gbd1 { 0%,100%{transform:translate(0,0)scale(1);} 50%{transform:translate(70px,50px)scale(1.1);} }
+  @keyframes gbd2 { 0%,100%{transform:translate(0,0)scale(1);} 50%{transform:translate(-60px,-40px)scale(1.08);} }
+  @keyframes gbd3 { 0%,100%{transform:translate(0,0)scale(1);} 50%{transform:translate(-50px,60px)scale(1.12);} }
+  .bg-grid {
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image: linear-gradient(rgba(59,130,246,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,0.03) 1px,transparent 1px);
+    background-size:52px 52px;
+    mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%);
+  }
+  html.light .bg-grid { background-image: linear-gradient(rgba(37,99,235,0.045) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,0.045) 1px,transparent 1px); }
+
   /* ── TOP BAR ── */
   .topbar {
-    background: rgba(13,17,23,0.75);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border-bottom: 1px solid rgba(59,130,246,0.12);
+    background: rgba(13,17,23,0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(59,130,246,0.15);
     padding: 0 20px;
     height: 60px;
     display: flex;
@@ -125,10 +142,6 @@
   @keyframes tb3 { 0%,100%{transform:translate(0,0);} 50%{transform:translate(-15px,12px);} }
   /* make topbar children above blobs */
   .topbar > *:not(.topbar-blob) { position: relative; z-index: 1; }
-  html.light .topbar {
-    background: rgba(255,255,255,0.82);
-    border-bottom: 1px solid rgba(37,99,235,0.12);
-  }
   html.light .topbar-blob-1 { background: radial-gradient(circle, rgba(37,99,235,0.1), transparent 70%); }
   html.light .topbar-blob-2 { background: radial-gradient(circle, rgba(8,145,178,0.08), transparent 70%); }
   html.light .topbar-blob-3 { background: radial-gradient(circle, rgba(99,102,241,0.07), transparent 70%); }
@@ -183,8 +196,10 @@
   }
   .sidebar {
     width: 220px;
-    background: var(--bg-main);
-    border-right: 1px solid var(--border);
+    background: rgba(13,17,23,0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(59,130,246,0.15);
     display: flex; flex-direction: column;
     flex-shrink: 0; overflow-y: auto;
     transition: transform 0.28s cubic-bezier(.4,0,.2,1), width 0.28s cubic-bezier(.4,0,.2,1);
@@ -203,8 +218,10 @@
     z-index: 50;
     width: 14px;
     height: 52px;
-    background: var(--bg-main);
-    border: 1px solid var(--border);
+    background: rgba(13,17,23,0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(59,130,246,0.15);
     border-left: none;
     border-radius: 0 8px 8px 0;
     cursor: pointer;
@@ -563,9 +580,19 @@
   html.light .brand-text h1 { color: #1e293b; font-weight: 700; }
   html.light .brand-text p  { color: #64748b; }
   html.light .clock { color: #374151; }
-  html.light .topbar { box-shadow: 0 1px 8px rgba(0,0,0,0.06); }
-  html.light .sidebar { background: #f8fafc; border-right-color: #e2e8f0; }
-  html.light .sidebar-toggle-btn { background: #f8fafc; border-color: #e2e8f0; }
+  html.light .topbar {
+    background: rgba(255,255,255,0.55);
+    border-bottom: 1px solid rgba(37,99,235,0.15);
+    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+  }
+  html.light .sidebar {
+    background: rgba(248,250,252,0.55);
+    border-right-color: rgba(37,99,235,0.15);
+  }
+  html.light .sidebar-toggle-btn {
+    background: rgba(248,250,252,0.55);
+    border-color: rgba(37,99,235,0.15);
+  }
   html.light .statusbar { background: #fff; border-top-color: #e2e8f0; }
   html.light .content-header { background: #f1f5f9; border-bottom-color: #e2e8f0; }
   html.light .toolbar { background: #f8fafc; border-bottom-color: #e2e8f0; }
@@ -671,6 +698,38 @@
   }
   .name-pulse { animation: namePulse 2.4s ease-in-out infinite; }
 
+  /* ── CSV EXPORT MODAL ── */
+  #csvModal {
+    display: none; position: fixed; inset: 0; z-index: 9999;
+    background: rgba(0,0,0,0.65); backdrop-filter: blur(5px);
+    align-items: center; justify-content: center;
+  }
+  #csvModal.open { display: flex; }
+  .csv-modal-box {
+    background: var(--bg-panel); border: 1px solid var(--border-light);
+    border-radius: 18px; padding: 38px 44px; min-width: 340px; max-width: 480px;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.7); text-align: center; position: relative;
+    animation: modalIn 0.22s cubic-bezier(.34,1.56,.64,1);
+  }
+  .csv-modal-icon {
+    width: 56px; height: 56px; border-radius: 14px;
+    background: linear-gradient(135deg, rgba(16,185,129,0.18), rgba(59,130,246,0.18));
+    border: 1px solid rgba(16,185,129,0.3);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px; font-size: 24px;
+  }
+  .csv-modal-title { font-size: 17px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+  .csv-modal-sub   { font-size: 12px; color: var(--text-muted); margin-bottom: 22px; line-height: 1.5; }
+  .csv-modal-info  {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 18px; margin-bottom: 24px; text-align: left;
+  }
+  .csv-modal-info-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 4px 0; }
+  .csv-modal-info-row .cmi-label { color: var(--text-muted); }
+  .csv-modal-info-row .cmi-val   { color: var(--text-main); font-weight: 500; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .csv-modal-actions { display: flex; gap: 10px; justify-content: center; }
+  .csv-modal-actions .btn { min-width: 120px; justify-content: center; padding: 10px 20px; font-size: 13px; }
+
   /* ── BETA POPUP ── */
   .beta-overlay {
     position: fixed;
@@ -690,19 +749,23 @@
   }
 
   .beta-card {
-    background: var(--bg-panel);
-    border: 1px solid var(--border-light);
+    background: rgba(13,17,23,0.45);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    border: 1px solid rgba(59,130,246,0.22);
     border-radius: 20px;
     padding: 44px 52px;
     text-align: center;
     max-width: 380px;
     width: 90%;
     position: relative;
-    box-shadow: 0 24px 64px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.07);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07);
     animation: cardPop 0.4s cubic-bezier(.34,1.56,.64,1) both;
   }
   html.light .beta-card {
-    box-shadow: 0 24px 64px rgba(0,0,0,0.12);
+    background: rgba(248,250,252,0.45);
+    border-color: rgba(37,99,235,0.18);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.7);
   }
   @keyframes cardPop {
     from { opacity:0; transform: scale(0.85) translateY(20px); }
@@ -791,15 +854,21 @@
 </head>
 <body>
 
+<!-- BACKGROUND LAYERS -->
+<div class="bg-blob bg-blob-1"></div>
+<div class="bg-blob bg-blob-2"></div>
+<div class="bg-blob bg-blob-3"></div>
+<div class="bg-grid"></div>
+
 <!-- BETA POPUP -->
 <div class="beta-overlay" id="betaOverlay">
   <div class="beta-card">
     <div class="beta-badge">
       <span class="beta-dot"></span>
-     EST iMs
+Developed By Hamza K. Ghareb
     </div>
-    <div class="beta-title">This version is under testing. </div>
-    <div class="beta-credit">Created By Hamza K. Ghareb</div>
+    <div class="beta-title">This Version Is Under Testing. </div>
+    <div class="beta-credit">EST  Inventory Management System</div>
     <button class="beta-btn" onclick="closeBetaOverlay()">
      Okay!
     </button>
@@ -899,6 +968,30 @@
         Print Now
       </button>
       <button class="btn btn-ghost" onclick="closePrintModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CSV EXPORT MODAL ══ -->
+<div id="csvModal" onclick="if(event.target===this)closeCsvModal()">
+  <div class="csv-modal-box">
+    <button onclick="closeCsvModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text-dim);font-size:17px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
+    <div class="csv-modal-icon">📊</div>
+    <div class="csv-modal-title">Export CSV</div>
+    <div class="csv-modal-sub" id="csvModalSub">Export the current sheet as a CSV file</div>
+    <div class="csv-modal-info">
+      <div class="csv-modal-info-row"><span class="cmi-label">File</span><span class="cmi-val" id="csvInfoFile">—</span></div>
+      <div class="csv-modal-info-row"><span class="cmi-label">Sheet</span><span class="cmi-val" id="csvInfoSheet">—</span></div>
+      <div class="csv-modal-info-row"><span class="cmi-label">Period</span><span class="cmi-val" id="csvInfoPeriod">—</span></div>
+      <div class="csv-modal-info-row"><span class="cmi-label">Records</span><span class="cmi-val" id="csvInfoRecords">—</span></div>
+      <div class="csv-modal-info-row"><span class="cmi-label">Filename</span><span class="cmi-val" id="csvInfoFilename" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</span></div>
+    </div>
+    <div class="csv-modal-actions">
+      <button class="btn btn-success" onclick="doExportCSV()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download CSV
+      </button>
+      <button class="btn btn-ghost" onclick="closeCsvModal()">Cancel</button>
     </div>
   </div>
 </div>
@@ -1858,7 +1951,34 @@ function printTable() {
 }
 
 function exportCSV() {
-  if (!state.headers.length) return alert('No data to export');
+  if (!state.headers.length) {
+    openCsvModal();
+    return;
+  }
+  openCsvModal();
+}
+
+function openCsvModal() {
+  const filename = state.headers.length
+    ? `${state.selectedFile || 'data'}_${state.selectedSheet || 'sheet'}_${state.selectedMonth || ''}_${state.selectedYear || ''}.csv`
+    : '—';
+  document.getElementById('csvInfoFile').textContent    = state.selectedFile  || '—';
+  document.getElementById('csvInfoSheet').textContent   = state.selectedSheet || '—';
+  document.getElementById('csvInfoPeriod').textContent  = (state.selectedMonth && state.selectedYear) ? `${state.selectedMonth} ${state.selectedYear}` : '—';
+  document.getElementById('csvInfoRecords').textContent = state.allRows.length ? `${state.allRows.length} rows` : '—';
+  document.getElementById('csvInfoFilename').textContent = filename;
+  document.getElementById('csvModalSub').textContent = state.headers.length
+    ? `Export: ${state.selectedFile || ''} / ${state.selectedSheet || ''}`
+    : 'No data loaded — please select a file and sheet first.';
+  document.getElementById('csvModal').classList.add('open');
+}
+
+function closeCsvModal() {
+  document.getElementById('csvModal').classList.remove('open');
+}
+
+function doExportCSV() {
+  if (!state.headers.length) { closeCsvModal(); return; }
   const visHeaders = state.headers.filter(h => h !== '__row__');
   let csv = '\uFEFF';
   csv += visHeaders.join(',') + '\n';
@@ -1874,14 +1994,17 @@ function exportCSV() {
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
-  a.href = url; a.download = `${state.selectedFile}_${state.selectedSheet}_${state.selectedMonth}_${state.selectedYear}.csv`;
-  a.click(); URL.revokeObjectURL(url);
+  a.href = url;
+  a.download = `${state.selectedFile}_${state.selectedSheet}_${state.selectedMonth}_${state.selectedYear}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  closeCsvModal();
 }
 
 // ── KEYBOARD ──
 document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.key === 'f') { e.preventDefault(); document.getElementById('searchInput').focus(); }
-  if (e.key === 'Escape') { closeTxModal(); closeAbout(); cancelPwdModal(); closePrintModal(); closeLogout(); }
+  if (e.key === 'Escape') { closeTxModal(); closeAbout(); cancelPwdModal(); closePrintModal(); closeCsvModal(); closeLogout(); }
 });
 
 // ── ABOUT ──
