@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>EST-IMS®</title>
+<title>EST-iMs®</title>
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
@@ -876,7 +876,7 @@
     <div style="height:1px;background:var(--border);margin-bottom:22px;"></div>
     <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;letter-spacing:0.3px;">Created by</div>
     <div style="font-size:22px;font-weight:700;color:var(--text-main);letter-spacing:0.5px;margin-bottom:22px;" class="name-pulse">Hamza K. Ghareb</div>
-    <div style="display:inline-block;background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:5px 18px;font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;">v3.0 — 2026</div>
+    <div style="display:inline-block;background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:5px 18px;font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;"> V3.1.1.0 — 2026</div>
   </div>
 </div>
 
@@ -1000,7 +1000,7 @@
         </div>
       </div>
       <div class="content-meta" id="contentMeta">
-        <span class="badge badge-blue"  id="recordCount">0 records</span>
+        <span class="badge badge-blue"  id="recordCount">0 Records</span>
         <span class="badge badge-edit"  id="editBadge" style="display:none">✎ Edit Mode</span>
         {% if can_edit %}
         <label class="edit-toggle" id="editToggleWrap" style="display:none">
@@ -1038,8 +1038,8 @@
       </div>
       <div class="statusbar-right">
         <span id="pathInfo" style="direction:ltr">—</span>
-        <span>Inventory Management System v3.0</span>
-        <span style="color:var(--text-dim);font-size:11px;border-left:1px solid var(--border);padding-left:14px;margin-left:2px;">© EST-iMs 2026</span>
+        <span>Inventory Management System V3.1.1.0</span>
+        <span style="color:var(--text-dim);font-size:11px;border-left:1px solid var(--border);padding-left:14px;margin-left:2px;">EST-IMS®</span>
       </div>
     </div>
   </div>
@@ -1372,7 +1372,7 @@ async function selectSheet(sheet) {
 
   renderTable(state.headers, state.allRows);
   updateHeader(sheet, `${state.selectedYear} → ${state.selectedMonth} → ${state.selectedFile} → ${sheet}`);
-  document.getElementById('recordCount').textContent = `${data.count} records`;
+  document.getElementById('recordCount').textContent = `${data.count} Records`;
   setStatus(`Loaded ${state.selectedFile} / ${sheet}`);
   document.getElementById('pathInfo').textContent = `${state.selectedYear} / ${state.selectedMonth} / ${state.selectedFile}.xlsm / ${sheet}`;
   document.getElementById('searchInput').value = '';
