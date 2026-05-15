@@ -201,7 +201,7 @@ def api_zone_login():
     expected = ZONE_PASSWORDS.get(zone_id)
     if not expected or password != expected:
         _record_failed_attempt(ip)
-        return jsonify({'success': False, 'message': 'كلمة السر غير صحيحة'}), 401
+        return jsonify({'success': False, 'message': 'Incorrect password'}), 401
 
     _clear_attempts(ip)
     session['zone']        = zone_id
