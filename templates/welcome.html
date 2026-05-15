@@ -108,7 +108,7 @@
     position: relative; z-index: 10;
     display: flex; flex-direction: column;
     align-items: center; text-align: center;
-    padding: 16px 24px; width: 100%;
+    padding: 40px 24px; width: 100%;
   }
 
   /* ── LOGO ── */
@@ -117,7 +117,7 @@
     background: linear-gradient(135deg, rgba(59,130,246,0.18), rgba(6,182,212,0.12));
     border: 1px solid rgba(59,130,246,0.25);
     display: flex; align-items: center; justify-content: center;
-    margin-bottom: 16px;
+    margin-bottom: 32px;
     box-shadow: 0 8px 36px rgba(59,130,246,0.22), inset 0 1px 0 rgba(255,255,255,0.08);
     animation: logoFloat 4s ease-in-out infinite, fadeUp 0.6s ease 0.1s both;
   }
@@ -136,7 +136,7 @@
     font-size: 11px; font-weight: 500;
     color: var(--accent-cyan);
     letter-spacing: 3.5px; text-transform: uppercase;
-    margin-bottom: 10px;
+    margin-bottom: 18px;
     opacity: 0; animation: fadeUp 0.5s ease 0.25s both;
   }
   .welcome-chip::before, .welcome-chip::after {
@@ -150,7 +150,7 @@
     font-family: 'Sora', sans-serif;
     font-size: 14px; font-weight: 400;
     color: var(--text-muted); letter-spacing: 1px;
-    margin-bottom: 8px;
+    margin-bottom: 14px;
     opacity: 0; animation: fadeUp 0.5s ease 0.35s both;
   }
 
@@ -160,7 +160,7 @@
     font-size: clamp(64px, 10vw, 112px);
     font-weight: 400; line-height: 1;
     letter-spacing: 10px;
-    margin-bottom: 6px;
+    margin-bottom: 14px;
     background: linear-gradient(135deg, #60a5fa 0%, #06b6d4 35%, #818cf8 70%, #60a5fa 100%);
     background-size: 250% 250%;
     -webkit-background-clip: text;
@@ -201,7 +201,7 @@
     font-size: 17px; font-weight: 500;
     color: var(--text-muted);
     letter-spacing: 4px; text-transform: uppercase;
-    margin-bottom: 10px;
+    margin-bottom: 18px;
     opacity: 0; animation: fadeUp 0.5s ease 0.55s both;
   }
 
@@ -209,7 +209,7 @@
   .tagline {
     font-size: 13px; line-height: 1.7;
     color: var(--text-dim); max-width: 420px;
-    margin-bottom: 20px;
+    margin-bottom: 46px;
     opacity: 0; animation: fadeUp 0.5s ease 0.65s both;
   }
 
@@ -217,7 +217,7 @@
   .divider-line {
     width: 300px; max-width: 80vw; height: 1px;
     background: linear-gradient(90deg, transparent, var(--border-light), transparent);
-    margin-bottom: 20px;
+    margin-bottom: 42px;
     opacity: 0; animation: fadeUp 0.5s ease 0.7s both;
   }
 
@@ -255,7 +255,7 @@
   .version-tag {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px; color: var(--text-dim);
-    margin-top: 16px;
+    margin-top: 32px;
     display: flex; align-items: center; gap: 8px;
     opacity: 0; animation: fadeUp 0.5s ease 0.95s both;
   }
@@ -748,90 +748,6 @@
   .ai-send-btn:hover { background: #2563eb; transform: scale(1.08); }
   .ai-send-btn:active { transform: scale(0.95); }
   .ai-send-btn:disabled { background: var(--border); cursor: not-allowed; transform: none; box-shadow: none; }
-
-  /* ── ONLINE BADGE ── */
-  .online-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    background: rgba(16, 185, 129, 0.12);
-    border: 1px solid rgba(16, 185, 129, 0.25);
-    border-radius: 20px;
-    padding: 6px 14px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    font-weight: 500;
-    color: #10b981;
-    margin-bottom: 16px;
-    opacity: 0;
-    animation: fadeUp 0.5s ease 0.75s both;
-    transition: opacity 0.4s;
-  }
-  html.light .online-badge {
-    background: rgba(5, 150, 105, 0.09);
-    border-color: rgba(5, 150, 105, 0.22);
-    color: #059669;
-  }
-  .online-badge .ob-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: #10b981;
-    position: relative;
-    flex-shrink: 0;
-  }
-  html.light .online-badge .ob-dot { background: #059669; }
-  .online-badge .ob-dot::after {
-    content: '';
-    position: absolute;
-    inset: -4px;
-    border-radius: 50%;
-    border: 1.5px solid #10b981;
-    opacity: 0;
-    animation: obPulse 2s ease-out infinite;
-  }
-  html.light .online-badge .ob-dot::after { border-color: #059669; }
-  @keyframes obPulse {
-    0%   { opacity: 0.65; transform: scale(1); }
-    100% { opacity: 0;    transform: scale(2.2); }
-  }
-  .online-badge.ob-loading { opacity: 0.4; }
-
-  /* ── BUTTONS ROW ── */
-  .btn-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    opacity: 0;
-    animation: fadeUp 0.6s ease 0.8s both;
-  }
-
-  /* ── FOR MORE BUTTON ── */
-  .more-btn {
-    position: relative;
-    display: inline-flex; align-items: center; gap: 10px;
-    padding: 16px 36px;
-    background: transparent;
-    color: var(--text-muted);
-    border: 1px solid var(--border-light);
-    border-radius: 16px;
-    font-family: 'Sora', sans-serif;
-    font-size: 16px; font-weight: 600; letter-spacing: 0.5px;
-    cursor: pointer; text-decoration: none;
-    transition: transform 0.22s cubic-bezier(.34,1.56,.64,1),
-                box-shadow 0.22s, border-color 0.18s, color 0.18s, background 0.18s;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-  .more-btn:hover {
-    transform: translateY(-4px) scale(1.04);
-    border-color: var(--accent-cyan);
-    color: var(--accent-cyan);
-    background: rgba(6,182,212,0.07);
-    box-shadow: 0 10px 32px rgba(6,182,212,0.18);
-  }
-  .more-btn:active { transform: translateY(-1px) scale(1.01); }
-  .more-arrow { transition: transform 0.22s; flex-shrink: 0; }
-  .more-btn:hover .more-arrow { transform: translateX(4px); }
 </style>
 </head>
 <body>
@@ -919,33 +835,17 @@
 
   <div class="divider-line"></div>
 
-  <!-- ONLINE BADGE -->
-  <div class="online-badge ob-loading" id="onlineBadge">
-    <span class="ob-dot"></span>
-    <span id="onlineCount">...</span>&nbsp;online
-  </div>
-
-  <!-- BUTTONS ROW -->
-  <div class="btn-row">
-    <a class="cta-btn" href="/login" style="opacity:1;animation:none;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-        <polyline points="10 17 15 12 10 7"/>
-        <line x1="15" y1="12" x2="3" y2="12"/>
-      </svg>
-      Log In
-      <svg class="cta-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="9 18 15 12 9 6"/>
-      </svg>
-    </a>
-
-    <a class="more-btn" href="/formore">
-      For More
-      <svg class="more-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="9 18 15 12 9 6"/>
-      </svg>
-    </a>
-  </div>
+  <a class="cta-btn" href="/login">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+      <polyline points="10 17 15 12 10 7"/>
+      <line x1="15" y1="12" x2="3" y2="12"/>
+    </svg>
+    Log In
+    <svg class="cta-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="9 18 15 12 9 6"/>
+    </svg>
+  </a>
 
   <div class="version-tag">
     <span class="v-dot"></span>
@@ -1335,20 +1235,6 @@ function toggleTheme() {
 })();
 fetch("https://est-ims.onrender.com/ping")
 .catch(() => {});
-
-// ── ONLINE USERS BADGE ──
-async function fetchOnlineCount() {
-  try {
-    const res  = await fetch('/api/online-count');
-    const data = await res.json();   // expects { count: Number }
-    document.getElementById('onlineCount').textContent = data.count;
-    document.getElementById('onlineBadge').classList.remove('ob-loading');
-  } catch (e) {
-    // keep loading state silently if endpoint not ready
-  }
-}
-fetchOnlineCount();
-setInterval(fetchOnlineCount, 30000);
 </script>
 </body>
 </html>
