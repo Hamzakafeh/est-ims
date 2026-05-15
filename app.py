@@ -9,6 +9,7 @@ import json
 import re
 import warnings
 import threading
+import requests as _requests
 from datetime import datetime
 from functools import wraps
 from flask import Flask, render_template, jsonify, request, session, redirect, url_for
@@ -1210,6 +1211,30 @@ def api_add_row():
 
 
 # ══════════════════════════════════════════════════════════════════
+#  AI CHAT PROXY
+# ══════════════════════════════════════════════════════════════════
+@app.route('/api/ai-chat', methods=['POST'])
+def ai_chat():
+    data = request.get_json(silent=True) or {}
+    api_key = os.getenv('ANTHROPIC_API_KEY')
+    if not api_key:
+        return jsonify({'error': 'AI not configured'}), 503
+    try:
+        res = _requests.post(
+            'https://api.anthropic.com/v1/messages',
+            headers={
+                'x-api-key': api_key,
+                'anthropic-version': '2023-06-01',
+                'Content-Type': 'application/json'
+            },
+            json=data,
+            timeout=30
+        )
+        return jsonify(res.json()), res.status_code
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# ══════════════════════════════════════════════════════════════════
 #  ENTRY POINT
 # ══════════════════════════════════════════════════════════════════
 if __name__ == '__main__':
@@ -1231,25 +1256,3 @@ if __name__ == '__main__':
             webbrowser.open('http://127.0.0.1:3049')
         threading.Thread(target=_open, daemon=True).start()
         app.run(host='127.0.0.1', port=3049, debug=False)
-import requests as _requests
-
-@app.route('/api/ai-chat', methods=['POST'])
-def ai_chat():
-    data = request.get_json(silent=True) or {}
-    api_key = os.getenv('ANTHROPIC_API_KEY')
-    if not api_key:
-        return jsonify({'error': 'AI not configured'}), 503
-    try:
-        res = _requests.post(
-            'https://api.anthropic.com/v1/messages',
-            headers={
-                'x-api-key': api_key,
-                'anthropic-version': '2023-06-01',
-                'Content-Type': 'application/json'
-            },
-            json=data,
-            timeout=30
-        )
-        return jsonify(res.json()), res.status_code
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
