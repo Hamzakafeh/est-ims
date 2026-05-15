@@ -126,6 +126,25 @@
   .zones-sub {
     font-size:12px;color:var(--text-muted);
   }
+
+  .top-user {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(59,130,246,0.12);
+    border: 1px solid rgba(59,130,246,0.25);
+    border-radius: 14px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent-blue);
+    backdrop-filter: blur(10px);
+  }
+
   .username-badge {
     display:inline-flex;align-items:center;gap:6px;
     background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.25);
@@ -207,8 +226,24 @@
     width:100%;max-width:900px;
     display:flex;align-items:center;gap:14px;
     margin:4px 0 16px;
-    font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--accent-blue);
+    font-family:'JetBrains Mono',monospace;
     letter-spacing:1px;
+    animation: managementPulse 1.8s ease-in-out infinite;
+  }
+
+  @keyframes managementPulse {
+    0%, 100% {
+      opacity: 0.7;
+      text-shadow: 0 0 6px rgba(59,130,246,0.3);
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      text-shadow: 0 0 14px rgba(59,130,246,0.8);
+      transform: scale(1.05);
+    }
   }
   .zones-divider::before,.zones-divider::after { content:'';flex:1;height:1px;background:var(--border); }
 
@@ -411,18 +446,15 @@
 <!-- MAIN -->
 <div class="zones-wrapper">
 
-  <div class="zones-header">
-    <div class="zones-logo">
-      <img src="/static/low.ico" onerror="this.style.display='none'">
-    </div>
-    <div class="zones-welcome" id="welcomeGreet">Good morning ☀️</div>
-    <div class="username-badge">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      {{ username }}
-    </div>
-    <div class="zones-title">Select Your Zone</div>
-    <div class="zones-sub">Choose the warehouse zone you want to access</div>
+  
+  <div class="top-user">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </svg>
+    {{ username }}
   </div>
+
 
   <!-- Warehouse zones 1-5 -->
   <div class="zone-grid" id="zoneGrid">
