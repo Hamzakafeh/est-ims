@@ -28,7 +28,7 @@ app.secret_key = os.getenv("SECRET_KEY", "LARALOLO")
 
 @app.route("/ping")
 def ping():
-    return {"status": "ok"}
+    return {"status": "ok"}, 200
 # ── بيانات الدخول ──────────────────────────────────────────────────
 import os
 
