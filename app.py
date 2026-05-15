@@ -39,10 +39,10 @@ EDIT_PASSWORD = os.getenv("EDIT_PASSWORD")
 ZONES = [
     {'id': 'zone1', 'name': 'Zone 1', 'label': 'زون 1',   'icon': '🏭'},
     {'id': 'zone2', 'name': 'Zone 2', 'label': 'زون 2',   'icon': '🏭'},
-    {'id': 'zone3', 'name': 'Zone 3', 'label': 'زون 3',   'icon': '🏭'},
+    {'id': 'zone3', 'name': 'Zone 3', 'label': 'Packaging',   'icon': '🏭'},
     {'id': 'zone4', 'name': 'Zone 4', 'label': 'زون 4',   'icon': '🏭'},
     {'id': 'zone5', 'name': 'Zone 5', 'label': 'زون 5',   'icon': '🏭'},
-    {'id': 'admin', 'name': 'Admin',  'label': 'Admin', 'icon': '🏢'},
+    {'id': 'admin', 'name': 'Admin',  'label': 'Administration', 'icon': '🏢'},
     {'id': 'dev',   'name': 'Dev',    'label': 'Dev',      'icon': '💻'},
 ]
 

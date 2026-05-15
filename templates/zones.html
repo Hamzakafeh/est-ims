@@ -333,7 +333,7 @@
     <div class="zone-card" onclick="selectZone('zone3')" id="card-zone3">
       <span class="zone-icon">🏭</span>
       <div class="zone-name">Zone 3</div>
-      <div class="zone-label">زون 3</div>
+      <div class="zone-label">Packaging</div>
     </div>
     <div class="zone-card" onclick="selectZone('zone4')" id="card-zone4">
       <span class="zone-icon">🏭</span>
@@ -353,13 +353,13 @@
   <div class="zone-grid-super">
     <div class="zone-card super-card" onclick="selectZone('admin')" id="card-admin">
       <span class="zone-icon">🏢</span>
-      <div class="zone-name">Admin</div>
-      <div class="zone-label">الإدارة</div>
+      <div class="zone-name">EST</div>
+      <div class="zone-label">Administration</div>
     </div>
     <div class="zone-card super-card" onclick="selectZone('dev')" id="card-dev">
       <span class="zone-icon">💻</span>
       <div class="zone-name">Dev</div>
-      <div class="zone-label">Developer</div>
+      <div class="zone-label"></div>
     </div>
   </div>
 
@@ -430,8 +430,8 @@ function selectZone(zoneId) {
     zone4:'Zone 4', zone5:'Zone 5', admin:'Admin', dev:'Dev'
   };
   const labels = {
-    zone1:'زون 1', zone2:'زون 2', zone3:'زون 3',
-    zone4:'زون 4', zone5:'زون 5', admin:'الإدارة', dev:'Developer'
+    zone1:'زون 1', zone2:'زون 2', zone3:'Packaging',
+    zone4:'زون 4', zone5:'زون 5', admin:'Administration', dev:''
   };
 
   const panel = document.getElementById('pwPanel');
