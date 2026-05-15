@@ -365,16 +365,43 @@
   }
   @keyframes devPulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(0.65);} }
   .dev-name {
-    cursor: pointer;
-    transition: color 0.2s, text-decoration-color 0.2s;
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    text-underline-offset: 3px;
+  display: inline-block;
+  cursor: pointer;
+
+  color: #ef4444;
+  font-weight: 600;
+
+  animation: devNamePulse 2s ease-in-out infinite;
+
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease,
+    text-shadow 0.2s ease;
+}
+
+.dev-name:hover {
+  color: #ff6b6b;
+  transform: scale(1.05);
+}
+
+@keyframes devNamePulse {
+
+  0%, 100% {
+    opacity: 1;
+
+    text-shadow:
+      0 0 6px rgba(239,68,68,0.35),
+      0 0 12px rgba(239,68,68,0.2);
   }
-  .dev-name:hover {
-    color: var(--text-muted);
-    text-decoration-color: var(--text-muted);
+
+  50% {
+    opacity: 0.7;
+
+    text-shadow:
+      0 0 14px rgba(239,68,68,0.7),
+      0 0 24px rgba(239,68,68,0.45);
   }
+}
 
   /* ── DEVELOPER MODAL OVERLAY ── */
   .dev-overlay {
@@ -852,9 +879,15 @@
  Copyright 2026   |   All Rights Reserved ©  </div>
 
   <div class="dev-credit">
-    <span class="dev-dot"></span>
-    <span class="dev-name" onclick="openDevModal()">Developed By Hamza K. Ghareb</span>
-  </div>
+  <span class="dev-dot"></span>
+
+  <span>
+    Developed By
+    <span class="dev-name" onclick="openDevModal()">
+      Hamza K. Ghareb
+    </span>
+  </span>
+</div>
 
 </div>
 

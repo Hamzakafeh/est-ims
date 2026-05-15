@@ -172,7 +172,7 @@ def do_login():
         session.pop('zone', None)
         return jsonify({'success': True, 'redirect': '/zones'})
     _record_failed_attempt(ip)
-    return jsonify({'success': False, 'message': 'اسم المستخدم أو كلمة المرور غير صحيحة'}), 401
+    return jsonify({'success': False, 'message': '  Incorrect username or password    '}), 401
 
 # ── ZONES PAGE ──────────────────────────────────────────────────────
 @app.route('/zones')
