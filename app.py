@@ -150,8 +150,8 @@ def login_page():
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
-    
-    @app.route('/help')
+
+@app.route('/help')           # ← برا الدالة، بدون indentation
 def help_page():
     return render_template('help.html')
 
