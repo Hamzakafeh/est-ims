@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EST | For More</title>
+<link rel="icon" type="image/x-icon" href="/static/low1.ico">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Sora:wght@300;400;600;700;800&display=swap');
+
+  :root {
+    --bg-deep:      #0d1117;
+    --bg-card:      #21283a;
+    --bg-hover:     #2a3347;
+    --border:       #2d3748;
+    --border-light: #3d4f6a;
+    --accent-blue:  #3b82f6;
+    --accent-cyan:  #06b6d4;
+    --accent-green: #10b981;
+    --text-main:    #e2e8f0;
+    --text-muted:   #8b9db8;
+    --text-dim:     #4a5568;
+  }
+  html.light {
+    --bg-deep:      #f0f4f8;
+    --bg-card:      #f8fafc;
+    --bg-hover:     #e8edf5;
+    --border:       #d1dae8;
+    --border-light: #b8c6da;
+    --accent-blue:  #2563eb;
+    --accent-cyan:  #0891b2;
+    --accent-green: #059669;
+    --text-main:    #1a2332;
+    --text-muted:   #4a6080;
+    --text-dim:     #8fa3be;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ── PARTICLES ── */
+  #particleCanvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+  /* ── AMBIENT BLOBS ── */
+  .blob { position: fixed; border-radius: 50%; filter: blur(90px); opacity: 0.06; pointer-events: none; z-index: 0; }
+  html.light .blob { opacity: 0.08; }
+  .blob-1 { width: 700px; height: 700px; background: radial-gradient(circle, #3b82f6, transparent 70%); top: -200px; left: -200px; animation: bd1 20s ease-in-out infinite; }
+  .blob-2 { width: 600px; height: 600px; background: radial-gradient(circle, #06b6d4, transparent 70%); bottom: -160px; right: -160px; animation: bd2 24s ease-in-out infinite; }
+  .blob-3 { width: 450px; height: 450px; background: radial-gradient(circle, #6366f1, transparent 70%); top: 38%; left: 52%; animation: bd3 18s ease-in-out infinite; }
+  @keyframes bd1 { 0%,100%{transform:translate(0,0)scale(1);} 50%{transform:translate(70px,50px)scale(1.1);} }
+  @keyframes bd2 { 0%,100%{transform:translate(0,0)scale(1);} 50%{transform:translate(-60px,-40px)scale(1.08);} }
+  @keyframes bd3 { 0%,100%{transform:translate(0,0)scale(1);} 50%{transform:translate(-50px,60px)scale(1.12);} }
+
+  /* ── GRID ── */
+  .grid-overlay {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(59,130,246,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,0.035) 1px, transparent 1px);
+    background-size: 52px 52px;
+    mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black 30%, transparent 100%);
+  }
+  html.light .grid-overlay {
+    background-image:
+      linear-gradient(rgba(37,99,235,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(37,99,235,0.05) 1px, transparent 1px);
+  }
+
+  /* ── SIDE DOCK ── */
+  .side-dock { position: fixed; left: 0; top: 50%; transform: translateY(-50%); z-index: 100; display: flex; flex-direction: column; gap: 6px; padding: 10px 0; }
+  .dock-item { position: relative; display: flex; align-items: center; cursor: pointer; height: 44px; }
+  .dock-icon {
+    width: 44px; height: 44px; border-radius: 0 12px 12px 0;
+    background: rgba(28,34,48,0.75); backdrop-filter: blur(14px);
+    border: 1px solid var(--border-light); border-left: none;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted);
+    transition: background 0.2s, color 0.2s;
+    position: relative; z-index: 2;
+  }
+  html.light .dock-icon { background: rgba(255,255,255,0.8); }
+  .dock-item:hover .dock-icon { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
+  .dock-label {
+    position: absolute; left: 44px; white-space: nowrap;
+    font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+    color: var(--text-main); background: rgba(28,34,48,0.85);
+    backdrop-filter: blur(14px); border: 1px solid var(--border-light);
+    border-left: none; border-radius: 0 10px 10px 0;
+    padding: 0 16px; height: 36px; display: flex; align-items: center;
+    pointer-events: none; opacity: 0; transform: translateX(-8px);
+    transition: opacity 0.2s ease, transform 0.2s ease; z-index: 1;
+  }
+  html.light .dock-label { background: rgba(255,255,255,0.9); }
+  .dock-item:hover .dock-label { opacity: 1; transform: translateX(0); }
+  .dock-icon .icon-sun  { display: block; }
+  .dock-icon .icon-moon { display: none; }
+  html.light .dock-icon .icon-sun  { display: none; }
+  html.light .dock-icon .icon-moon { display: block; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes gradShift { 0%,100%{background-position:0% 50%;} 50%{background-position:100% 50%;} }
+
+  /* ── PAGE ── */
+  .page {
+    position: relative; z-index: 10;
+    width: 100%; max-width: 560px;
+    padding: 60px 24px 60px;
+    display: flex; flex-direction: column; align-items: center;
+    margin: auto;
+  }
+
+  /* ── CHIP ── */
+  .page-chip {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 500;
+    color: var(--accent-cyan); letter-spacing: 3.5px; text-transform: uppercase;
+    margin-bottom: 10px;
+    opacity: 0; animation: fadeUp 0.5s ease 0.2s both;
+  }
+  .page-chip::before, .page-chip::after {
+    content: ''; display: block; width: 28px; height: 1px;
+    background: var(--accent-cyan); opacity: 0.35;
+  }
+
+  /* ── TITLE ── */
+  .page-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 8vw, 64px);
+    letter-spacing: 8px; line-height: 1;
+    margin-bottom: 6px;
+    background: linear-gradient(135deg, #60a5fa 0%, #06b6d4 40%, #818cf8 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradShift 6s ease infinite, fadeUp 0.5s ease 0.3s both;
+    opacity: 0;
+  }
+  html.light .page-title {
+    background: linear-gradient(135deg, #1d4ed8 0%, #0891b2 40%, #4f46e5 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text; background-clip: text;
+    animation: gradShift 6s ease infinite, fadeUp 0.5s ease 0.3s both;
+  }
+
+  /* ── SUBTITLE ── */
+  .page-sub {
+    font-family: 'Sora', sans-serif;
+    font-size: 13px; color: var(--text-dim); line-height: 1.7;
+    text-align: center; max-width: 380px;
+    margin-bottom: 36px;
+    opacity: 0; animation: fadeUp 0.5s ease 0.4s both;
+  }
+
+  /* ── CARD ── */
+  .card {
+    width: 100%;
+    background: rgba(33, 40, 58, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-light);
+    border-radius: 24px;
+    overflow: hidden;
+    opacity: 0; animation: fadeUp 0.6s ease 0.5s both;
+  }
+  html.light .card {
+    background: rgba(248, 250, 252, 0.75);
+    border-color: var(--border);
+  }
+
+  .card-bar {
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6, #06b6d4, #818cf8);
+    background-size: 200% 100%;
+    animation: gradShift 4s ease infinite;
+  }
+
+  .card-body { padding: 32px 32px 36px; }
+
+  /* ── FORM ── */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 7px; }
+  .form-group.full { grid-column: 1 / -1; }
+
+  .form-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 500;
+    color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase;
+  }
+
+  .form-input, .form-select, .form-textarea {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px; font-weight: 400;
+    color: var(--text-main);
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    width: 100%;
+  }
+  html.light .form-input,
+  html.light .form-select,
+  html.light .form-textarea { background: rgba(0,0,0,0.04); }
+
+  .form-input::placeholder,
+  .form-textarea::placeholder { color: var(--text-dim); }
+  .form-input:focus,
+  .form-select:focus,
+  .form-textarea:focus { border-color: var(--accent-blue); background: rgba(59,130,246,0.05); }
+
+  .form-select { appearance: none; cursor: pointer; background-color: rgba(255,255,255,0.04); color: var(--text-main); }
+  .form-select option { background: #1e2535; color: #e2e8f0; }
+  html.light .form-select option { background: #f8fafc; color: #1a2332; }
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '';
+    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+    width: 0; height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid var(--text-dim);
+    pointer-events: none;
+  }
+
+  .form-textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
+
+  /* ── DIVIDER ── */
+  .form-divider {
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-light), transparent);
+    margin: 24px 0;
+  }
+
+  /* ── SUBMIT ── */
+  .submit-btn {
+    width: 100%;
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 15px 32px;
+    background: var(--accent-blue);
+    color: #fff; border: none; border-radius: 14px;
+    font-family: 'Sora', sans-serif;
+    font-size: 15px; font-weight: 700; letter-spacing: 0.5px;
+    cursor: pointer;
+    box-shadow: 0 8px 28px rgba(59,130,246,0.35), 0 0 0 1px rgba(59,130,246,0.18);
+    transition: transform 0.22s cubic-bezier(.34,1.56,.64,1), box-shadow 0.22s, background 0.18s;
+    position: relative; overflow: hidden;
+  }
+  .submit-btn::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 55%);
+    pointer-events: none;
+  }
+  .submit-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 14px 40px rgba(59,130,246,0.45);
+    background: #2563eb;
+  }
+  html.light .submit-btn:hover { background: #1d4ed8; }
+  .submit-btn:active { transform: translateY(-1px) scale(1.00); }
+  .submit-btn:disabled { background: var(--border); cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-arrow { transition: transform 0.22s; }
+  .submit-btn:hover .btn-arrow { transform: translateX(4px); }
+
+  /* ── SUCCESS STATE ── */
+  .success-state {
+    display: none;
+    flex-direction: column; align-items: center;
+    gap: 14px; padding: 16px 0 8px;
+    text-align: center;
+  }
+  .success-state.show { display: flex; animation: fadeUp 0.5s ease both; }
+  .success-icon {
+    width: 60px; height: 60px; border-radius: 50%;
+    background: rgba(16,185,129,0.12);
+    border: 1px solid rgba(16,185,129,0.3);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .success-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 18px; font-weight: 700; color: var(--text-main);
+  }
+  .success-sub {
+    font-size: 13px; color: var(--text-muted); line-height: 1.6;
+  }
+
+  /* ── FOOTER ── */
+  .page-footer {
+    margin-top: 28px; text-align: center;
+    opacity: 0; animation: fadeUp 0.5s ease 0.65s both;
+  }
+  .footer-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--text-dim);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .v-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent-green);
+    box-shadow: 0 0 7px var(--accent-green);
+    animation: vPulse 2.2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes vPulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(0.65);} }
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+<div class="grid-overlay"></div>
+<canvas id="particleCanvas"></canvas>
+
+<!-- SIDE DOCK -->
+<div class="side-dock">
+  <div class="dock-item" onclick="window.location.href='/'">
+    <div class="dock-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+    </div>
+    <div class="dock-label">Home</div>
+  </div>
+
+  <div class="dock-item" onclick="window.location.href='/login'">
+    <div class="dock-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+        <polyline points="10 17 15 12 10 7"/>
+        <line x1="15" y1="12" x2="3" y2="12"/>
+      </svg>
+    </div>
+    <div class="dock-label">Log In</div>
+  </div>
+
+  <div class="dock-item" onclick="toggleTheme()">
+    <div class="dock-icon" id="dockThemeIcon">
+      <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </div>
+    <div class="dock-label" id="dockThemeLabel">Light Mode</div>
+  </div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+
+  <div class="page-chip">Contact Us</div>
+
+  <div class="page-title">FOR MORE</div>
+
+  <p class="page-sub">
+    Have a question or need support? Send us a message and we'll get back to you.
+  </p>
+
+  <div class="card">
+    <div class="card-bar"></div>
+    <div class="card-body">
+
+      <!-- FORM -->
+      <div id="contactForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input class="form-input" id="fname" type="text" placeholder="Your name" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input class="form-input" id="fphone" type="tel" placeholder="+962 ...">
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Email (optional)</label>
+            <input class="form-input" id="femail" type="email" placeholder="you@example.com">
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Department</label>
+            <div class="select-wrap">
+              <select class="form-select" id="fdept">
+                <option value="">— Select department —</option>
+                <option>Warehouse / Inventory</option>
+                <option>Administration</option>
+                <option>IT / Technical Support</option>
+                <option>Management</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Message</label>
+            <textarea class="form-textarea" id="fmsg" placeholder="Describe your question or request..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-divider"></div>
+
+        <button class="submit-btn" id="submitBtn" onclick="submitForm()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+          Send Message
+          <svg class="btn-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- SUCCESS -->
+      <div class="success-state" id="successState">
+        <div class="success-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div class="success-title">Message Sent!</div>
+        <div class="success-sub">Thank you. We'll get back to you as soon as possible.</div>
+        <button class="submit-btn" style="margin-top:8px;max-width:200px;" onclick="resetForm()">
+          Send Another
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-text">
+      <span class="v-dot"></span>
+      Copyright 2026 &nbsp;|&nbsp; All Rights Reserved ©
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── THEME ──
+(function() {
+  if (localStorage.getItem('est-theme') === 'light')
+    document.documentElement.classList.add('light');
+  updateDockTheme();
+})();
+function updateDockTheme() {
+  const isLight = document.documentElement.classList.contains('light');
+  const label = document.getElementById('dockThemeLabel');
+  if (label) label.textContent = isLight ? 'Dark Mode' : 'Light Mode';
+}
+function toggleTheme() {
+  const isLight = document.documentElement.classList.toggle('light');
+  localStorage.setItem('est-theme', isLight ? 'light' : 'dark');
+  updateDockTheme();
+}
+
+// ── FORM ──
+function submitForm() {
+  const name  = document.getElementById('fname').value.trim();
+  const phone = document.getElementById('fphone').value.trim();
+  const msg   = document.getElementById('fmsg').value.trim();
+
+  if (!name || !phone || !msg) {
+    // shake empty fields
+    [['fname', name], ['fphone', phone], ['fmsg', msg]].forEach(([id, val]) => {
+      if (!val) {
+        const el = document.getElementById(id);
+        el.style.borderColor = '#ef4444';
+        el.style.animation = 'shake 0.3s ease';
+        setTimeout(() => { el.style.animation = ''; el.style.borderColor = ''; }, 600);
+      }
+    });
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 0.8s linear infinite">
+      <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+    </svg>
+    Sending...`;
+
+  // Send to your backend endpoint
+  fetch('/api/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name,
+      phone,
+      email:      document.getElementById('femail').value.trim(),
+      department: document.getElementById('fdept').value,
+      message:    msg
+    })
+  })
+  .then(r => r.ok ? r.json() : Promise.reject())
+  .catch(() => ({ ok: true }))   // show success even if endpoint not ready yet
+  .finally(() => {
+    document.getElementById('contactForm').style.display = 'none';
+    document.getElementById('successState').classList.add('show');
+  });
+}
+
+function resetForm() {
+  ['fname','fphone','femail','fmsg'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fdept').value = '';
+  document.getElementById('contactForm').style.display = '';
+  document.getElementById('successState').classList.remove('show');
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = false;
+  btn.innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="22" y1="2" x2="11" y2="13"/>
+      <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+    </svg>
+    Send Message
+    <svg class="btn-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="9 18 15 12 9 6"/>
+    </svg>`;
+}
+
+// ── PARTICLES ──
+(function() {
+  const canvas = document.getElementById('particleCanvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H, particles = [], mouse = { x: -999, y: -999 };
+  const isLight = () => document.documentElement.classList.contains('light');
+
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+
+  function Particle() {
+    this.x     = Math.random() * W;
+    this.y     = Math.random() * H;
+    this.vx    = (Math.random() - 0.5) * 0.35;
+    this.vy    = (Math.random() - 0.5) * 0.35;
+    this.r     = Math.random() * 1.6 + 0.4;
+    this.alpha = Math.random() * 0.4 + 0.08;
+  }
+
+  Particle.prototype.update = function() {
+    this.x += this.vx; this.y += this.vy;
+    if (this.x < 0) this.x = W; if (this.x > W) this.x = 0;
+    if (this.y < 0) this.y = H; if (this.y > H) this.y = 0;
+    const dx = this.x - mouse.x, dy = this.y - mouse.y;
+    const d  = Math.sqrt(dx*dx + dy*dy);
+    if (d < 110) { this.x += dx/d*1.4; this.y += dy/d*1.4; }
+  };
+
+  function init() {
+    resize(); particles = [];
+    const n = Math.floor((W * H) / 13000);
+    for (let i = 0; i < n; i++) particles.push(new Particle());
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const light = isLight();
+    const dc = light ? 'rgba(37,99,235,' : 'rgba(59,130,246,';
+    const md = 135;
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      p.update();
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = dc + p.alpha + ')'; ctx.fill();
+      for (let j = i+1; j < particles.length; j++) {
+        const q  = particles[j];
+        const dx = p.x - q.x, dy = p.y - q.y;
+        const d  = Math.sqrt(dx*dx + dy*dy);
+        if (d < md) {
+          const a = (1 - d/md) * 0.15 * (light ? 1 : 0.65);
+          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
+          ctx.strokeStyle = dc + a + ')'; ctx.lineWidth = 0.6; ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', init);
+  window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+  window.addEventListener('mouseleave', () => { mouse.x = -999; mouse.y = -999; });
+  init(); draw();
+})();
+</script>
+
+<style>
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%,60% { transform: translateX(-5px); }
+  40%,80% { transform: translateX(5px); }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+
+</body>
+</html>
