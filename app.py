@@ -15,6 +15,28 @@ from flask import Flask, render_template, jsonify, request, session, redirect, u
 
 warnings.filterwarnings('ignore')
 
+# ── Brute-force protection (in-memory, resets on restart) ──────────
+from collections import defaultdict
+import time as _time
+
+_login_attempts  = defaultdict(list)   # ip -> [timestamp, ...]
+_MAX_ATTEMPTS    = 5
+_LOCKOUT_SECONDS = 300                 # 5 دقائق
+
+def _get_ip():
+    return request.headers.get('X-Forwarded-For', request.remote_addr).split(',')[0].strip()
+
+def _is_locked_out(ip):
+    now = _time.time()
+    _login_attempts[ip] = [t for t in _login_attempts[ip] if now - t < _LOCKOUT_SECONDS]
+    return len(_login_attempts[ip]) >= _MAX_ATTEMPTS
+
+def _record_failed_attempt(ip):
+    _login_attempts[ip].append(_time.time())
+
+def _clear_attempts(ip):
+    _login_attempts.pop(ip, None)
+
 try:
     import openpyxl
 except ImportError:
@@ -24,7 +46,30 @@ except ImportError:
 app = Flask(__name__, static_folder='static')
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-app.secret_key = os.getenv("SECRET_KEY", "LARALOLO")
+
+# ── Session Security ───────────────────────────────────────────────
+app.config['SESSION_COOKIE_HTTPONLY']  = True   # لا يقرأها JavaScript
+app.config['SESSION_COOKIE_SAMESITE']  = 'Lax'  # حماية CSRF جزئية
+app.config['PERMANENT_SESSION_LIFETIME'] = 28800 # 8 ساعات
+
+import logging
+logging.basicConfig(
+    level=logging.WARNING,
+    format='%(asctime)s [%(levelname)s] %(message)s'
+)
+_logger = logging.getLogger('est_ims')
+
+@app.after_request
+def add_security_headers(response):
+    response.headers['X-Frame-Options']        = 'DENY'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-XSS-Protection']       = '1; mode=block'
+    response.headers['Referrer-Policy']        = 'strict-origin-when-cross-origin'
+    return response
+_secret_key = os.getenv("SECRET_KEY")
+if not _secret_key:
+    raise RuntimeError("SECRET_KEY environment variable is not set. Refusing to start.")
+app.secret_key = _secret_key
 
 @app.route("/ping")
 def ping():
@@ -108,14 +153,20 @@ def contact():
 
 @app.route('/login', methods=['POST'])
 def do_login():
+    ip = _get_ip()
+    if _is_locked_out(ip):
+        return jsonify({'success': False, 'message': 'تم تجاوز عدد المحاولات المسموح بها. حاول مرة أخرى بعد 5 دقائق'}), 429
+
     data = request.get_json(silent=True) or {}
     username = data.get('username', '').strip()
     password = data.get('password', '').strip()
-    if USERS.get(username) == password:
+    if USERS.get(username) == password and username in USERS and USERS[username] is not None:
+        _clear_attempts(ip)
         session['logged_in'] = True
         session['username']  = username
-        session.pop('zone', None)   # always pick zone after login
+        session.pop('zone', None)
         return jsonify({'success': True, 'redirect': '/zones'})
+    _record_failed_attempt(ip)
     return jsonify({'success': False, 'message': 'اسم المستخدم أو كلمة المرور غير صحيحة'}), 401
 
 # ── ZONES PAGE ──────────────────────────────────────────────────────
@@ -131,6 +182,10 @@ def zones_page():
 @app.route('/api/zone_login', methods=['POST'])
 @login_required
 def api_zone_login():
+    ip = _get_ip()
+    if _is_locked_out(ip):
+        return jsonify({'success': False, 'message': 'تم تجاوز عدد المحاولات. حاول بعد 5 دقائق'}), 429
+
     data     = request.get_json(silent=True) or {}
     zone_id  = data.get('zone_id', '').strip()
     password = data.get('password', '').strip()
@@ -141,8 +196,10 @@ def api_zone_login():
 
     expected = ZONE_PASSWORDS.get(zone_id)
     if not expected or password != expected:
+        _record_failed_attempt(ip)
         return jsonify({'success': False, 'message': 'كلمة السر غير صحيحة'}), 401
 
+    _clear_attempts(ip)
     session['zone']        = zone_id
     session['zone_name']   = zone['name']
     session['zone_label']  = zone['label']
@@ -252,6 +309,28 @@ def get_years_root():
         if os.path.isdir(c):
             return c
     return None
+
+def _validate_filepath(filepath, zone_id=None):
+    """
+    تحقق أن المسار داخل مجلد zones فقط (يمنع Path Traversal).
+    لو zone_id محدد، يتحقق كذلك أن الملف داخل زون المستخدم.
+    يرجع True لو المسار آمن، False لو فيه مشكلة.
+    """
+    root = get_years_root()
+    if not root:
+        return False
+    try:
+        real_root = os.path.realpath(root)
+        real_file = os.path.realpath(filepath)
+        if not real_file.startswith(real_root + os.sep):
+            return False
+        if zone_id:
+            zone_root = os.path.realpath(os.path.join(root, zone_id))
+            if not real_file.startswith(zone_root + os.sep):
+                return False
+        return True
+    except Exception:
+        return False
 
 def get_base_path(year=None, zone_id=None):
     """Return path to a year folder inside a zone. zones/zone1/2026/"""
@@ -411,7 +490,8 @@ def read_sheet_data(filepath, sheet_name):
         wb.close()
         headers = [h for _,h in col_indices]
         return headers, data_rows
-    except:
+    except Exception as _exc:
+        _logger.error('read_sheet_data error — %s: %s', filepath, _exc)
         return None, []
 
 # ═══════════════════════════════════════════════════════════════════
@@ -614,12 +694,15 @@ def api_sheets():
     filepath = request.args.get('path')
     if not filepath or not os.path.exists(filepath):
         return jsonify({'error': 'File not found'}), 404
+    zone_id = None if session.get('is_super') else session.get('zone', '')
+    if not _validate_filepath(filepath, zone_id):
+        return jsonify({'error': 'Access denied'}), 403
     try:
         wb = openpyxl.load_workbook(filepath, read_only=True, data_only=True)
         sheets = wb.sheetnames; wb.close()
         return jsonify({'sheets': sheets})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    except Exception:
+        return jsonify({'error': 'Failed to read file'}), 500
 
 @app.route('/api/data')
 @zone_required
@@ -628,6 +711,9 @@ def api_data():
     sheet    = request.args.get('sheet','')
     if not filepath or not os.path.exists(filepath):
         return jsonify({'error': 'File not found'}), 404
+    zone_id = None if session.get('is_super') else session.get('zone', '')
+    if not _validate_filepath(filepath, zone_id):
+        return jsonify({'error': 'Access denied'}), 403
     headers, rows = read_sheet_data(filepath, sheet)
     if headers is None:
         return jsonify({'headers':[],'rows':[],'count':0})
@@ -647,6 +733,9 @@ def api_data():
 @app.route('/api/transaction', methods=['POST'])
 @zone_required
 def api_transaction():
+    if not session.get('can_edit'):
+        return jsonify({'success': False, 'error': 'غير مصرح — يجب تفعيل وضع التعديل'}), 403
+
     data = request.get_json(silent=True) or {}
     filepath  = data.get('filepath', '')
     sheet     = data.get('sheet', '')
@@ -654,9 +743,13 @@ def api_transaction():
     operation = data.get('operation', '').upper()
     qty_raw   = data.get('qty')
 
-    # Validate
     if not filepath or not os.path.exists(filepath):
         return jsonify({'success': False, 'error': 'File not found'}), 404
+
+    zone_id = None if session.get('is_super') else session.get('zone', '')
+    if not _validate_filepath(filepath, zone_id):
+        return jsonify({'success': False, 'error': 'Access denied'}), 403
+
     if operation not in ('IN', 'OUT'):
         return jsonify({'success': False, 'error': 'operation must be IN or OUT'}), 400
     try:
@@ -664,11 +757,10 @@ def api_transaction():
         qty = float(qty_raw)
         if qty < 0:
             raise ValueError()
-    except:
+    except Exception:
         return jsonify({'success': False, 'error': 'Invalid row or qty'}), 400
 
     try:
-        # Load workbook keeping VBA (macros stay intact)
         wb = openpyxl.load_workbook(filepath, keep_vba=True)
 
         if sheet not in wb.sheetnames:
@@ -678,37 +770,31 @@ def api_transaction():
         ws      = wb[sheet]
         ws_log  = wb['Log'] if 'Log' in wb.sheetnames else None
 
-        # Read context values (mirrors VBA variable reads)
         color_value    = _get_cell_val(ws, row, COL_COLOR)
         size_value     = _get_cell_val(ws, row, COL_SIZE)
         type_value     = _get_cell_val(ws, row, COL_TYPE)
         category_value = _get_cell_val(ws, row, COL_CATEGORY)
         basic_balance  = ws.cell(row=row, column=COL_BASIC).value or 0
 
-        # Require Color to be set before any transaction
         if not color_value or str(color_value).strip() in ('', 'None', 'null'):
             wb.close()
             return jsonify({'success': False,
                             'error': 'يجب تحديد اللون (Color) أولاً قبل إجراء أي عملية'}), 400
 
-        # Find last balance for same colour (VBA loop)
         last_balance, found = _find_last_balance(ws, row, color_value)
         if not found:
             try:
                 last_balance = float(basic_balance)
-            except:
+            except Exception:
                 last_balance = 0.0
 
-        # Compute new balance
         if operation == 'IN':
             new_balance = last_balance + qty
         else:
             new_balance = last_balance - qty
 
-        # Write current balance (column J)
         ws.cell(row=row, column=COL_CURRENT).value = new_balance
 
-        # Append to Log sheet
         if ws_log:
             _append_log(ws_log, operation, qty, new_balance,
                         color_value, size_value, type_value, category_value)
@@ -726,8 +812,8 @@ def api_transaction():
             'size':        size_value,
         })
 
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+    except Exception:
+        return jsonify({'success': False, 'error': 'حدث خطأ أثناء تنفيذ العملية'}), 500
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -743,6 +829,9 @@ def api_transaction():
 @app.route('/api/update_cell', methods=['POST'])
 @zone_required
 def api_update_cell():
+    if not session.get('can_edit'):
+        return jsonify({'success': False, 'error': 'غير مصرح'}), 403
+
     data      = request.get_json(silent=True) or {}
     filepath  = data.get('filepath', '')
     sheet     = data.get('sheet', '')
@@ -752,9 +841,14 @@ def api_update_cell():
 
     if not filepath or not os.path.exists(filepath):
         return jsonify({'success': False, 'error': 'File not found'}), 404
+
+    zone_id = None if session.get('is_super') else session.get('zone', '')
+    if not _validate_filepath(filepath, zone_id):
+        return jsonify({'success': False, 'error': 'Access denied'}), 403
+
     try:
         row = int(row)
-    except:
+    except Exception:
         return jsonify({'success': False, 'error': 'Invalid row'}), 400
 
     try:
@@ -764,7 +858,6 @@ def api_update_cell():
             return jsonify({'success': False, 'error': f'Sheet "{sheet}" not found'}), 404
         ws = wb[sheet]
 
-        # Find column index by scanning header row
         header_row_idx = None
         for i, row_cells in enumerate(ws.iter_rows(values_only=True), start=1):
             rv = [str(v).strip() if v else '' for v in row_cells]
@@ -784,14 +877,13 @@ def api_update_cell():
             wb.close()
             return jsonify({'success': False, 'error': f'Column "{col_name}" not found'}), 400
 
-        # Auto-cast numeric values
         cast_value = value
         try:
             if '.' in str(value):
                 cast_value = float(value)
             else:
                 cast_value = int(value)
-        except:
+        except Exception:
             cast_value = value if value != '' else None
 
         ws.cell(row=row, column=col_idx).value = cast_value
@@ -801,8 +893,8 @@ def api_update_cell():
 
         return jsonify({'success': True, 'row': row, 'col': col_name, 'value': cast_value})
 
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+    except Exception:
+        return jsonify({'success': False, 'error': 'حدث خطأ أثناء تحديث الخلية'}), 500
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -823,9 +915,13 @@ def api_color_balance():
     if not color or color.strip().lower() in ('', 'null', 'none'):
         return jsonify({'balance': None, 'found': False})
 
+    zone_id = None if session.get('is_super') else session.get('zone', '')
+    if not _validate_filepath(filepath, zone_id):
+        return jsonify({'error': 'Access denied'}), 403
+
     try:
         before_row = int(before_row) if before_row else None
-    except:
+    except Exception:
         before_row = None
 
     try:
@@ -842,8 +938,6 @@ def api_color_balance():
             actual_row = DATA_START_ROW + idx
             if before_row and actual_row >= before_row:
                 break
-            # Color is COL_COLOR (6) → index 5 in 0-based row_vals
-            # but row_vals starts from col 1, so col 6 → index 5
             try:
                 cell_color   = row_vals[COL_COLOR - 1]
                 cell_current = row_vals[COL_CURRENT - 1]
@@ -855,14 +949,14 @@ def api_color_balance():
                     if val is not None:
                         last_balance = val
                         last_row     = actual_row
-                except:
+                except Exception:
                     pass
 
         wb.close()
         return jsonify({'balance': last_balance, 'found': last_balance is not None, 'row': last_row})
 
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    except Exception:
+        return jsonify({'error': 'حدث خطأ أثناء قراءة الرصيد'}), 500
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -873,6 +967,9 @@ def api_color_balance():
 @app.route('/api/set_opening_balance', methods=['POST'])
 @zone_required
 def api_set_opening_balance():
+    if not session.get('can_edit'):
+        return jsonify({'success': False, 'error': 'غير مصرح'}), 403
+
     data     = request.get_json(silent=True) or {}
     filepath = data.get('filepath', '')
     sheet    = data.get('sheet', '')
@@ -881,10 +978,15 @@ def api_set_opening_balance():
 
     if not filepath or not os.path.exists(filepath):
         return jsonify({'success': False, 'error': 'File not found'}), 404
+
+    zone_id = None if session.get('is_super') else session.get('zone', '')
+    if not _validate_filepath(filepath, zone_id):
+        return jsonify({'success': False, 'error': 'Access denied'}), 403
+
     try:
         row     = int(row)
         balance = float(balance)
-    except:
+    except Exception:
         return jsonify({'success': False, 'error': 'Invalid row or balance'}), 400
 
     try:
@@ -899,8 +1001,8 @@ def api_set_opening_balance():
         wb.save(filepath)
         wb.close()
         return jsonify({'success': True, 'balance': balance})
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+    except Exception:
+        return jsonify({'success': False, 'error': 'حدث خطأ أثناء تعيين الرصيد الافتتاحي'}), 500
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -935,22 +1037,23 @@ def api_options():
     sheet    = request.args.get('sheet', '')
     if not filepath or not os.path.exists(filepath):
         return jsonify({'error': 'File not found'}), 404
+
+    zone_id = None if session.get('is_super') else session.get('zone', '')
+    if not _validate_filepath(filepath, zone_id):
+        return jsonify({'error': 'Access denied'}), 403
+
     try:
-        # Must open with read_only=False to access data_validations
         wb = openpyxl.load_workbook(filepath, read_only=False, data_only=True, keep_vba=True)
         if sheet not in wb.sheetnames:
             wb.close()
             return jsonify({'colors': [], 'types': [], 'sizes': [], 'categories': []})
         ws = wb[sheet]
 
-        # Find which column letter maps to Color(F=6), Type(E=5), Size(G=7), Category(D=4)
-        # by reading the header row (row 6) dynamically
-        header_col_map = {}  # col_index (1-based) -> header name
+        header_col_map = {}
         for ci, cell in enumerate(ws[6], start=1):
             if cell.value and str(cell.value).strip():
                 header_col_map[ci] = str(cell.value).strip()
 
-        # Build reverse: header name -> col_index
         name_to_col = {v: k for k, v in header_col_map.items()}
 
         col_color    = name_to_col.get('Color',    COL_COLOR)
@@ -969,9 +1072,8 @@ def api_options():
         for dv in ws.data_validations.dataValidation:
             if dv.type != 'list' or not dv.formula1:
                 continue
-            # Get the column index from sqref (e.g. "F7:F1048576" -> col F -> 6)
             try:
-                first_ref = str(dv.sqref).split()[0]   # take first range if multiple
+                first_ref = str(dv.sqref).split()[0]
                 col_letters = ''.join(c for c in first_ref.split(':')[0] if c.isalpha())
                 ci = _col_letter_to_index(col_letters)
             except Exception:
@@ -980,18 +1082,21 @@ def api_options():
             key = col_target.get(ci)
             if key:
                 vals = _parse_dv_formula(dv.formula1)
-                options[key] = vals  # last DV for that col wins
+                options[key] = vals
 
         wb.close()
         return jsonify(options)
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    except Exception:
+        return jsonify({'error': 'حدث خطأ أثناء قراءة الخيارات'}), 500
 
 
 @app.route('/api/clear_row', methods=['POST'])
 @zone_required
 def api_clear_row():
     """Clear all data cells in a given Excel row (does NOT delete the row itself)."""
+    if not session.get('can_edit'):
+        return jsonify({'success': False, 'error': 'غير مصرح'}), 403
+
     data     = request.get_json(silent=True) or {}
     filepath = data.get('filepath', '')
     sheet    = data.get('sheet', '')
@@ -999,9 +1104,14 @@ def api_clear_row():
 
     if not filepath or not os.path.exists(filepath):
         return jsonify({'success': False, 'error': 'File not found'}), 404
+
+    zone_id = None if session.get('is_super') else session.get('zone', '')
+    if not _validate_filepath(filepath, zone_id):
+        return jsonify({'success': False, 'error': 'Access denied'}), 403
+
     try:
         row = int(row)
-    except:
+    except Exception:
         return jsonify({'success': False, 'error': 'Invalid row'}), 400
 
     try:
@@ -1010,21 +1120,22 @@ def api_clear_row():
             wb.close()
             return jsonify({'success': False, 'error': 'Sheet not found'}), 404
         ws = wb[sheet]
-        # Clear columns A–M (1–13) — keeps the row intact for VBA structure
         for col in range(1, 14):
-            cell = ws.cell(row=row, column=col)
-            cell.value = None
+            ws.cell(row=row, column=col).value = None
         _recalc_stocktaking(wb)
         wb.save(filepath)
         wb.close()
         return jsonify({'success': True})
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+    except Exception:
+        return jsonify({'success': False, 'error': 'حدث خطأ أثناء مسح الصف'}), 500
 
 
 @app.route('/api/add_row', methods=['POST'])
 @zone_required
 def api_add_row():
+    if not session.get('can_edit'):
+        return jsonify({'success': False, 'error': 'غير مصرح'}), 403
+
     data     = request.get_json(silent=True) or {}
     filepath = data.get('filepath', '')
     sheet    = data.get('sheet', '')
@@ -1035,6 +1146,10 @@ def api_add_row():
     if not fields:
         return jsonify({'success': False, 'error': 'No fields provided'}), 400
 
+    zone_id = None if session.get('is_super') else session.get('zone', '')
+    if not _validate_filepath(filepath, zone_id):
+        return jsonify({'success': False, 'error': 'Access denied'}), 403
+
     try:
         wb = openpyxl.load_workbook(filepath, keep_vba=True)
         if sheet not in wb.sheetnames:
@@ -1042,7 +1157,6 @@ def api_add_row():
             return jsonify({'success': False, 'error': f'Sheet "{sheet}" not found'}), 404
         ws = wb[sheet]
 
-        # Find header row
         header_row_idx = None
         for i, row_cells in enumerate(ws.iter_rows(values_only=True), start=1):
             rv = [str(v).strip() if v else '' for v in row_cells]
@@ -1053,13 +1167,11 @@ def api_add_row():
             wb.close()
             return jsonify({'success': False, 'error': 'Header row not found'}), 400
 
-        # Build col_name -> col_index map
         col_map = {}
         for ci, cell in enumerate(ws[header_row_idx], start=1):
             if cell.value:
                 col_map[str(cell.value).strip()] = ci
 
-        # Find next empty data row (search from DATA_START_ROW downward)
         new_row = DATA_START_ROW
         for r in range(DATA_START_ROW, ws.max_row + 2):
             row_empty = True
@@ -1071,21 +1183,18 @@ def api_add_row():
                 new_row = r
                 break
 
-        # Write fields
         for col_name, value in fields.items():
             if col_name in col_map:
-                # Auto-cast
                 cast_value = value
                 try:
                     if '.' in str(value):
                         cast_value = float(value)
                     else:
                         cast_value = int(value)
-                except:
+                except Exception:
                     cast_value = value if value != '' else None
                 ws.cell(row=new_row, column=col_map[col_name]).value = cast_value
 
-        # Set Date if not provided
         if 'Date' not in fields and 'التاريخ' not in fields:
             date_col = col_map.get('Date') or col_map.get('التاريخ')
             if date_col:
@@ -1095,8 +1204,8 @@ def api_add_row():
         wb.close()
         return jsonify({'success': True, 'new_row': new_row})
 
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
+    except Exception:
+        return jsonify({'success': False, 'error': 'حدث خطأ أثناء إضافة الصف'}), 500
 
 
 # ══════════════════════════════════════════════════════════════════
