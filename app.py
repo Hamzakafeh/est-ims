@@ -1216,21 +1216,44 @@ def api_add_row():
 @app.route('/api/ai-chat', methods=['POST'])
 def ai_chat():
     data = request.get_json(silent=True) or {}
-    api_key = os.getenv('ANTHROPIC_API_KEY')
+    api_key = os.getenv('GROQ_API_KEY')
     if not api_key:
         return jsonify({'error': 'AI not configured'}), 503
+
+    # Convert Anthropic-style messages to OpenAI-compatible format for Groq
+    messages = data.get('messages', [])
+    system_prompt = data.get('system', '')
+
+    groq_messages = []
+    if system_prompt:
+        groq_messages.append({'role': 'system', 'content': system_prompt})
+    groq_messages.extend(messages)
+
+    groq_payload = {
+        'model': 'llama-3.1-8b-instant',  # Free Groq model
+        'max_tokens': data.get('max_tokens', 1000),
+        'messages': groq_messages,
+    }
+
     try:
         res = _requests.post(
-            'https://api.anthropic.com/v1/messages',
+            'https://api.groq.com/openai/v1/chat/completions',
             headers={
-                'x-api-key': api_key,
-                'anthropic-version': '2023-06-01',
+                'Authorization': f'Bearer {api_key}',
                 'Content-Type': 'application/json'
             },
-            json=data,
+            json=groq_payload,
             timeout=30
         )
-        return jsonify(res.json()), res.status_code
+        groq_data = res.json()
+        # Convert Groq response to Anthropic-style format so the frontend works as-is
+        if 'choices' in groq_data:
+            reply_text = groq_data['choices'][0]['message']['content']
+            anthropic_style = {
+                'content': [{'type': 'text', 'text': reply_text}]
+            }
+            return jsonify(anthropic_style), 200
+        return jsonify(groq_data), res.status_code
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
