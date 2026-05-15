@@ -98,7 +98,7 @@
   /* ── MAIN WRAPPER ── */
   .zones-wrapper {
     position:relative;z-index:10;
-    width:100%;max-width:780px;
+    width:100%;max-width:960px;
     padding:40px 24px;
     display:flex;flex-direction:column;align-items:center;
     animation: wrapIn 0.4s cubic-bezier(.34,1.56,.64,1);
@@ -138,43 +138,77 @@
   /* ── ZONE GRID ── */
   .zone-grid {
     display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:14px;
-    width:100%;
+    grid-template-columns:repeat(4,1fr);
+    gap:16px;
+    width:100%;max-width:900px;
     margin-bottom:20px;
   }
-  @media(max-width:600px){ .zone-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:700px){ .zone-grid{ grid-template-columns:repeat(2,1fr); } }
 
   .zone-card {
-    background:rgba(28,34,48,0.72);
-    backdrop-filter:blur(18px);
-    border:1px solid rgba(255,255,255,0.07);
-    border-radius:16px;
-    padding:22px 16px;
+    background:rgba(255,255,255,0.04);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:20px;
+    padding:36px 20px 28px;
     text-align:center;
     cursor:pointer;
-    transition:all 0.22s cubic-bezier(.34,1.56,.64,1);
+    transition:all 0.25s cubic-bezier(.34,1.56,.64,1);
     position:relative;overflow:hidden;
+    min-height:140px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
   }
-  html.light .zone-card { background:rgba(255,255,255,0.75);border-color:rgba(0,0,0,0.07); }
+  html.light .zone-card { background:rgba(255,255,255,0.55);border-color:rgba(0,0,0,0.08); }
+
   .zone-card::before {
-    content:'';position:absolute;top:0;left:20%;right:20%;height:1px;
-    background:linear-gradient(90deg,transparent,rgba(59,130,246,0.5),rgba(6,182,212,0.5),transparent);
+    content:'';position:absolute;top:0;left:15%;right:15%;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(59,130,246,0.5),rgba(6,182,212,0.4),transparent);
   }
-  .zone-card:hover { transform:translateY(-5px) scale(1.03); border-color:rgba(59,130,246,0.4); box-shadow:0 16px 40px rgba(59,130,246,0.25); }
-  .zone-card.active { border-color:var(--accent-blue); background:rgba(59,130,246,0.15); box-shadow:0 0 0 2px rgba(59,130,246,0.35); }
+  .zone-card:hover {
+    transform:translateY(-6px) scale(1.03);
+    border-color:rgba(59,130,246,0.45);
+    box-shadow:0 20px 48px rgba(59,130,246,0.2);
+    background:rgba(59,130,246,0.07);
+  }
+  .zone-card.active {
+    border-color:var(--accent-blue);
+    background:rgba(59,130,246,0.12);
+    box-shadow:0 0 0 2px rgba(59,130,246,0.3);
+  }
   html.light .zone-card.active { background:rgba(37,99,235,0.08); }
 
-  .zone-icon { font-size:28px;margin-bottom:10px;display:block; }
-  .zone-name { font-size:14px;font-weight:700;color:var(--text-main);margin-bottom:2px; }
-  .zone-label { font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:0.5px; }
+  /* Lock icon — only for super cards */
+  .zone-card .lock-icon {
+    display:none;
+    position:absolute;top:12px;right:12px;
+    width:22px;height:22px;border-radius:6px;
+    background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);
+    align-items:center;justify-content:center;
+    color:#fbbf24;
+  }
+  .zone-card.super-card .lock-icon { display:flex; }
+
+  .zone-icon { display:none; }
+  .zone-name {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:32px;letter-spacing:2px;
+    color:var(--text-main);
+    margin-bottom:6px;line-height:1;
+  }
+  .zone-label {
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;color:var(--text-muted);
+    letter-spacing:1.5px;text-transform:uppercase;
+  }
 
   /* ── DIVIDER ── */
   .zones-divider {
-    width:100%;max-width:520px;
+    width:100%;max-width:900px;
     display:flex;align-items:center;gap:14px;
     margin:4px 0 16px;
     font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;
+    letter-spacing:1px;
   }
   .zones-divider::before,.zones-divider::after { content:'';flex:1;height:1px;background:var(--border); }
 
@@ -182,11 +216,10 @@
   .zone-grid-super {
     display:grid;
     grid-template-columns:repeat(2,1fr);
-    gap:14px;
-    width:100%;
-    max-width:340px;
+    gap:16px;
+    width:100%;max-width:460px;
   }
-  .zone-card.super-card { opacity:0.82; }
+  .zone-card.super-card { opacity:0.88; }
   .zone-card.super-card:hover { opacity:1; }
 
   /* ── PASSWORD MODAL OVERLAY ── */
@@ -321,27 +354,22 @@
   <!-- Warehouse zones 1-5 -->
   <div class="zone-grid" id="zoneGrid">
     <div class="zone-card" onclick="selectZone('zone1')" id="card-zone1">
-      <span class="zone-icon">🏭</span>
       <div class="zone-name">Zone 1</div>
       <div class="zone-label">زون 1</div>
     </div>
     <div class="zone-card" onclick="selectZone('zone2')" id="card-zone2">
-      <span class="zone-icon">🏭</span>
       <div class="zone-name">Zone 2</div>
       <div class="zone-label">زون 2</div>
     </div>
     <div class="zone-card" onclick="selectZone('zone3')" id="card-zone3">
-      <span class="zone-icon">🏭</span>
       <div class="zone-name">Zone 3</div>
       <div class="zone-label">Packaging</div>
     </div>
     <div class="zone-card" onclick="selectZone('zone4')" id="card-zone4">
-      <span class="zone-icon">🏭</span>
       <div class="zone-name">Zone 4</div>
       <div class="zone-label">زون 4</div>
     </div>
     <div class="zone-card" onclick="selectZone('zone5')" id="card-zone5">
-      <span class="zone-icon">🏭</span>
       <div class="zone-name">Zone 5</div>
       <div class="zone-label">زون 5</div>
     </div>
@@ -352,14 +380,18 @@
   <!-- Admin / Dev -->
   <div class="zone-grid-super">
     <div class="zone-card super-card" onclick="selectZone('admin')" id="card-admin">
-      <span class="zone-icon">🏢</span>
+      <div class="lock-icon">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
       <div class="zone-name">EST</div>
       <div class="zone-label">Administration</div>
     </div>
     <div class="zone-card super-card" onclick="selectZone('dev')" id="card-dev">
-      <span class="zone-icon">💻</span>
+      <div class="lock-icon">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
       <div class="zone-name">Dev</div>
-      <div class="zone-label"></div>
+      <div class="zone-label">Developer</div>
     </div>
   </div>
 
