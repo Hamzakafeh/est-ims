@@ -70,8 +70,10 @@
 
   /* ── TOP BAR ── */
   .topbar {
-    background: var(--bg-main);
-    border-bottom: 1px solid var(--border);
+    background: rgba(13,17,23,0.75);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(59,130,246,0.12);
     padding: 0 20px;
     height: 60px;
     display: flex;
@@ -80,7 +82,56 @@
     flex-shrink: 0;
     position: relative;
     z-index: 100;
+    overflow: hidden;
   }
+  /* animated gradient line at bottom of topbar */
+  .topbar::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(59,130,246,0.5), rgba(6,182,212,0.4), transparent);
+    animation: topbarLine 4s ease-in-out infinite;
+  }
+  @keyframes topbarLine {
+    0%,100% { opacity: 0.4; transform: scaleX(0.7); }
+    50%      { opacity: 1;   transform: scaleX(1); }
+  }
+  /* floating blobs inside topbar */
+  .topbar-blob {
+    position: absolute; border-radius: 50%;
+    filter: blur(40px); pointer-events: none; z-index: 0;
+  }
+  .topbar-blob-1 {
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(59,130,246,0.18), transparent 70%);
+    top: -80px; left: -40px;
+    animation: tb1 8s ease-in-out infinite;
+  }
+  .topbar-blob-2 {
+    width: 160px; height: 160px;
+    background: radial-gradient(circle, rgba(6,182,212,0.14), transparent 70%);
+    top: -60px; right: 20%;
+    animation: tb2 10s ease-in-out infinite;
+  }
+  .topbar-blob-3 {
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(99,102,241,0.12), transparent 70%);
+    top: -50px; right: -20px;
+    animation: tb3 7s ease-in-out infinite;
+  }
+  @keyframes tb1 { 0%,100%{transform:translate(0,0);} 50%{transform:translate(30px,10px);} }
+  @keyframes tb2 { 0%,100%{transform:translate(0,0);} 50%{transform:translate(-20px,8px);} }
+  @keyframes tb3 { 0%,100%{transform:translate(0,0);} 50%{transform:translate(-15px,12px);} }
+  /* make topbar children above blobs */
+  .topbar > *:not(.topbar-blob) { position: relative; z-index: 1; }
+  html.light .topbar {
+    background: rgba(255,255,255,0.82);
+    border-bottom: 1px solid rgba(37,99,235,0.12);
+  }
+  html.light .topbar-blob-1 { background: radial-gradient(circle, rgba(37,99,235,0.1), transparent 70%); }
+  html.light .topbar-blob-2 { background: radial-gradient(circle, rgba(8,145,178,0.08), transparent 70%); }
+  html.light .topbar-blob-3 { background: radial-gradient(circle, rgba(99,102,241,0.07), transparent 70%); }
   .topbar-brand { display: flex; align-items: center; gap: 12px; }
   .brand-icon {
     width: 38px; height: 38px;
@@ -235,6 +286,31 @@
   .badge-green { background: rgba(16,185,129,0.15);  color: var(--accent-green); border: 1px solid rgba(16,185,129,0.3); }
   .badge-edit  { background: rgba(245,158,11,0.15);  color: var(--accent-amber); border: 1px solid rgba(245,158,11,0.3); }
 
+  /* ── USER / ZONE BADGES IN TOPBAR ── */
+  .user-badge {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--accent-blue);
+    background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.28);
+    border-radius: 20px; padding: 3px 12px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .zone-badge {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--accent-cyan);
+    background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.25);
+    border-radius: 20px; padding: 3px 12px;
+  }
+  /* Super zone badge — amber pulsing */
+  .zone-badge.super {
+    color: #fbbf24;
+    background: rgba(251,191,36,0.12); border-color: rgba(251,191,36,0.3);
+    animation: superPulse 2s ease-in-out infinite;
+  }
+  @keyframes superPulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(251,191,36,0); opacity: 1; }
+    50%      { box-shadow: 0 0 0 4px rgba(251,191,36,0.18); opacity: 0.85; }
+  }
+
   /* Edit mode toggle */
   .edit-toggle {
     display: flex; align-items: center; gap: 8px;
@@ -346,6 +422,14 @@
   .spinner { width: 22px; height: 22px; border: 2px solid var(--border); border-top-color: var(--accent-blue); border-radius: 50%; animation: spin 0.7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .no-data-row td { text-align: center; color: var(--text-dim); padding: 30px; font-style: italic; }
+
+  /* ── LOG SHEET ROW COLORS ── */
+  .row-in  { background: rgba(16,185,129,0.08) !important; }
+  .row-out { background: rgba(239,68,68,0.08)  !important; }
+  .row-in:hover  { background: rgba(16,185,129,0.16) !important; }
+  .row-out:hover { background: rgba(239,68,68,0.16)  !important; }
+  .row-in  td { border-bottom-color: rgba(16,185,129,0.12) !important; }
+  .row-out td { border-bottom-color: rgba(239,68,68,0.12)  !important; }
 
   /* Status bar */
   .statusbar {
@@ -479,7 +563,7 @@
   html.light .brand-text h1 { color: #1e293b; font-weight: 700; }
   html.light .brand-text p  { color: #64748b; }
   html.light .clock { color: #374151; }
-  html.light .topbar { background: #fff; border-bottom-color: #e2e8f0; box-shadow: 0 1px 8px rgba(0,0,0,0.06); }
+  html.light .topbar { box-shadow: 0 1px 8px rgba(0,0,0,0.06); }
   html.light .sidebar { background: #f8fafc; border-right-color: #e2e8f0; }
   html.light .sidebar-toggle-btn { background: #f8fafc; border-color: #e2e8f0; }
   html.light .statusbar { background: #fff; border-top-color: #e2e8f0; }
@@ -732,6 +816,11 @@
 
 <!-- TOP BAR -->
 <div class="topbar">
+  <!-- background blobs -->
+  <div class="topbar-blob topbar-blob-1"></div>
+  <div class="topbar-blob topbar-blob-2"></div>
+  <div class="topbar-blob topbar-blob-3"></div>
+
   <div class="topbar-brand">
     <div class="brand-icon">
       <img src="/static/low.ico" style="width:24px;height:24px;object-fit:contain;">
@@ -744,11 +833,11 @@
   <div class="topbar-right">
     <span class="clock" id="clock">--:-- --</span>
     <div style="display:flex;align-items:center;gap:6px;margin-right:4px;">
-      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:3px 12px;display:flex;align-items:center;gap:5px;">
+      <span class="user-badge">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         {{ username }}
       </span>
-      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent-cyan);background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.25);border-radius:20px;padding:3px 12px;">
+      <span class="zone-badge {% if is_super %}super{% endif %}">
         {{ zone_label }}
       </span>
     </div>
@@ -1365,7 +1454,11 @@ function renderTable(headers, rows) {
   } else {
     rows.forEach((row, i) => {
       const excelRow = row['__row__'];
-      html += `<tr data-row="${i}" data-excel-row="${excelRow || ''}">`;
+      // Detect IN/OUT from Process column (Log sheet)
+      const processKey = Object.keys(row).find(k => k.toLowerCase() === 'process');
+      const processVal = processKey ? String(row[processKey] || '').trim().toUpperCase() : '';
+      const rowCls = processVal === 'IN' ? 'row-in' : processVal === 'OUT' ? 'row-out' : '';
+      html += `<tr data-row="${i}" data-excel-row="${excelRow || ''}" class="${rowCls}">`;
       html += `<td class="row-num">${i + 1}</td>`;
       visHeaders.forEach(h => {
         const val = row[h];
