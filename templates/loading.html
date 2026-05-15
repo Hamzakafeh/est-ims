@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Loading...</title>
+
+<style>
+
+body{
+    margin:0;
+    height:100vh;
+    background:#050816;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    overflow:hidden;
+    font-family:Arial;
+    color:white;
+}
+
+h1{
+    color:#2f7cff;
+    font-size:65px;
+    margin:0;
+    animation:pulse 1.5s infinite;
+}
+
+p{
+    margin-top:15px;
+    opacity:.7;
+    letter-spacing:4px;
+}
+
+.loader{
+    width:65px;
+    height:65px;
+    border:5px solid #1e293b;
+    border-top:5px solid #2f7cff;
+    border-radius:50%;
+    margin-top:35px;
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+    100%{
+        transform:rotate(360deg);
+    }
+}
+
+@keyframes pulse{
+    0%{
+        transform:scale(1);
+        text-shadow:0 0 10px #2f7cff;
+    }
+
+    50%{
+        transform:scale(1.08);
+        text-shadow:0 0 30px #2f7cff;
+    }
+
+    100%{
+        transform:scale(1);
+        text-shadow:0 0 10px #2f7cff;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Management</h1>
+
+<p>INITIALIZING SYSTEM...</p>
+
+<div class="loader"></div>
+
+<script>
+
+async function wakeServer() {
+
+    try {
+
+        const response = await fetch("/ping");
+
+        if(response.ok){
+
+            window.location.href = "/welcome";
+
+        } else {
+
+            setTimeout(wakeServer, 2000);
+
+        }
+
+    } catch(error){
+
+        setTimeout(wakeServer, 2000);
+
+    }
+
+}
+
+wakeServer();
+
+</script>
+
+</body>
+</html>

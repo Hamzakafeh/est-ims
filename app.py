@@ -25,6 +25,10 @@ app = Flask(__name__, static_folder='static')
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.secret_key = os.getenv("SECRET_KEY", "LARALOLO")
+
+@app.route("/ping")
+def ping():
+    return {"status": "ok"}
 # ── بيانات الدخول ──────────────────────────────────────────────────
 import os
 
@@ -555,6 +559,10 @@ def _recalc_stocktaking(wb):
             cell.value = last_result if last_result is not None else cell.value
 
 @app.route('/')
+def loading():
+    return render_template('loading.html')
+
+@app.route('/welcome')
 def welcome():
     return render_template('welcome.html')
 

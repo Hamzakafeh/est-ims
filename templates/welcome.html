@@ -798,6 +798,8 @@ function toggleTheme() {
   window.addEventListener('mouseleave', () => { mouse.x = -999; mouse.y = -999; });
   init(); draw();
 })();
+fetch("https://est-ims.onrender.com/ping")
+.catch(() => {});
 </script>
 </body>
 </html>
