@@ -39,8 +39,33 @@ def _record_failed_attempt(ip):
 def _clear_attempts(ip):
     _login_attempts.pop(ip, None)
 
-try:
-    import openpyxl
+_LOGIN_LOG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'login_log.json')
+_log_lock = threading.Lock()
+
+def _read_login_log():
+    try:
+        with open(_LOGIN_LOG_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception:
+        return []
+
+def _write_login_log(entries):
+    with open(_LOGIN_LOG_FILE, 'w', encoding='utf-8') as f:
+        json.dump(entries[-500:], f, ensure_ascii=False)  # keep last 500
+
+def _record_login(username, zone_id, zone_label, ip):
+    with _log_lock:
+        entries = _read_login_log()
+        entries.append({
+            'username':   username,
+            'zone_id':    zone_id,
+            'zone_label': zone_label,
+            'ip':         ip,
+            'time':       datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        })
+        _write_login_log(entries)
+
+
 except ImportError:
     print("ERROR: openpyxl not installed.")
     sys.exit(1)
@@ -211,6 +236,8 @@ def api_zone_login():
     session['zone_label']  = zone['label']
     session['can_edit']    = zone_id in EDIT_ZONES
     session['is_super']    = zone_id in SUPER_ZONES
+    session['login_time']  = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    _record_login(session.get('username',''), zone_id, zone['label'], ip)
     return jsonify({'success': True})
 
 @app.route('/api/switch_zone', methods=['POST'])
@@ -667,7 +694,8 @@ def index():
                            zone_label=zone_label,
                            is_super=is_super,
                            can_edit=can_edit,
-                           username=username)
+                           username=username,
+                           login_time=session.get('login_time',''))
 
 @app.route('/api/structure')
 @zone_required
@@ -1342,6 +1370,59 @@ def api_dashboard():
         'zone_in':     {k: round(v, 2) for k, v in zone_in.items()},
         'zone_out':    {k: round(v, 2) for k, v in zone_out.items()},
     })
+
+@app.route('/api/login_log')
+@zone_required
+def api_login_log():
+    """Return login history — admin/dev only."""
+    if not session.get('is_super'):
+        return jsonify({'error': 'غير مصرح'}), 403
+    with _log_lock:
+        entries = _read_login_log()
+    return jsonify({'entries': list(reversed(entries))})
+
+@app.route('/api/alert_count')
+@zone_required
+def api_alert_count():
+    """Quick scan: return number of zero-stock items for the badge."""
+    zone_id  = session.get('active_view_zone') or session.get('zone', '')
+    is_super = session.get('is_super', False)
+    root = get_years_root()
+    if not root:
+        return jsonify({'zero': 0})
+    scan_zones = [z['id'] for z in ZONES if z['id'] not in SUPER_ZONES] if is_super else [zone_id]
+    zero = 0
+    for zid in scan_zones:
+        zone_path = os.path.join(root, zid)
+        if not os.path.isdir(zone_path):
+            continue
+        for rdir, dirs, files in os.walk(zone_path):
+            for f in files:
+                if not f.lower().endswith(('.xlsx','.xlsm','.xls')):
+                    continue
+                try:
+                    wb = openpyxl.load_workbook(os.path.join(rdir,f), data_only=True, read_only=True)
+                    for sname in wb.sheetnames:
+                        if 'log' in sname.lower(): continue
+                        ws = wb[sname]
+                        rows = list(ws.iter_rows(values_only=True))
+                        hdr_idx = None
+                        headers = []
+                        for i,row in enumerate(rows):
+                            rv=[str(c).strip() if c else '' for c in row]
+                            if 'Current Balance' in rv:
+                                hdr_idx=i; headers=rv; break
+                        if hdr_idx is None: continue
+                        ci_bal = headers.index('Current Balance')
+                        for row in rows[hdr_idx+1:]:
+                            if all(c is None or str(c).strip()=='' for c in row): continue
+                            try:
+                                if ci_bal < len(row) and float(row[ci_bal] or 1) == 0:
+                                    zero += 1
+                            except: pass
+                    wb.close()
+                except: pass
+    return jsonify({'zero': zero})
 
 # ══════════════════════════════════════════════════════════════════
 #  REPORTS — list & serve Excel files from /reports folder
