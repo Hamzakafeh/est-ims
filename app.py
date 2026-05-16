@@ -1212,6 +1212,41 @@ def api_add_row():
 
 
 # ══════════════════════════════════════════════════════════════════
+#  UMAMI STATS
+# ══════════════════════════════════════════════════════════════════
+@app.route('/api/stats')
+def api_stats():
+    import time as _t
+    api_token  = os.getenv('UMAMI_TOKEN')
+    website_id = os.getenv('UMAMI_WEBSITE_ID')
+    if not api_token or not website_id:
+        return jsonify({'error': 'not configured'}), 503
+
+    now       = int(_t.time() * 1000)
+    day_start = now - 86400000
+    headers   = {'Authorization': f'Bearer {api_token}'}
+
+    try:
+        r_total = _requests.get(
+            f'https://cloud.umami.is/api/websites/{website_id}/stats',
+            headers=headers,
+            params={'startAt': 0, 'endAt': now},
+            timeout=8
+        )
+        r_today = _requests.get(
+            f'https://cloud.umami.is/api/websites/{website_id}/stats',
+            headers=headers,
+            params={'startAt': day_start, 'endAt': now},
+            timeout=8
+        )
+        return jsonify({
+            'total': r_total.json().get('pageviews', {}).get('value', 0),
+            'today': r_today.json().get('pageviews', {}).get('value', 0),
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# ══════════════════════════════════════════════════════════════════
 #  AI CHAT PROXY
 # ══════════════════════════════════════════════════════════════════
 @app.route('/api/ai-chat', methods=['POST'])

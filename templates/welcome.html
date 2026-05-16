@@ -775,6 +775,49 @@
   .ai-send-btn:hover { background: #2563eb; transform: scale(1.08); }
   .ai-send-btn:active { transform: scale(0.95); }
   .ai-send-btn:disabled { background: var(--border); cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* ── STATS CORNER ── */
+  .stats-corner {
+    position: fixed;
+    bottom: 28px; left: 28px;
+    z-index: 100;
+    display: flex; flex-direction: column; gap: 8px;
+    opacity: 0; animation: fadeUp 0.5s ease 1.1s both;
+  }
+  .stat-chip {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(21,28,42,0.7);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(59,130,246,0.18);
+    border-radius: 12px;
+    padding: 8px 14px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  html.light .stat-chip {
+    background: rgba(255,255,255,0.75);
+    border-color: rgba(37,99,235,0.15);
+  }
+  .stat-chip:hover { border-color: rgba(59,130,246,0.4); transform: translateX(3px); }
+  .stat-chip-icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: rgba(59,130,246,0.12);
+    border: 1px solid rgba(59,130,246,0.2);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; color: var(--accent-blue);
+  }
+  html.light .stat-chip-icon { background: rgba(37,99,235,0.08); }
+  .stat-chip-info { display: flex; flex-direction: column; }
+  .stat-chip-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px; font-weight: 700;
+    color: var(--accent-blue); line-height: 1;
+  }
+  .stat-chip-label {
+    font-size: 9px; font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-top: 2px;
+  }
 </style>
 </head>
 <body>
@@ -889,6 +932,34 @@
   </span>
 </div>
 
+</div>
+
+<!-- STATS CORNER -->
+<div class="stats-corner">
+  <div class="stat-chip">
+    <div class="stat-chip-icon">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+    </div>
+    <div class="stat-chip-info">
+      <div class="stat-chip-value" id="statTotal">—</div>
+      <div class="stat-chip-label">Total Visits</div>
+    </div>
+  </div>
+  <div class="stat-chip">
+    <div class="stat-chip-icon">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+      </svg>
+    </div>
+    <div class="stat-chip-info">
+      <div class="stat-chip-value" id="statToday">—</div>
+      <div class="stat-chip-label">Today</div>
+    </div>
+  </div>
 </div>
 
 <!-- DEVELOPER MODAL -->
@@ -1268,6 +1339,19 @@ function toggleTheme() {
 })();
 fetch("https://est-ims.onrender.com/ping")
 .catch(() => {});
+
+// ── STATS ──
+(async function() {
+  try {
+    const res  = await fetch('/api/stats');
+    const data = await res.json();
+    if (data.total !== undefined) {
+      document.getElementById('statTotal').textContent = data.total.toLocaleString();
+      document.getElementById('statToday').textContent = data.today.toLocaleString();
+    }
+  } catch(e) {}
+})();
+
 </script>
 </body>
 </html>
