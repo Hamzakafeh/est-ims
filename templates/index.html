@@ -1096,6 +1096,7 @@ EST-iMs © | 2026    </div>
       </button>
       <button class="btn btn-primary"  onclick="refreshData()">Refresh</button>
       <button class="btn btn-warning"  onclick="openPrintModal()">Print</button>
+      {% if is_super %}
       <button class="btn btn-success"  onclick="openDashboard()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
         Dashboard
@@ -1107,6 +1108,7 @@ EST-iMs © | 2026    </div>
         </button>
         <div class="reports-dropdown-menu" id="reportsDropdownMenu"></div>
       </div>
+      {% endif %}
       <button class="btn btn-success"  onclick="exportCSV()">Export CSV</button>
       <button class="btn btn-about"    onclick="showAbout()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
