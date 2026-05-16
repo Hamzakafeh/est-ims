@@ -1227,10 +1227,11 @@ def api_stats():
     headers   = {'Authorization': f'Bearer {api_token}'}
 
     try:
+        year_start = 1672531200000  # 2023-01-01
         r_total = _requests.get(
             f'https://cloud.umami.is/api/websites/{website_id}/stats',
             headers=headers,
-            params={'startAt': 0, 'endAt': now},
+            params={'startAt': year_start, 'endAt': now},
             timeout=8
         )
         r_today = _requests.get(
@@ -1239,9 +1240,11 @@ def api_stats():
             params={'startAt': day_start, 'endAt': now},
             timeout=8
         )
+        total_data = r_total.json()
+        today_data = r_today.json()
         return jsonify({
-            'total': r_total.json().get('pageviews', {}).get('value', 0),
-            'today': r_today.json().get('pageviews', {}).get('value', 0),
+            'total': total_data.get('pageviews', {}).get('value', 0),
+            'today': today_data.get('pageviews', {}).get('value', 0),
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
