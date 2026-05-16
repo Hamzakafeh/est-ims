@@ -2,7 +2,8 @@
 EST Inventory System - Full Read/Write
 Alestesharia Animal Nutrition
 """
-
+from dotenv import load_dotenv
+load_dotenv()
 import os
 import sys
 import json
