@@ -1212,44 +1212,46 @@ def api_add_row():
 
 
 # ══════════════════════════════════════════════════════════════════
-#  UMAMI STATS
+#  VISIT COUNTER (file-based)
 # ══════════════════════════════════════════════════════════════════
+_COUNTER_FILE = os.path.join(os.path.dirname(__file__), 'visit_counter.json')
+_counter_lock = threading.Lock()
+
+def _load_counter():
+    try:
+        with open(_COUNTER_FILE, 'r') as f:
+            return json.load(f)
+    except Exception:
+        return {'total': 0, 'today': 0, 'date': ''}
+
+def _save_counter(data):
+    with open(_COUNTER_FILE, 'w') as f:
+        json.dump(data, f)
+
+@app.route('/api/track_visit', methods=['POST'])
+def api_track_visit():
+    today = datetime.now().strftime('%Y-%m-%d')
+    with _counter_lock:
+        data = _load_counter()
+        if data.get('date') != today:
+            data['today'] = 0
+            data['date']  = today
+        data['total'] = data.get('total', 0) + 1
+        data['today'] = data.get('today', 0) + 1
+        _save_counter(data)
+    return jsonify({'ok': True})
+
 @app.route('/api/stats')
 def api_stats():
-    import time as _t
-    api_token  = os.getenv('UMAMI_TOKEN')
-    website_id = os.getenv('UMAMI_WEBSITE_ID')
-    if not api_token or not website_id:
-        return jsonify({'error': 'not configured'}), 503
-
-    now       = int(_t.time() * 1000)
-    day_start = now - 86400000
-    headers   = {'Authorization': f'Bearer {api_token}'}
-
-    try:
-        year_start = 1672531200000  # 2023-01-01
-        r_total = _requests.get(
-            f'https://cloud.umami.is/api/websites/{website_id}/stats',
-            headers=headers,
-            params={'startAt': year_start, 'endAt': now},
-            timeout=8
-        )
-        r_today = _requests.get(
-            f'https://cloud.umami.is/api/websites/{website_id}/stats',
-            headers=headers,
-            params={'startAt': day_start, 'endAt': now},
-            timeout=8
-        )
-        total_data = r_total.json()
-        today_data = r_today.json()
-        return jsonify({
-            'total': total_data.get('pageviews', {}).get('value', 0),
-            'today': today_data.get('pageviews', {}).get('value', 0),
-            'debug_total': total_data,
-            'debug_today': today_data,
-        })
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    today = datetime.now().strftime('%Y-%m-%d')
+    with _counter_lock:
+        data = _load_counter()
+    if data.get('date') != today:
+        data['today'] = 0
+    return jsonify({
+        'total': data.get('total', 0),
+        'today': data.get('today', 0),
+    })
 
 # ══════════════════════════════════════════════════════════════════
 #  AI CHAT PROXY
