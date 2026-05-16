@@ -1228,17 +1228,82 @@ def api_reports():
     ]
     return jsonify({'files': files})
 
-@app.route('/reports/<path:filename>')
+@app.route('/reports/print/<path:filename>')
 @zone_required
-def serve_report(filename):
-    """Serve a single report file for inline viewing (print)."""
-    # Security: only allow files directly inside reports/ (no path traversal)
+def print_report(filename):
+    """Convert an Excel report to a printable HTML page."""
     safe_name = os.path.basename(filename)
-    filepath   = os.path.join(REPORTS_DIR, safe_name)
+    filepath  = os.path.join(REPORTS_DIR, safe_name)
     if not os.path.isfile(filepath):
-        return 'Not found', 404
-    from flask import send_file
-    return send_file(filepath, as_attachment=False)
+        return 'File not found', 404
+
+    try:
+        wb = openpyxl.load_workbook(filepath, data_only=True)
+    except Exception as e:
+        return f'Could not open file: {e}', 500
+
+    # Build one HTML table per sheet
+    sheets_html = []
+    for sheet_name in wb.sheetnames:
+        ws = wb[sheet_name]
+        rows_data = list(ws.iter_rows(values_only=True))
+        if not rows_data:
+            continue
+
+        # Find actual used columns range
+        max_col = max(
+            (sum(1 for c in row if c is not None and str(c).strip() != '') for row in rows_data),
+            default=1
+        )
+
+        table = f'<h2 class="sheet-title">{sheet_name}</h2><table>'
+        for ri, row in enumerate(rows_data):
+            # Skip completely empty rows
+            if all(c is None or str(c).strip() == '' for c in row):
+                continue
+            tag = 'th' if ri == 0 else 'td'
+            cells = ''.join(
+                f'<{tag}>{("" if (c is None or str(c).strip() == "") else str(c))}</{tag}>'
+                for c in row
+            )
+            table += f'<tr>{cells}</tr>'
+        table += '</table>'
+        sheets_html.append(table)
+
+    wb.close()
+
+    html = f"""<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>{safe_name}</title>
+  <style>
+    * {{ margin:0; padding:0; box-sizing:border-box; }}
+    body {{ font-family: Arial, sans-serif; font-size: 11px; padding: 16px; background:#fff; color:#000; }}
+    .sheet-title {{ font-size:14px; font-weight:700; margin: 18px 0 6px; color:#1a3a5c; border-bottom:2px solid #1a3a5c; padding-bottom:4px; }}
+    table {{ border-collapse: collapse; width:100%; margin-bottom: 24px; page-break-inside: avoid; }}
+    th, td {{ border: 1px solid #bbb; padding: 5px 8px; text-align: center; white-space: nowrap; }}
+    th {{ background: #1a3a5c; color: #fff; font-size:11px; }}
+    tr:nth-child(even) td {{ background: #f5f7fa; }}
+    @media print {{
+      body {{ padding:8px; }}
+      .sheet-title {{ margin-top:10px; }}
+      @page {{ margin: 1cm; size: landscape; }}
+    }}
+  </style>
+</head>
+<body>
+  <div style="text-align:center;margin-bottom:14px;">
+    <strong style="font-size:15px;">{safe_name.rsplit('.',1)[0]}</strong>
+    <span style="font-size:11px;color:#666;margin-left:10px;">Printed: {datetime.now().strftime('%Y-%m-%d %H:%M')}</span>
+  </div>
+  {''.join(sheets_html)}
+  <script>window.onload = function(){{ window.print(); }};</script>
+</body>
+</html>"""
+
+    from flask import Response
+    return Response(html, mimetype='text/html')
 
 # ══════════════════════════════════════════════════════════════════
 #  VISIT COUNTER (file-based)
