@@ -66,6 +66,8 @@ def _record_login(username, zone_id, zone_label, ip):
         _write_login_log(entries)
 
 
+try:
+    import openpyxl
 except ImportError:
     print("ERROR: openpyxl not installed.")
     sys.exit(1)
