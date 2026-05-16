@@ -1212,6 +1212,35 @@ def api_add_row():
 
 
 # ══════════════════════════════════════════════════════════════════
+#  REPORTS — list & serve Excel files from /reports folder
+# ══════════════════════════════════════════════════════════════════
+REPORTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'reports')
+
+@app.route('/api/reports')
+@zone_required
+def api_reports():
+    """Return a list of Excel files inside the reports/ folder."""
+    if not os.path.isdir(REPORTS_DIR):
+        return jsonify({'files': []})
+    files = [
+        f for f in sorted(os.listdir(REPORTS_DIR))
+        if f.lower().endswith(('.xlsx', '.xlsm', '.xls'))
+    ]
+    return jsonify({'files': files})
+
+@app.route('/reports/<path:filename>')
+@zone_required
+def serve_report(filename):
+    """Serve a single report file for inline viewing (print)."""
+    # Security: only allow files directly inside reports/ (no path traversal)
+    safe_name = os.path.basename(filename)
+    filepath   = os.path.join(REPORTS_DIR, safe_name)
+    if not os.path.isfile(filepath):
+        return 'Not found', 404
+    from flask import send_file
+    return send_file(filepath, as_attachment=False)
+
+# ══════════════════════════════════════════════════════════════════
 #  VISIT COUNTER (file-based)
 # ══════════════════════════════════════════════════════════════════
 _COUNTER_FILE = os.path.join(os.path.dirname(__file__), 'visit_counter.json')

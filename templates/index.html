@@ -730,6 +730,45 @@
   .csv-modal-actions { display: flex; gap: 10px; justify-content: center; }
   .csv-modal-actions .btn { min-width: 120px; justify-content: center; padding: 10px 20px; font-size: 13px; }
 
+  /* ── REPORTS DROPDOWN ── */
+  .reports-dropdown-wrap {
+    position: relative;
+    display: inline-flex;
+  }
+  .reports-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    min-width: 220px;
+    max-height: 280px;
+    overflow-y: auto;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    z-index: 500;
+    padding: 6px;
+    animation: dropIn 0.15s cubic-bezier(.4,0,.2,1);
+  }
+  @keyframes dropIn {
+    from { opacity:0; transform: translateY(-6px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+  .reports-dropdown-menu.open { display: block; }
+  .reports-dropdown-item {
+    display: flex; align-items: center; gap: 9px;
+    padding: 9px 12px; border-radius: 7px;
+    cursor: pointer; font-size: 12.5px; color: var(--text-main);
+    transition: background 0.12s;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .reports-dropdown-item:hover { background: var(--bg-hover); }
+  .reports-dropdown-item .ri-icon { font-size: 15px; flex-shrink: 0; }
+  .reports-dropdown-empty {
+    padding: 12px 14px; font-size: 12px; color: var(--text-dim); text-align: center;
+  }
+
   /* ── BETA POPUP ── */
   .beta-overlay {
     position: fixed;
@@ -920,6 +959,13 @@ EST-iMs © | 2026    </div>
       </button>
       <button class="btn btn-primary"  onclick="refreshData()">Refresh</button>
       <button class="btn btn-warning"  onclick="openPrintModal()">Print</button>
+      <div class="reports-dropdown-wrap" id="reportsDropdownWrap">
+        <button class="btn btn-primary" onclick="toggleReportsDropdown(event)" id="reportsBtn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Reports ▾
+        </button>
+        <div class="reports-dropdown-menu" id="reportsDropdownMenu"></div>
+      </div>
       <button class="btn btn-success"  onclick="exportCSV()">Export CSV</button>
       <button class="btn btn-about"    onclick="showAbout()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
@@ -2008,7 +2054,7 @@ function doExportCSV() {
 // ── KEYBOARD ──
 document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.key === 'f') { e.preventDefault(); document.getElementById('searchInput').focus(); }
-  if (e.key === 'Escape') { closeTxModal(); closeAbout(); cancelPwdModal(); closePrintModal(); closeCsvModal(); closeLogout(); }
+  if (e.key === 'Escape') { closeTxModal(); closeAbout(); cancelPwdModal(); closePrintModal(); closeCsvModal(); closeLogout(); document.getElementById('reportsDropdownMenu').classList.remove('open'); }
 });
 
 // ── ABOUT ──
@@ -2023,6 +2069,68 @@ function closeLogout() {
 }
 function doLogout() {
 window.location.href = '/logout';}
+
+// ── REPORTS DROPDOWN ──
+let _reportsLoaded = false;
+
+async function toggleReportsDropdown(e) {
+  e.stopPropagation();
+  const menu = document.getElementById('reportsDropdownMenu');
+  const isOpen = menu.classList.contains('open');
+  if (isOpen) {
+    menu.classList.remove('open');
+    return;
+  }
+  // Load list on first open
+  if (!_reportsLoaded) {
+    menu.innerHTML = '<div class="reports-dropdown-empty">Loading...</div>';
+    menu.classList.add('open');
+    try {
+      const res  = await fetch('/api/reports');
+      const data = await res.json();
+      _reportsLoaded = true;
+      if (!data.files || !data.files.length) {
+        menu.innerHTML = '<div class="reports-dropdown-empty">📂 No reports found</div>';
+      } else {
+        menu.innerHTML = data.files.map(f =>
+          `<div class="reports-dropdown-item" onclick="printReport('${escAttr(f)}')">
+             <span class="ri-icon">📊</span>
+             <span style="overflow:hidden;text-overflow:ellipsis;">${escHtml(f)}</span>
+           </div>`
+        ).join('');
+      }
+    } catch {
+      menu.innerHTML = '<div class="reports-dropdown-empty">⚠️ Failed to load</div>';
+    }
+  } else {
+    menu.classList.add('open');
+  }
+}
+
+function printReport(filename) {
+  document.getElementById('reportsDropdownMenu').classList.remove('open');
+  const url = '/reports/' + encodeURIComponent(filename);
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head>
+    <title>${escHtml(filename)}</title>
+    <style>
+      body { margin:0; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; font-family:Arial,sans-serif; background:#f5f5f5; }
+      p { color:#555; margin-top:16px; font-size:14px; }
+    </style>
+  </head><body>
+    <p>⏳ Loading report — print dialog will open automatically...</p>
+    <iframe id="rf" src="${url}" style="display:none;" onload="this.contentWindow.print();"></iframe>
+  </body></html>`);
+  win.document.close();
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  const wrap = document.getElementById('reportsDropdownWrap');
+  if (wrap && !wrap.contains(e.target)) {
+    document.getElementById('reportsDropdownMenu').classList.remove('open');
+  }
+});
 
 // ── START ──
 init();
