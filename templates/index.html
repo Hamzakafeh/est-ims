@@ -8,6 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <title>EST-iMs | Main</title>
 <link rel="icon" type="image/x-icon" href="/static/low1.ico">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -98,8 +99,8 @@
     justify-content: space-between;
     flex-shrink: 0;
     position: relative;
-    z-index: 100;
-    overflow: hidden;
+    z-index: 200;
+    overflow: visible;
   }
   /* animated gradient line at bottom of topbar */
   .topbar::after {
@@ -118,6 +119,7 @@
   .topbar-blob {
     position: absolute; border-radius: 50%;
     filter: blur(40px); pointer-events: none; z-index: 0;
+    clip-path: inset(0);
   }
   .topbar-blob-1 {
     width: 200px; height: 200px;
@@ -752,9 +754,144 @@
     animation: dropIn 0.15s cubic-bezier(.4,0,.2,1);
   }
   @keyframes dropIn {
-    from { opacity:0; transform: translateY(-6px); }
+    from { opacity:0; transform: translateY(-4px); }
     to   { opacity:1; transform: translateY(0); }
   }
+
+  /* ── DASHBOARD MODAL ── */
+  #dashModal {
+    display: none; position: fixed; inset: 0; z-index: 9000;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+    align-items: center; justify-content: center;
+  }
+  #dashModal.open { display: flex; }
+  .dash-box {
+    background: var(--bg-main);
+    border: 1px solid var(--border-light);
+    border-radius: 20px;
+    width: 92vw; height: 86vh;
+    display: flex; overflow: hidden;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.7);
+    animation: modalIn 0.24s cubic-bezier(.34,1.56,.64,1);
+  }
+  /* LEFT SIDEBAR */
+  .dash-sidebar {
+    width: 220px; flex-shrink: 0;
+    background: var(--bg-panel);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    padding: 20px 12px; gap: 4px;
+    overflow-y: auto;
+  }
+  .dash-sidebar-title {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
+    color: var(--text-dim); text-transform: uppercase;
+    padding: 0 8px; margin-bottom: 8px;
+  }
+  .dash-nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 9px;
+    cursor: pointer; font-size: 13px; color: var(--text-muted);
+    transition: all 0.15s; border: 1px solid transparent;
+    user-select: none;
+  }
+  .dash-nav-item:hover { background: var(--bg-hover); color: var(--text-main); }
+  .dash-nav-item.active {
+    background: var(--bg-active); border-color: var(--border-light);
+    color: var(--accent-blue); font-weight: 600;
+  }
+  .dash-nav-item .dn-icon { font-size: 17px; flex-shrink: 0; }
+  .dash-nav-sep {
+    height: 1px; background: var(--border);
+    margin: 8px 4px;
+  }
+  /* RIGHT CONTENT */
+  .dash-content {
+    flex: 1; overflow-y: auto;
+    padding: 28px 32px;
+    background: var(--bg-deep);
+  }
+  .dash-content-title {
+    font-size: 18px; font-weight: 700; color: var(--text-main);
+    margin-bottom: 4px;
+  }
+  .dash-content-sub {
+    font-size: 12px; color: var(--text-muted); margin-bottom: 24px;
+  }
+  /* KPI cards grid */
+  .dash-kpi-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 14px; margin-bottom: 28px;
+  }
+  .dash-kpi-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 18px 20px;
+    display: flex; flex-direction: column; gap: 8px;
+    transition: border-color 0.15s;
+  }
+  .dash-kpi-card:hover { border-color: var(--border-light); }
+  .dash-kpi-label { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+  .dash-kpi-value { font-size: 28px; font-weight: 700; color: var(--text-main); line-height: 1; }
+  .dash-kpi-sub   { font-size: 11px; color: var(--text-dim); }
+  .dash-kpi-card.blue  { border-left: 3px solid var(--accent-blue); }
+  .dash-kpi-card.green { border-left: 3px solid var(--accent-green); }
+  .dash-kpi-card.red   { border-left: 3px solid var(--accent-red); }
+  .dash-kpi-card.amber { border-left: 3px solid var(--accent-amber); }
+  .dash-kpi-card.cyan  { border-left: 3px solid var(--accent-cyan); }
+  /* Chart container */
+  .dash-chart-wrap {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 22px 24px; margin-bottom: 20px;
+  }
+  .dash-chart-title { font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 16px; }
+  .dash-chart-wrap canvas { max-height: 300px; }
+  /* Alert items */
+  .dash-alert-list { display: flex; flex-direction: column; gap: 10px; }
+  .dash-alert-item {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px; font-size: 13px;
+  }
+  .dash-alert-item.warn  { border-left: 3px solid var(--accent-amber); }
+  .dash-alert-item.danger{ border-left: 3px solid var(--accent-red); }
+  .dash-alert-item.info  { border-left: 3px solid var(--accent-blue); }
+  .dash-alert-icon { font-size: 20px; flex-shrink: 0; }
+  .dash-alert-text { flex: 1; }
+  .dash-alert-name { font-weight: 600; color: var(--text-main); }
+  .dash-alert-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .dash-alert-badge {
+    font-size: 11px; font-weight: 700; padding: 2px 10px;
+    border-radius: 20px; white-space: nowrap;
+  }
+  .dash-alert-badge.amber { background: rgba(245,158,11,0.15); color: var(--accent-amber); }
+  .dash-alert-badge.red   { background: rgba(239,68,68,0.15);  color: var(--accent-red); }
+  /* Zone table */
+  .dash-zone-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .dash-zone-table th {
+    text-align: left; padding: 10px 14px;
+    font-size: 11px; font-weight: 600; color: var(--header-col);
+    border-bottom: 2px solid var(--border); background: var(--bg-panel);
+  }
+  .dash-zone-table td {
+    padding: 10px 14px; border-bottom: 1px solid var(--border);
+    color: var(--text-main);
+  }
+  .dash-zone-table tr:last-child td { border-bottom: none; }
+  .dash-zone-table tr:hover td { background: var(--bg-hover); }
+  /* Loading / empty */
+  .dash-loading {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    height: 300px; gap: 14px; color: var(--text-muted);
+  }
+  /* Close btn */
+  .dash-close-btn {
+    position: absolute; top: 0; right: 0;
+    background: none; border: none; color: var(--text-dim);
+    font-size: 18px; cursor: pointer; padding: 6px 10px;
+    transition: color 0.15s; line-height: 1;
+  }
+  .dash-close-btn:hover { color: var(--text-main); }
   .reports-dropdown-menu.open { display: block; }
   .reports-dropdown-item {
     display: flex; align-items: center; gap: 9px;
@@ -959,6 +1096,10 @@ EST-iMs © | 2026    </div>
       </button>
       <button class="btn btn-primary"  onclick="refreshData()">Refresh</button>
       <button class="btn btn-warning"  onclick="openPrintModal()">Print</button>
+      <button class="btn btn-success"  onclick="openDashboard()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </button>
       <div class="reports-dropdown-wrap" id="reportsDropdownWrap">
         <button class="btn btn-primary" onclick="toggleReportsDropdown(event)" id="reportsBtn">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
@@ -1208,6 +1349,40 @@ EST-iMs © | 2026    </div>
 
 <!-- TOAST -->
 <div id="toast"></div>
+
+<!-- ══ DASHBOARD MODAL ══ -->
+<div id="dashModal" onclick="if(event.target===this)closeDashboard()">
+  <div class="dash-box">
+    <!-- LEFT NAV -->
+    <div class="dash-sidebar">
+      <div class="dash-sidebar-title">Dashboard</div>
+
+      <div class="dash-nav-item active" onclick="dashShow('overview')" id="dnav-overview">
+        <span class="dn-icon">📊</span> Overview
+      </div>
+      <div class="dash-nav-item" onclick="dashShow('movement')" id="dnav-movement">
+        <span class="dn-icon">📈</span> IN / OUT Movement
+      </div>
+      <div class="dash-nav-sep"></div>
+      <div class="dash-nav-item" onclick="dashShow('alerts')" id="dnav-alerts">
+        <span class="dn-icon">⚠️</span> Stock Alerts
+      </div>
+      <div class="dash-nav-item" onclick="dashShow('top')" id="dnav-top">
+        <span class="dn-icon">🏆</span> Top Items
+      </div>
+      <div class="dash-nav-sep"></div>
+      <div class="dash-nav-item" onclick="dashShow('zones')" id="dnav-zones">
+        <span class="dn-icon">🏭</span> Zones Summary
+      </div>
+    </div>
+
+    <!-- RIGHT CONTENT -->
+    <div class="dash-content" id="dashContent" style="position:relative;">
+      <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
+      <div class="dash-loading"><div class="spinner"></div><span>Loading dashboard...</span></div>
+    </div>
+  </div>
+</div>
 
 <script>
 // ── BETA POPUP (show only once per session) ──
@@ -2054,7 +2229,7 @@ function doExportCSV() {
 // ── KEYBOARD ──
 document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.key === 'f') { e.preventDefault(); document.getElementById('searchInput').focus(); }
-  if (e.key === 'Escape') { closeTxModal(); closeAbout(); cancelPwdModal(); closePrintModal(); closeCsvModal(); closeLogout(); document.getElementById('reportsDropdownMenu').classList.remove('open'); }
+  if (e.key === 'Escape') { closeTxModal(); closeAbout(); cancelPwdModal(); closePrintModal(); closeCsvModal(); closeLogout(); closeDashboard(); document.getElementById('reportsDropdownMenu').classList.remove('open'); }
 });
 
 // ── ABOUT ──
@@ -2069,6 +2244,230 @@ function closeLogout() {
 }
 function doLogout() {
 window.location.href = '/logout';}
+
+// ══════════════════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════════════════
+let _dashData   = null;
+let _dashView   = 'overview';
+let _dashChart  = null;
+
+async function openDashboard() {
+  document.getElementById('dashModal').classList.add('open');
+  if (!_dashData) await loadDashData();
+  else dashShow(_dashView);
+}
+function closeDashboard() {
+  document.getElementById('dashModal').classList.remove('open');
+}
+
+async function loadDashData() {
+  setDashContent('<div class="dash-loading"><div class="spinner"></div><span>Loading data...</span></div>');
+  try {
+    const res  = await fetch('/api/dashboard');
+    _dashData  = await res.json();
+    dashShow(_dashView);
+  } catch(e) {
+    setDashContent('<div class="dash-loading">⚠️ Failed to load dashboard data</div>');
+  }
+}
+
+function setDashContent(html) {
+  const c = document.getElementById('dashContent');
+  c.innerHTML = `<button class="dash-close-btn" onclick="closeDashboard()">✕</button>` + html;
+}
+
+function dashShow(view) {
+  _dashView = view;
+  // update nav active
+  document.querySelectorAll('.dash-nav-item').forEach(el => el.classList.remove('active'));
+  const navEl = document.getElementById('dnav-' + view);
+  if (navEl) navEl.classList.add('active');
+  // destroy old chart
+  if (_dashChart) { _dashChart.destroy(); _dashChart = null; }
+
+  const d = _dashData;
+  if (!d) return;
+
+  if (view === 'overview')  dashOverview(d);
+  if (view === 'movement')  dashMovement(d);
+  if (view === 'alerts')    dashAlerts(d);
+  if (view === 'top')       dashTop(d);
+  if (view === 'zones')     dashZones(d);
+}
+
+/* ── OVERVIEW ── */
+function dashOverview(d) {
+  const kpis = [
+    { label:'Total Items',     value: d.total_items   ?? '—', sub:'across all sheets',   cls:'blue'  },
+    { label:'Total IN',        value: d.total_in      ?? '—', sub:'all time',             cls:'green' },
+    { label:'Total OUT',       value: d.total_out     ?? '—', sub:'all time',             cls:'red'   },
+    { label:'Low Stock Items', value: d.low_stock     ?? '—', sub:'below threshold',      cls:'amber' },
+    { label:'Zero Stock',      value: d.zero_stock    ?? '—', sub:'need restocking',      cls:'red'   },
+  ];
+  const kpiHtml = kpis.map(k => `
+    <div class="dash-kpi-card ${k.cls}">
+      <div class="dash-kpi-label">${k.label}</div>
+      <div class="dash-kpi-value">${k.value}</div>
+      <div class="dash-kpi-sub">${k.sub}</div>
+    </div>`).join('');
+
+  setDashContent(`
+    <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
+    <div class="dash-content-title">📊 Overview</div>
+    <div class="dash-content-sub">Summary of current inventory status</div>
+    <div class="dash-kpi-grid">${kpiHtml}</div>
+    <div class="dash-chart-wrap">
+      <div class="dash-chart-title">IN vs OUT — Current Data</div>
+      <canvas id="dashChartCanvas"></canvas>
+    </div>`);
+
+  // Bar chart IN vs OUT per zone
+  const labels = Object.keys(d.zone_in || {});
+  const ins    = labels.map(z => d.zone_in[z]  || 0);
+  const outs   = labels.map(z => d.zone_out[z] || 0);
+  drawChart('bar', labels, [
+    { label:'IN',  data: ins,  backgroundColor:'rgba(16,185,129,0.7)'  },
+    { label:'OUT', data: outs, backgroundColor:'rgba(239,68,68,0.7)'   },
+  ]);
+}
+
+/* ── MOVEMENT ── */
+function dashMovement(d) {
+  setDashContent(`
+    <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
+    <div class="dash-content-title">📈 IN / OUT Movement</div>
+    <div class="dash-content-sub">Stock movement breakdown by zone</div>
+    <div class="dash-chart-wrap">
+      <div class="dash-chart-title">IN per Zone</div>
+      <canvas id="dashChartCanvas"></canvas>
+    </div>
+    <div class="dash-chart-wrap" style="margin-top:0;">
+      <div class="dash-chart-title">OUT per Zone</div>
+      <canvas id="dashChartCanvas2"></canvas>
+    </div>`);
+
+  const labels = Object.keys(d.zone_in || {});
+  const ins    = labels.map(z => d.zone_in[z]  || 0);
+  const outs   = labels.map(z => d.zone_out[z] || 0);
+
+  _dashChart = new Chart(document.getElementById('dashChartCanvas'), {
+    type: 'bar',
+    data: { labels, datasets: [{ label:'IN', data: ins, backgroundColor:'rgba(16,185,129,0.75)', borderRadius:6 }] },
+    options: chartOpts('IN Quantity')
+  });
+  new Chart(document.getElementById('dashChartCanvas2'), {
+    type: 'bar',
+    data: { labels, datasets: [{ label:'OUT', data: outs, backgroundColor:'rgba(239,68,68,0.75)', borderRadius:6 }] },
+    options: chartOpts('OUT Quantity')
+  });
+}
+
+/* ── ALERTS ── */
+function dashAlerts(d) {
+  const items = d.alerts || [];
+  const rows = items.length
+    ? items.map(a => `
+        <div class="dash-alert-item ${a.level}">
+          <div class="dash-alert-icon">${a.level==='danger'?'🔴':'🟡'}</div>
+          <div class="dash-alert-text">
+            <div class="dash-alert-name">${escHtml(a.name)}</div>
+            <div class="dash-alert-desc">${escHtml(a.sheet||'')} — Balance: ${a.balance}</div>
+          </div>
+          <div class="dash-alert-badge ${a.level==='danger'?'red':'amber'}">${a.level==='danger'?'ZERO':'LOW'}</div>
+        </div>`)
+      .join('')
+    : '<div class="dash-loading">✅ All items have sufficient stock</div>';
+
+  setDashContent(`
+    <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
+    <div class="dash-content-title">⚠️ Stock Alerts</div>
+    <div class="dash-content-sub">${items.length} item(s) need attention</div>
+    <div class="dash-alert-list">${rows}</div>`);
+}
+
+/* ── TOP ITEMS ── */
+function dashTop(d) {
+  const items  = (d.top_items || []).slice(0, 10);
+  const labels = items.map(i => i.name);
+  const vals   = items.map(i => i.out);
+
+  setDashContent(`
+    <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
+    <div class="dash-content-title">🏆 Top Items by Consumption</div>
+    <div class="dash-content-sub">Items with highest OUT quantity</div>
+    <div class="dash-chart-wrap">
+      <div class="dash-chart-title">Top 10 Most Consumed Items</div>
+      <canvas id="dashChartCanvas"></canvas>
+    </div>`);
+
+  drawChart('bar', labels, [
+    { label:'OUT Qty', data: vals, backgroundColor:'rgba(59,130,246,0.75)', borderRadius:6 }
+  ], { indexAxis: 'y' });
+}
+
+/* ── ZONES ── */
+function dashZones(d) {
+  const zones  = Object.keys(d.zone_in || {});
+  const rows   = zones.map(z => `
+    <tr>
+      <td>🏭 ${escHtml(z)}</td>
+      <td style="color:var(--accent-green);font-weight:600;">${d.zone_in[z]  || 0}</td>
+      <td style="color:var(--accent-red);font-weight:600;">${d.zone_out[z] || 0}</td>
+      <td style="color:var(--accent-cyan);font-weight:600;">${(d.zone_in[z]||0) - (d.zone_out[z]||0)}</td>
+    </tr>`).join('');
+
+  setDashContent(`
+    <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
+    <div class="dash-content-title">🏭 Zones Summary</div>
+    <div class="dash-content-sub">IN / OUT breakdown per zone</div>
+    <div class="dash-chart-wrap" style="padding:0;overflow:hidden;">
+      <table class="dash-zone-table">
+        <thead><tr><th>Zone</th><th>Total IN</th><th>Total OUT</th><th>Net</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div class="dash-chart-wrap" style="margin-top:16px;">
+      <div class="dash-chart-title">Zone Comparison</div>
+      <canvas id="dashChartCanvas"></canvas>
+    </div>`);
+
+  const ins  = zones.map(z => d.zone_in[z]  || 0);
+  const outs = zones.map(z => d.zone_out[z] || 0);
+  drawChart('bar', zones, [
+    { label:'IN',  data: ins,  backgroundColor:'rgba(16,185,129,0.7)'  },
+    { label:'OUT', data: outs, backgroundColor:'rgba(239,68,68,0.7)'   },
+  ]);
+}
+
+/* ── CHART HELPERS ── */
+function chartOpts(yLabel='') {
+  return {
+    responsive:true, maintainAspectRatio:true,
+    plugins:{ legend:{ labels:{ color:'#8b9db8', font:{size:11} } } },
+    scales:{
+      x:{ ticks:{color:'#8b9db8'}, grid:{color:'rgba(255,255,255,0.05)'} },
+      y:{ ticks:{color:'#8b9db8'}, grid:{color:'rgba(255,255,255,0.05)'}, title:{display:!!yLabel,text:yLabel,color:'#8b9db8'} }
+    }
+  };
+}
+function drawChart(type, labels, datasets, extra={}) {
+  const canvas = document.getElementById('dashChartCanvas');
+  if (!canvas) return;
+  if (_dashChart) { _dashChart.destroy(); _dashChart = null; }
+  _dashChart = new Chart(canvas, {
+    type,
+    data: { labels, datasets: datasets.map(ds => ({...ds, borderRadius:6})) },
+    options: { ...chartOpts(), ...extra,
+      responsive:true, maintainAspectRatio:true,
+      plugins:{ legend:{ labels:{ color:'#8b9db8', font:{size:11} } } },
+      scales:{
+        x:{ ticks:{color:'#8b9db8'}, grid:{color:'rgba(255,255,255,0.05)'} },
+        y:{ ticks:{color:'#8b9db8'}, grid:{color:'rgba(255,255,255,0.05)'} }
+      }
+    }
+  });
+}
 
 // ── REPORTS DROPDOWN ──
 let _reportsLoaded = false;

@@ -1211,6 +1211,138 @@ def api_add_row():
 
 
 
+@app.route('/api/dashboard')
+@zone_required
+def api_dashboard():
+    """Scan all Excel files for the current zone and return dashboard data."""
+    zone_id = session.get('active_view_zone') or session.get('zone', '')
+    is_super = session.get('is_super', False)
+
+    root = get_years_root()
+    if not root:
+        return jsonify({'error': 'No data directory'}), 404
+
+    # Collect all xlsx/xlsm files for the zone
+    files_to_scan = []
+    scan_zones = [z['id'] for z in ZONES if z['id'] not in SUPER_ZONES] if is_super else [zone_id]
+
+    for zid in scan_zones:
+        zone_path = os.path.join(root, zid)
+        if not os.path.isdir(zone_path):
+            continue
+        for root_dir, dirs, files in os.walk(zone_path):
+            for f in files:
+                if f.lower().endswith(('.xlsx', '.xlsm', '.xls')):
+                    files_to_scan.append((zid, os.path.join(root_dir, f)))
+
+    total_items = 0
+    total_in    = 0
+    total_out   = 0
+    zero_stock  = 0
+    low_stock   = 0
+    LOW_THRESHOLD = 10
+    alerts      = []
+    item_out    = {}   # name -> total out
+    zone_in     = {}   # zone -> total in
+    zone_out    = {}   # zone -> total out
+
+    for zid, fpath in files_to_scan:
+        zone_label = next((z['label'] for z in ZONES if z['id'] == zid), zid)
+        try:
+            wb = openpyxl.load_workbook(fpath, data_only=True, read_only=True)
+        except Exception:
+            continue
+
+        for sheet_name in wb.sheetnames:
+            if 'log' in sheet_name.lower():
+                continue
+            ws = wb[sheet_name]
+            rows = list(ws.iter_rows(values_only=True))
+            if not rows:
+                continue
+
+            # Detect header row
+            header_idx = None
+            headers    = []
+            for i, row in enumerate(rows):
+                rv = [str(c).strip() if c else '' for c in row]
+                if any(k in rv for k in ('Color', 'IN', 'OUT', 'Current Balance', 'Basic')):
+                    header_idx = i
+                    headers    = rv
+                    break
+            if header_idx is None:
+                continue
+
+            def col(name):
+                for h in (name, name.lower(), name.upper()):
+                    if h in headers:
+                        return headers.index(h)
+                return None
+
+            ci_color   = col('Color')
+            ci_in      = col('IN')
+            ci_out     = col('OUT')
+            ci_balance = col('Current Balance')
+
+            for row in rows[header_idx + 1:]:
+                if all(c is None or str(c).strip() == '' for c in row):
+                    continue
+                total_items += 1
+
+                in_val  = 0
+                out_val = 0
+                bal_val = None
+
+                if ci_in  is not None and ci_in  < len(row):
+                    try: in_val  = float(row[ci_in]  or 0)
+                    except: pass
+                if ci_out is not None and ci_out < len(row):
+                    try: out_val = float(row[ci_out] or 0)
+                    except: pass
+                if ci_balance is not None and ci_balance < len(row):
+                    try: bal_val = float(row[ci_balance] or 0)
+                    except: pass
+
+                total_in  += in_val
+                total_out += out_val
+                zone_in[zone_label]  = zone_in.get(zone_label,  0) + in_val
+                zone_out[zone_label] = zone_out.get(zone_label, 0) + out_val
+
+                # Item name
+                item_name = ''
+                if ci_color is not None and ci_color < len(row):
+                    item_name = str(row[ci_color] or '').strip()
+
+                if item_name and out_val > 0:
+                    item_out[item_name] = item_out.get(item_name, 0) + out_val
+
+                if bal_val is not None:
+                    if bal_val == 0:
+                        zero_stock += 1
+                        alerts.append({'name': item_name or '—', 'sheet': sheet_name,
+                                       'balance': 0, 'level': 'danger'})
+                    elif bal_val < LOW_THRESHOLD:
+                        low_stock += 1
+                        alerts.append({'name': item_name or '—', 'sheet': sheet_name,
+                                       'balance': bal_val, 'level': 'warn'})
+
+        wb.close()
+
+    top_items = sorted([{'name': k, 'out': v} for k, v in item_out.items()],
+                       key=lambda x: x['out'], reverse=True)[:10]
+
+    return jsonify({
+        'total_items': total_items,
+        'total_in':    round(total_in,  2),
+        'total_out':   round(total_out, 2),
+        'zero_stock':  zero_stock,
+        'low_stock':   low_stock,
+        'alerts':      alerts[:50],
+        'top_items':   top_items,
+        'zone_in':     {k: round(v, 2) for k, v in zone_in.items()},
+        'zone_out':    {k: round(v, 2) for k, v in zone_out.items()},
+    })
+
 # ══════════════════════════════════════════════════════════════════
 #  REPORTS — list & serve Excel files from /reports folder
 # ══════════════════════════════════════════════════════════════════
