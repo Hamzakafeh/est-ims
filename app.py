@@ -1245,6 +1245,8 @@ def api_stats():
         return jsonify({
             'total': total_data.get('pageviews', {}).get('value', 0),
             'today': today_data.get('pageviews', {}).get('value', 0),
+            'debug_total': total_data,
+            'debug_today': today_data,
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
