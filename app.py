@@ -110,6 +110,8 @@ USERS = {
     os.getenv("USER1"): os.getenv("PASS1"),
     os.getenv("USER2"): os.getenv("PASS2"),
     os.getenv("USER3"): os.getenv("PASS3"),
+    os.getenv("USER4"): os.getenv("PASS4"),
+
 }
 EDIT_PASSWORD = os.getenv("EDIT_PASSWORD")
 
