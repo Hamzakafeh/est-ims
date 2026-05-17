@@ -1429,6 +1429,174 @@ def api_alert_count():
     return jsonify({'zero': zero})
 
 # ══════════════════════════════════════════════════════════════════
+#  QR SCANNER — صفحة المسح + API يرجع آخر رصيد من ملف الإكسيل
+# ══════════════════════════════════════════════════════════════════
+
+# خريطة SKU → (اسم الشيت، اسم اللون في الملف)
+SKU_MAP = {
+    'CHKN-BLU-001': ('Chicken', 'Blue'),
+    'CHKN-BRN-001': ('Chicken', 'Brown'),
+    'CHKN-DBL-001': ('Chicken', 'Dark Blue'),
+    'CHKN-DGR-001': ('Chicken', 'Dark Green'),
+    'CHKN-GRY-001': ('Chicken', 'Gray'),
+    'CHKN-GRN-001': ('Chicken', 'Green'),
+    'CHKN-LBL-001': ('Chicken', 'Light Blue'),
+    'CHKN-ORG-001': ('Chicken', 'Orange'),
+    'CHKN-ORG-002': ('Chicken', 'Orange (70*45)'),
+    'CHKN-PRP-001': ('Chicken', 'Purple'),
+    'CHKN-RED-001': ('Chicken', 'Red'),
+    'CHKN-YLW-001': ('Chicken', 'Yellow'),
+}
+
+SKU_NAMES_AR = {
+    'CHKN-BLU-001': 'أزرق',
+    'CHKN-BRN-001': 'بني',
+    'CHKN-DBL-001': 'أزرق غامق',
+    'CHKN-DGR-001': 'أخضر غامق',
+    'CHKN-GRY-001': 'رمادي',
+    'CHKN-GRN-001': 'أخضر',
+    'CHKN-LBL-001': 'أزرق فاتح',
+    'CHKN-ORG-001': 'برتقالي',
+    'CHKN-ORG-002': 'برتقالي 70×45',
+    'CHKN-PRP-001': 'بنفسجي',
+    'CHKN-RED-001': 'أحمر',
+    'CHKN-YLW-001': 'أصفر',
+}
+
+SKU_HEX = {
+    'CHKN-BLU-001': '#3b82f6',
+    'CHKN-BRN-001': '#92400e',
+    'CHKN-DBL-001': '#1e3a8a',
+    'CHKN-DGR-001': '#14532d',
+    'CHKN-GRY-001': '#6b7280',
+    'CHKN-GRN-001': '#16a34a',
+    'CHKN-LBL-001': '#7dd3fc',
+    'CHKN-ORG-001': '#f97316',
+    'CHKN-ORG-002': '#fb923c',
+    'CHKN-PRP-001': '#7c3aed',
+    'CHKN-RED-001': '#dc2626',
+    'CHKN-YLW-001': '#eab308',
+}
+
+def _find_latest_sacks_file():
+    """يبحث عن أحدث ملف Sacks.xlsm عبر كل الزونات والسنوات والأشهر."""
+    root = get_years_root()
+    if not root:
+        return None
+    latest_path = None
+    latest_mtime = 0
+    for zone_folder in os.listdir(root):
+        zone_path = os.path.join(root, zone_folder)
+        if not os.path.isdir(zone_path):
+            continue
+        for year_folder in os.listdir(zone_path):
+            year_path = os.path.join(zone_path, year_folder)
+            if not os.path.isdir(year_path):
+                continue
+            for month_folder in os.listdir(year_path):
+                month_path = os.path.join(year_path, month_folder)
+                sacks_path = os.path.join(month_path, 'Sacks.xlsm')
+                if os.path.isfile(sacks_path):
+                    mtime = os.path.getmtime(sacks_path)
+                    if mtime > latest_mtime:
+                        latest_mtime = mtime
+                        latest_path = sacks_path
+    return latest_path
+
+def _get_last_balance(sheet_name, color_name):
+    """يفتح أحدث Sacks.xlsm ويرجع آخر Current Balance للون المحدد."""
+    filepath = _find_latest_sacks_file()
+    if not filepath:
+        return None, None, None
+
+    try:
+        wb = openpyxl.load_workbook(filepath, read_only=True, data_only=True)
+        if sheet_name not in wb.sheetnames:
+            wb.close()
+            return None, None, None
+
+        ws = wb[sheet_name]
+        rows = list(ws.iter_rows(values_only=True))
+        wb.close()
+
+        # إيجاد صف الهيدر
+        hdr_idx = None
+        headers = []
+        for i, row in enumerate(rows):
+            rv = [str(c).strip() if c else '' for c in row]
+            if 'Current Balance' in rv:
+                hdr_idx = i
+                headers = rv
+                break
+        if hdr_idx is None:
+            return None, None, None
+
+        ci_color   = headers.index('Color')           if 'Color'           in headers else None
+        ci_balance = headers.index('Current Balance') if 'Current Balance' in headers else None
+        ci_date    = headers.index('Date')            if 'Date'            in headers else None
+
+        if ci_color is None or ci_balance is None:
+            return None, None, None
+
+        last_balance = None
+        last_date    = None
+
+        for row in rows[hdr_idx + 1:]:
+            if all(c is None or str(c).strip() == '' for c in row):
+                continue
+            row_color = str(row[ci_color]).strip() if ci_color < len(row) and row[ci_color] else ''
+            if row_color.lower() != color_name.lower():
+                continue
+            bal = row[ci_balance] if ci_balance < len(row) else None
+            if bal is not None and str(bal).strip() not in ('', 'None', '/'):
+                try:
+                    last_balance = float(bal)
+                    if ci_date and ci_date < len(row) and row[ci_date]:
+                        d = row[ci_date]
+                        last_date = d.strftime('%Y-%m-%d') if hasattr(d, 'strftime') else str(d)[:10]
+                except (ValueError, TypeError):
+                    pass
+
+        return last_balance, last_date, filepath
+
+    except Exception as e:
+        _logger.error(f'QR scan error: {e}')
+        return None, None, None
+
+
+@app.route('/scan')
+@zone_required
+def scan_page():
+    return render_template('scan.html')
+
+
+@app.route('/api/scan/<sku>')
+@zone_required
+def api_scan(sku):
+    """يرجع آخر رصيد للصنف من ملف الإكسيل الأحدث."""
+    sku = sku.strip().upper()
+    if sku not in SKU_MAP:
+        return jsonify({'found': False, 'error': f'"{sku}" غير مسجل في النظام'}), 404
+
+    sheet_name, color_name = SKU_MAP[sku]
+    balance, date, filepath = _get_last_balance(sheet_name, color_name)
+
+    if balance is None:
+        return jsonify({'found': False, 'error': 'تعذّر قراءة الملف أو لا توجد بيانات'}), 500
+
+    return jsonify({
+        'found':    True,
+        'sku':      sku,
+        'nameAr':   SKU_NAMES_AR.get(sku, sku),
+        'category': 'شوالات الجاج',
+        'color':    color_name,
+        'hex':      SKU_HEX.get(sku, '#6b7280'),
+        'balance':  int(balance),
+        'date':     date or '—',
+    })
+
+
+# ══════════════════════════════════════════════════════════════════
 #  REPORTS — list & serve Excel files from /reports folder
 # ══════════════════════════════════════════════════════════════════
 REPORTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'reports')

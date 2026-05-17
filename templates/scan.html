@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>مسح QR — EST Inventory</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; background: #f0f4f8; min-height: 100vh; color: #1a1a1a; }
+  .topbar { background: #1a3a5c; color: #fff; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .topbar h1 { font-size: 15px; font-weight: 600; }
+  .topbar .back { font-size: 13px; color: #a0c4e8; text-decoration: none; }
+  .tabs { display: flex; background: #fff; border-bottom: 1px solid #e2e8f0; position: sticky; top: 48px; z-index: 99; }
+  .tab { flex: 1; padding: 12px 4px; text-align: center; font-size: 12px; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; }
+  .tab.active { color: #1a3a5c; border-bottom: 2px solid #1a3a5c; font-weight: 600; }
+  .content { padding: 16px; max-width: 480px; margin: 0 auto; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .sec-header { font-size: 11px; color: #94a3b8; font-weight: 600; margin-bottom: 10px; letter-spacing: 0.5px; }
+  .bc-card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+  .bc-card:active { background: #f1f5f9; }
+  .color-dot { width: 34px; height: 34px; border-radius: 50%; border: 2px solid rgba(0,0,0,0.08); flex-shrink: 0; }
+  .bc-info { flex: 1; }
+  .bc-name { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+  .bc-sku { font-size: 10px; color: #94a3b8; font-family: monospace; margin-top: 2px; }
+  .bc-balance { text-align: left; direction: ltr; }
+  .bc-num { font-size: 18px; font-weight: 700; color: #1a3a5c; }
+  .bc-unit { font-size: 10px; color: #94a3b8; }
+  .qr-card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 16px; margin-bottom: 12px; text-align: center; }
+  .qr-card .pname { font-size: 13px; font-weight: 600; color: #1a3a5c; margin-bottom: 10px; }
+  .qr-wrap { display: flex; justify-content: center; margin-bottom: 8px; }
+  .qr-sku { font-size: 11px; font-family: monospace; color: #64748b; letter-spacing: 1px; margin-bottom: 10px; }
+  .print-btn { width: 100%; padding: 10px; background: #1a3a5c; color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .scanner-box { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 16px; text-align: center; margin-bottom: 12px; }
+  .scanner-hint { font-size: 12px; color: #64748b; margin-bottom: 12px; }
+  #reader { width: 100%; border-radius: 10px; overflow: hidden; background: #000; }
+  .manual-label { font-size: 12px; color: #64748b; margin: 14px 0 6px; text-align: right; }
+  .manual-wrap { display: flex; gap: 8px; }
+  .manual-wrap input { flex: 1; padding: 9px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; font-family: monospace; outline: none; }
+  .manual-wrap input:focus { border-color: #1a3a5c; }
+  .manual-wrap button { padding: 9px 16px; background: #1a3a5c; color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+  .overlay.show { display: flex; }
+  .modal { background: #fff; border-radius: 16px; padding: 24px; width: 100%; max-width: 300px; text-align: center; }
+  .modal-icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
+  .modal-icon.ok { background: #dcfce7; }
+  .modal-icon.err { background: #fee2e2; }
+  .modal-cat { font-size: 11px; color: #94a3b8; margin-bottom: 2px; }
+  .modal-name { font-size: 15px; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; }
+  .modal-strip { height: 5px; border-radius: 3px; width: 50px; margin: 0 auto 14px; }
+  .modal-lbl { font-size: 11px; color: #64748b; }
+  .modal-num { font-size: 44px; font-weight: 700; color: #1a1a1a; line-height: 1.1; }
+  .modal-unit { font-size: 12px; color: #94a3b8; margin-bottom: 4px; }
+  .modal-date { font-size: 11px; color: #cbd5e1; margin-bottom: 20px; }
+  .modal-err { font-size: 13px; color: #dc2626; margin: 8px 0 16px; display: none; }
+  .modal-close { width: 100%; padding: 11px; background: #f1f5f9; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="/" class="back">&#8594; رجوع</a>
+  <h1>QR Scanner</h1>
+  <span style="width:40px"></span>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('list')">الأصناف</div>
+  <div class="tab" onclick="switchTab('scan')">مسح الكاميرا</div>
+  <div class="tab" onclick="switchTab('print')">طباعة QR</div>
+</div>
+
+<div class="content">
+  <div class="section active" id="tab-list">
+    <p class="sec-header">شوالات الجاج — اضغط لعرض الرصيد</p>
+    <div id="cards-container"></div>
+  </div>
+
+  <div class="section" id="tab-scan">
+    <div class="scanner-box">
+      <p class="scanner-hint">وجّه كاميرا الجوال على QR Code الصنف</p>
+      <div id="reader"></div>
+      <p style="font-size:11px;color:#94a3b8;margin-top:8px;">* يتطلب إذن الكاميرا</p>
+    </div>
+    <p class="manual-label">أو أدخل الكود يدوياً</p>
+    <div class="manual-wrap">
+      <input type="text" id="manualInput" placeholder="CHKN-YLW-001" dir="ltr">
+      <button onclick="lookupAndShow(document.getElementById('manualInput').value)">بحث</button>
+    </div>
+  </div>
+
+  <div class="section" id="tab-print">
+    <p class="sec-header">اطبع QR وألصقه على الشوال</p>
+    <div id="print-container"></div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-icon ok" id="modalIcon">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <p class="modal-cat" id="modalCat"></p>
+    <p class="modal-name" id="modalName"></p>
+    <div class="modal-strip" id="modalStrip"></div>
+    <p class="modal-lbl">الرصيد الحالي</p>
+    <p class="modal-num" id="modalNum"></p>
+    <p class="modal-unit">شوال</p>
+    <p class="modal-date" id="modalDate"></p>
+    <p class="modal-err" id="modalErr"></p>
+    <button class="modal-close" onclick="closeModal()">إغلاق</button>
+  </div>
+</div>
+
+<script>
+const ITEMS = [
+  { sku:'CHKN-BLU-001', nameAr:'أزرق',         hex:'#3b82f6', balance:1564,  date:'2026-05-12' },
+  { sku:'CHKN-BRN-001', nameAr:'بني',           hex:'#92400e', balance:30,    date:'2026-05-07' },
+  { sku:'CHKN-DBL-001', nameAr:'أزرق غامق',     hex:'#1e3a8a', balance:62412, date:'2026-05-13' },
+  { sku:'CHKN-DGR-001', nameAr:'أخضر غامق',     hex:'#14532d', balance:6061,  date:'2026-05-13' },
+  { sku:'CHKN-GRY-001', nameAr:'رمادي',         hex:'#6b7280', balance:7723,  date:'2026-05-07' },
+  { sku:'CHKN-GRN-001', nameAr:'أخضر',          hex:'#16a34a', balance:57016, date:'2026-05-14' },
+  { sku:'CHKN-LBL-001', nameAr:'أزرق فاتح',     hex:'#7dd3fc', balance:339,   date:'2026-05-12' },
+  { sku:'CHKN-ORG-001', nameAr:'برتقالي',       hex:'#f97316', balance:59,    date:'2026-05-01' },
+  { sku:'CHKN-ORG-002', nameAr:'برتقالي 70×45', hex:'#fb923c', balance:210,   date:'2026-05-01' },
+  { sku:'CHKN-PRP-001', nameAr:'بنفسجي',        hex:'#7c3aed', balance:42457, date:'2026-05-14' },
+  { sku:'CHKN-RED-001', nameAr:'أحمر',          hex:'#dc2626', balance:7485,  date:'2026-05-13' },
+  { sku:'CHKN-YLW-001', nameAr:'أصفر',          hex:'#eab308', balance:7812,  date:'2026-05-13' },
+];
+
+// List
+const cardsEl = document.getElementById('cards-container');
+ITEMS.forEach(item => {
+  const d = document.createElement('div');
+  d.className = 'bc-card';
+  d.innerHTML = `
+    <div class="color-dot" style="background:${item.hex}"></div>
+    <div class="bc-info">
+      <div class="bc-name">صفن الجاج — ${item.nameAr}</div>
+      <div class="bc-sku">${item.sku}</div>
+    </div>
+    <div class="bc-balance">
+      <div class="bc-num">${item.balance.toLocaleString()}</div>
+      <div class="bc-unit">شوال</div>
+    </div>`;
+  d.onclick = () => showModal(item);
+  cardsEl.appendChild(d);
+});
+
+// QR Print
+const printEl = document.getElementById('print-container');
+ITEMS.forEach(item => {
+  const wrap = document.createElement('div');
+  wrap.className = 'qr-card';
+  wrap.innerHTML = `
+    <div class="pname">صفن الجاج — ${item.nameAr}</div>
+    <div class="qr-wrap" id="qr-${item.sku}"></div>
+    <div class="qr-sku">${item.sku}</div>
+    <button class="print-btn" onclick="printQR('${item.sku}','${item.nameAr}')">طباعة</button>`;
+  printEl.appendChild(wrap);
+  setTimeout(() => {
+    new QRCode(document.getElementById('qr-' + item.sku), {
+      text: item.sku, width: 160, height: 160,
+      colorDark: '#1a3a5c', colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  }, 150);
+});
+
+function showModal(item) {
+  const icon = document.getElementById('modalIcon');
+  icon.className = 'modal-icon ok';
+  icon.innerHTML = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  document.getElementById('modalCat').textContent = 'شوالات الجاج';
+  document.getElementById('modalName').textContent = 'صفن الجاج — ' + item.nameAr;
+  document.getElementById('modalStrip').style.background = item.hex;
+  document.getElementById('modalNum').textContent = item.balance.toLocaleString();
+  document.getElementById('modalDate').textContent = 'آخر تحديث: ' + item.date;
+  document.getElementById('modalErr').style.display = 'none';
+  document.getElementById('overlay').classList.add('show');
+}
+
+function lookupAndShow(raw) {
+  const sku = raw.trim().toUpperCase();
+  const item = ITEMS.find(i => i.sku === sku);
+  if (item) { showModal(item); return; }
+  const icon = document.getElementById('modalIcon');
+  icon.className = 'modal-icon err';
+  icon.innerHTML = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+  document.getElementById('modalCat').textContent = '';
+  document.getElementById('modalName').textContent = 'كود غير موجود';
+  document.getElementById('modalStrip').style.background = '#fee2e2';
+  document.getElementById('modalNum').textContent = '—';
+  document.getElementById('modalDate').textContent = '';
+  const e = document.getElementById('modalErr');
+  e.textContent = '"' + sku + '" غير مسجل في النظام';
+  e.style.display = 'block';
+  document.getElementById('overlay').classList.add('show');
+}
+
+function closeModal() { document.getElementById('overlay').classList.remove('show'); }
+
+let scanner = null;
+function startScanner() {
+  if (scanner) return;
+  scanner = new Html5Qrcode("reader");
+  scanner.start(
+    { facingMode: "environment" },
+    { fps: 12, qrbox: { width: 230, height: 230 } },
+    (decoded) => lookupAndShow(decoded),
+    () => {}
+  ).catch(() => {});
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', ['list','scan','print'][i] === name);
+  });
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'scan') startScanner();
+  else if (scanner) { scanner.stop().then(() => { scanner = null; }).catch(() => {}); }
+}
+
+function printQR(sku, nameAr) {
+  const el = document.getElementById('qr-' + sku);
+  const img = el.querySelector('img') || el.querySelector('canvas');
+  const src = img.tagName === 'CANVAS' ? img.toDataURL() : img.src;
+  const win = window.open('', '_blank', 'width=300,height=380');
+  win.document.write('<html><head><title>QR ' + nameAr + '</title><style>body{font-family:Arial;text-align:center;padding:24px;}.n{font-size:14px;font-weight:bold;color:#1a3a5c;margin-bottom:12px;}.s{font-size:11px;font-family:monospace;color:#64748b;margin-top:8px;letter-spacing:1px;}img{width:200px;height:200px;}</style></head><body><div class="n">صفن الجاج — ' + nameAr + '</div><img src="' + src + '"><div class="s">' + sku + '</div><script>window.onload=function(){window.print();}<\/script></body></html>');
+  win.document.close();
+}
+</script>
+</body>
+</html>
