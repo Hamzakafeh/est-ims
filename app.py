@@ -1601,17 +1601,35 @@ def api_scan(sku):
 # ══════════════════════════════════════════════════════════════════
 REPORTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'reports')
 
+REPORTS_ALLOWED = ('.xlsx', '.xlsm', '.xls', '.csv',
+                   '.docx', '.doc', '.dotx',
+                   '.pptx', '.ppt', '.pps',
+                   '.pdf')
+
 @app.route('/api/reports')
 @zone_required
 def api_reports():
-    """Return a list of Excel files inside the reports/ folder."""
+    """Return a list of all supported report files inside the reports/ folder."""
     if not os.path.isdir(REPORTS_DIR):
         return jsonify({'files': []})
     files = [
         f for f in sorted(os.listdir(REPORTS_DIR))
-        if f.lower().endswith(('.xlsx', '.xlsm', '.xls'))
+        if f.lower().endswith(REPORTS_ALLOWED)
     ]
     return jsonify({'files': files})
+
+@app.route('/reports/file/<path:filename>')
+@zone_required
+def download_report(filename):
+    """Serve a report file directly (for PDF, Word, PowerPoint)."""
+    safe_name = os.path.basename(filename)
+    filepath  = os.path.join(REPORTS_DIR, safe_name)
+    if not os.path.isfile(filepath):
+        return 'File not found', 404
+    if not safe_name.lower().endswith(REPORTS_ALLOWED):
+        return 'File type not allowed', 403
+    from flask import send_file
+    return send_file(filepath, as_attachment=False)
 
 @app.route('/reports/print/<path:filename>')
 @zone_required

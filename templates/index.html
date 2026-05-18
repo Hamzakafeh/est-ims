@@ -557,12 +557,19 @@
     display: flex; align-items: center; justify-content: center;
     transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.15s;
     flex-shrink: 0;
+    position: relative;
   }
-  .theme-btn:hover { background: var(--bg-hover); color: var(--text-main); transform: rotate(15deg); }
+  .theme-btn:hover { background: var(--bg-hover); color: var(--text-main); }
   .theme-btn .icon-sun  { display: block; }
   .theme-btn .icon-moon { display: none; }
   html.light .theme-btn .icon-sun  { display: none; }
   html.light .theme-btn .icon-moon { display: block; }
+
+  /* Theme button — تحسين مرئي: أيقونة الشمس تتلمع في الوضع الداكن */
+  #themeBtn { border-color: rgba(251,191,36,0.4); }
+  #themeBtn:hover { background: rgba(251,191,36,0.12); border-color: rgba(251,191,36,0.7); color: #fbbf24; transform: rotate(20deg) scale(1.1); }
+  html.light #themeBtn { border-color: rgba(99,102,241,0.4); }
+  html.light #themeBtn:hover { background: rgba(99,102,241,0.1); border-color: rgba(99,102,241,0.7); color: #6366f1; transform: rotate(-20deg) scale(1.1); }
   html.light .btn-danger  { color: #dc2626; background: rgba(220,38,38,0.1); border-color: rgba(220,38,38,0.35); }
   html.light .btn-logout  { color: #dc2626; background: rgba(220,38,38,0.1); border-color: rgba(220,38,38,0.35); }
   html.light .btn-logout:hover { background: rgba(220,38,38,0.2); }
@@ -576,6 +583,47 @@
   html.light .btn-about:hover { background: #0f172a; }
   html.light .btn-ghost   { background: #fff; color: #334155; border-color: #cbd5e1; }
   html.light .btn-ghost:hover { background: #f1f5f9; color: #1e293b; }
+
+  /* ══ MOBILE RESPONSIVE ══ */
+  @media (max-width: 768px) {
+    body { overflow: auto; height: auto; min-height: 100vh; }
+    .topbar { height: auto; flex-wrap: wrap; padding: 8px 12px; gap: 8px; }
+    .topbar-brand { flex: 1; min-width: 0; }
+    .brand-text h1 { font-size: 12px; }
+    .brand-text p  { display: none; }
+    .brand-icon { width: 30px; height: 30px; }
+    .clock, .session-timer { display: none; }
+    .topbar-right { width: 100%; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+    .topbar-actions { flex-wrap: wrap; gap: 4px; justify-content: flex-end; width: 100%; }
+    .btn { padding: 6px 10px; font-size: 11px; }
+    .layout { flex-direction: column; overflow: auto; }
+    .sidebar-wrapper { width: 100%; flex-shrink: 0; }
+    .sidebar { width: 100%; height: auto; max-height: 200px; border-right: none; border-bottom: 1px solid var(--border); overflow-y: auto; }
+    .sidebar.collapsed { max-height: 0; overflow: hidden; }
+    .content-area { height: auto; overflow: auto; }
+    .content-header { flex-wrap: wrap; gap: 6px; padding: 10px 12px; }
+    .toolbar { flex-wrap: wrap; gap: 6px; padding: 8px 12px; }
+    .filter-input { width: 100%; max-width: none; }
+    .table-wrap, #tableWrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .data-table { min-width: 600px; font-size: 11px; }
+    .data-table th, .data-table td { padding: 6px 8px; }
+    .statusbar { flex-wrap: wrap; gap: 4px; font-size: 10px; padding: 4px 10px; }
+    .modal-box { width: calc(100% - 32px) !important; max-width: none !important; margin: 16px; }
+    #dashModal .dash-inner { flex-direction: column; width: 100%; height: auto; max-height: 90vh; overflow-y: auto; border-radius: 16px; }
+    #dashModal .dash-nav { width: 100%; flex-direction: row; flex-wrap: wrap; padding: 8px; border-right: none; border-bottom: 1px solid var(--border); gap: 4px; }
+    #dashModal .dash-nav-item { flex: 1; min-width: 80px; text-align: center; font-size: 11px; padding: 6px 4px; }
+    #dashModal .dash-content { padding: 12px; min-height: 300px; }
+    .dash-kpi-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .dash-kpi-card { padding: 12px; }
+    .dash-kpi-value { font-size: 24px; }
+    .user-badge, .zone-badge { font-size: 10px; padding: 2px 7px; }
+    .fab-scan { bottom: 16px; right: 16px; width: 50px; height: 50px; }
+  }
+  @media (max-width: 400px) {
+    .brand-text h1 { font-size: 10px; }
+    .btn { padding: 5px 7px; font-size: 10px; }
+    .topbar-actions { gap: 3px; }
+  }
   html.light .data-table tbody tr:nth-child(even) { background: var(--row-alt); }
   html.light .month-pill  { color: #374151; border-color: #c7d2e0; }
   html.light .month-pill:hover { border-color: #2563eb; color: #1e40af; }
@@ -1455,31 +1503,31 @@ EST-iMs © | 2026    </div>
   <div class="dash-box">
     <!-- LEFT NAV -->
     <div class="dash-sidebar">
-      <div class="dash-sidebar-title">Dashboard</div>
+      <div class="dash-sidebar-title">📊 لوحة التحكم</div>
 
       <div class="dash-nav-item active" onclick="dashShow('overview')" id="dnav-overview">
-        <span class="dn-icon">📊</span> Overview
+        <span class="dn-icon">📊</span> نظرة عامة
       </div>
       <div class="dash-nav-item" onclick="dashShow('movement')" id="dnav-movement">
-        <span class="dn-icon">📈</span> IN / OUT Movement
+        <span class="dn-icon">📈</span> الحركة (دخول / خروج)
       </div>
       <div class="dash-nav-sep"></div>
       <div class="dash-nav-item" onclick="dashShow('alerts')" id="dnav-alerts">
-        <span class="dn-icon">⚠️</span> Stock Alerts
+        <span class="dn-icon">⚠️</span> تنبيهات المخزون
       </div>
       <div class="dash-nav-item" onclick="dashShow('top')" id="dnav-top">
-        <span class="dn-icon">🏆</span> Top Items
+        <span class="dn-icon">🏆</span> الأصناف الأعلى
       </div>
       <div class="dash-nav-sep"></div>
       <div class="dash-nav-item" onclick="dashShow('zones')" id="dnav-zones">
-        <span class="dn-icon">🏭</span> Zones Summary
+        <span class="dn-icon">🏭</span> ملخص الزونات
       </div>
     </div>
 
     <!-- RIGHT CONTENT -->
     <div class="dash-content" id="dashContent" style="position:relative;">
       <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
-      <div class="dash-loading"><div class="spinner"></div><span>Loading dashboard...</span></div>
+      <div class="dash-loading"><div class="spinner"></div><span>جاري التحميل...</span></div>
     </div>
   </div>
 </div>
@@ -2399,11 +2447,11 @@ function dashShow(view) {
 /* ── OVERVIEW ── */
 function dashOverview(d) {
   const kpis = [
-    { label:'Total Items',     value: d.total_items   ?? '—', sub:'across all sheets',   cls:'blue'  },
-    { label:'Total IN',        value: d.total_in      ?? '—', sub:'all time',             cls:'green' },
-    { label:'Total OUT',       value: d.total_out     ?? '—', sub:'all time',             cls:'red'   },
-    { label:'Low Stock Items', value: d.low_stock     ?? '—', sub:'below threshold',      cls:'amber' },
-    { label:'Zero Stock',      value: d.zero_stock    ?? '—', sub:'need restocking',      cls:'red'   },
+    { label:'إجمالي الأصناف',     value: d.total_items   ?? '—', sub:'في جميع الشيتات',   cls:'blue'  },
+    { label:'إجمالي الداخل',      value: d.total_in      ?? '—', sub:'منذ البداية',        cls:'green' },
+    { label:'إجمالي الخارج',      value: d.total_out     ?? '—', sub:'منذ البداية',        cls:'red'   },
+    { label:'مخزون منخفض',        value: d.low_stock     ?? '—', sub:'أقل من الحد الأدنى', cls:'amber' },
+    { label:'مخزون نافد',         value: d.zero_stock    ?? '—', sub:'تحتاج إعادة تعبئة',  cls:'red'   },
   ];
   const kpiHtml = kpis.map(k => `
     <div class="dash-kpi-card ${k.cls}">
@@ -2414,8 +2462,8 @@ function dashOverview(d) {
 
   setDashContent(`
     <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
-    <div class="dash-content-title">📊 Overview</div>
-    <div class="dash-content-sub">Summary of current inventory status</div>
+    <div class="dash-content-title">📊 نظرة عامة</div>
+    <div class="dash-content-sub">ملخص حالة المخزون الحالية</div>
     <div class="dash-kpi-grid">${kpiHtml}</div>
     <div class="dash-chart-wrap">
       <div class="dash-chart-title">IN vs OUT — Current Data</div>
@@ -2690,11 +2738,19 @@ async function toggleReportsDropdown(e) {
       const data = await res.json();
       _reportsLoaded = true;
       if (!data.files || !data.files.length) {
-        menu.innerHTML = '<div class="reports-dropdown-empty">📂 No reports found</div>';
+        menu.innerHTML = '<div class="reports-dropdown-empty">📂 لا توجد تقارير</div>';
       } else {
+        function fileIcon(name) {
+          const ext = name.split('.').pop().toLowerCase();
+          if (['xlsx','xlsm','xls','csv'].includes(ext)) return '📊';
+          if (['docx','doc','dotx'].includes(ext))       return '📝';
+          if (['pptx','ppt','pps'].includes(ext))        return '📑';
+          if (ext === 'pdf')                              return '📄';
+          return '📎';
+        }
         menu.innerHTML = data.files.map(f =>
-          `<div class="reports-dropdown-item" onclick="printReport('${escAttr(f)}')">
-             <span class="ri-icon">📊</span>
+          `<div class="reports-dropdown-item" onclick="openReport('${escAttr(f)}')">
+             <span class="ri-icon">${fileIcon(f)}</span>
              <span style="overflow:hidden;text-overflow:ellipsis;">${escHtml(f)}</span>
            </div>`
         ).join('');
@@ -2707,10 +2763,26 @@ async function toggleReportsDropdown(e) {
   }
 }
 
-function printReport(filename) {
+function openReport(filename) {
   document.getElementById('reportsDropdownMenu').classList.remove('open');
-  // Open the server-rendered HTML print page directly — no download, no iframe tricks
-  window.open('/reports/print/' + encodeURIComponent(filename), '_blank');
+  const ext = filename.split('.').pop().toLowerCase();
+  // PDF و Office — تحميل مباشر / فتح في تاب جديد
+  if (ext === 'pdf') {
+    window.open('/reports/file/' + encodeURIComponent(filename), '_blank');
+  } else if (['docx','doc','dotx','pptx','ppt','pps'].includes(ext)) {
+    // تحميل مباشر لملفات Word و PowerPoint
+    const a = document.createElement('a');
+    a.href = '/reports/file/' + encodeURIComponent(filename);
+    a.download = filename;
+    a.click();
+  } else {
+    // Excel وبقية الملفات — صفحة الطباعة الموجودة
+    window.open('/reports/print/' + encodeURIComponent(filename), '_blank');
+  }
+}
+
+function printReport(filename) {
+  openReport(filename);
 }
 
 // Close dropdown when clicking outside
@@ -2723,293 +2795,6 @@ document.addEventListener('click', function(e) {
 
 // ── START ──
 init();
-</script>
-
-<!-- ══ BARCODE FLOATING BUTTON ══ -->
-<style>
-  .fab-scan {
-    position: fixed;
-    bottom: 28px;
-    right: 28px;
-    width: 58px;
-    height: 58px;
-    border-radius: 50%;
-    background: var(--accent-blue);
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 20px rgba(59,130,246,0.45);
-    z-index: 8000;
-    transition: transform 0.18s, box-shadow 0.18s;
-  }
-  .fab-scan:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(59,130,246,0.6); }
-  .fab-scan:active { transform: scale(0.95); }
-  .fab-scan svg { stroke: #fff; }
-  .fab-tooltip {
-    position: fixed;
-    bottom: 36px;
-    right: 94px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    color: var(--text-main);
-    font-size: 12px;
-    padding: 5px 12px;
-    border-radius: 8px;
-    white-space: nowrap;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.2s;
-    z-index: 7999;
-  }
-  .fab-scan:hover + .fab-tooltip { opacity: 1; }
-
-  /* SCAN MODAL */
-  #scanModal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 9990;
-    background: rgba(0,0,0,0.7);
-    align-items: flex-end;
-    justify-content: center;
-  }
-  #scanModal.open { display: flex; }
-  .scan-sheet {
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
-    border-radius: 20px 20px 0 0;
-    width: 100%;
-    max-width: 480px;
-    padding: 20px 20px 36px;
-    animation: slideUp 0.25s ease;
-  }
-  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-  .scan-sheet-handle {
-    width: 40px; height: 4px;
-    background: var(--border-light);
-    border-radius: 2px;
-    margin: 0 auto 16px;
-  }
-  .scan-sheet-title {
-    font-size: 15px; font-weight: 600;
-    color: var(--text-main);
-    text-align: center;
-    margin-bottom: 16px;
-  }
-  #scanReader {
-    width: 100%;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #000;
-    min-height: 200px;
-  }
-  .scan-manual-row {
-    display: flex; gap: 8px;
-    margin-top: 14px;
-  }
-  .scan-manual-row input {
-    flex: 1;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    color: var(--text-main);
-    border-radius: 8px;
-    padding: 9px 12px;
-    font-size: 13px;
-    font-family: 'JetBrains Mono', monospace;
-    outline: none;
-  }
-  .scan-manual-row input:focus { border-color: var(--accent-blue); }
-  .scan-manual-row button {
-    background: var(--accent-blue);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 9px 16px;
-    font-size: 13px;
-    cursor: pointer;
-    font-weight: 600;
-  }
-  .scan-close-btn {
-    width: 100%;
-    margin-top: 12px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    color: var(--text-muted);
-    border-radius: 8px;
-    padding: 10px;
-    font-size: 13px;
-    cursor: pointer;
-  }
-  .scan-close-btn:hover { background: var(--bg-hover); color: var(--text-main); }
-
-  /* RESULT MODAL */
-  #scanResultModal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 9995;
-    background: rgba(0,0,0,0.65);
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-  }
-  #scanResultModal.open { display: flex; }
-  .scan-result-box {
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px 24px;
-    width: 100%;
-    max-width: 320px;
-    text-align: center;
-    animation: popIn 0.2s ease;
-  }
-  @keyframes popIn { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-  .sr-icon {
-    width: 52px; height: 52px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 12px;
-  }
-  .sr-icon.ok { background: rgba(16,185,129,0.15); }
-  .sr-icon.err { background: rgba(239,68,68,0.15); }
-  .sr-cat { font-size: 11px; color: var(--text-dim); letter-spacing: 0.5px; margin-bottom: 2px; }
-  .sr-name { font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
-  .sr-color-bar { height: 5px; border-radius: 3px; width: 50px; margin: 0 auto 14px; }
-  .sr-label { font-size: 11px; color: var(--text-muted); }
-  .sr-num { font-size: 48px; font-weight: 700; color: var(--text-main); line-height: 1.1; }
-  .sr-unit { font-size: 12px; color: var(--text-dim); margin-bottom: 4px; }
-  .sr-date { font-size: 11px; color: var(--text-dim); margin-bottom: 20px; }
-  .sr-err-msg { font-size: 13px; color: var(--accent-red); margin: 8px 0 16px; }
-  .sr-close {
-    width: 100%; padding: 11px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    color: var(--text-main);
-    border-radius: 8px;
-    font-size: 13px; font-weight: 600;
-    cursor: pointer;
-  }
-  .sr-close:hover { background: var(--bg-hover); }
-</style>
-
-<!-- Floating Button -->
-<button class="fab-scan" onclick="openScanModal()" title="Scan Barcode">
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/>
-    <path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
-    <rect x="7" y="7" width="3" height="10"/><rect x="12" y="7" width="1.5" height="10"/>
-    <rect x="15.5" y="7" width="2" height="10"/>
-  </svg>
-</button>
-<div class="fab-tooltip">Scan Barcode</div>
-
-<!-- Scan Sheet Modal -->
-<div id="scanModal" onclick="if(event.target===this)closeScanModal()">
-  <div class="scan-sheet">
-    <div class="scan-sheet-handle"></div>
-    <div class="scan-sheet-title">📷 Barcode Scanner</div>
-    <div id="scanReader"></div>
-    <div class="scan-manual-row">
-      <input type="text" id="scanManualInput" placeholder="CHKN-YLW-001" dir="ltr">
-      <button onclick="scanLookup(document.getElementById('scanManualInput').value)">Search</button>
-    </div>
-    <button class="scan-close-btn" onclick="closeScanModal()">Close</button>
-  </div>
-</div>
-
-<!-- Result Modal -->
-<div id="scanResultModal" onclick="if(event.target===this)closeScanResult()">
-  <div class="scan-result-box">
-    <div class="sr-icon ok" id="srIcon">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-    </div>
-    <div class="sr-cat" id="srCat"></div>
-    <div class="sr-name" id="srName"></div>
-    <div class="sr-color-bar" id="srBar"></div>
-    <div class="sr-label">Current Balance</div>
-    <div class="sr-num" id="srNum"></div>
-    <div class="sr-unit">Sacks</div>
-    <div class="sr-date" id="srDate"></div>
-    <div class="sr-err-msg" id="srErr" style="display:none"></div>
-    <button class="sr-close" onclick="closeScanResult()">Close</button>
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<script>
-// QR Code lookup — كل الأصناف مربوطة بـ QR وليس باركود
-const SCAN_ITEMS = [
-  { sku:'CHKN-BLU-001', name:'Chicken Sack — Blue',         hex:'#3b82f6', balance:1564,  date:'2026-05-12' },
-  { sku:'CHKN-BRN-001', name:'Chicken Sack — Brown',        hex:'#92400e', balance:30,    date:'2026-05-07' },
-  { sku:'CHKN-DBL-001', name:'Chicken Sack — Dark Blue',    hex:'#1e3a8a', balance:62412, date:'2026-05-13' },
-  { sku:'CHKN-DGR-001', name:'Chicken Sack — Dark Green',   hex:'#14532d', balance:6061,  date:'2026-05-13' },
-  { sku:'CHKN-GRY-001', name:'Chicken Sack — Gray',         hex:'#6b7280', balance:7723,  date:'2026-05-07' },
-  { sku:'CHKN-GRN-001', name:'Chicken Sack — Green',        hex:'#16a34a', balance:57016, date:'2026-05-14' },
-  { sku:'CHKN-LBL-001', name:'Chicken Sack — Light Blue',   hex:'#7dd3fc', balance:339,   date:'2026-05-12' },
-  { sku:'CHKN-ORG-001', name:'Chicken Sack — Orange',       hex:'#f97316', balance:59,    date:'2026-05-01' },
-  { sku:'CHKN-ORG-002', name:'Chicken Sack — Orange 70x45', hex:'#fb923c', balance:210,   date:'2026-05-01' },
-  { sku:'CHKN-PRP-001', name:'Chicken Sack — Purple',       hex:'#7c3aed', balance:42457, date:'2026-05-14' },
-  { sku:'CHKN-RED-001', name:'Chicken Sack — Red',          hex:'#dc2626', balance:7485,  date:'2026-05-13' },
-  { sku:'CHKN-YLW-001', name:'Chicken Sack — Yellow',       hex:'#eab308', balance:7812,  date:'2026-05-13' },
-];
-
-let _scanner = null;
-
-function openScanModal() {
-  document.getElementById('scanModal').classList.add('open');
-  setTimeout(() => {
-    if (_scanner) return;
-    _scanner = new Html5Qrcode("scanReader");
-    _scanner.start(
-      { facingMode: "environment" },
-      { fps: 12, qrbox: { width: 230, height: 230 } },
-      (decoded) => {
-        closeScanModal();
-        scanLookup(decoded.trim().toUpperCase());
-      },
-      () => {}
-    ).catch(() => {});
-  }, 300);
-}
-
-function closeScanModal() {
-  document.getElementById('scanModal').classList.remove('open');
-  if (_scanner) {
-    _scanner.stop().then(() => { _scanner = null; }).catch(() => {});
-  }
-}
-
-function scanLookup(sku) {
-  const item = SCAN_ITEMS.find(i => i.sku === sku.toUpperCase().trim());
-  const icon = document.getElementById('srIcon');
-  if (item) {
-    icon.className = 'sr-icon ok';
-    icon.innerHTML = `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
-    document.getElementById('srCat').textContent = 'Chicken Sacks';
-    document.getElementById('srName').textContent = item.name;
-    document.getElementById('srBar').style.background = item.hex;
-    document.getElementById('srNum').textContent = item.balance.toLocaleString();
-    document.getElementById('srDate').textContent = 'Last updated: ' + item.date;
-    document.getElementById('srErr').style.display = 'none';
-  } else {
-    icon.className = 'sr-icon err';
-    icon.innerHTML = `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
-    document.getElementById('srCat').textContent = '';
-    document.getElementById('srName').textContent = 'SKU Not Found';
-    document.getElementById('srBar').style.background = '#ef4444';
-    document.getElementById('srNum').textContent = '—';
-    document.getElementById('srDate').textContent = '';
-    document.getElementById('srErr').textContent = '"' + sku + '" is not registered in the system.';
-    document.getElementById('srErr').style.display = 'block';
-  }
-  document.getElementById('scanResultModal').classList.add('open');
-}
-
-function closeScanResult() {
-  document.getElementById('scanResultModal').classList.remove('open');
-}
 </script>
 </body>
 </html>
