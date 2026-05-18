@@ -230,109 +230,6 @@
     letter-spacing:1.5px;text-transform:uppercase;
   }
 
-  /* ── LABEL PRINT CARD ── */
-  .label-print-card {
-    border-color: rgba(139,92,246,0.25);
-    background: rgba(139,92,246,0.05);
-  }
-  .label-print-card:hover {
-    border-color: rgba(139,92,246,0.55);
-    background: rgba(139,92,246,0.11);
-    box-shadow: 0 20px 48px rgba(139,92,246,0.2);
-  }
-  .label-print-card .zone-name { color: #a78bfa; }
-  .label-print-card .zone-label { color: rgba(167,139,250,0.65); }
-  .label-print-card .lp-icon {
-    position: absolute; top: 12px; right: 12px;
-    width: 22px; height: 22px; border-radius: 6px;
-    background: rgba(139,92,246,0.15);
-    border: 1px solid rgba(139,92,246,0.3);
-    display: flex; align-items: center; justify-content: center;
-    color: #a78bfa;
-  }
-  /* hidden file input */
-  #labelFileInput { display: none; }
-
-  /* ── LABEL LOADER ── */
-  #labelLoader {
-    display: none;
-    position: fixed; inset: 0; z-index: 2000;
-    background: rgba(0,0,0,0.65);
-    backdrop-filter: blur(8px);
-    align-items: center; justify-content: center;
-    flex-direction: column; gap: 14px;
-  }
-  #labelLoader .ld-spinner {
-    width: 36px; height: 36px;
-    border: 3px solid rgba(255,255,255,0.15);
-    border-top-color: #a78bfa;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  #labelLoader .ld-text {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px; color: rgba(255,255,255,0.6);
-    letter-spacing: 1px;
-  }
-
-  /* ── LABEL PRINT OVERLAY (screen) ── */
-  #labelPrintOverlay {
-    position: fixed; inset: 0; z-index: 3000;
-    background: #555;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 20px;
-  }
-  .lpo-preview { display: flex; flex-direction: column; align-items: center; gap: 16px; }
-  .lpo-label {
-    width: 160mm; height: 240mm;
-    background: #fff;
-    display: flex; flex-direction: column;
-    box-shadow: 0 8px 48px rgba(0,0,0,0.55);
-    overflow: hidden;
-  }
-  .lpo-top    { height: 5mm;   flex-shrink: 0; background: #fff; }
-  .lpo-bottom { height: 2.7mm; flex-shrink: 0; background: #fff; }
-  .lpo-content { flex: 1; overflow: hidden; }
-  .lpo-content img { display: block; width: 100%; height: 100%; object-fit: fill; }
-  .lpo-actions { display: flex; gap: 10px; }
-  .lpo-hint {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px; color: rgba(255,255,255,0.45);
-    text-align: center; line-height: 1.7;
-    background: rgba(0,0,0,0.25);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 8px; padding: 10px 18px;
-    max-width: 420px;
-  }
-  .lpo-hint b { color: #a78bfa; }
-  .lpo-btn {
-    display: flex; align-items: center; gap: 7px;
-    padding: 10px 22px; border-radius: 10px;
-    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
-    cursor: pointer; border: none; transition: all 0.18s;
-  }
-  .lpo-btn-print { background: #a78bfa; color: #fff; }
-  .lpo-btn-print:hover { background: #7c3aed; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139,92,246,0.4); }
-  .lpo-btn-close { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.18); }
-  .lpo-btn-close:hover { background: rgba(239,68,68,0.2); border-color: rgba(239,68,68,0.4); }
-
-  /* Print: only show the label, hide everything else */
-  @media print {
-    body > *:not(#labelPrintOverlay) { display: none !important; }
-    #labelPrintOverlay {
-      position: fixed; inset: 0;
-      background: #fff;
-      display: flex !important;
-      align-items: flex-start; justify-content: flex-start;
-      gap: 0;
-    }
-    .lpo-preview { gap: 0; }
-    .lpo-actions { display: none !important; }
-    .lpo-label   { box-shadow: none; }
-    @page { size: 160mm 240mm; margin: 0; }
-  }
-
   /* ── DIVIDER ── */
   .zones-divider {
     width:100%;max-width:900px;
@@ -435,243 +332,7 @@
     color:#10b981;
   }
 
-  /* ── LANGUAGE TOGGLE ── */
-  .lang-toggle-btn {
-    position: fixed;
-    top: 18px; right: 18px;
-    z-index: 200;
-    display: flex; align-items: center; gap: 7px;
-    background: rgba(28,34,48,0.78);
-    backdrop-filter: blur(14px);
-    border: 1px solid var(--border-light);
-    border-radius: 22px;
-    padding: 6px 14px 6px 10px;
-    cursor: pointer;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px; font-weight: 600;
-    color: var(--text-muted);
-    transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
-    user-select: none;
-    animation: fadeDown 0.5s cubic-bezier(.34,1.56,.64,1) 0.2s both;
-  }
-  html.light .lang-toggle-btn { background: rgba(255,255,255,0.82); }
-  .lang-toggle-btn:hover {
-    background: var(--accent-blue);
-    border-color: var(--accent-blue);
-    color: #fff;
-    transform: translateY(-2px) scale(1.04);
-  }
-  .lang-flag { font-size: 14px; line-height: 1; }
-  .lang-text { letter-spacing: 1.5px; text-transform: uppercase; }
-
-  /* ── COMING SOON MODAL ── */
-  .cs-overlay {
-    position: fixed; inset: 0; z-index: 1500;
-    background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    display: none; align-items: center; justify-content: center;
-    padding: 20px;
-  }
-  .cs-overlay.open { display: flex; }
-  .cs-modal {
-    position: relative;
-    width: min(340px, 90vw);
-    background: rgba(21,28,42,0.95);
-    backdrop-filter: blur(28px);
-    -webkit-backdrop-filter: blur(28px);
-    border: 1px solid rgba(59,130,246,0.22);
-    border-radius: 22px;
-    overflow: hidden;
-    text-align: center;
-    animation: csIn 0.32s cubic-bezier(.34,1.56,.64,1);
-    box-shadow: 0 32px 80px rgba(0,0,0,0.55);
-  }
-  html.light .cs-modal {
-    background: rgba(240,244,248,0.95);
-    border-color: rgba(37,99,235,0.18);
-    box-shadow: 0 32px 80px rgba(0,0,0,0.12);
-  }
-  @keyframes csIn { from{opacity:0;transform:scale(0.88) translateY(20px);} to{opacity:1;transform:scale(1) translateY(0);} }
-  .cs-bar {
-    height: 3px;
-    background: linear-gradient(90deg, #3b82f6, #06b6d4, #818cf8);
-    background-size: 200% 100%;
-    animation: gradShift 3s ease infinite;
-  }
-  @keyframes gradShift { 0%,100%{background-position:0% 50%;} 50%{background-position:100% 50%;} }
-  .cs-body { padding: 28px 28px 24px; }
-  .cs-icon-wrap {
-    width: 60px; height: 60px; border-radius: 18px;
-    background: linear-gradient(135deg, rgba(59,130,246,0.18), rgba(6,182,212,0.1));
-    border: 1px solid rgba(59,130,246,0.28);
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 16px;
-    font-size: 26px;
-    box-shadow: 0 8px 28px rgba(59,130,246,0.2);
-  }
-  .cs-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 26px; letter-spacing: 3px;
-    color: var(--text-main); margin-bottom: 6px;
-  }
-  .cs-sub {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px; color: var(--accent-cyan);
-    letter-spacing: 2px; text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .cs-desc {
-    font-size: 12px; color: var(--text-muted);
-    line-height: 1.6; margin-bottom: 20px;
-  }
-  .cs-close-btn {
-    width: 100%; padding: 10px;
-    background: rgba(59,130,246,0.12);
-    border: 1px solid rgba(59,130,246,0.25);
-    border-radius: 10px; color: var(--accent-blue);
-    font-family: 'Inter', sans-serif;
-    font-size: 13px; font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
-  }
-  .cs-close-btn:hover { background: rgba(59,130,246,0.22); transform: translateY(-2px); }
-  .cs-close-x {
-    position: absolute; top: 12px; right: 14px;
-    width: 28px; height: 28px; border-radius: 8px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.08);
-    color: var(--text-muted);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; font-size: 14px;
-    transition: background 0.2s, color 0.2s, transform 0.2s;
-  }
-  html.light .cs-close-x { background: rgba(0,0,0,0.05); }
-  .cs-close-x:hover { background: rgba(239,68,68,0.15); color: #ef4444; transform: rotate(90deg); }
-
-  /* ── USER CORNER — clickable ── */
-  .user-corner { cursor: pointer; transition: border-color 0.2s, box-shadow 0.2s; }
-  .user-corner:hover {
-    border-color: var(--accent-blue);
-    box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
-  }
-
-  /* ── QR FLOATING BUTTON ── */
-  .fab-qr {
-    position: fixed;
-    bottom: 28px; right: 28px;
-    z-index: 500;
-    width: 54px; height: 54px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, #06b6d4, #3b82f6);
-    border: none; cursor: pointer;
-    box-shadow: 0 8px 32px rgba(6,182,212,0.45), 0 0 0 1px rgba(6,182,212,0.2);
-    display: flex; align-items: center; justify-content: center;
-    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s;
-    animation: fabIn 0.5s cubic-bezier(.34,1.56,.64,1) 0.6s both;
-  }
-  @keyframes fabIn { from{opacity:0;transform:scale(0.5);} to{opacity:1;transform:scale(1);} }
-  .fab-qr:hover {
-    transform: translateY(-4px) scale(1.08);
-    box-shadow: 0 16px 48px rgba(6,182,212,0.55), 0 0 0 1px rgba(6,182,212,0.3);
-  }
-  .fab-qr:active { transform: scale(0.95); }
-  .fab-qr-pulse {
-    position: absolute; inset: -4px;
-    border-radius: 20px;
-    border: 2px solid rgba(6,182,212,0.4);
-    animation: fabRipple 2.5s ease-out infinite;
-    pointer-events: none;
-  }
-  @keyframes fabRipple { 0%{opacity:0.7;transform:scale(1);} 100%{opacity:0;transform:scale(1.4);} }
-
-  /* ── IMPROVED DOCK THEME BUTTON ── */
-  .dock-item:has(#dockThemeIcon) .dock-icon {
-    background: rgba(251,191,36,0.08);
-    border-color: rgba(251,191,36,0.3);
-    color: #fbbf24;
-  }
-  .dock-item:has(#dockThemeIcon):hover .dock-icon {
-    background: rgba(251,191,36,0.22) !important;
-    border-color: #fbbf24 !important;
-    color: #fbbf24 !important;
-  }
-  html.light .dock-item:has(#dockThemeIcon) .dock-icon {
-    background: rgba(99,102,241,0.08);
-    border-color: rgba(99,102,241,0.3);
-    color: #6366f1;
-  }
-  html.light .dock-item:has(#dockThemeIcon):hover .dock-icon {
-    background: rgba(99,102,241,0.18) !important;
-    border-color: #6366f1 !important;
-    color: #6366f1 !important;
-  }
-
-  /* ── QC ZONE CARD ── */
-  .zone-card.qc-card {
-    border-color: rgba(6,182,212,0.25);
-    background: rgba(6,182,212,0.04);
-  }
-  .zone-card.qc-card:hover {
-    border-color: rgba(6,182,212,0.5);
-    background: rgba(6,182,212,0.10);
-    box-shadow: 0 20px 48px rgba(6,182,212,0.18);
-  }
-  .zone-card.qc-card .zone-name { color: #06b6d4; }
-  .zone-card.qc-card .zone-label { color: rgba(6,182,212,0.65); }
-  .zone-card.qc-card .qc-icon {
-    position: absolute; top: 12px; right: 12px;
-    width: 22px; height: 22px; border-radius: 6px;
-    background: rgba(6,182,212,0.12);
-    border: 1px solid rgba(6,182,212,0.3);
-    display: flex; align-items: center; justify-content: center;
-    color: #06b6d4;
-  }
-
-  /* ── MOBILE RESPONSIVE ── */
-  @media (max-width: 640px) {
-    body { align-items: flex-start; padding-top: 0; }
-    .side-dock { display: none; }
-    .user-corner { left: 12px; top: 12px; }
-    .lang-toggle-btn { top: 12px; right: 12px; padding: 5px 10px 5px 8px; font-size: 10px; }
-    .zones-wrapper { padding: 70px 16px 100px; }
-    .zone-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-    .zone-grid-super { grid-template-columns: repeat(2,1fr); max-width: 100%; }
-    .zone-card { padding: 24px 14px 20px; min-height: 110px; }
-    .zone-name { font-size: 24px; }
-    .zones-title { font-size: 18px; }
-    .fab-qr { bottom: 80px; right: 18px; width: 48px; height: 48px; border-radius: 14px; }
-
-    /* Mobile bottom dock */
-    .mobile-dock {
-      display: flex !important;
-      position: fixed; bottom: 0; left: 0; right: 0; z-index: 400;
-      background: rgba(13,17,23,0.9);
-      backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(59,130,246,0.15);
-      padding: 8px 0 max(8px, env(safe-area-inset-bottom));
-      justify-content: space-around;
-    }
-    html.light .mobile-dock { background: rgba(255,255,255,0.9); }
-    .mobile-dock-item {
-      display: flex; flex-direction: column; align-items: center; gap: 3px;
-      padding: 4px 8px; cursor: pointer; flex: 1;
-      color: var(--text-muted); font-size: 9px; font-weight: 500;
-      font-family: 'Inter', sans-serif;
-      transition: color 0.2s;
-    }
-    .mobile-dock-item:active { color: var(--accent-blue); }
-    .mobile-dock-icon {
-      width: 30px; height: 30px; border-radius: 9px;
-      background: rgba(59,130,246,0.1);
-      border: 1px solid rgba(59,130,246,0.15);
-      display: flex; align-items: center; justify-content: center;
-    }
-  }
-  .mobile-dock { display: none; }
+  /* ── PASSWORD MODAL OVERLAY ── */
   .pw-overlay {
     position:fixed;inset:0;z-index:1000;
     display:none;
@@ -761,37 +422,31 @@
 <div class="grid-overlay"></div>
 <canvas id="particleCanvas"></canvas>
 
-<!-- LANGUAGE TOGGLE -->
-<button class="lang-toggle-btn" id="langToggleBtn" onclick="toggleLang()">
-  <span class="lang-flag" id="langFlag">🇸🇦</span>
-  <span class="lang-text" id="langText">AR</span>
-</button>
-
 <!-- SIDE DOCK -->
 <div class="side-dock">
   <div class="dock-item" onclick="window.location.href='/'">
     <div class="dock-icon">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     </div>
-    <div class="dock-label" data-en="Welcome" data-ar="الرئيسية">Welcome</div>
+    <div class="dock-label">Welcome</div>
   </div>
   <div class="dock-item" onclick="toggleTheme()">
-    <div class="dock-icon" id="dockThemeIcon">
+    <div class="dock-icon">
       <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
       <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
     </div>
-    <div class="dock-label" id="dockThemeLabel" data-en-dark="Dark Mode" data-en-light="Light Mode" data-ar-dark="الوضع الداكن" data-ar-light="الوضع الفاتح">Light Mode</div>
+    <div class="dock-label" id="dockThemeLabel">Light Mode</div>
   </div>
   <div class="dock-item" onclick="window.location.href='/logout'">
     <div class="dock-icon">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
     </div>
-    <div class="dock-label" data-en="Logout" data-ar="تسجيل الخروج">Logout</div>
+    <div class="dock-label">Logout</div>
   </div>
 </div>
 
-<!-- USER CORNER — clickable (Coming Soon: Profile) -->
-<div class="user-corner" onclick="openComingSoon('profile')" title="Profile — Coming Soon">
+<!-- USER CORNER -->
+<div class="user-corner">
   <div class="user-corner-avatar">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
   </div>
@@ -803,11 +458,11 @@
 <div class="zones-wrapper">
 
   <div class="zones-header">
-    <div class="zones-title" data-en="Select Your Zone" data-ar="اختر الزون">Select Your Zone</div>
-    <div class="zones-sub" data-en="Choose the warehouse zone you want to access" data-ar="اختر زون المستودع الذي تريد الوصول إليه">Choose the warehouse zone you want to access</div>
+    <div class="zones-title">Select Your Zone</div>
+    <div class="zones-sub">Choose the warehouse zone you want to access</div>
   </div>
 
-  <!-- Warehouse zones 1-5 + QC -->
+  <!-- Warehouse zones 1-5 -->
   <div class="zone-grid" id="zoneGrid">
     <div class="zone-card" onclick="selectZone('zone1')" id="card-zone1">
       <div class="zone-name">Zone 1</div>
@@ -829,28 +484,7 @@
       <div class="zone-name">Zone 5</div>
       <div class="zone-label">زون 5</div>
     </div>
-    <div class="zone-card qc-card" onclick="selectZone('qc')" id="card-qc">
-      <div class="qc-icon">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-      </div>
-      <div class="zone-name">QC</div>
-      <div class="zone-label">Quality Control</div>
-    </div>
-    <div class="zone-card label-print-card" onclick="openLabelPrint()" id="card-labelprint">
-      <div class="lp-icon">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-      </div>
-      <div class="zone-name">Label</div>
-      <div class="zone-label">Print</div>
-    </div>
   </div>
-  <input type="file" id="labelFileInput" accept="application/pdf">
-
-<!-- Label loader -->
-<div id="labelLoader">
-  <div class="ld-spinner"></div>
-  <div class="ld-text">Rendering label…</div>
-</div>
 
   <div class="zones-divider"><span class="zones-divider-text">Management</span></div>
 
@@ -875,61 +509,6 @@
 
   <!-- Password Modal -->
 </div><!-- close zones-wrapper here -->
-
-<!-- QR FLOATING BUTTON -->
-<button class="fab-qr" onclick="window.location.href='/scan'" title="Scan QR">
-  <div class="fab-qr-pulse"></div>
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/>
-    <rect x="3" y="16" width="5" height="5" rx="1"/>
-    <path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/>
-    <path d="M12 7v3a2 2 0 0 1-2 2H7"/>
-    <path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/>
-  </svg>
-</button>
-
-<!-- MOBILE DOCK -->
-<div class="mobile-dock">
-  <div class="mobile-dock-item" onclick="window.location.href='/'">
-    <div class="mobile-dock-icon">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-    </div>
-    <span data-en="Back" data-ar="رجوع">Back</span>
-  </div>
-  <div class="mobile-dock-item" onclick="toggleTheme()">
-    <div class="mobile-dock-icon" style="background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.25);color:#fbbf24;">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
-    </div>
-    <span data-en="Theme" data-ar="الوضع">Theme</span>
-  </div>
-  <div class="mobile-dock-item" onclick="window.location.href='/scan'">
-    <div class="mobile-dock-icon" style="background:rgba(6,182,212,0.12);border-color:rgba(6,182,212,0.25);color:var(--accent-cyan);">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/><rect x="3" y="16" width="5" height="5" rx="1"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/></svg>
-    </div>
-    <span data-en="Scan QR" data-ar="مسح QR">Scan QR</span>
-  </div>
-  <div class="mobile-dock-item" onclick="window.location.href='/logout'">
-    <div class="mobile-dock-icon" style="background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.2);color:#ef4444;">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-    </div>
-    <span data-en="Logout" data-ar="خروج">Logout</span>
-  </div>
-</div>
-
-<!-- COMING SOON MODAL -->
-<div class="cs-overlay" id="csOverlay" onclick="if(event.target===this)closeComingSoon()">
-  <div class="cs-modal">
-    <div class="cs-bar"></div>
-    <button class="cs-close-x" onclick="closeComingSoon()">✕</button>
-    <div class="cs-body">
-      <div class="cs-icon-wrap" id="csIcon">🚀</div>
-      <div class="cs-title">Coming Soon</div>
-      <div class="cs-sub" id="csSub">Feature in Development</div>
-      <div class="cs-desc" id="csDesc">This feature is currently under development and will be available in a future update.</div>
-      <button class="cs-close-btn" onclick="closeComingSoon()" data-en="Got it" data-ar="حسناً">Got it</button>
-    </div>
-  </div>
-</div>
 
 <div class="pw-overlay" id="pwOverlay">
   <div class="pw-panel" id="pwPanel">
@@ -1080,109 +659,6 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && selectedZone) submitZone();
   if (e.key === 'Escape') closeModal();
 });
-
-// ── LABEL PRINT ──
-let _pdfJsReady = false;
-function _loadPdfJs(cb) {
-  if (_pdfJsReady) { cb(); return; }
-  const s = document.createElement('script');
-  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-  s.onload = function() {
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    _pdfJsReady = true;
-    cb();
-  };
-  document.head.appendChild(s);
-}
-
-function openLabelPrint() {
-  document.getElementById('labelFileInput').click();
-}
-
-document.getElementById('labelFileInput').addEventListener('change', function(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  this.value = '';
-
-  // Show loading indicator
-  const loader = document.getElementById('labelLoader');
-  if (loader) { loader.style.display = 'flex'; }
-
-  _loadPdfJs(function() {
-    const reader = new FileReader();
-    reader.onload = function(ev) {
-      const arrayBuffer = ev.target.result;
-      pdfjsLib.getDocument({ data: arrayBuffer }).promise.then(function(pdf) {
-        pdf.getPage(1).then(function(page) {
-
-          const DPI      = 300;
-          const MM_TO_PX = DPI / 25.4;
-          const targetW  = Math.round(160   * MM_TO_PX);
-          const targetH  = Math.round(232.3 * MM_TO_PX);
-
-          const vp0   = page.getViewport({ scale: 1 });
-
-          // Render at targetW scale, then we'll stretch height via canvas
-          const scaleX = targetW / vp0.width;
-          const viewport   = page.getViewport({ scale: scaleX });
-          const offscreen  = document.createElement('canvas');
-          offscreen.width  = viewport.width;
-          offscreen.height = viewport.height;
-
-          page.render({ canvasContext: offscreen.getContext('2d'), viewport })
-              .promise.then(function() {
-                // Stretch to exact target size using a second canvas
-                const stretched = document.createElement('canvas');
-                stretched.width  = targetW;
-                stretched.height = targetH;
-                const ctx = stretched.getContext('2d');
-                ctx.drawImage(offscreen, 0, 0, targetW, targetH);
-
-                if (loader) loader.style.display = 'none';
-                const imgDataUrl = stretched.toDataURL('image/jpeg', 0.95);
-                _showLabelAndPrint(imgDataUrl);
-              });
-        });
-      }).catch(function(err) {
-        if (loader) loader.style.display = 'none';
-        alert('Could not read PDF: ' + err.message);
-      });
-    };
-    reader.readAsArrayBuffer(file);
-  });
-});
-
-function _showLabelAndPrint(imgDataUrl) {
-  // Inject a full-screen print overlay into THIS page
-  const overlay = document.createElement('div');
-  overlay.id = 'labelPrintOverlay';
-  overlay.innerHTML = `
-    <div class="lpo-preview">
-      <div class="lpo-label">
-        <div class="lpo-top"></div>
-        <div class="lpo-content"><img src="${imgDataUrl}" alt="label"></div>
-        <div class="lpo-bottom"></div>
-      </div>
-      <div class="lpo-actions">
-        <button onclick="window.print()" class="lpo-btn lpo-btn-print">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-          Print
-        </button>
-        <button onclick="document.getElementById('labelPrintOverlay').remove()" class="lpo-btn lpo-btn-close">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          Close
-        </button>
-      </div>
-      <div class="lpo-hint">
-        In Chrome print dialog → <b>More settings</b> → Paper size → <b>Custom</b><br>
-        Width: <b>160 mm</b> &nbsp;|&nbsp; Height: <b>240 mm</b> &nbsp;|&nbsp; Margins: <b>None</b>
-      </div>
-    </div>`;
-  document.body.appendChild(overlay);
-  // Auto-print after short delay
-  setTimeout(function() { window.print(); }, 500);
-}
 
 // Click on overlay backdrop to close
 document.getElementById('pwOverlay').addEventListener('click', function(e) {

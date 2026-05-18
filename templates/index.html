@@ -557,19 +557,12 @@
     display: flex; align-items: center; justify-content: center;
     transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.15s;
     flex-shrink: 0;
-    position: relative;
   }
-  .theme-btn:hover { background: var(--bg-hover); color: var(--text-main); }
+  .theme-btn:hover { background: var(--bg-hover); color: var(--text-main); transform: rotate(15deg); }
   .theme-btn .icon-sun  { display: block; }
   .theme-btn .icon-moon { display: none; }
   html.light .theme-btn .icon-sun  { display: none; }
   html.light .theme-btn .icon-moon { display: block; }
-
-  /* Theme button — تحسين مرئي: أيقونة الشمس تتلمع في الوضع الداكن */
-  #themeBtn { border-color: rgba(251,191,36,0.4); }
-  #themeBtn:hover { background: rgba(251,191,36,0.12); border-color: rgba(251,191,36,0.7); color: #fbbf24; transform: rotate(20deg) scale(1.1); }
-  html.light #themeBtn { border-color: rgba(99,102,241,0.4); }
-  html.light #themeBtn:hover { background: rgba(99,102,241,0.1); border-color: rgba(99,102,241,0.7); color: #6366f1; transform: rotate(-20deg) scale(1.1); }
   html.light .btn-danger  { color: #dc2626; background: rgba(220,38,38,0.1); border-color: rgba(220,38,38,0.35); }
   html.light .btn-logout  { color: #dc2626; background: rgba(220,38,38,0.1); border-color: rgba(220,38,38,0.35); }
   html.light .btn-logout:hover { background: rgba(220,38,38,0.2); }
@@ -583,47 +576,6 @@
   html.light .btn-about:hover { background: #0f172a; }
   html.light .btn-ghost   { background: #fff; color: #334155; border-color: #cbd5e1; }
   html.light .btn-ghost:hover { background: #f1f5f9; color: #1e293b; }
-
-  /* ══ MOBILE RESPONSIVE ══ */
-  @media (max-width: 768px) {
-    body { overflow: auto; height: auto; min-height: 100vh; }
-    .topbar { height: auto; flex-wrap: wrap; padding: 8px 12px; gap: 8px; }
-    .topbar-brand { flex: 1; min-width: 0; }
-    .brand-text h1 { font-size: 12px; }
-    .brand-text p  { display: none; }
-    .brand-icon { width: 30px; height: 30px; }
-    .clock, .session-timer { display: none; }
-    .topbar-right { width: 100%; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
-    .topbar-actions { flex-wrap: wrap; gap: 4px; justify-content: flex-end; width: 100%; }
-    .btn { padding: 6px 10px; font-size: 11px; }
-    .layout { flex-direction: column; overflow: auto; }
-    .sidebar-wrapper { width: 100%; flex-shrink: 0; }
-    .sidebar { width: 100%; height: auto; max-height: 200px; border-right: none; border-bottom: 1px solid var(--border); overflow-y: auto; }
-    .sidebar.collapsed { max-height: 0; overflow: hidden; }
-    .content-area { height: auto; overflow: auto; }
-    .content-header { flex-wrap: wrap; gap: 6px; padding: 10px 12px; }
-    .toolbar { flex-wrap: wrap; gap: 6px; padding: 8px 12px; }
-    .filter-input { width: 100%; max-width: none; }
-    .table-wrap, #tableWrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .data-table { min-width: 600px; font-size: 11px; }
-    .data-table th, .data-table td { padding: 6px 8px; }
-    .statusbar { flex-wrap: wrap; gap: 4px; font-size: 10px; padding: 4px 10px; }
-    .modal-box { width: calc(100% - 32px) !important; max-width: none !important; margin: 16px; }
-    #dashModal .dash-inner { flex-direction: column; width: 100%; height: auto; max-height: 90vh; overflow-y: auto; border-radius: 16px; }
-    #dashModal .dash-nav { width: 100%; flex-direction: row; flex-wrap: wrap; padding: 8px; border-right: none; border-bottom: 1px solid var(--border); gap: 4px; }
-    #dashModal .dash-nav-item { flex: 1; min-width: 80px; text-align: center; font-size: 11px; padding: 6px 4px; }
-    #dashModal .dash-content { padding: 12px; min-height: 300px; }
-    .dash-kpi-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-    .dash-kpi-card { padding: 12px; }
-    .dash-kpi-value { font-size: 24px; }
-    .user-badge, .zone-badge { font-size: 10px; padding: 2px 7px; }
-    .fab-scan { bottom: 16px; right: 16px; width: 50px; height: 50px; }
-  }
-  @media (max-width: 400px) {
-    .brand-text h1 { font-size: 10px; }
-    .btn { padding: 5px 7px; font-size: 10px; }
-    .topbar-actions { gap: 3px; }
-  }
   html.light .data-table tbody tr:nth-child(even) { background: var(--row-alt); }
   html.light .month-pill  { color: #374151; border-color: #c7d2e0; }
   html.light .month-pill:hover { border-color: #2563eb; color: #1e40af; }
@@ -1503,31 +1455,31 @@ EST-iMs © | 2026    </div>
   <div class="dash-box">
     <!-- LEFT NAV -->
     <div class="dash-sidebar">
-      <div class="dash-sidebar-title">📊 لوحة التحكم</div>
+      <div class="dash-sidebar-title">Dashboard</div>
 
       <div class="dash-nav-item active" onclick="dashShow('overview')" id="dnav-overview">
-        <span class="dn-icon">📊</span> نظرة عامة
+        <span class="dn-icon">📊</span> Overview
       </div>
       <div class="dash-nav-item" onclick="dashShow('movement')" id="dnav-movement">
-        <span class="dn-icon">📈</span> الحركة (دخول / خروج)
+        <span class="dn-icon">📈</span> IN / OUT Movement
       </div>
       <div class="dash-nav-sep"></div>
       <div class="dash-nav-item" onclick="dashShow('alerts')" id="dnav-alerts">
-        <span class="dn-icon">⚠️</span> تنبيهات المخزون
+        <span class="dn-icon">⚠️</span> Stock Alerts
       </div>
       <div class="dash-nav-item" onclick="dashShow('top')" id="dnav-top">
-        <span class="dn-icon">🏆</span> الأصناف الأعلى
+        <span class="dn-icon">🏆</span> Top Items
       </div>
       <div class="dash-nav-sep"></div>
       <div class="dash-nav-item" onclick="dashShow('zones')" id="dnav-zones">
-        <span class="dn-icon">🏭</span> ملخص الزونات
+        <span class="dn-icon">🏭</span> Zones Summary
       </div>
     </div>
 
     <!-- RIGHT CONTENT -->
     <div class="dash-content" id="dashContent" style="position:relative;">
       <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
-      <div class="dash-loading"><div class="spinner"></div><span>جاري التحميل...</span></div>
+      <div class="dash-loading"><div class="spinner"></div><span>Loading dashboard...</span></div>
     </div>
   </div>
 </div>
@@ -2447,11 +2399,11 @@ function dashShow(view) {
 /* ── OVERVIEW ── */
 function dashOverview(d) {
   const kpis = [
-    { label:'إجمالي الأصناف',     value: d.total_items   ?? '—', sub:'في جميع الشيتات',   cls:'blue'  },
-    { label:'إجمالي الداخل',      value: d.total_in      ?? '—', sub:'منذ البداية',        cls:'green' },
-    { label:'إجمالي الخارج',      value: d.total_out     ?? '—', sub:'منذ البداية',        cls:'red'   },
-    { label:'مخزون منخفض',        value: d.low_stock     ?? '—', sub:'أقل من الحد الأدنى', cls:'amber' },
-    { label:'مخزون نافد',         value: d.zero_stock    ?? '—', sub:'تحتاج إعادة تعبئة',  cls:'red'   },
+    { label:'Total Items',     value: d.total_items   ?? '—', sub:'across all sheets',   cls:'blue'  },
+    { label:'Total IN',        value: d.total_in      ?? '—', sub:'all time',             cls:'green' },
+    { label:'Total OUT',       value: d.total_out     ?? '—', sub:'all time',             cls:'red'   },
+    { label:'Low Stock Items', value: d.low_stock     ?? '—', sub:'below threshold',      cls:'amber' },
+    { label:'Zero Stock',      value: d.zero_stock    ?? '—', sub:'need restocking',      cls:'red'   },
   ];
   const kpiHtml = kpis.map(k => `
     <div class="dash-kpi-card ${k.cls}">
@@ -2462,8 +2414,8 @@ function dashOverview(d) {
 
   setDashContent(`
     <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
-    <div class="dash-content-title">📊 نظرة عامة</div>
-    <div class="dash-content-sub">ملخص حالة المخزون الحالية</div>
+    <div class="dash-content-title">📊 Overview</div>
+    <div class="dash-content-sub">Summary of current inventory status</div>
     <div class="dash-kpi-grid">${kpiHtml}</div>
     <div class="dash-chart-wrap">
       <div class="dash-chart-title">IN vs OUT — Current Data</div>
@@ -2738,19 +2690,11 @@ async function toggleReportsDropdown(e) {
       const data = await res.json();
       _reportsLoaded = true;
       if (!data.files || !data.files.length) {
-        menu.innerHTML = '<div class="reports-dropdown-empty">📂 لا توجد تقارير</div>';
+        menu.innerHTML = '<div class="reports-dropdown-empty">📂 No reports found</div>';
       } else {
-        function fileIcon(name) {
-          const ext = name.split('.').pop().toLowerCase();
-          if (['xlsx','xlsm','xls','csv'].includes(ext)) return '📊';
-          if (['docx','doc','dotx'].includes(ext))       return '📝';
-          if (['pptx','ppt','pps'].includes(ext))        return '📑';
-          if (ext === 'pdf')                              return '📄';
-          return '📎';
-        }
         menu.innerHTML = data.files.map(f =>
-          `<div class="reports-dropdown-item" onclick="openReport('${escAttr(f)}')">
-             <span class="ri-icon">${fileIcon(f)}</span>
+          `<div class="reports-dropdown-item" onclick="printReport('${escAttr(f)}')">
+             <span class="ri-icon">📊</span>
              <span style="overflow:hidden;text-overflow:ellipsis;">${escHtml(f)}</span>
            </div>`
         ).join('');
@@ -2763,26 +2707,10 @@ async function toggleReportsDropdown(e) {
   }
 }
 
-function openReport(filename) {
-  document.getElementById('reportsDropdownMenu').classList.remove('open');
-  const ext = filename.split('.').pop().toLowerCase();
-  // PDF و Office — تحميل مباشر / فتح في تاب جديد
-  if (ext === 'pdf') {
-    window.open('/reports/file/' + encodeURIComponent(filename), '_blank');
-  } else if (['docx','doc','dotx','pptx','ppt','pps'].includes(ext)) {
-    // تحميل مباشر لملفات Word و PowerPoint
-    const a = document.createElement('a');
-    a.href = '/reports/file/' + encodeURIComponent(filename);
-    a.download = filename;
-    a.click();
-  } else {
-    // Excel وبقية الملفات — صفحة الطباعة الموجودة
-    window.open('/reports/print/' + encodeURIComponent(filename), '_blank');
-  }
-}
-
 function printReport(filename) {
-  openReport(filename);
+  document.getElementById('reportsDropdownMenu').classList.remove('open');
+  // Open the server-rendered HTML print page directly — no download, no iframe tricks
+  window.open('/reports/print/' + encodeURIComponent(filename), '_blank');
 }
 
 // Close dropdown when clicking outside
