@@ -1634,48 +1634,53 @@ def download_report(filename):
 @app.route('/reports/print/<path:filename>')
 @zone_required
 def print_report(filename):
-    """Convert an Excel report to a printable HTML page."""
+    """Serve or convert a report file for viewing/printing."""
+    from flask import send_file, Response
     safe_name = os.path.basename(filename)
     filepath  = os.path.join(REPORTS_DIR, safe_name)
     if not os.path.isfile(filepath):
         return 'File not found', 404
 
-    try:
-        wb = openpyxl.load_workbook(filepath, data_only=True)
-    except Exception as e:
-        return f'Could not open file: {e}', 500
+    ext = safe_name.lower().rsplit('.', 1)[-1]
 
-    # Build one HTML table per sheet
-    sheets_html = []
-    for sheet_name in wb.sheetnames:
-        ws = wb[sheet_name]
-        rows_data = list(ws.iter_rows(values_only=True))
-        if not rows_data:
-            continue
+    # ── PDF: serve directly in browser ──────────────────────────────
+    if ext == 'pdf':
+        return send_file(filepath, mimetype='application/pdf', as_attachment=False)
 
-        # Find actual used columns range
-        max_col = max(
-            (sum(1 for c in row if c is not None and str(c).strip() != '') for row in rows_data),
-            default=1
-        )
+    # ── Word / PowerPoint: open in browser via Office Online viewer ──
+    if ext in ('docx', 'doc', 'dotx', 'pptx', 'ppt', 'pps'):
+        return send_file(filepath, as_attachment=False)
 
-        table = f'<h2 class="sheet-title">{sheet_name}</h2><table>'
-        for ri, row in enumerate(rows_data):
-            # Skip completely empty rows
-            if all(c is None or str(c).strip() == '' for c in row):
+    # ── Excel / CSV: convert to printable HTML table ─────────────────
+    if ext in ('xlsx', 'xlsm', 'xls', 'csv'):
+        try:
+            wb = openpyxl.load_workbook(filepath, data_only=True)
+        except Exception as e:
+            return f'Could not open file: {e}', 500
+
+        sheets_html = []
+        for sheet_name in wb.sheetnames:
+            ws = wb[sheet_name]
+            rows_data = list(ws.iter_rows(values_only=True))
+            if not rows_data:
                 continue
-            tag = 'th' if ri == 0 else 'td'
-            cells = ''.join(
-                f'<{tag}>{("" if (c is None or str(c).strip() == "") else str(c))}</{tag}>'
-                for c in row
-            )
-            table += f'<tr>{cells}</tr>'
-        table += '</table>'
-        sheets_html.append(table)
 
-    wb.close()
+            table = f'<h2 class="sheet-title">{sheet_name}</h2><table>'
+            for ri, row in enumerate(rows_data):
+                if all(c is None or str(c).strip() == '' for c in row):
+                    continue
+                tag = 'th' if ri == 0 else 'td'
+                cells = ''.join(
+                    f'<{tag}>{("" if (c is None or str(c).strip() == "") else str(c))}</{tag}>'
+                    for c in row
+                )
+                table += f'<tr>{cells}</tr>'
+            table += '</table>'
+            sheets_html.append(table)
 
-    html = f"""<!DOCTYPE html>
+        wb.close()
+
+        html = f"""<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -1704,9 +1709,9 @@ def print_report(filename):
   <script>window.onload = function(){{ window.print(); }};</script>
 </body>
 </html>"""
+        return Response(html, mimetype='text/html')
 
-    from flask import Response
-    return Response(html, mimetype='text/html')
+    return 'Unsupported file type', 400
 
 # ══════════════════════════════════════════════════════════════════
 #  VISIT COUNTER (file-based)
