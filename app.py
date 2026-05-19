@@ -1647,15 +1647,50 @@ def print_report(filename):
     if ext == 'pdf':
         return send_file(filepath, mimetype='application/pdf', as_attachment=False)
 
-    # ── Word: convert to printable HTML ─────────────────────────────
+    # ── Word: convert to printable HTML (no extra libraries needed) ──
     if ext in ('docx', 'doc', 'dotx'):
         try:
-            import mammoth
-            with open(filepath, 'rb') as f:
-                result = mammoth.convert_to_html(f)
-            body_html = result.value
-        except ImportError:
-            return 'mammoth library not installed. Run: pip install mammoth', 500
+            try:
+                from docx import Document
+                doc = Document(filepath)
+                parts = []
+                for para in doc.paragraphs:
+                    text = para.text.strip()
+                    if not text:
+                        parts.append('<br>')
+                        continue
+                    style = para.style.name.lower() if para.style else ''
+                    if 'heading 1' in style:
+                        parts.append(f'<h1>{text}</h1>')
+                    elif 'heading 2' in style:
+                        parts.append(f'<h2>{text}</h2>')
+                    elif 'heading 3' in style:
+                        parts.append(f'<h3>{text}</h3>')
+                    else:
+                        parts.append(f'<p>{text}</p>')
+                for table in doc.tables:
+                    tbl = '<table>'
+                    for i, row in enumerate(table.rows):
+                        tbl += '<tr>'
+                        for cell in row.cells:
+                            tag = 'th' if i == 0 else 'td'
+                            tbl += f'<{tag}>{cell.text}</{tag}>'
+                        tbl += '</tr>'
+                    tbl += '</table>'
+                    parts.append(tbl)
+                body_html = ''.join(parts)
+            except ImportError:
+                import zipfile, xml.etree.ElementTree as ET
+                NS = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'
+                with zipfile.ZipFile(filepath, 'r') as z:
+                    xml_content = z.read('word/document.xml')
+                root = ET.fromstring(xml_content)
+                lines = []
+                for para in root.iter(f'{{{NS}}}p'):
+                    texts = [t.text or '' for t in para.iter(f'{{{NS}}}t')]
+                    line = ''.join(texts).strip()
+                    lines.append(f'<p>{line}</p>' if line else '<br>')
+                body_html = ''.join(lines)
         except Exception as e:
             return f'Could not open Word file: {e}', 500
 
