@@ -1493,29 +1493,39 @@ SKU_HEX = {
 }
 
 def _find_latest_sacks_file():
-    """يبحث عن أحدث ملف Sacks.xlsm عبر كل الزونات والسنوات والأشهر."""
+    """يبحث عن أحدث ملف Sacks.xlsm بناءً على اسم السنة والشهر (وليس mtime)."""
     root = get_years_root()
     if not root:
         return None
-    latest_path = None
-    latest_mtime = 0
+    best_path = None
+    best_key  = (-1, -1)   # (year, month)
+    month_num = {
+        'january':1,'february':2,'march':3,'april':4,
+        'may':5,'june':6,'july':7,'august':8,
+        'september':9,'october':10,'november':11,'december':12
+    }
     for zone_folder in os.listdir(root):
         zone_path = os.path.join(root, zone_folder)
         if not os.path.isdir(zone_path):
             continue
         for year_folder in os.listdir(zone_path):
             year_path = os.path.join(zone_path, year_folder)
-            if not os.path.isdir(year_path):
+            if not os.path.isdir(year_path) or not year_folder.isdigit():
                 continue
+            year_int = int(year_folder)
             for month_folder in os.listdir(year_path):
                 month_path = os.path.join(year_path, month_folder)
                 sacks_path = os.path.join(month_path, 'Sacks.xlsm')
-                if os.path.isfile(sacks_path):
-                    mtime = os.path.getmtime(sacks_path)
-                    if mtime > latest_mtime:
-                        latest_mtime = mtime
-                        latest_path = sacks_path
-    return latest_path
+                if not os.path.isfile(sacks_path):
+                    continue
+                # اسم المجلد مثل "05-May" أو "01-January"
+                parts = month_folder.split('-')
+                month_int = int(parts[0]) if parts[0].isdigit() else                             month_num.get(parts[-1].lower(), 0)
+                key = (year_int, month_int)
+                if key > best_key:
+                    best_key  = key
+                    best_path = sacks_path
+    return best_path
 
 def _get_last_balance(sheet_name, color_name):
     """يفتح أحدث Sacks.xlsm ويرجع آخر Current Balance للون المحدد."""
@@ -1592,14 +1602,19 @@ def scan_page():
 
 @app.route('/qrscan')
 def qrscan_page():
-    """صفحة مسح QR — عامة بدون تسجيل دخول."""
+    """صفحة مسح QR المبسّطة — تتطلب login فقط بدون zone."""
     sku = request.args.get('sku', '').strip().upper()
+    if not session.get('logged_in'):
+        dest = '/qrscan?' + ('sku=' + sku if sku else '')
+        session['qr_next'] = dest.rstrip('?')
+        return redirect(url_for('login_page'))
     return render_template('qrscan.html', sku=sku)
 
 
 @app.route('/api/qrscan/<sku>')
+@login_required
 def api_qrscan(sku):
-    """يرجع آخر رصيد للصنف — عام بدون تسجيل دخول."""
+    """يرجع آخر رصيد للصنف — يتطلب login فقط بدون zone."""
     sku = sku.strip().upper()
     if sku not in SKU_MAP:
         return jsonify({'found': False, 'error': f'"{sku}" غير مسجل في النظام'}), 404
@@ -1616,34 +1631,6 @@ def api_qrscan(sku):
         'balance':  int(balance),
         'date':     date or '—',
     })
-
-
-@app.route('/api/debug/zones')
-def debug_zones():
-    """مؤقت للتشخيص — يعرض محتوى مجلد zones."""
-    import os
-    root = get_years_root()
-    if not root:
-        return jsonify({'root': None, 'error': 'zones folder not found',
-                        'script_dir': os.path.dirname(os.path.abspath(__file__))})
-    result = {'root': root, 'contents': {}}
-    try:
-        for zone in os.listdir(root):
-            zpath = os.path.join(root, zone)
-            if not os.path.isdir(zpath): continue
-            result['contents'][zone] = {}
-            for yr in os.listdir(zpath):
-                ypath = os.path.join(zpath, yr)
-                if not os.path.isdir(ypath): continue
-                result['contents'][zone][yr] = []
-                for mo in os.listdir(ypath):
-                    mpath = os.path.join(ypath, mo)
-                    if not os.path.isdir(mpath): continue
-                    files = os.listdir(mpath)
-                    result['contents'][zone][yr].append({mo: files})
-    except Exception as e:
-        result['error'] = str(e)
-    return jsonify(result)
 
 
 @app.route('/about')
