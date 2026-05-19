@@ -1493,12 +1493,12 @@ SKU_HEX = {
 }
 
 def _find_latest_sacks_file():
-    """يبحث عن أحدث ملف Sacks.xlsm بناءً على اسم السنة والشهر (وليس mtime)."""
+    """يبحث عن أحدث ملف Sacks.xlsm بناءً على اسم السنة والشهر."""
     root = get_years_root()
     if not root:
         return None
     best_path = None
-    best_key  = (-1, -1)   # (year, month)
+    best_key  = (-1, -1)
     month_num = {
         'january':1,'february':2,'march':3,'april':4,
         'may':5,'june':6,'july':7,'august':8,
@@ -1518,7 +1518,6 @@ def _find_latest_sacks_file():
                 sacks_path = os.path.join(month_path, 'Sacks.xlsm')
                 if not os.path.isfile(sacks_path):
                     continue
-                # اسم المجلد مثل "05-May" أو "01-January"
                 parts = month_folder.split('-')
                 month_int = int(parts[0]) if parts[0].isdigit() else                             month_num.get(parts[-1].lower(), 0)
                 key = (year_int, month_int)
@@ -1602,17 +1601,12 @@ def scan_page():
 
 @app.route('/qrscan')
 def qrscan_page():
-    """صفحة مسح QR المبسّطة — تتطلب login فقط بدون zone."""
+    """صفحة مسح QR — عامة بدون تسجيل دخول."""
     sku = request.args.get('sku', '').strip().upper()
-    if not session.get('logged_in'):
-        dest = '/qrscan?' + ('sku=' + sku if sku else '')
-        session['qr_next'] = dest.rstrip('?')
-        return redirect(url_for('login_page'))
     return render_template('qrscan.html', sku=sku)
 
 
 @app.route('/api/qrscan/<sku>')
-@login_required
 def api_qrscan(sku):
     """يرجع آخر رصيد للصنف — يتطلب login فقط بدون zone."""
     sku = sku.strip().upper()
