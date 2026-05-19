@@ -166,12 +166,26 @@
   /* ── ZONE GRID ── */
   .zone-grid {
     display:grid;
-    grid-template-columns:repeat(4,1fr);
+    grid-template-columns:repeat(3,1fr);
     gap:16px;
     width:100%;max-width:900px;
     margin-bottom:20px;
   }
-  @media(max-width:700px){ .zone-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:900px){ .zone-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:480px){ .zone-grid{ grid-template-columns:1fr 1fr; gap:10px; } }
+
+  /* QC Card */
+  .zone-card.qc-card {
+    border-color: rgba(6,182,212,0.25);
+    background: rgba(6,182,212,0.04);
+  }
+  .zone-card.qc-card:hover {
+    border-color: rgba(6,182,212,0.5);
+    background: rgba(6,182,212,0.10);
+    box-shadow: 0 20px 48px rgba(6,182,212,0.18);
+  }
+  .zone-card.qc-card .zone-name { color: var(--accent-cyan); }
+  .zone-card.qc-card .zone-label { color: rgba(6,182,212,0.7); }
 
   .zone-card {
     background:rgba(255,255,255,0.04);
@@ -412,6 +426,29 @@
   @keyframes spin { to{transform:rotate(360deg);} }
   @keyframes shake { 0%,100%{transform:translateX(0);} 20%{transform:translateX(-8px);} 40%{transform:translateX(7px);} 60%{transform:translateX(-5px);} 80%{transform:translateX(3px);} }
   .pw-panel.shake { animation:shake 0.45s ease both; }
+
+  /* ── MOBILE RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .zones-wrapper { padding: 20px 12px 80px; }
+    .zones-title { font-size: 18px; }
+    .zone-name { font-size: 24px; }
+    .zone-card { min-height: 110px; padding: 22px 12px 18px; border-radius: 14px; }
+    .user-corner { left: 8px; top: 12px; padding: 5px 10px 5px 8px; }
+    .user-corner-name { font-size: 11px; }
+    /* side dock → bottom dock on mobile */
+    .side-dock {
+      position: fixed; left: 0; right: 0; bottom: 0; top: auto;
+      transform: none; flex-direction: row; justify-content: center;
+      padding: 6px 8px; gap: 4px;
+      background: rgba(13,17,23,0.85); backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border-light); z-index: 200;
+    }
+    html.light .side-dock { background: rgba(255,255,255,0.88); }
+    .dock-item { height: 52px; flex-direction: column; }
+    .dock-icon { width: 40px; height: 40px; border-radius: 12px; border-left: 1px solid var(--border-light); }
+    .dock-label { display: none; }
+    .pw-panel { padding: 24px 20px; }
+  }
 </style>
 </head>
 <body>
@@ -436,6 +473,12 @@
       <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
     </div>
     <div class="dock-label" id="dockThemeLabel">Light Mode</div>
+  </div>
+  <div class="dock-item" onclick="toggleLang()">
+    <div class="dock-icon" id="dockLangIcon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+    </div>
+    <div class="dock-label" id="dockLangLabel">عربي</div>
   </div>
   <div class="dock-item" onclick="window.location.href='/logout'">
     <div class="dock-icon">
@@ -483,6 +526,10 @@
     <div class="zone-card" onclick="selectZone('zone5')" id="card-zone5">
       <div class="zone-name">Zone 5</div>
       <div class="zone-label">زون 5</div>
+    </div>
+    <div class="zone-card qc-card" onclick="selectZone('qc')" id="card-qc">
+      <div class="zone-name">QC</div>
+      <div class="zone-label">Quality Control</div>
     </div>
   </div>
 
@@ -561,11 +608,11 @@ function selectZone(zoneId) {
 
   const names = {
     zone1:'Zone 1', zone2:'Zone 2', zone3:'Zone 3',
-    zone4:'Zone 4', zone5:'Zone 5', admin:'Admin', dev:'Dev'
+    zone4:'Zone 4', zone5:'Zone 5', qc:'QC', admin:'Admin', dev:'Dev'
   };
   const labels = {
     zone1:'زون 1', zone2:'زون 2', zone3:'Packaging',
-    zone4:'زون 4', zone5:'زون 5', admin:'Administration', dev:''
+    zone4:'زون 4', zone5:'زون 5', qc:'Quality Control', admin:'Administration', dev:''
   };
 
   const panel = document.getElementById('pwPanel');
@@ -609,7 +656,7 @@ async function submitZone() {
       spinner.style.display = 'none';
       btnText.textContent   = '✓ Access Granted';
       enterBtn.classList.add('success');
-      setTimeout(() => { window.location.href = '/index'; }, 600);
+      setTimeout(() => { window.location.href = data.redirect || '/index'; }, 600);
     } else {
       spinner.style.display = 'none';
       btnText.textContent   = 'Enter Zone';
@@ -699,6 +746,71 @@ document.getElementById('pwOverlay').addEventListener('click', function(e) {
   window.addEventListener('mouseleave', ()=>{mouse.x=-999;mouse.y=-999;});
   init(); draw();
 })();
+
+// ── LANGUAGE TOGGLE ──
+const ZONES_LANG = {
+  en: {
+    title: 'Select Your Zone',
+    sub: 'Choose the warehouse zone you want to access',
+    mgmt: 'Management',
+    welcome: 'Welcome',
+    logout: 'Logout',
+    lang: 'عربي',
+    enterZone: 'Enter Zone',
+    verifying: 'Verifying...',
+    accessGranted: '✓ Access Granted',
+    incorrectPwd: 'Incorrect password',
+    connErr: 'Connection error. Try again.',
+    enterPwd: 'Enter Zone Password',
+    enterPwdSub: 'Enter the password for this zone',
+    zoneNames: { zone1:'Zone 1', zone2:'Zone 2', zone3:'Zone 3', zone4:'Zone 4', zone5:'Zone 5', qc:'QC', admin:'EST', dev:'Dev' },
+    zoneLabels: { zone1:'زون 1', zone2:'زون 2', zone3:'Packaging', zone4:'زون 4', zone5:'زون 5', qc:'Quality Control', admin:'Administration', dev:'' },
+  },
+  ar: {
+    title: 'اختر الزون',
+    sub: 'اختر زون المستودع الذي تريد الدخول إليه',
+    mgmt: 'الإدارة',
+    welcome: 'الرئيسية',
+    logout: 'تسجيل الخروج',
+    lang: 'English',
+    enterZone: 'دخول',
+    verifying: 'جارٍ التحقق...',
+    accessGranted: '✓ تم الدخول',
+    incorrectPwd: 'كلمة المرور غير صحيحة',
+    connErr: 'خطأ في الاتصال. حاول مرة أخرى.',
+    enterPwd: 'أدخل كلمة مرور الزون',
+    enterPwdSub: 'أدخل كلمة المرور للدخول إلى هذا الزون',
+    zoneNames: { zone1:'زون 1', zone2:'زون 2', zone3:'زون 3', zone4:'زون 4', zone5:'زون 5', qc:'جودة', admin:'EST', dev:'Dev' },
+    zoneLabels: { zone1:'', zone2:'', zone3:'التعبئة', zone4:'', zone5:'', qc:'مراقبة الجودة', admin:'الإدارة', dev:'' },
+  }
+};
+let currentLang = localStorage.getItem('est-lang') || 'en';
+function applyLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('est-lang', lang);
+  const t = ZONES_LANG[lang];
+  const isAr = lang === 'ar';
+  document.documentElement.lang = lang;
+  document.documentElement.dir  = isAr ? 'rtl' : 'ltr';
+  document.querySelector('.zones-title').textContent = t.title;
+  document.querySelector('.zones-sub').textContent   = t.sub;
+  document.querySelector('.zones-divider-text').textContent = t.mgmt;
+  const dockItems = document.querySelectorAll('.dock-label');
+  // Welcome, Light/Dark, Lang, Logout
+  if (dockItems[0]) dockItems[0].textContent = t.welcome;
+  if (document.getElementById('dockLangLabel')) document.getElementById('dockLangLabel').textContent = t.lang;
+  // zone cards
+  document.querySelectorAll('.zone-card').forEach(card => {
+    const id = card.id.replace('card-','');
+    if (t.zoneNames[id])  card.querySelector('.zone-name').textContent  = t.zoneNames[id];
+    if (t.zoneLabels[id] !== undefined) card.querySelector('.zone-label').textContent = t.zoneLabels[id];
+  });
+}
+function toggleLang() {
+  applyLang(currentLang === 'en' ? 'ar' : 'en');
+}
+// تطبيق اللغة عند التحميل
+applyLang(currentLang);
 </script>
 </body>
 </html>

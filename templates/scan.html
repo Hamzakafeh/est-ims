@@ -56,20 +56,30 @@
   .modal-date { font-size: 11px; color: #cbd5e1; margin-bottom: 20px; }
   .modal-err { font-size: 13px; color: #dc2626; margin: 8px 0 16px; display: none; }
   .modal-close { width: 100%; padding: 11px; background: #f1f5f9; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+
+  /* ── MOBILE ENHANCEMENTS ── */
+  @media (max-width: 480px) {
+    .content { padding: 12px; }
+    .bc-num { font-size: 15px; }
+    .bc-name { font-size: 12px; }
+    .modal { padding: 20px 16px; }
+    .modal-num { font-size: 36px; }
+    .tab { font-size: 11px; padding: 10px 2px; }
+  }
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <a href="/" class="back">&#8594; رجوع</a>
-  <h1>QR Scanner</h1>
-  <span style="width:40px"></span>
+  <a href="/" class="back" id="backBtn">&#8594; رجوع</a>
+  <h1 id="pageTitle">QR Scanner</h1>
+  <button onclick="toggleScanLang()" style="background:none;border:1px solid rgba(160,196,232,0.4);border-radius:8px;color:#a0c4e8;font-size:12px;font-weight:600;padding:5px 10px;cursor:pointer;" id="langToggleBtn">عربي</button>
 </div>
 
 <div class="tabs">
-  <div class="tab active" onclick="switchTab('list')">الأصناف</div>
-  <div class="tab" onclick="switchTab('scan')">مسح الكاميرا</div>
-  <div class="tab" onclick="switchTab('print')">طباعة QR</div>
+  <div class="tab active" onclick="switchTab('list')" id="tabList" data-en="Items" data-ar="الأصناف">الأصناف</div>
+  <div class="tab" onclick="switchTab('scan')" id="tabScan" data-en="Camera Scan" data-ar="مسح الكاميرا">مسح الكاميرا</div>
+  <div class="tab" onclick="switchTab('print')" id="tabPrint" data-en="Print QR" data-ar="طباعة QR">طباعة QR</div>
 </div>
 
 <div class="content">
@@ -229,9 +239,81 @@ function printQR(sku, nameAr) {
   const img = el.querySelector('img') || el.querySelector('canvas');
   const src = img.tagName === 'CANVAS' ? img.toDataURL() : img.src;
   const win = window.open('', '_blank', 'width=300,height=380');
-  win.document.write('<html><head><title>QR ' + nameAr + '</title><style>body{font-family:Arial;text-align:center;padding:24px;}.n{font-size:14px;font-weight:bold;color:#1a3a5c;margin-bottom:12px;}.s{font-size:11px;font-family:monospace;color:#64748b;margin-top:8px;letter-spacing:1px;}img{width:200px;height:200px;}</style></head><body><div class="n">صفن الجاج — ' + nameAr + '</div><img src="' + src + '"><div class="s">' + sku + '</div><script>window.onload=function(){window.print();}<\/script></body></html>');
+  win.document.write('<html><head><title>QR ' + nameAr + '</title><style>body{font-family:Arial;text-align:center;padding:24px;}.n{font-size:14px;font-weight:bold;color:#1a3a5c;margin-bottom:12px;}.s{font-size:11px;font-family:monospace;color:#64748b;margin-top:8px;letter-spacing:1px;}img{width:200px;height:200px;}
+  /* ── MOBILE ENHANCEMENTS ── */
+  @media (max-width: 480px) {
+    .content { padding: 12px; }
+    .bc-num { font-size: 15px; }
+    .bc-name { font-size: 12px; }
+    .modal { padding: 20px 16px; }
+    .modal-num { font-size: 36px; }
+    .tab { font-size: 11px; padding: 10px 2px; }
+  }
+</style></head><body><div class="n">صفن الجاج — ' + nameAr + '</div><img src="' + src + '"><div class="s">' + sku + '</div><script>window.onload=function(){window.print();}<\/script></body></html>');
   win.document.close();
 }
+
+// ── LANGUAGE TOGGLE (Scan) ──
+const SCAN_LANG = {
+  en: {
+    back: '← Back', title: 'QR Scanner', langBtn: 'عربي',
+    tabList: 'Items', tabScan: 'Camera Scan', tabPrint: 'Print QR',
+    secHdr: 'Chicken Sacks — tap to view balance',
+    scanHint: 'Point your phone camera at the item QR Code',
+    manualLabel: 'Or enter code manually',
+    manualPh: 'CHKN-YLW-001', searchBtn: 'Search',
+    printHdr: 'Print QR and stick it on the sack',
+    modalClose: 'Close', modalLbl: 'Current Balance',
+    modalCat: 'Chicken Sacks', modalUnit: 'Sack',
+  },
+  ar: {
+    back: '→ رجوع', title: 'مسح QR', langBtn: 'English',
+    tabList: 'الأصناف', tabScan: 'مسح الكاميرا', tabPrint: 'طباعة QR',
+    secHdr: 'شوالات الجاج — اضغط لعرض الرصيد',
+    scanHint: 'وجّه كاميرا الجوال على QR Code الصنف',
+    manualLabel: 'أو أدخل الكود يدوياً',
+    manualPh: 'CHKN-YLW-001', searchBtn: 'بحث',
+    printHdr: 'اطبع QR وألصقه على الشوال',
+    modalClose: 'إغلاق', modalLbl: 'الرصيد الحالي',
+    modalCat: 'شوالات الجاج', modalUnit: 'شوال',
+  }
+};
+let scanLang = localStorage.getItem('est-lang') || 'ar';
+function applyScanLang(lang) {
+  scanLang = lang;
+  localStorage.setItem('est-lang', lang);
+  const t = SCAN_LANG[lang];
+  const isAr = lang === 'ar';
+  document.documentElement.lang = lang;
+  document.documentElement.dir  = isAr ? 'rtl' : 'ltr';
+  document.getElementById('backBtn').textContent    = t.back;
+  document.getElementById('pageTitle').textContent  = t.title;
+  document.getElementById('langToggleBtn').textContent = t.langBtn;
+  document.getElementById('tabList').textContent    = t.tabList;
+  document.getElementById('tabScan').textContent    = t.tabScan;
+  document.getElementById('tabPrint').textContent   = t.tabPrint;
+  const secH = document.querySelector('.sec-header');
+  if (secH) secH.textContent = t.secHdr;
+  const scanH = document.querySelector('.scanner-hint');
+  if (scanH) scanH.textContent = t.scanHint;
+  const manL = document.querySelector('.manual-label');
+  if (manL) manL.textContent = t.manualLabel;
+  const manI = document.getElementById('manualInput');
+  if (manI) manI.placeholder = t.manualPh;
+  const manB = document.querySelector('.manual-wrap button');
+  if (manB) manB.textContent = t.searchBtn;
+  const closeBtn = document.querySelector('.modal-close');
+  if (closeBtn) closeBtn.textContent = t.modalClose;
+  const modalLbl = document.querySelector('.modal-lbl');
+  if (modalLbl) modalLbl.textContent = t.modalLbl;
+  const modalUnit = document.querySelector('.modal-unit');
+  if (modalUnit) modalUnit.textContent = t.modalUnit;
+}
+function toggleScanLang() {
+  applyScanLang(scanLang === 'ar' ? 'en' : 'ar');
+}
+applyScanLang(scanLang);
+
 </script>
 </body>
 </html>
