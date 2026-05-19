@@ -148,6 +148,19 @@ from flask import send_from_directory
 def favicon():
     return send_from_directory(app.static_folder, 'est.ico')
 
+@app.route('/manifest.json')
+def manifest():
+    return send_from_directory(app.static_folder, 'manifest.json',
+                               mimetype='application/manifest+json')
+
+@app.route('/service-worker.js')
+def service_worker():
+    resp = send_from_directory(app.static_folder, 'service-worker.js',
+                               mimetype='application/javascript')
+    resp.headers['Service-Worker-Allowed'] = '/'
+    resp.headers['Cache-Control'] = 'no-cache'
+    return resp
+
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
