@@ -205,6 +205,10 @@ def do_login():
         _clear_attempts(ip)
         session['logged_in'] = True
         session['username']  = username
+        # لو في صفحة QR scan منتظرة (بدون zone)، روّح عليها مباشرة
+        qr_next = session.pop('qr_next', None)
+        if qr_next and qr_next.startswith('/'):
+            return jsonify({'success': True, 'redirect': qr_next})
         if not session.get('next_after_zone'):
             session['next_after_zone'] = next_url if next_url.startswith('/') else '/zones'
         session.pop('zone', None)
@@ -1579,12 +1583,44 @@ def scan_page():
     """صفحة مسح QR — تتطلب تسجيل دخول (مستخدم + زون).
     لو ما دخل، يحوله للوغن وبعدها يرجعه هنا تلقائياً."""
     if not session.get('logged_in'):
-        session['next_after_zone'] = '/scan'
-        return redirect(url_for('login_page'))
+        return redirect(url_for('login_page') + '?next=/scan')
     if not session.get('zone'):
-        session['next_after_zone'] = '/scan'
         return redirect(url_for('zones_page'))
     return render_template('scan.html')
+
+
+
+@app.route('/qrscan')
+def qrscan_page():
+    """صفحة مسح QR المبسّطة — تتطلب login فقط بدون zone."""
+    sku = request.args.get('sku', '').strip().upper()
+    if not session.get('logged_in'):
+        dest = '/qrscan?' + ('sku=' + sku if sku else '')
+        session['qr_next'] = dest.rstrip('?')
+        return redirect(url_for('login_page'))
+    return render_template('qrscan.html', sku=sku)
+
+
+@app.route('/api/qrscan/<sku>')
+@login_required
+def api_qrscan(sku):
+    """يرجع آخر رصيد للصنف — يتطلب login فقط بدون zone."""
+    sku = sku.strip().upper()
+    if sku not in SKU_MAP:
+        return jsonify({'found': False, 'error': f'"{sku}" غير مسجل في النظام'}), 404
+    sheet_name, color_name = SKU_MAP[sku]
+    balance, date, filepath = _get_last_balance(sheet_name, color_name)
+    if balance is None:
+        return jsonify({'found': False, 'error': 'تعذر قراءة الملف أو لا توجد بيانات'}), 500
+    return jsonify({
+        'found':    True,
+        'sku':      sku,
+        'nameAr':   SKU_NAMES_AR.get(sku, sku),
+        'category': 'شوالات الجاج',
+        'hex':      SKU_HEX.get(sku, '#6b7280'),
+        'balance':  int(balance),
+        'date':     date or '—',
+    })
 
 
 @app.route('/about')
