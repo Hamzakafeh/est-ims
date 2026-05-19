@@ -1592,19 +1592,14 @@ def scan_page():
 
 @app.route('/qrscan')
 def qrscan_page():
-    """صفحة مسح QR المبسّطة — تتطلب login فقط بدون zone."""
+    """صفحة مسح QR — عامة بدون تسجيل دخول."""
     sku = request.args.get('sku', '').strip().upper()
-    if not session.get('logged_in'):
-        dest = '/qrscan?' + ('sku=' + sku if sku else '')
-        session['qr_next'] = dest.rstrip('?')
-        return redirect(url_for('login_page'))
     return render_template('qrscan.html', sku=sku)
 
 
 @app.route('/api/qrscan/<sku>')
-@login_required
 def api_qrscan(sku):
-    """يرجع آخر رصيد للصنف — يتطلب login فقط بدون zone."""
+    """يرجع آخر رصيد للصنف — عام بدون تسجيل دخول."""
     sku = sku.strip().upper()
     if sku not in SKU_MAP:
         return jsonify({'found': False, 'error': f'"{sku}" غير مسجل في النظام'}), 404
@@ -1621,6 +1616,34 @@ def api_qrscan(sku):
         'balance':  int(balance),
         'date':     date or '—',
     })
+
+
+@app.route('/api/debug/zones')
+def debug_zones():
+    """مؤقت للتشخيص — يعرض محتوى مجلد zones."""
+    import os
+    root = get_years_root()
+    if not root:
+        return jsonify({'root': None, 'error': 'zones folder not found',
+                        'script_dir': os.path.dirname(os.path.abspath(__file__))})
+    result = {'root': root, 'contents': {}}
+    try:
+        for zone in os.listdir(root):
+            zpath = os.path.join(root, zone)
+            if not os.path.isdir(zpath): continue
+            result['contents'][zone] = {}
+            for yr in os.listdir(zpath):
+                ypath = os.path.join(zpath, yr)
+                if not os.path.isdir(ypath): continue
+                result['contents'][zone][yr] = []
+                for mo in os.listdir(ypath):
+                    mpath = os.path.join(ypath, mo)
+                    if not os.path.isdir(mpath): continue
+                    files = os.listdir(mpath)
+                    result['contents'][zone][yr].append({mo: files})
+    except Exception as e:
+        result['error'] = str(e)
+    return jsonify(result)
 
 
 @app.route('/about')
