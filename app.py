@@ -1647,8 +1647,48 @@ def print_report(filename):
     if ext == 'pdf':
         return send_file(filepath, mimetype='application/pdf', as_attachment=False)
 
-    # ── Word / PowerPoint: open in browser via Office Online viewer ──
-    if ext in ('docx', 'doc', 'dotx', 'pptx', 'ppt', 'pps'):
+    # ── Word: convert to printable HTML ─────────────────────────────
+    if ext in ('docx', 'doc', 'dotx'):
+        try:
+            import mammoth
+            with open(filepath, 'rb') as f:
+                result = mammoth.convert_to_html(f)
+            body_html = result.value
+        except ImportError:
+            return 'mammoth library not installed. Run: pip install mammoth', 500
+        except Exception as e:
+            return f'Could not open Word file: {e}', 500
+
+        html = f"""<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>{safe_name}</title>
+  <style>
+    * {{ margin:0; padding:0; box-sizing:border-box; }}
+    body {{ font-family: Arial, sans-serif; font-size: 12px; padding: 32px; background:#fff; color:#000; max-width: 900px; margin: auto; }}
+    h1,h2,h3,h4 {{ margin: 14px 0 6px; color:#1a3a5c; }}
+    p {{ margin-bottom: 8px; line-height: 1.6; }}
+    table {{ border-collapse: collapse; width:100%; margin-bottom: 16px; }}
+    th, td {{ border: 1px solid #bbb; padding: 5px 8px; }}
+    th {{ background: #1a3a5c; color: #fff; }}
+    .header {{ text-align:center; margin-bottom:20px; border-bottom: 2px solid #1a3a5c; padding-bottom: 10px; }}
+    @media print {{ body {{ padding: 8px; }} @page {{ margin: 1cm; }} }}
+  </style>
+</head>
+<body>
+  <div class="header">
+    <strong style="font-size:15px;">{safe_name.rsplit('.',1)[0]}</strong>
+    <span style="font-size:11px;color:#666;margin-left:10px;">Printed: {datetime.now().strftime('%Y-%m-%d %H:%M')}</span>
+  </div>
+  {body_html}
+  <script>window.onload = function(){{ window.print(); }};</script>
+</body>
+</html>"""
+        return Response(html, mimetype='text/html')
+
+    # ── PowerPoint: serve as download ────────────────────────────────
+    if ext in ('pptx', 'ppt', 'pps'):
         return send_file(filepath, as_attachment=False)
 
     # ── Excel / CSV: convert to printable HTML table ─────────────────
