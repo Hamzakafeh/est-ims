@@ -205,7 +205,8 @@ def do_login():
         _clear_attempts(ip)
         session['logged_in'] = True
         session['username']  = username
-        session['next_after_zone'] = next_url if next_url.startswith('/') else '/zones'
+        if not session.get('next_after_zone'):
+            session['next_after_zone'] = next_url if next_url.startswith('/') else '/zones'
         session.pop('zone', None)
         return jsonify({'success': True, 'redirect': '/zones'})
     _record_failed_attempt(ip)
@@ -1578,8 +1579,10 @@ def scan_page():
     """صفحة مسح QR — تتطلب تسجيل دخول (مستخدم + زون).
     لو ما دخل، يحوله للوغن وبعدها يرجعه هنا تلقائياً."""
     if not session.get('logged_in'):
-        return redirect(url_for('login_page') + '?next=/scan')
+        session['next_after_zone'] = '/scan'
+        return redirect(url_for('login_page'))
     if not session.get('zone'):
+        session['next_after_zone'] = '/scan'
         return redirect(url_for('zones_page'))
     return render_template('scan.html')
 

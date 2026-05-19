@@ -171,8 +171,9 @@ ITEMS.forEach(item => {
     <button class="print-btn" onclick="printQR('${item.sku}','${item.nameAr}')">طباعة</button>`;
   printEl.appendChild(wrap);
   setTimeout(() => {
+    const qrUrl = window.location.origin + '/scan?sku=' + item.sku;
     new QRCode(document.getElementById('qr-' + item.sku), {
-      text: item.sku, width: 160, height: 160,
+      text: qrUrl, width: 160, height: 160,
       colorDark: '#1a3a5c', colorLight: '#ffffff',
       correctLevel: QRCode.CorrectLevel.M
     });
@@ -313,6 +314,16 @@ function toggleScanLang() {
   applyScanLang(scanLang === 'ar' ? 'en' : 'ar');
 }
 applyScanLang(scanLang);
+
+// ── AUTO-LOOKUP from URL param (?sku=CHKN-YLW-001) ──
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const sku = params.get('sku');
+  if (sku) {
+    switchTab('scan');
+    lookupAndShow(sku);
+  }
+})();
 
 </script>
 </body>
