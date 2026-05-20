@@ -1,6 +1,7 @@
 [
   {
     "sku": "STK-ZONE3-2026-05-OTHER-R025-C015",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-OTHER-R025-C015",
     "file": "Other+.xlsm",
     "category": "Card",
     "name": "<1016>",
@@ -9,6 +10,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-OTHER-R006-C015",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-OTHER-R006-C015",
     "file": "Other+.xlsm",
     "category": "Card",
     "name": "<1028>",
@@ -17,6 +19,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-OTHER-R020-C016",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-OTHER-R020-C016",
     "file": "Other+.xlsm",
     "category": "Card",
     "name": "<1029>",
@@ -25,6 +28,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-OTHER-R006-C016",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-OTHER-R006-C016",
     "file": "Other+.xlsm",
     "category": "Card",
     "name": "<1031>",
@@ -33,6 +37,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-OTHER-R020-C017",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-OTHER-R020-C017",
     "file": "Other+.xlsm",
     "category": "Card",
     "name": "<1032>",
@@ -41,6 +46,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-OTHER-R013-C017",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-OTHER-R013-C017",
     "file": "Other+.xlsm",
     "category": "Card",
     "name": "<2009>",
@@ -49,6 +55,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-OTHER-R020-C015",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-OTHER-R020-C015",
     "file": "Other+.xlsm",
     "category": "Card",
     "name": "<2013>",
@@ -57,6 +64,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-OTHER-R013-C016",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-OTHER-R013-C016",
     "file": "Other+.xlsm",
     "category": "Card",
     "name": "<3014>",
@@ -65,6 +73,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-OTHER-R013-C015",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-OTHER-R013-C015",
     "file": "Other+.xlsm",
     "category": "Card",
     "name": "<3023>",
@@ -73,6 +82,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-OTHER-R006-C017",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-OTHER-R006-C017",
     "file": "Other+.xlsm",
     "category": "Card",
     "name": "<3024>",
@@ -81,6 +91,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-OTHER-R025-C016",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-OTHER-R025-C016",
     "file": "Other+.xlsm",
     "category": "Card",
     "name": "<3025>",
@@ -89,6 +100,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-OTHER-R006-C018",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-OTHER-R006-C018",
     "file": "Other+.xlsm",
     "category": "Card",
     "name": "String",
@@ -97,6 +109,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-OTHER-R006-C011",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-OTHER-R006-C011",
     "file": "Other+.xlsm",
     "category": "Pallet",
     "name": "Cartoon",
@@ -105,6 +118,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-OTHER-R013-C011",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-OTHER-R013-C011",
     "file": "Other+.xlsm",
     "category": "Pallet",
     "name": "Wood",
@@ -113,6 +127,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-OTHER-R013-C007",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-OTHER-R013-C007",
     "file": "Other+.xlsm",
     "category": "Shrink",
     "name": "Machine B",
@@ -121,6 +136,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-OTHER-R006-C007",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-OTHER-R006-C007",
     "file": "Other+.xlsm",
     "category": "Shrink",
     "name": "Machine S",
@@ -129,6 +145,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-OTHER-R020-C007",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-OTHER-R020-C007",
     "file": "Other+.xlsm",
     "category": "Shrink",
     "name": "Manual",
@@ -137,6 +154,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R012-C009",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R012-C009",
     "file": "Sacks.xlsm",
     "category": "C&S",
     "name": "Blue",
@@ -145,6 +163,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R015-C009",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R015-C009",
     "file": "Sacks.xlsm",
     "category": "C&S",
     "name": "Dark Green",
@@ -153,6 +172,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R018-C009",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R018-C009",
     "file": "Sacks.xlsm",
     "category": "C&S",
     "name": "Dark Green(75*50*13)",
@@ -161,6 +181,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R021-C009",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R021-C009",
     "file": "Sacks.xlsm",
     "category": "C&S",
     "name": "Green",
@@ -169,6 +190,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R009-C009",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R009-C009",
     "file": "Sacks.xlsm",
     "category": "C&S",
     "name": "Orange",
@@ -177,6 +199,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R003-C009",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R003-C009",
     "file": "Sacks.xlsm",
     "category": "C&S",
     "name": "Purple",
@@ -185,6 +208,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R006-C009",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R006-C009",
     "file": "Sacks.xlsm",
     "category": "C&S",
     "name": "Red",
@@ -193,6 +217,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R030-C007",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R030-C007",
     "file": "Sacks.xlsm",
     "category": "Chicken",
     "name": "Blue",
@@ -201,6 +226,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R039-C007",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R039-C007",
     "file": "Sacks.xlsm",
     "category": "Chicken",
     "name": "Brown",
@@ -209,6 +235,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R042-C007",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R042-C007",
     "file": "Sacks.xlsm",
     "category": "Chicken",
     "name": "Brown (13)",
@@ -217,6 +244,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R033-C007",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R033-C007",
     "file": "Sacks.xlsm",
     "category": "Chicken",
     "name": "Dark Blue",
@@ -225,6 +253,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R024-C007",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R024-C007",
     "file": "Sacks.xlsm",
     "category": "Chicken",
     "name": "Dark Green",
@@ -233,6 +262,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R015-C007",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R015-C007",
     "file": "Sacks.xlsm",
     "category": "Chicken",
     "name": "Gray",
@@ -241,6 +271,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R021-C007",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R021-C007",
     "file": "Sacks.xlsm",
     "category": "Chicken",
     "name": "Green",
@@ -249,6 +280,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R027-C007",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R027-C007",
     "file": "Sacks.xlsm",
     "category": "Chicken",
     "name": "Light Blue",
@@ -257,6 +289,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R006-C007",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R006-C007",
     "file": "Sacks.xlsm",
     "category": "Chicken",
     "name": "Orange",
@@ -265,6 +298,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R009-C007",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R009-C007",
     "file": "Sacks.xlsm",
     "category": "Chicken",
     "name": "Orange (13",
@@ -273,6 +307,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R012-C007",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R012-C007",
     "file": "Sacks.xlsm",
     "category": "Chicken",
     "name": "Orange (70*45)",
@@ -281,6 +316,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R003-C007",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R003-C007",
     "file": "Sacks.xlsm",
     "category": "Chicken",
     "name": "Purple",
@@ -289,6 +325,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R018-C007",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R018-C007",
     "file": "Sacks.xlsm",
     "category": "Chicken",
     "name": "Red",
@@ -297,6 +334,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R036-C007",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R036-C007",
     "file": "Sacks.xlsm",
     "category": "Chicken",
     "name": "Yellow",
@@ -305,6 +343,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R012-C015",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R012-C015",
     "file": "Sacks.xlsm",
     "category": "Koptimix",
     "name": "Blue Black(1H)",
@@ -313,6 +352,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R015-C015",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R015-C015",
     "file": "Sacks.xlsm",
     "category": "Koptimix",
     "name": "Blue Gray(1A)",
@@ -321,6 +361,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R006-C015",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R006-C015",
     "file": "Sacks.xlsm",
     "category": "Koptimix",
     "name": "Blue Green(1J)",
@@ -329,6 +370,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R021-C015",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R021-C015",
     "file": "Sacks.xlsm",
     "category": "Koptimix",
     "name": "Blue Purple(1C)",
@@ -337,6 +379,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R024-C015",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R024-C015",
     "file": "Sacks.xlsm",
     "category": "Koptimix",
     "name": "Green Black(GB)",
@@ -345,6 +388,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R027-C015",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R027-C015",
     "file": "Sacks.xlsm",
     "category": "Koptimix",
     "name": "Purple (Fish)",
@@ -353,6 +397,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R018-C015",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R018-C015",
     "file": "Sacks.xlsm",
     "category": "Koptimix",
     "name": "Purple Dark Blue(1B)",
@@ -361,6 +406,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R003-C015",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R003-C015",
     "file": "Sacks.xlsm",
     "category": "Koptimix",
     "name": "Red Black(1i)",
@@ -369,6 +415,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R009-C015",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R009-C015",
     "file": "Sacks.xlsm",
     "category": "Koptimix",
     "name": "Red Dark Blue(1E)",
@@ -377,6 +424,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R027-C013",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R027-C013",
     "file": "Sacks.xlsm",
     "category": "Plastic",
     "name": "Blue KOP",
@@ -385,6 +433,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R006-C013",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R006-C013",
     "file": "Sacks.xlsm",
     "category": "Plastic",
     "name": "Blue Popp",
@@ -393,6 +442,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R021-C013",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R021-C013",
     "file": "Sacks.xlsm",
     "category": "Plastic",
     "name": "Green",
@@ -401,6 +451,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R009-C013",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R009-C013",
     "file": "Sacks.xlsm",
     "category": "Plastic",
     "name": "Green Popp",
@@ -409,6 +460,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R024-C013",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R024-C013",
     "file": "Sacks.xlsm",
     "category": "Plastic",
     "name": "Purple",
@@ -417,6 +469,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R003-C013",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R003-C013",
     "file": "Sacks.xlsm",
     "category": "Plastic",
     "name": "Purple Popp",
@@ -425,6 +478,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R018-C013",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R018-C013",
     "file": "Sacks.xlsm",
     "category": "Plastic",
     "name": "Red",
@@ -433,6 +487,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R030-C013",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R030-C013",
     "file": "Sacks.xlsm",
     "category": "Plastic",
     "name": "Red KOP",
@@ -441,6 +496,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R012-C013",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R012-C013",
     "file": "Sacks.xlsm",
     "category": "Plastic",
     "name": "White 25K",
@@ -449,6 +505,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R015-C013",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R015-C013",
     "file": "Sacks.xlsm",
     "category": "Plastic",
     "name": "White 50K",
@@ -457,14 +514,16 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R006-C017",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R006-C017",
     "file": "Sacks.xlsm",
     "category": "Roll",
     "name": "EST",
-    "balance": 1398,
+    "balance": 1400,
     "svg": "SACKS_ROLL_EST_R006-C017.svg"
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R009-C017",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R009-C017",
     "file": "Sacks.xlsm",
     "category": "Roll",
     "name": "KOP",
@@ -473,6 +532,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R012-C017",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R012-C017",
     "file": "Sacks.xlsm",
     "category": "Roll",
     "name": "KOP",
@@ -481,6 +541,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R018-C017",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R018-C017",
     "file": "Sacks.xlsm",
     "category": "Roll",
     "name": "Plain White",
@@ -489,6 +550,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R015-C017",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R015-C017",
     "file": "Sacks.xlsm",
     "category": "Roll",
     "name": "QC",
@@ -497,6 +559,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R003-C017",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R003-C017",
     "file": "Sacks.xlsm",
     "category": "Roll",
     "name": "Ribbon",
@@ -505,6 +568,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R012-C011",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R012-C011",
     "file": "Sacks.xlsm",
     "category": "WithOut",
     "name": "Blue",
@@ -513,6 +577,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R015-C011",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R015-C011",
     "file": "Sacks.xlsm",
     "category": "WithOut",
     "name": "Brown",
@@ -521,6 +586,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R021-C011",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R021-C011",
     "file": "Sacks.xlsm",
     "category": "WithOut",
     "name": "Green",
@@ -529,6 +595,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R009-C011",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R009-C011",
     "file": "Sacks.xlsm",
     "category": "WithOut",
     "name": "Orange",
@@ -537,6 +604,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R003-C011",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R003-C011",
     "file": "Sacks.xlsm",
     "category": "WithOut",
     "name": "Purple",
@@ -545,6 +613,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R006-C011",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R006-C011",
     "file": "Sacks.xlsm",
     "category": "WithOut",
     "name": "Red",
@@ -553,6 +622,7 @@
   },
   {
     "sku": "STK-ZONE3-2026-05-SACKS-R018-C011",
+    "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-05-SACKS-R018-C011",
     "file": "Sacks.xlsm",
     "category": "WithOut",
     "name": "White",
