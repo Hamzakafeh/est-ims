@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Zone 3 — QR Codes | EST-IMS</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --border: #30363d;
+    --accent: #1a3a5c;
+    --accent2: #2563eb;
+    --text: #e6edf3;
+    --muted: #7d8590;
+    --success: #3fb950;
+    --danger: #f85149;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Tajawal', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-brand { display: flex; align-items: center; gap: 10px; }
+  .topbar-brand .badge { background: var(--accent2); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; font-family: 'IBM Plex Mono', monospace; letter-spacing: 1px; }
+  .topbar-brand h1 { font-size: 15px; font-weight: 700; color: var(--text); }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .btn-sm { padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; font-family: 'Tajawal', sans-serif; transition: all .15s; }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+  .btn-outline:hover { border-color: var(--accent2); color: var(--accent2); }
+  .btn-primary { background: var(--accent2); color: #fff; }
+  .btn-primary:hover { background: #1d4ed8; }
+
+  /* ── TABS ── */
+  .tabs { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 20px; position: sticky; top: 56px; z-index: 99; }
+  .tab { padding: 12px 16px; font-size: 13px; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; font-weight: 600; white-space: nowrap; transition: all .15s; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent2); border-bottom-color: var(--accent2); }
+  .tab-count { background: var(--border); color: var(--muted); font-size: 10px; padding: 1px 6px; border-radius: 10px; margin-right: 4px; font-family: 'IBM Plex Mono', monospace; }
+  .tab.active .tab-count { background: rgba(37,99,235,.2); color: var(--accent2); }
+
+  /* ── CONTENT ── */
+  .content { padding: 20px; max-width: 1200px; margin: 0 auto; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── SEARCH BAR ── */
+  .search-wrap { display: flex; gap: 10px; margin-bottom: 20px; }
+  .search-wrap input {
+    flex: 1; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); font-size: 13px; font-family: 'IBM Plex Mono', monospace;
+    outline: none; transition: border .15s;
+  }
+  .search-wrap input:focus { border-color: var(--accent2); }
+  .search-wrap input::placeholder { color: var(--muted); }
+
+  /* ── ITEMS GRID ── */
+  .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+  .item-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .item-card::before {
+    content: '';
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--item-color, var(--border));
+    border-radius: 0 10px 10px 0;
+  }
+  .item-card:hover { border-color: var(--item-color, var(--accent2)); background: #1c2128; }
+  .color-dot {
+    width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,0.1);
+    background: var(--item-color, var(--muted));
+  }
+  .item-info { flex: 1; min-width: 0; }
+  .item-type { font-size: 10px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 2px; }
+  .item-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item-sku { font-size: 10px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+  .item-balance { text-align: left; flex-shrink: 0; }
+  .item-num { font-size: 20px; font-weight: 900; color: var(--text); font-family: 'IBM Plex Mono', monospace; line-height: 1; }
+  .item-unit { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .item-date { font-size: 9px; color: var(--muted); margin-top: 1px; font-family: 'IBM Plex Mono', monospace; }
+
+  /* ── PRINT QR ── */
+  .print-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+  .print-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    transition: border-color .15s;
+  }
+  .print-card:hover { border-color: var(--accent2); }
+  .print-card .p-type { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 2px; }
+  .print-card .p-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .print-card .p-size { font-size: 10px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; margin-bottom: 12px; }
+  .qr-wrap { display: flex; justify-content: center; margin-bottom: 8px; background: #fff; border-radius: 8px; padding: 10px; }
+  .print-card .p-sku { font-size: 9px; font-family: 'IBM Plex Mono', monospace; color: var(--muted); letter-spacing: .5px; margin-bottom: 10px; }
+  .print-card .p-balance { font-size: 22px; font-weight: 900; color: var(--text); font-family: 'IBM Plex Mono', monospace; margin-bottom: 2px; }
+  .print-card .p-date { font-size: 9px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; margin-bottom: 12px; }
+  .btn-print { width: 100%; padding: 9px; background: var(--accent2); color: #fff; border: none; border-radius: 7px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Tajawal', sans-serif; transition: background .15s; }
+  .btn-print:hover { background: #1d4ed8; }
+
+  /* ── SCANNER ── */
+  .scanner-wrap { max-width: 480px; margin: 0 auto; }
+  .scanner-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  .scanner-hint { font-size: 13px; color: var(--muted); margin-bottom: 14px; text-align: center; }
+  #reader { width: 100%; border-radius: 8px; overflow: hidden; background: #000; }
+  .manual-label { font-size: 12px; color: var(--muted); margin: 16px 0 6px; }
+  .manual-row { display: flex; gap: 8px; }
+  .manual-row input {
+    flex: 1; padding: 10px 12px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 12px; outline: none;
+  }
+  .manual-row input:focus { border-color: var(--accent2); }
+  .manual-row button { padding: 10px 16px; background: var(--accent2); color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Tajawal', sans-serif; }
+
+  /* ── MODAL ── */
+  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 300; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
+  .overlay.show { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 24px;
+    width: 100%;
+    max-width: 320px;
+    text-align: center;
+    animation: popIn .2s ease;
+  }
+  @keyframes popIn { from { transform: scale(.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal-dot { width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 14px; border: 3px solid rgba(255,255,255,.1); }
+  .modal-type { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 3px; }
+  .modal-name { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .modal-size { font-size: 11px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; margin-bottom: 16px; }
+  .modal-strip { height: 4px; border-radius: 2px; width: 60px; margin: 0 auto 16px; }
+  .modal-lbl { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .modal-num { font-size: 52px; font-weight: 900; color: var(--text); font-family: 'IBM Plex Mono', monospace; line-height: 1; }
+  .modal-unit { font-size: 13px; color: var(--muted); margin: 4px 0 6px; }
+  .modal-date { font-size: 10px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; margin-bottom: 20px; }
+  .modal-err { font-size: 13px; color: var(--danger); margin: 12px 0 16px; display: none; }
+  .modal-close { width: 100%; padding: 12px; background: rgba(255,255,255,.06); border: none; border-radius: 8px; color: var(--text); font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Tajawal', sans-serif; transition: background .15s; }
+  .modal-close:hover { background: rgba(255,255,255,.1); }
+
+  /* ── PRINT ALL BTN ── */
+  .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .toolbar-title { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+
+  /* ── EMPTY ── */
+  .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty .icon { font-size: 40px; margin-bottom: 12px; }
+
+  @media (max-width: 480px) {
+    .content { padding: 12px; }
+    .items-grid { grid-template-columns: 1fr; }
+    .print-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .tab { font-size: 11px; padding: 10px 10px; }
+    .modal-num { font-size: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <span class="badge">ZONE 3</span>
+    <h1>Packaging — May 2026</h1>
+  </div>
+  <div class="topbar-right">
+    <button class="btn-sm btn-outline" onclick="window.print()">🖨 طباعة الكل</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('list')" id="tabList">
+    الأصناف <span class="tab-count" id="cnt-list">0</span>
+  </div>
+  <div class="tab" onclick="switchTab('print')" id="tabPrint">
+    طباعة QR <span class="tab-count" id="cnt-print">0</span>
+  </div>
+  <div class="tab" onclick="switchTab('scan')" id="tabScan">
+    مسح QR
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- LIST TAB -->
+  <div class="section active" id="tab-list">
+    <div class="search-wrap">
+      <input type="text" id="searchInput" placeholder="بحث بالاسم أو النوع أو الكود..." oninput="filterItems()">
+    </div>
+    <div class="items-grid" id="items-grid"></div>
+  </div>
+
+  <!-- PRINT TAB -->
+  <div class="section" id="tab-print">
+    <div class="toolbar">
+      <span class="toolbar-title">كل الأصناف — اطبع QR وألصقه</span>
+    </div>
+    <div class="print-grid" id="print-grid"></div>
+  </div>
+
+  <!-- SCAN TAB -->
+  <div class="section" id="tab-scan">
+    <div class="scanner-wrap">
+      <div class="scanner-card">
+        <p class="scanner-hint">📷 وجّه كاميرا الجوال على QR Code الصنف</p>
+        <div id="reader"></div>
+        <p style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center;">* يتطلب إذن الكاميرا</p>
+      </div>
+      <div class="scanner-card">
+        <p class="manual-label">أو أدخل الكود يدوياً</p>
+        <div class="manual-row">
+          <input type="text" id="manualInput" placeholder="Z3-CHI-CHIC-GREEN" dir="ltr">
+          <button onclick="lookupAndShow(document.getElementById('manualInput').value)">بحث</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-dot" id="modalDot"></div>
+    <p class="modal-type" id="modalType"></p>
+    <p class="modal-name" id="modalName"></p>
+    <p class="modal-size" id="modalSize"></p>
+    <div class="modal-strip" id="modalStrip"></div>
+    <p class="modal-lbl">الرصيد الحالي</p>
+    <p class="modal-num" id="modalNum"></p>
+    <p class="modal-unit">شوال / وحدة</p>
+    <p class="modal-date" id="modalDate"></p>
+    <p class="modal-err" id="modalErr"></p>
+    <button class="modal-close" onclick="closeModal()">إغلاق</button>
+  </div>
+</div>
+
+<script>
+const ITEMS = [
+  { sku:'Z3-CHI-CHIC-PURPLE',  sheet:'Chicken',        type:'Chicken',     color:'Purple',              size:'(75*9)',      balance:41452, date:'2026-05-17', hex:'#7c3aed' },
+  { sku:'Z3-CHI-CHIC-ORANGE',  sheet:'Chicken',        type:'Chicken',     color:'Orange',              size:'(75*9)',      balance:59,    date:'2026-05-01', hex:'#f97316' },
+  { sku:'Z3-CHI-CHIC-ONG45',   sheet:'Chicken',        type:'Chicken',     color:'Orange (70×45)',      size:'(70*45)',     balance:210,   date:'2026-05-01', hex:'#fb923c' },
+  { sku:'Z3-CHI-CHIC-GRAY',    sheet:'Chicken',        type:'Chicken',     color:'Gray',                size:'(75*9)',      balance:7537,  date:'2026-05-17', hex:'#6b7280' },
+  { sku:'Z3-CHI-CHIC-RED',     sheet:'Chicken',        type:'Chicken',     color:'Red',                 size:'(75*9)',      balance:7485,  date:'2026-05-13', hex:'#dc2626' },
+  { sku:'Z3-CHI-CHIC-GREEN',   sheet:'Chicken',        type:'Chicken',     color:'Green',               size:'(75*9)',      balance:57016, date:'2026-05-14', hex:'#16a34a' },
+  { sku:'Z3-CHI-CHIC-DKGRN',   sheet:'Chicken',        type:'Chicken',     color:'Dark Green',          size:'(75*9)',      balance:5731,  date:'2026-05-17', hex:'#14532d' },
+  { sku:'Z3-CHI-CHIC-LTBLU',   sheet:'Chicken',        type:'Chicken',     color:'Light Blue',          size:'(75*9)',      balance:339,   date:'2026-05-12', hex:'#7dd3fc' },
+  { sku:'Z3-CHI-CHIC-BLUE',    sheet:'Chicken',        type:'Chicken',     color:'Blue',                size:'(75*9)',      balance:1509,  date:'2026-05-17', hex:'#3b82f6' },
+  { sku:'Z3-CHI-CHIC-DKBLU',   sheet:'Chicken',        type:'Chicken',     color:'Dark Blue',           size:'(75*9)',      balance:62412, date:'2026-05-13', hex:'#1e3a8a' },
+  { sku:'Z3-CHI-CHIC-YELLOW',  sheet:'Chicken',        type:'Chicken',     color:'Yellow',              size:'(75*9)',      balance:7812,  date:'2026-05-13', hex:'#eab308' },
+  { sku:'Z3-CHI-CHIC-BROWN',   sheet:'Chicken',        type:'Chicken',     color:'Brown',               size:'(75*9)',      balance:30,    date:'2026-05-07', hex:'#92400e' },
+
+  { sku:'Z3-COW-CS-BLUE',      sheet:'COW',            type:'C&S',         color:'Blue',                size:'(75*9)',      balance:47358, date:'2026-05-11', hex:'#3b82f6' },
+  { sku:'Z3-COW-CS-RED',       sheet:'COW',            type:'C&S',         color:'Red',                 size:'(75*9)',      balance:4668,  date:'2026-05-11', hex:'#dc2626' },
+  { sku:'Z3-COW-CS-ORANGE',    sheet:'COW',            type:'C&S',         color:'Orange',              size:'(75*9)',      balance:3673,  date:'2026-05-17', hex:'#f97316' },
+  { sku:'Z3-COW-CS-PURPLE',    sheet:'COW',            type:'C&S',         color:'Purple',              size:'(75*9)',      balance:32111, date:'2026-05-10', hex:'#7c3aed' },
+  { sku:'Z3-COW-CS-GREEN',     sheet:'COW',            type:'C&S',         color:'Green',               size:'(75*9)',      balance:5904,  date:'2026-05-01', hex:'#16a34a' },
+  { sku:'Z3-COW-CS-DKGRN',     sheet:'COW',            type:'C&S',         color:'Dark Green',          size:'(75*9)',      balance:38160, date:'2026-05-01', hex:'#14532d' },
+  { sku:'Z3-COW-CS-DKG13',     sheet:'COW',            type:'C&S',         color:'Dark Green (75×50×13)',size:'(75*13)',    balance:1397,  date:'2026-05-11', hex:'#166534' },
+
+  { sku:'Z3-WIT-WITH-PURP10',  sheet:'WithOut',        type:'WithOut',     color:'Purple (10)',         size:'(70*45*10)', balance:7466,  date:'2026-05-12', hex:'#7c3aed' },
+  { sku:'Z3-WIT-WITH-BLUE',    sheet:'WithOut',        type:'WithOut',     color:'Blue',                size:'(75*9)',      balance:6482,  date:'2026-05-16', hex:'#3b82f6' },
+  { sku:'Z3-WIT-WITH-ONG10',   sheet:'WithOut',        type:'WithOut',     color:'Orange (10)',         size:'(70*45*10)', balance:7450,  date:'2026-05-01', hex:'#f97316' },
+  { sku:'Z3-WIT-WITH-GREEN',   sheet:'WithOut',        type:'WithOut',     color:'Green',               size:'(75*9)',      balance:20421, date:'2026-05-13', hex:'#16a34a' },
+  { sku:'Z3-WIT-WITH-RED',     sheet:'WithOut',        type:'WithOut',     color:'Red',                 size:'(75*9)',      balance:24013, date:'2026-05-01', hex:'#dc2626' },
+  { sku:'Z3-WIT-WITH-WHITE',   sheet:'WithOut',        type:'WithOut',     color:'White',               size:'(75*9)',      balance:5347,  date:'N/A',        hex:'#94a3b8' },
+  { sku:'Z3-WIT-WITH-BROWN',   sheet:'WithOut',        type:'WithOut',     color:'Brown',               size:'(75*9)',      balance:5394,  date:'2026-05-18', hex:'#92400e' },
+
+  { sku:'Z3-KOP-1I-REDBLK',    sheet:'Koptimix',       type:'Koptimix',    color:'Red Black (1i)',      size:'(75*9)',      balance:27016, date:'2026-05-07', hex:'#dc2626' },
+  { sku:'Z3-KOP-1J-BLUGRN',    sheet:'Koptimix',       type:'Koptimix',    color:'Blue Green (1J)',     size:'(75*9)',      balance:25695, date:'2026-05-04', hex:'#16a34a' },
+  { sku:'Z3-KOP-1E-REDBLU',    sheet:'Koptimix',       type:'Koptimix',    color:'Red Dark Blue (1E)',  size:'(75*9)',      balance:41655, date:'2026-05-02', hex:'#7f1d1d' },
+  { sku:'Z3-KOP-1H-BLUBLK',    sheet:'Koptimix',       type:'Koptimix',    color:'Blue Black (1H)',     size:'(75*9)',      balance:9176,  date:'2026-05-07', hex:'#1e3a8a' },
+  { sku:'Z3-KOP-1A-BLUGRY',    sheet:'Koptimix',       type:'Koptimix',    color:'Blue Gray (1A)',      size:'(75*9)',      balance:8004,  date:'2026-05-04', hex:'#475569' },
+  { sku:'Z3-KOP-1B-PRPDBL',    sheet:'Koptimix',       type:'Koptimix',    color:'Purple Dark Blue (1B)',size:'(75*9)',     balance:10090, date:'2026-05-01', hex:'#4c1d95' },
+  { sku:'Z3-KOP-1C-BLUPUR',    sheet:'Koptimix',       type:'Koptimix',    color:'Blue Purple (1C)',    size:'(75*9)',      balance:21187, date:'2026-05-05', hex:'#5b21b6' },
+  { sku:'Z3-KOP-GB-GRNBLK',    sheet:'Koptimix',       type:'Koptimix',    color:'Green Black (GB)',    size:'(75*9)',      balance:7194,  date:'2026-05-07', hex:'#14532d' },
+  { sku:'Z3-KOP-FSH-PURPLE',   sheet:'Koptimix',       type:'Koptimix',    color:'Purple (Fish)',       size:'(75*9)',      balance:2918,  date:'2026-05-01', hex:'#7c3aed' },
+
+  { sku:'Z3-PLA-PLST-PURPOP',  sheet:'Plastic',        type:'Plastic',     color:'Purple Popp',         size:'',           balance:6208,  date:'2026-05-01', hex:'#7c3aed' },
+  { sku:'Z3-PLA-PLST-BLUPOP',  sheet:'Plastic',        type:'Plastic',     color:'Blue Popp',           size:'',           balance:7150,  date:'2026-05-01', hex:'#3b82f6' },
+  { sku:'Z3-PLA-PLST-GRNPOP',  sheet:'Plastic',        type:'Plastic',     color:'Green Popp',          size:'',           balance:7092,  date:'2026-05-01', hex:'#16a34a' },
+  { sku:'Z3-PLA-PLST-WHT25',   sheet:'Plastic',        type:'Plastic',     color:'White 25G',           size:'',           balance:1000,  date:'2026-05-14', hex:'#94a3b8' },
+  { sku:'Z3-PLA-PLST-WHT50',   sheet:'Plastic',        type:'Plastic',     color:'White 50G',           size:'',           balance:1701,  date:'2026-05-17', hex:'#cbd5e1' },
+  { sku:'Z3-PLA-PLST-RED',     sheet:'Plastic',        type:'Plastic',     color:'Red',                 size:'',           balance:10000, date:'2026-05-01', hex:'#dc2626' },
+  { sku:'Z3-PLA-PLST-GREEN',   sheet:'Plastic',        type:'Plastic',     color:'Green',               size:'',           balance:10000, date:'2026-05-01', hex:'#16a34a' },
+  { sku:'Z3-PLA-PLST-PURPLE',  sheet:'Plastic',        type:'Plastic',     color:'Purple',              size:'',           balance:7710,  date:'2026-05-01', hex:'#7c3aed' },
+  { sku:'Z3-PLA-PLST-BLUKOP',  sheet:'Plastic',        type:'Plastic',     color:'Blue KOP',            size:'',           balance:10745, date:'2026-05-01', hex:'#2563eb' },
+  { sku:'Z3-PLA-PLST-REDKOP',  sheet:'Plastic',        type:'Plastic',     color:'Red KOP',             size:'',           balance:3010,  date:'2026-05-01', hex:'#b91c1c' },
+
+  { sku:'Z3-LBL-KOP-BLUE',     sheet:'Koptimix Lable', type:'Koptimix Lbl',color:'Blue',               size:'160x240',    balance:101,   date:'2026-05-01', hex:'#3b82f6' },
+  { sku:'Z3-LBL-KOP-BLACK',    sheet:'Koptimix Lable', type:'Koptimix Lbl',color:'Black',              size:'',           balance:11,    date:'2026-05-01', hex:'#374151' },
+  { sku:'Z3-LBL-KOP-PURPLE',   sheet:'Koptimix Lable', type:'Koptimix Lbl',color:'Purple',             size:'',           balance:3,     date:'2026-05-01', hex:'#7c3aed' },
+  { sku:'Z3-LBL-KOP-GREEN',    sheet:'Koptimix Lable', type:'Koptimix Lbl',color:'Green',              size:'',           balance:62,    date:'2026-05-02', hex:'#16a34a' },
+  { sku:'Z3-LBL-KOP-RED',      sheet:'Koptimix Lable', type:'Koptimix Lbl',color:'Red',                size:'',           balance:2,     date:'2026-05-01', hex:'#dc2626' },
+  { sku:'Z3-LBL-KOP-BLUP',     sheet:'Koptimix Lable', type:'Koptimix Lbl',color:'Blue+',              size:'',           balance:35,    date:'2026-05-01', hex:'#60a5fa' },
+  { sku:'Z3-LBL-EST-GREEN',    sheet:'EST Lable',      type:'EST Lbl',     color:'Green',               size:'140x240',    balance:31,    date:'2026-05-01', hex:'#16a34a' },
+
+  { sku:'Z3-ROL-RBN-CW641',    sheet:'Roll',           type:'Ribbon',      color:'CW641',               size:'165x300',    balance:1962,  date:'2026-05-15', hex:'#6366f1' },
+  { sku:'Z3-ROL-EST-GRNP',     sheet:'Roll',           type:'EST Roll',    color:'Green+',              size:'16x24',      balance:1416,  date:'2026-05-16', hex:'#16a34a' },
+  { sku:'Z3-ROL-KOP-GREEN',    sheet:'Roll',           type:'KOP Roll',    color:'Green',               size:'16x24',      balance:370,   date:'2026-05-05', hex:'#15803d' },
+  { sku:'Z3-ROL-KOP-BLUE',     sheet:'Roll',           type:'KOP Roll',    color:'Blue',                size:'16x24',      balance:393,   date:'2026-05-06', hex:'#2563eb' },
+  { sku:'Z3-ROL-QC-QC',        sheet:'Roll',           type:'QC',          color:'QC',                  size:'8.6 Dia.',   balance:105,   date:'2026-05-01', hex:'#0ea5e9' },
+  { sku:'Z3-ROL-PLN-WHITE',    sheet:'Roll',           type:'Plain White', color:'Plain White',          size:'7*5',        balance:200,   date:'2026-05-01', hex:'#94a3b8' },
+];
+
+// ── Build lookup map
+const LOOKUP = {};
+ITEMS.forEach(i => { LOOKUP[i.sku] = i; });
+
+// ── Build list
+const grid = document.getElementById('items-grid');
+document.getElementById('cnt-list').textContent = ITEMS.length;
+document.getElementById('cnt-print').textContent = ITEMS.length;
+
+function buildCards(list) {
+  grid.innerHTML = '';
+  if (!list.length) {
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><div class="icon">🔍</div><p>لا توجد نتائج</p></div>';
+    return;
+  }
+  list.forEach(item => {
+    const d = document.createElement('div');
+    d.className = 'item-card';
+    d.style.setProperty('--item-color', item.hex);
+    d.innerHTML = `
+      <div class="color-dot" style="background:${item.hex}"></div>
+      <div class="item-info">
+        <div class="item-type">${item.type} · ${item.sheet}</div>
+        <div class="item-name">${item.color}${item.size ? ' <span style="color:var(--muted);font-size:10px">'+item.size+'</span>' : ''}</div>
+        <div class="item-sku">${item.sku}</div>
+      </div>
+      <div class="item-balance">
+        <div class="item-num">${item.balance.toLocaleString()}</div>
+        <div class="item-unit">وحدة</div>
+        <div class="item-date">${item.date}</div>
+      </div>`;
+    d.onclick = () => showModal(item);
+    grid.appendChild(d);
+  });
+}
+buildCards(ITEMS);
+
+function filterItems() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  if (!q) { buildCards(ITEMS); return; }
+  buildCards(ITEMS.filter(i =>
+    i.color.toLowerCase().includes(q) ||
+    i.type.toLowerCase().includes(q) ||
+    i.sku.toLowerCase().includes(q) ||
+    i.sheet.toLowerCase().includes(q)
+  ));
+}
+
+// ── Build print QR
+const printGrid = document.getElementById('print-grid');
+ITEMS.forEach(item => {
+  const wrap = document.createElement('div');
+  wrap.className = 'print-card';
+  wrap.innerHTML = `
+    <div class="p-type">${item.type}</div>
+    <div class="p-name">${item.color}</div>
+    <div class="p-size">${item.size || '—'}</div>
+    <div class="qr-wrap" id="qr-${item.sku}"></div>
+    <div class="p-sku">${item.sku}</div>
+    <div class="p-balance">${item.balance.toLocaleString()}</div>
+    <div class="p-date">📅 ${item.date}</div>
+    <button class="btn-print" onclick="printQR('${item.sku}','${item.color}','${item.type}')">🖨 طباعة</button>`;
+  printGrid.appendChild(wrap);
+  setTimeout(() => {
+    try {
+      new QRCode(document.getElementById('qr-' + item.sku), {
+        text: item.sku,
+        width: 140, height: 140,
+        colorDark: '#0d1117', colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    } catch(e) {}
+  }, 200);
+});
+
+// ── Modal
+function showModal(item) {
+  document.getElementById('modalDot').style.background = item.hex;
+  document.getElementById('modalType').textContent = item.type + ' · ' + item.sheet;
+  document.getElementById('modalName').textContent = item.color;
+  document.getElementById('modalSize').textContent = item.size ? item.size : '';
+  document.getElementById('modalStrip').style.background = item.hex;
+  document.getElementById('modalNum').textContent = item.balance.toLocaleString();
+  document.getElementById('modalDate').textContent = 'آخر تحديث: ' + item.date;
+  document.getElementById('modalErr').style.display = 'none';
+  document.getElementById('overlay').classList.add('show');
+}
+
+function lookupAndShow(raw) {
+  const sku = raw.trim().toUpperCase();
+  const item = LOOKUP[sku];
+  if (item) { showModal(item); return; }
+  document.getElementById('modalDot').style.background = '#7f1d1d';
+  document.getElementById('modalType').textContent = 'خطأ';
+  document.getElementById('modalName').textContent = 'كود غير موجود';
+  document.getElementById('modalSize').textContent = '';
+  document.getElementById('modalStrip').style.background = '#dc2626';
+  document.getElementById('modalNum').textContent = '—';
+  document.getElementById('modalDate').textContent = '';
+  const e = document.getElementById('modalErr');
+  e.textContent = '"' + sku + '" غير مسجل في هذا النظام';
+  e.style.display = 'block';
+  document.getElementById('overlay').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('overlay').classList.remove('show');
+  // استأنف السكانر بعد إغلاق الـ Modal
+  scanCooldown = false;
+}
+
+// ── Scanner
+let scanner = null;
+let scannerRunning = false;
+let scanCooldown = false;
+
+function startScanner() {
+  if (scannerRunning) return;
+  scanner = new Html5Qrcode("reader");
+  scanner.start(
+    { facingMode: "environment" },
+    { fps: 12, qrbox: { width: 220, height: 220 } },
+    (decoded) => {
+      if (scanCooldown) return;   // تجاهل التكرار
+      scanCooldown = true;
+      lookupAndShow(decoded);
+    },
+    () => {}
+  ).then(() => {
+    scannerRunning = true;
+  }).catch(() => {});
+}
+
+function stopScanner() {
+  if (scanner && scannerRunning) {
+    scanner.stop().then(() => {
+      scanner = null;
+      scannerRunning = false;
+    }).catch(() => {
+      scanner = null;
+      scannerRunning = false;
+    });
+  }
+}
+
+// ── Tab switch
+function switchTab(name) {
+  ['list','print','scan'].forEach(t => {
+    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===name);
+    document.getElementById('tab-'+t).classList.toggle('active', t===name);
+  });
+  if (name === 'scan') startScanner();
+  else stopScanner();
+}
+
+// ── Print single QR
+function printQR(sku, color, type) {
+  const el = document.getElementById('qr-' + sku);
+  if (!el) return;
+  const img = el.querySelector('img') || el.querySelector('canvas');
+  if (!img) return;
+  const src = img.tagName === 'CANVAS' ? img.toDataURL() : img.src;
+  const win = window.open('', '_blank', 'width=320,height=420');
+  win.document.write(`<html><head><title>QR ${color}</title>
+  <style>
+    body{font-family:Arial,sans-serif;text-align:center;padding:28px;background:#fff;}
+    .type{font-size:11px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+    .name{font-size:16px;font-weight:900;color:#0d1117;margin-bottom:4px;}
+    .sku{font-size:10px;font-family:monospace;color:#6b7280;letter-spacing:1px;margin-top:8px;}
+    .zone{font-size:10px;color:#2563eb;font-weight:700;margin-top:4px;}
+    img{width:180px;height:180px;}
+  </style></head>
+  <body>
+    <div class="type">${type}</div>
+    <div class="name">${color}</div>
+    <img src="${src}">
+    <div class="sku">${sku}</div>
+    <div class="zone">ZONE 3 · Packaging · May 2026</div>
+    <script>window.onload=function(){window.print();}<\/script>
+  </body></html>`);
+  win.document.close();
+}
+</script>
+</body>
+</html>

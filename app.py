@@ -191,6 +191,11 @@ def contact():
 def help_page():
     return render_template('help.html')
 
+@app.route('/zone3-qr')
+@zone_required
+def zone3_qr():
+    return send_from_directory('static', 'zone3_qr.html')
+
 @app.route('/login', methods=['POST'])
 def do_login():
     ip = _get_ip()
