@@ -1,286 +1,391 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>فحص QR — EST</title>
+<title>EST-iMs | QR Scan</title>
+<link rel="icon" type="image/x-icon" href="/static/low1.ico">
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Sora:wght@400;600;700&display=swap');
+
+  :root {
+    --bg-deep:      #0d1117;
+    --bg-card:      #21283a;
+    --bg-hover:     #2a3347;
+    --border:       #2d3748;
+    --border-light: #3d4f6a;
+    --accent-blue:  #3b82f6;
+    --accent-cyan:  #06b6d4;
+    --accent-green: #10b981;
+    --accent-amber: #f59e0b;
+    --accent-red:   #ef4444;
+    --text-main:    #e2e8f0;
+    --text-muted:   #8b9db8;
+    --text-dim:     #4a5568;
+  }
+  html.light {
+    --bg-deep:      #f0f4f8;
+    --bg-card:      #ffffff;
+    --bg-hover:     #e8edf5;
+    --border:       #d1dae8;
+    --border-light: #b8c6da;
+    --accent-blue:  #2563eb;
+    --accent-cyan:  #0891b2;
+    --accent-green: #059669;
+    --accent-red:   #dc2626;
+    --text-main:    #1a2332;
+    --text-muted:   #4a6080;
+    --text-dim:     #8fa3be;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
-    background: #0f172a;
-    color: #e2e8f0;
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-main);
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 24px 16px;
+    transition: background 0.3s, color 0.3s;
+    position: relative;
+    overflow-x: hidden;
   }
 
-  .logo {
-    font-size: 13px;
-    font-weight: 700;
-    color: #475569;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-bottom: 32px;
+  .blob { position: fixed; border-radius: 50%; filter: blur(90px); opacity: 0.06; pointer-events: none; z-index: 0; }
+  html.light .blob { opacity: 0.1; }
+  .blob-1 { width: 600px; height: 600px; background: radial-gradient(circle, #3b82f6, transparent 70%); top: -150px; left: -150px; animation: bd1 20s ease-in-out infinite; }
+  .blob-2 { width: 500px; height: 500px; background: radial-gradient(circle, #06b6d4, transparent 70%); bottom: -120px; right: -120px; animation: bd2 24s ease-in-out infinite; }
+  @keyframes bd1 { 0%,100%{transform:translate(0,0);} 50%{transform:translate(60px,40px);} }
+  @keyframes bd2 { 0%,100%{transform:translate(0,0);} 50%{transform:translate(-50px,-30px);} }
+
+  .grid-overlay {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
+    background-size: 52px 52px;
+    mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black 30%, transparent 100%);
   }
 
-  /* ── حالة: جاهز للسكان ── */
-  #state-ready {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    width: 100%;
-    max-width: 320px;
+  .topbar {
+    position: sticky; top: 0; z-index: 200;
+    background: rgba(13,17,23,0.7); backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(59,130,246,0.15);
+    padding: 0 20px; height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  html.light .topbar { background: rgba(255,255,255,0.85); border-bottom-color: rgba(37,99,235,0.15); }
+  .topbar-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .back-btn {
+    display: flex; align-items: center; gap: 6px;
+    color: var(--accent-cyan); text-decoration: none;
+    font-size: 13px; font-weight: 500;
+    padding: 6px 12px; border-radius: 8px;
+    border: 1px solid rgba(6,182,212,0.3);
+    background: rgba(6,182,212,0.06);
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+  .back-btn:hover { background: rgba(6,182,212,0.14); border-color: var(--accent-cyan); }
+  .topbar-title { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar-actions { display: flex; gap: 8px; }
+  .icon-btn {
+    width: 36px; height: 36px; border-radius: 8px;
+    border: 1px solid var(--border-light);
+    background: var(--bg-card); color: var(--text-muted);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.18s;
+  }
+  .icon-btn:hover { background: var(--bg-hover); color: var(--text-main); }
+  .icon-sun { display: block; } .icon-moon { display: none; }
+  html.light .icon-sun { display: none; } html.light .icon-moon { display: block; }
+  .lang-btn {
+    padding: 0 12px; width: auto; font-size: 12px; font-weight: 600;
+    color: var(--accent-cyan); border-color: rgba(6,182,212,0.35);
+    background: rgba(6,182,212,0.08);
+  }
+  .lang-btn:hover { background: rgba(6,182,212,0.16); }
+
+  .main {
+    position: relative; z-index: 10;
+    width: 100%; max-width: 620px; margin: 0 auto;
+    min-height: calc(100vh - 56px);
+    padding: 38px 20px 56px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
   }
 
-  .scan-btn {
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #1e3a5f, #1a3a5c);
-    border: 3px solid #2a5a8c;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s;
-    box-shadow: 0 0 40px rgba(26, 58, 92, 0.6);
+  .scan-shell { width: 100%; animation: fadeUp 0.5s ease both; }
+
+  .hero {
+    text-align: center; margin-bottom: 28px;
   }
-  .scan-btn:hover { transform: scale(1.05); box-shadow: 0 0 60px rgba(26,58,92,0.8); }
-  .scan-btn:active { transform: scale(0.97); }
-
-  .scan-icon { font-size: 48px; line-height: 1; }
-  .scan-label { font-size: 14px; font-weight: 700; color: #a0c4e8; }
-
-  .hint { font-size: 12px; color: #475569; text-align: center; }
-
-  /* ── حالة: الكاميرا شغالة ── */
-  #state-scanning {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-    width: 100%;
-    max-width: 360px;
+  .hero-logo {
+    width: 72px; height: 72px; border-radius: 20px;
+    background: linear-gradient(135deg, rgba(59,130,246,0.18), rgba(6,182,212,0.12));
+    border: 1px solid rgba(59,130,246,0.25);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 18px;
+    box-shadow: 0 8px 32px rgba(59,130,246,0.2);
   }
-
-  #reader {
-    width: 100%;
-    border-radius: 14px;
-    overflow: hidden;
-    background: #000;
-    border: 2px solid #1a3a5c;
-  }
-
-  .cancel-btn {
-    padding: 10px 28px;
-    background: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 10px;
-    color: #94a3b8;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-  }
-  .cancel-btn:hover { background: #263345; }
-
-  /* ── حالة: تحميل ── */
-  #state-loading {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .spinner {
-    width: 48px; height: 48px;
-    border: 4px solid #1e3a5f;
-    border-top-color: #a0c4e8;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-text { font-size: 13px; color: #475569; }
-
-  /* ── حالة: النتيجة ── */
-  #state-result {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 0;
-    width: 100%;
-    max-width: 320px;
-  }
-
-  .result-card {
-    width: 100%;
-    background: #1e293b;
-    border-radius: 20px;
-    border: 1px solid #334155;
-    overflow: hidden;
+  .hero-logo img { width: 44px; height: 44px; object-fit: contain; border-radius: 12px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.3);
+    border-radius: 50px; padding: 5px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 700; color: var(--accent-cyan);
+    letter-spacing: 1.5px; text-transform: uppercase;
     margin-bottom: 16px;
   }
+  .hero-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(0.65);} }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(38px, 10vw, 58px); letter-spacing: 4px;
+    background: linear-gradient(135deg, #60a5fa, #06b6d4, #818cf8);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; margin-bottom: 8px;
+  }
+  .hero-sub { font-size: 13px; color: var(--text-muted); line-height: 1.7; max-width: 430px; margin: 0 auto; }
 
-  .result-color-bar {
-    height: 8px;
-    width: 100%;
+  .panel {
+    width: 100%; min-height: 330px;
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 26px 22px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.18);
+  }
+  html.light .panel { background: rgba(255,255,255,0.72); border-color: var(--border); box-shadow: 0 18px 50px rgba(37,99,235,0.08); }
+
+  #state-ready, #state-scanning, #state-loading, #state-result, #state-error {
+    width: 100%; display: none; flex-direction: column; align-items: center;
+  }
+  #state-ready { display: flex; gap: 20px; max-width: 340px; }
+  #state-scanning { gap: 14px; max-width: 390px; }
+  #state-loading { gap: 16px; }
+  #state-result { gap: 0; max-width: 360px; }
+  #state-error { gap: 16px; text-align: center; max-width: 320px; }
+
+  .scan-btn {
+    width: 164px; height: 164px; border-radius: 50%;
+    background: linear-gradient(135deg, rgba(59,130,246,0.24), rgba(6,182,212,0.16));
+    border: 1px solid rgba(6,182,212,0.45);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 12px; cursor: pointer;
+    transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+    box-shadow: 0 0 44px rgba(6,182,212,0.18), inset 0 0 0 1px rgba(255,255,255,0.06);
+    color: var(--text-main);
+  }
+  .scan-btn:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 0 62px rgba(6,182,212,0.26); border-color: var(--accent-cyan); }
+  .scan-btn:active { transform: scale(0.97); }
+  .scan-icon { width: 46px; height: 46px; color: var(--accent-cyan); }
+  .scan-label { font-size: 14px; font-weight: 800; color: var(--text-main); letter-spacing: 0.4px; }
+  .hint { font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.7; }
+
+  #reader {
+    width: 100%; border-radius: 16px; overflow: hidden;
+    background: #000; border: 1px solid rgba(6,182,212,0.38);
+    box-shadow: 0 14px 36px rgba(0,0,0,0.22);
   }
 
-  .result-body {
-    padding: 24px 20px 20px;
-    text-align: center;
+  .cancel-btn, .retry-btn, .scan-again-btn {
+    border-radius: 12px; font-family: inherit; font-weight: 700; cursor: pointer;
+    transition: all 0.16s;
   }
+  .cancel-btn, .retry-btn {
+    padding: 10px 28px; background: var(--bg-card);
+    border: 1px solid var(--border-light); color: var(--text-muted);
+    font-size: 13px;
+  }
+  .cancel-btn:hover, .retry-btn:hover { background: var(--bg-hover); color: var(--text-main); }
 
+  .spinner {
+    width: 52px; height: 52px;
+    border: 4px solid rgba(59,130,246,0.18);
+    border-top-color: var(--accent-cyan);
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 13px; color: var(--text-muted); }
+
+  .result-card {
+    width: 100%; background: rgba(33,40,58,0.86);
+    border-radius: 16px; border: 1px solid rgba(255,255,255,0.08);
+    overflow: hidden; margin-bottom: 16px;
+    box-shadow: 0 22px 60px rgba(0,0,0,0.22);
+  }
+  html.light .result-card { background: rgba(255,255,255,0.82); border-color: var(--border); }
+  .result-color-bar { height: 7px; width: 100%; background: var(--accent-cyan); }
+  .result-body { padding: 24px 20px 20px; text-align: center; }
   .result-cat {
-    font-size: 11px;
-    color: #475569;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--accent-cyan); letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 8px;
   }
-
-  .result-name {
-    font-size: 18px;
-    font-weight: 700;
-    color: #e2e8f0;
-    margin-bottom: 24px;
-  }
-
-  .result-balance-label {
-    font-size: 11px;
-    color: #475569;
-    margin-bottom: 4px;
-  }
-
-  .result-balance {
-    font-size: 64px;
-    font-weight: 900;
-    color: #e2e8f0;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-
-  .result-unit {
-    font-size: 13px;
-    color: #64748b;
-    margin-bottom: 12px;
-  }
-
-  .result-date {
-    font-size: 11px;
-    color: #334155;
-  }
-
-  .result-sku {
-    font-size: 10px;
-    font-family: monospace;
-    color: #334155;
-    letter-spacing: 1px;
-    margin-top: 4px;
-    direction: ltr;
-  }
-
+  .result-name { font-size: 20px; font-weight: 800; color: var(--text-main); margin-bottom: 24px; overflow-wrap: anywhere; }
+  .result-balance-label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+  .result-balance { font-size: clamp(52px, 16vw, 72px); font-weight: 900; color: var(--text-main); line-height: 1; margin-bottom: 5px; }
+  .result-unit { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+  .result-date { font-size: 11px; color: var(--text-dim); }
+  .result-sku { font-size: 10px; font-family: 'JetBrains Mono', monospace; color: var(--text-dim); letter-spacing: 0.3px; margin-top: 6px; direction: ltr; overflow-wrap: anywhere; }
   .scan-again-btn {
-    width: 100%;
-    padding: 14px;
-    background: #1a3a5c;
-    color: #a0c4e8;
-    border: none;
-    border-radius: 12px;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: inherit;
-    transition: background 0.15s;
+    width: 100%; padding: 14px;
+    background: rgba(6,182,212,0.1); color: var(--accent-cyan);
+    border: 1px solid rgba(6,182,212,0.35);
+    font-size: 14px;
   }
-  .scan-again-btn:hover { background: #24527d; }
+  .scan-again-btn:hover { background: rgba(6,182,212,0.18); border-color: var(--accent-cyan); }
 
-  /* ── حالة: خطأ ── */
-  #state-error {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    text-align: center;
-    max-width: 300px;
+  .error-icon { width: 50px; height: 50px; color: var(--accent-red); }
+  .error-msg { font-size: 14px; color: var(--accent-red); line-height: 1.7; }
+
+  @media (max-width: 480px) {
+    .topbar { padding: 0 12px; }
+    .back-btn { padding: 6px 9px; }
+    .main { justify-content: flex-start; padding: 30px 14px 42px; }
+    .panel { padding: 22px 16px; min-height: 315px; }
+    .hero { margin-bottom: 22px; }
   }
 
-  .error-icon { font-size: 48px; }
-  .error-msg { font-size: 14px; color: #f87171; }
-  .retry-btn {
-    padding: 10px 28px;
-    background: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 10px;
-    color: #94a3b8;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-  }
-  .retry-btn:hover { background: #263345; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
 </style>
 </head>
 <body>
 
-<div class="logo">EST · Inventory</div>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="grid-overlay"></div>
 
-<!-- حالة 1: جاهز -->
-<div id="state-ready">
-  <button class="scan-btn" onclick="startCamera()">
-    <span class="scan-icon">📷</span>
-    <span class="scan-label">افحص QR</span>
-  </button>
-  <p class="hint">اضغط لفتح الكاميرا ومسح كود الشوال</p>
-</div>
-
-<!-- حالة 2: الكاميرا شغالة -->
-<div id="state-scanning">
-  <div id="reader"></div>
-  <button class="cancel-btn" onclick="stopCamera()">إلغاء</button>
-</div>
-
-<!-- حالة 3: تحميل -->
-<div id="state-loading">
-  <div class="spinner"></div>
-  <p class="loading-text">جاري جلب البيانات…</p>
-</div>
-
-<!-- حالة 4: النتيجة -->
-<div id="state-result">
-  <div class="result-card">
-    <div class="result-color-bar" id="resBar"></div>
-    <div class="result-body">
-      <p class="result-cat">شوالات الجاج</p>
-      <p class="result-name" id="resName"></p>
-      <p class="result-balance-label">الرصيد الحالي</p>
-      <p class="result-balance" id="resBalance"></p>
-      <p class="result-unit">شوال</p>
-      <p class="result-date" id="resDate"></p>
-      <p class="result-sku" id="resSku"></p>
-    </div>
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="/" class="back-btn" id="backBtn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <span id="backText">Back</span>
+    </a>
+    <span class="topbar-title" id="topbarTitle">QR Scan</span>
   </div>
-  <button class="scan-again-btn" onclick="reset()">🔁 فحص كود آخر</button>
+  <div class="topbar-actions">
+    <button class="icon-btn lang-btn" onclick="toggleScanLang()" id="langBtn">عربي</button>
+    <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle theme">
+      <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
 </div>
 
-<!-- حالة 5: خطأ -->
-<div id="state-error">
-  <span class="error-icon">⚠️</span>
-  <p class="error-msg" id="errMsg"></p>
-  <button class="retry-btn" onclick="reset()">حاول مرة أخرى</button>
-</div>
+<main class="main">
+  <section class="scan-shell">
+    <div class="hero">
+      <div class="hero-logo"><img src="/static/low.ico" alt="EST-iMs"></div>
+      <div class="hero-badge"><span class="hero-dot"></span><span id="badgeText">Live Inventory Lookup</span></div>
+      <div class="hero-title" id="heroTitle">QR SCAN</div>
+      <p class="hero-sub" id="heroSub">Scan an inventory QR code to retrieve the latest stock balance directly from EST-iMs.</p>
+    </div>
+
+    <div class="panel">
+      <div id="state-ready">
+        <button class="scan-btn" onclick="startCamera()" aria-label="Scan QR">
+          <svg class="scan-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/><rect x="3" y="16" width="5" height="5" rx="1"/><path d="M16 16h2v2"/><path d="M21 16v5h-5"/><path d="M12 7h1"/><path d="M12 17h1"/><path d="M7 12h10"/></svg>
+          <span class="scan-label" id="scanLabel">Scan QR</span>
+        </button>
+        <p class="hint" id="hintText">Tap to open the camera and scan a stock code.</p>
+      </div>
+
+      <div id="state-scanning">
+        <div id="reader"></div>
+        <button class="cancel-btn" onclick="stopCamera()" id="cancelBtn">Cancel</button>
+      </div>
+
+      <div id="state-loading">
+        <div class="spinner"></div>
+        <p class="loading-text" id="loadingText">Retrieving live data...</p>
+      </div>
+
+      <div id="state-result">
+        <div class="result-card">
+          <div class="result-color-bar" id="resBar"></div>
+          <div class="result-body">
+            <p class="result-cat">Stocktaking</p>
+            <p class="result-name" id="resName"></p>
+            <p class="result-balance-label" id="balanceLabel">Current balance</p>
+            <p class="result-balance" id="resBalance"></p>
+            <p class="result-unit" id="resultUnit">Unit</p>
+            <p class="result-date" id="resDate"></p>
+            <p class="result-sku" id="resSku"></p>
+          </div>
+        </div>
+        <button class="scan-again-btn" onclick="reset()" id="scanAgainBtn">Scan another code</button>
+      </div>
+
+      <div id="state-error">
+        <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <p class="error-msg" id="errMsg"></p>
+        <button class="retry-btn" onclick="reset()" id="retryBtn">Try again</button>
+      </div>
+    </div>
+  </section>
+</main>
 
 <script>
+(function() {
+  if (localStorage.getItem('est-theme') === 'light') document.documentElement.classList.add('light');
+})();
+function toggleTheme() {
+  const isLight = document.documentElement.classList.toggle('light');
+  localStorage.setItem('est-theme', isLight ? 'light' : 'dark');
+}
+
+const SCAN_LANG = {
+  en: {
+    back: 'Back', topbar: 'QR Scan', lang: 'عربي', badge: 'Live Inventory Lookup',
+    heroTitle: 'QR SCAN',
+    heroSub: 'Scan an inventory QR code to retrieve the latest stock balance directly from EST-iMs.',
+    scan: 'Scan QR', hint: 'Tap to open the camera and scan a stock code.', cancel: 'Cancel',
+    loading: 'Retrieving live data...', balance: 'Current balance', unit: 'Unit',
+    again: 'Scan another code', retry: 'Try again',
+    cameraError: 'The camera could not be opened. Please allow camera permission.',
+    notFound: 'The code is not found in the system.', serverError: 'Unable to connect to the server.',
+    lastUpdate: 'Last update: '
+  },
+  ar: {
+    back: 'رجوع', topbar: 'مسح QR', lang: 'English', badge: 'بحث مباشر في المخزون',
+    heroTitle: 'مسح QR',
+    heroSub: 'افحص كود المخزون لعرض آخر رصيد مباشرة من نظام EST-iMs.',
+    scan: 'افحص QR', hint: 'اضغط لفتح الكاميرا وفحص كود الصنف.', cancel: 'إلغاء',
+    loading: 'جاري جلب البيانات...', balance: 'الرصيد الحالي', unit: 'وحدة',
+    again: 'فحص كود آخر', retry: 'حاول مرة أخرى',
+    cameraError: 'تعذر فتح الكاميرا. تأكد من السماح بصلاحية الكاميرا.',
+    notFound: 'الكود غير موجود في النظام.', serverError: 'تعذر الاتصال بالسيرفر.',
+    lastUpdate: 'آخر تحديث: '
+  }
+};
+let scanLang = localStorage.getItem('est-lang') || 'en';
 let scanner = null;
+
+function t(key) { return SCAN_LANG[scanLang][key]; }
+function applyScanLang(lang) {
+  scanLang = lang;
+  localStorage.setItem('est-lang', lang);
+  const isAr = lang === 'ar';
+  document.documentElement.lang = lang;
+  document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+  document.getElementById('backText').textContent = t('back');
+  document.getElementById('topbarTitle').textContent = t('topbar');
+  document.getElementById('langBtn').textContent = t('lang');
+  document.getElementById('badgeText').textContent = t('badge');
+  document.getElementById('heroTitle').textContent = t('heroTitle');
+  document.getElementById('heroSub').textContent = t('heroSub');
+  document.getElementById('scanLabel').textContent = t('scan');
+  document.getElementById('hintText').textContent = t('hint');
+  document.getElementById('cancelBtn').textContent = t('cancel');
+  document.getElementById('loadingText').textContent = t('loading');
+  document.getElementById('balanceLabel').textContent = t('balance');
+  document.getElementById('resultUnit').textContent = t('unit');
+  document.getElementById('scanAgainBtn').textContent = t('again');
+  document.getElementById('retryBtn').textContent = t('retry');
+}
+function toggleScanLang() { applyScanLang(scanLang === 'en' ? 'ar' : 'en'); }
 
 function showState(name) {
   ['ready','scanning','loading','result','error'].forEach(s => {
@@ -291,17 +396,17 @@ function showState(name) {
 
 function startCamera() {
   showState('scanning');
-  scanner = new Html5Qrcode("reader");
+  scanner = new Html5Qrcode('reader');
   scanner.start(
-    { facingMode: "environment" },
+    { facingMode: 'environment' },
     { fps: 12, qrbox: { width: 240, height: 240 } },
     (decoded) => {
       stopCamera();
       handleScanned(decoded);
     },
     () => {}
-  ).catch(err => {
-    showError('تعذّر فتح الكاميرا. تأكد من منح الإذن.');
+  ).catch(() => {
+    showError(t('cameraError'));
   });
 }
 
@@ -313,7 +418,6 @@ function stopCamera() {
 }
 
 function handleScanned(raw) {
-  // استخرج الـ SKU من URL أو من النص مباشرة
   let sku = raw.trim().toUpperCase();
   try {
     const url = new URL(raw);
@@ -326,9 +430,9 @@ function handleScanned(raw) {
     .then(r => r.json())
     .then(data => {
       if (data.found) showResult(data);
-      else showError(data.error || 'الكود غير موجود في النظام');
+      else showError(data.error || t('notFound'));
     })
-    .catch(() => showError('تعذّر الاتصال بالسيرفر'));
+    .catch(() => showError(t('serverError')));
 }
 
 function showResult(data) {
@@ -339,7 +443,7 @@ function showResult(data) {
   document.getElementById('resName').textContent = name;
   const balance = Number(data.balance);
   document.getElementById('resBalance').textContent = Number.isFinite(balance) ? balance.toLocaleString() : data.balance;
-  document.getElementById('resDate').textContent = 'آخر تحديث: ' + (data.date || '—');
+  document.getElementById('resDate').textContent = t('lastUpdate') + (data.date || '-');
   document.getElementById('resSku').textContent = data.sku;
   showState('result');
 }
@@ -354,13 +458,11 @@ function reset() {
   showState('ready');
 }
 
-// ── إذا جاء من QR مع SKU في الـ URL، افحصه مباشرة ──
+applyScanLang(scanLang);
 (function() {
   const params = new URLSearchParams(window.location.search);
   const sku = params.get('sku');
-  if (sku) {
-    handleScanned(sku);
-  }
+  if (sku) handleScanned(sku);
 })();
 </script>
 </body>
