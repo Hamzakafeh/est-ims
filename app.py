@@ -1592,6 +1592,124 @@ def _get_last_balance(sheet_name, color_name):
         return None, None, None
 
 
+STOCK_QR_FILE_MAP = {
+    'OTHER': 'Other+.xlsm',
+    'SACKS': 'Sacks.xlsm',
+}
+
+STOCK_QR_HEX = {
+    'BLUE': '#3b82f6', 'DARK BLUE': '#1e3a8a', 'LIGHT BLUE': '#7dd3fc',
+    'GREEN': '#16a34a', 'DARK GREEN': '#14532d', 'RED': '#dc2626',
+    'ORANGE': '#f97316', 'PURPLE': '#7c3aed', 'BROWN': '#92400e',
+    'YELLOW': '#eab308', 'GRAY': '#6b7280', 'WHITE': '#e5e7eb',
+    'BLACK': '#111827',
+}
+
+def _guess_stock_hex(name):
+    text = str(name or '').upper()
+    for key, color in STOCK_QR_HEX.items():
+        if key in text:
+            return color
+    return '#1a3a5c'
+
+def _find_month_folder(year_path, month_code):
+    if not os.path.isdir(year_path):
+        return None
+    prefix = f'{int(month_code):02d}-'
+    for folder in os.listdir(year_path):
+        full = os.path.join(year_path, folder)
+        if os.path.isdir(full) and folder.startswith(prefix):
+            return folder
+    return None
+
+def _parse_stocktaking_sku(sku):
+    m = re.fullmatch(r'STK-(ZONE[0-9]+)-(\d{4})-(\d{2})-(OTHER|SACKS)-R(\d{3})-C(\d{3})', sku or '')
+    if not m:
+        return None
+    zone_id, year, month_code, file_key, row_s, col_s = m.groups()
+    return {
+        'zone_id': zone_id.lower(),
+        'year': year,
+        'month_code': month_code,
+        'file_key': file_key,
+        'row': int(row_s),
+        'col': int(col_s),
+    }
+
+def _stocktaking_category(ws, row, col, item_name):
+    item_text = str(item_name or '').strip()
+    for merged in getattr(ws, 'merged_cells', []).ranges:
+        if merged.min_row <= 1 <= merged.max_row and merged.min_col <= col <= merged.max_col:
+            value = ws.cell(merged.min_row, merged.min_col).value
+            if value is not None and str(value).strip() and str(value).strip() != item_text:
+                return str(value).strip()
+    for c in range(col, 0, -1):
+        value = ws.cell(1, c).value
+        if value is not None and str(value).strip() and str(value).strip() != item_text:
+            return str(value).strip()
+    for r in range(row - 1, 0, -1):
+        value = ws.cell(r, col).value
+        if value is None or str(value).strip() == '':
+            continue
+        if isinstance(value, (int, float)):
+            continue
+        text = str(value).strip()
+        if text != item_text:
+            return text
+    return ''
+
+def _stocktaking_scan_result(sku):
+    meta = _parse_stocktaking_sku(sku)
+    if not meta:
+        return None
+    root = get_years_root()
+    if not root:
+        return {'found': False, 'error': 'تعذر تحديد مجلد zones'}
+    filename = STOCK_QR_FILE_MAP.get(meta['file_key'])
+    year_path = os.path.join(root, meta['zone_id'], meta['year'])
+    month_folder = _find_month_folder(year_path, meta['month_code'])
+    if not month_folder or not filename:
+        return {'found': False, 'error': 'ملف الشهر غير موجود'}
+    filepath = os.path.join(year_path, month_folder, filename)
+    if not os.path.isfile(filepath):
+        return {'found': False, 'error': 'ملف الإكسل غير موجود'}
+    try:
+        wb = openpyxl.load_workbook(filepath, read_only=False, data_only=True)
+        if 'Stocktaking' not in wb.sheetnames:
+            wb.close()
+            return {'found': False, 'error': 'شيت Stocktaking غير موجود'}
+        ws = wb['Stocktaking']
+        item_name = ws.cell(meta['row'], meta['col']).value
+        balance = ws.cell(meta['row'] + 1, meta['col']).value
+        category = _stocktaking_category(ws, meta['row'], meta['col'], item_name)
+        wb.close()
+        if item_name is None or str(item_name).strip() == '':
+            return {'found': False, 'error': 'الصنف غير موجود داخل Stocktaking'}
+        try:
+            balance_value = float(balance)
+            balance_out = int(balance_value) if balance_value.is_integer() else balance_value
+        except (TypeError, ValueError, AttributeError):
+            balance_out = balance if balance not in (None, '') else 0
+        modified = datetime.fromtimestamp(os.path.getmtime(filepath)).strftime('%Y-%m-%d %H:%M')
+        return {
+            'found': True,
+            'sku': sku,
+            'nameAr': str(item_name).strip(),
+            'category': category or meta['file_key'].title(),
+            'color': str(item_name).strip(),
+            'hex': _guess_stock_hex(item_name),
+            'balance': balance_out,
+            'date': modified,
+            'file': filename,
+            'zone': meta['zone_id'],
+            'year': meta['year'],
+            'month': month_folder,
+        }
+    except Exception as e:
+        _logger.error(f'Stocktaking QR scan error: {e}')
+        return {'found': False, 'error': 'تعذر قراءة بيانات Stocktaking'}
+
+
 @app.route('/scan')
 def scan_page():
     """صفحة مسح QR — تتطلب تسجيل دخول (مستخدم + زون).
@@ -1615,6 +1733,10 @@ def qrscan_page():
 def api_qrscan(sku):
     """يرجع آخر رصيد للصنف — يتطلب login فقط بدون zone."""
     sku = sku.strip().upper()
+    stocktaking_result = _stocktaking_scan_result(sku)
+    if stocktaking_result is not None:
+        status = 200 if stocktaking_result.get('found') else 404
+        return jsonify(stocktaking_result), status
     if sku not in SKU_MAP:
         return jsonify({'found': False, 'error': f'"{sku}" غير مسجل في النظام'}), 404
     sheet_name, color_name = SKU_MAP[sku]
@@ -1643,6 +1765,10 @@ def about_page():
 def api_scan(sku):
     """يرجع آخر رصيد للصنف من ملف الإكسيل الأحدث."""
     sku = sku.strip().upper()
+    stocktaking_result = _stocktaking_scan_result(sku)
+    if stocktaking_result is not None:
+        status = 200 if stocktaking_result.get('found') else 404
+        return jsonify(stocktaking_result), status
     if sku not in SKU_MAP:
         return jsonify({'found': False, 'error': f'"{sku}" غير مسجل في النظام'}), 404
 

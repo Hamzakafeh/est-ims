@@ -332,10 +332,14 @@ function handleScanned(raw) {
 }
 
 function showResult(data) {
-  document.getElementById('resBar').style.background = data.hex;
-  document.getElementById('resName').textContent = 'صفن الجاج — ' + data.nameAr;
-  document.getElementById('resBalance').textContent = data.balance.toLocaleString();
-  document.getElementById('resDate').textContent = 'آخر تحديث: ' + data.date;
+  document.getElementById('resBar').style.background = data.hex || '#1a3a5c';
+  const category = data.category || 'Stocktaking';
+  const name = data.nameAr || data.color || data.sku;
+  document.querySelector('.result-cat').textContent = category;
+  document.getElementById('resName').textContent = name;
+  const balance = Number(data.balance);
+  document.getElementById('resBalance').textContent = Number.isFinite(balance) ? balance.toLocaleString() : data.balance;
+  document.getElementById('resDate').textContent = 'آخر تحديث: ' + (data.date || '—');
   document.getElementById('resSku').textContent = data.sku;
   showState('result');
 }
