@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
@@ -790,6 +791,148 @@
     text-align: center; padding: 40px; color: var(--text-dim); font-size: 13px;
   }
 
+  /* ── PROFILE MODAL ── */
+  #profileModal {
+    display: none; position: fixed; inset: 0; z-index: 9600;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+    align-items: center; justify-content: center;
+    padding: 18px;
+  }
+  #profileModal.open { display: flex; }
+  .profile-box {
+    width: 760px; max-width: 96vw; max-height: 86vh;
+    background: var(--bg-panel); border: 1px solid var(--border-light);
+    border-radius: 20px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.7);
+    animation: modalIn 0.22s cubic-bezier(.34,1.56,.64,1);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .profile-header {
+    padding: 22px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(6,182,212,0.06));
+  }
+  .profile-person { display: flex; align-items: center; gap: 14px; min-width: 0; }
+  .profile-avatar {
+    width: 58px; height: 58px; border-radius: 16px;
+    background: linear-gradient(135deg, rgba(59,130,246,0.28), rgba(6,182,212,0.18));
+    border: 1px solid rgba(59,130,246,0.34);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent-cyan); font-size: 20px; font-weight: 800;
+    font-family: 'JetBrains Mono', monospace; flex-shrink: 0;
+  }
+  .profile-name { font-size: 18px; font-weight: 800; color: var(--text-main); margin-bottom: 5px; overflow-wrap: anywhere; }
+  .profile-meta { display: flex; flex-wrap: wrap; gap: 7px; }
+  .profile-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 999px; padding: 4px 9px;
+  }
+  .profile-chip.blue { color: var(--accent-blue); border-color: rgba(59,130,246,0.32); background: rgba(59,130,246,0.1); }
+  .profile-chip.cyan { color: var(--accent-cyan); border-color: rgba(6,182,212,0.32); background: rgba(6,182,212,0.1); }
+  .profile-chip.amber { color: var(--accent-amber); border-color: rgba(245,158,11,0.32); background: rgba(245,158,11,0.1); }
+  .profile-close {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: var(--bg-card); color: var(--text-muted);
+    border: 1px solid var(--border);
+    cursor: pointer; font-size: 17px;
+    transition: background 0.18s, color 0.18s, transform 0.18s;
+    flex-shrink: 0;
+  }
+  .profile-close:hover { background: var(--bg-hover); color: var(--text-main); transform: rotate(90deg); }
+  .profile-body {
+    padding: 20px 24px 24px;
+    overflow-y: auto;
+  }
+  .profile-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 12px; margin-bottom: 16px;
+  }
+  .profile-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 15px;
+    min-width: 0;
+  }
+  .profile-card-label {
+    font-size: 10px; font-weight: 700; color: var(--text-dim);
+    letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 8px;
+  }
+  .profile-card-value {
+    font-size: 14px; font-weight: 700; color: var(--text-main);
+    overflow-wrap: anywhere;
+  }
+  .profile-card-sub {
+    margin-top: 5px; font-size: 11px; color: var(--text-muted); line-height: 1.45;
+  }
+  .profile-section {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+    margin-top: 14px;
+  }
+  html.light .profile-section { background: rgba(255,255,255,0.55); }
+  .profile-section-title {
+    font-size: 11px; font-weight: 800; letter-spacing: 1.4px;
+    text-transform: uppercase; color: var(--text-dim);
+    margin-bottom: 14px;
+  }
+  .permission-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .permission-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--text-muted);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 10px 11px;
+  }
+  .permission-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent-green);
+    box-shadow: 0 0 8px rgba(16,185,129,0.55);
+    flex-shrink: 0;
+  }
+  .permission-dot.off { background: var(--text-dim); box-shadow: none; }
+  .profile-zone-list {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .profile-zone-pill {
+    font-size: 11px; font-weight: 600;
+    color: var(--accent-cyan);
+    background: rgba(6,182,212,0.1);
+    border: 1px solid rgba(6,182,212,0.28);
+    border-radius: 999px; padding: 5px 10px;
+  }
+  .profile-log-list { display: flex; flex-direction: column; gap: 8px; }
+  .profile-log-item {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px; align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 10px 12px;
+  }
+  .profile-log-main { font-size: 12px; color: var(--text-main); font-weight: 600; overflow-wrap: anywhere; }
+  .profile-log-sub { font-size: 10px; color: var(--text-dim); margin-top: 3px; font-family: 'JetBrains Mono', monospace; }
+  .profile-log-time { font-size: 10px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; white-space: nowrap; }
+  .profile-actions {
+    display: flex; gap: 10px; margin-top: 16px;
+  }
+  .profile-actions .btn { justify-content: center; padding: 9px 16px; }
+  .profile-loading, .profile-error {
+    padding: 36px; text-align: center; color: var(--text-muted); font-size: 13px;
+  }
+
   /* ── WELCOME TOAST ── */
   .welcome-toast {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
@@ -1152,6 +1295,17 @@
     .user-badge, .zone-badge { font-size: 10px; padding: 2px 8px; }
     .sidebar { width: 180px; }
     .sidebar.collapsed { transform: translateX(-180px); width: 0; }
+    #profileModal { padding: 10px; align-items: flex-start; }
+    .profile-box { max-width: 100%; max-height: calc(100vh - 20px); margin-top: 0; border-radius: 16px; }
+    .profile-header { padding: 18px 16px; align-items: flex-start; }
+    .profile-avatar { width: 50px; height: 50px; border-radius: 14px; font-size: 17px; }
+    .profile-name { font-size: 16px; }
+    .profile-body { padding: 16px; }
+    .profile-grid { grid-template-columns: 1fr; }
+    .permission-grid { grid-template-columns: 1fr; }
+    .profile-log-item { grid-template-columns: 1fr; gap: 4px; }
+    .profile-log-time { white-space: normal; }
+    .profile-actions { flex-direction: column; }
   }
   @media (max-width: 480px) {
     .topbar-actions .btn-about, .topbar-actions .btn-lang { display: none; }
@@ -1211,7 +1365,7 @@ EST-iMs © | 2026    </div>
   <div class="topbar-right">
 
     <div style="display:flex;align-items:center;gap:6px;margin-right:4px;">
-      <span class="user-badge" onclick="openSoonModal('profile')" style="cursor:pointer" title="Profile — Coming Soon">
+      <span class="user-badge" onclick="openProfileModal()" style="cursor:pointer" title="User Profile">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         {{ username }}
       </span>
@@ -1513,6 +1667,29 @@ EST-iMs © | 2026    </div>
 </div>
 {% endif %}
 
+<!-- ══ PROFILE MODAL ══ -->
+<div id="profileModal" onclick="if(event.target===this)closeProfileModal()">
+  <div class="profile-box">
+    <div class="profile-header">
+      <div class="profile-person">
+        <div class="profile-avatar" id="profileAvatar">--</div>
+        <div>
+          <div class="profile-name" id="profileName">{{ username }}</div>
+          <div class="profile-meta">
+            <span class="profile-chip cyan" id="profileZoneChip">{{ zone_label }}</span>
+            <span class="profile-chip blue" id="profileRoleChip">User</span>
+            <span class="profile-chip amber" id="profileSessionChip">Session</span>
+          </div>
+        </div>
+      </div>
+      <button class="profile-close" onclick="closeProfileModal()">✕</button>
+    </div>
+    <div class="profile-body" id="profileBody">
+      <div class="profile-loading">Loading profile...</div>
+    </div>
+  </div>
+</div>
+
 <!-- ══ WELCOME TOAST ══ -->
 <div class="welcome-toast" id="welcomeToast">
   <div class="wt-icon">👋</div>
@@ -1603,6 +1780,133 @@ function openSoonModal(feature) {
 }
 function closeSoonModal() {
   document.getElementById('soonModal').classList.remove('open');
+}
+
+// ── USER PROFILE MODAL ──
+let _profileLoaded = false;
+let _profileData = null;
+
+function profileInitials(username) {
+  const cleaned = String(username || '').trim();
+  if (!cleaned) return '--';
+  return cleaned
+    .split(/[\s._-]+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(part => part[0].toUpperCase())
+    .join('');
+}
+
+function formatDuration(seconds) {
+  if (!Number.isFinite(seconds)) return '—';
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  return h > 0
+    ? `${h}h ${String(m).padStart(2, '0')}m`
+    : `${m}m ${String(s).padStart(2, '0')}s`;
+}
+
+function openProfileModal() {
+  document.getElementById('profileModal').classList.add('open');
+  loadProfile();
+}
+
+function closeProfileModal() {
+  document.getElementById('profileModal')?.classList.remove('open');
+}
+
+async function loadProfile() {
+  const body = document.getElementById('profileBody');
+  body.innerHTML = '<div class="profile-loading">Loading profile...</div>';
+  try {
+    const res = await fetch('/api/profile');
+    if (!res.ok) throw new Error('profile');
+    _profileData = await res.json();
+    _profileLoaded = true;
+    renderProfile(_profileData);
+  } catch (e) {
+    body.innerHTML = '<div class="profile-error">⚠️ Failed to load profile data</div>';
+  }
+}
+
+function renderProfile(data) {
+  const role = data.is_super ? 'Super User' : 'Zone User';
+  document.getElementById('profileAvatar').textContent = profileInitials(data.username);
+  document.getElementById('profileName').textContent = data.username || 'User';
+  document.getElementById('profileZoneChip').textContent = data.zone_label || data.zone_name || data.zone || 'Zone';
+  document.getElementById('profileRoleChip').textContent = role;
+  document.getElementById('profileSessionChip').textContent = formatDuration(Number(data.login_duration_seconds));
+
+  const permissions = [
+    ['Edit Mode', data.permissions?.can_edit],
+    ['Print', data.permissions?.can_print],
+    ['Export CSV', data.permissions?.can_export],
+    ['Reports', data.permissions?.can_reports],
+    ['All Zones', data.permissions?.can_view_all_zones],
+    ['Switch Zones', data.permissions?.can_switch_zones],
+  ];
+  const permissionHtml = permissions.map(([label, enabled]) => `
+    <div class="permission-item">
+      <span class="permission-dot ${enabled ? '' : 'off'}"></span>
+      <span>${escHtml(label)}</span>
+    </div>`).join('');
+
+  const zones = (data.allowed_zones || []).map(z => `
+    <span class="profile-zone-pill">${escHtml(z.label || z.name || z.id)}</span>
+  `).join('') || '<span class="profile-zone-pill">—</span>';
+
+  const logins = (data.recent_logins || []).length
+    ? data.recent_logins.map(entry => `
+        <div class="profile-log-item">
+          <div>
+            <div class="profile-log-main">${escHtml(entry.zone_label || entry.zone_id || 'Zone')}</div>
+            <div class="profile-log-sub">IP: ${escHtml(entry.ip || '—')}</div>
+          </div>
+          <div class="profile-log-time">${escHtml(entry.time || '—')}</div>
+        </div>
+      `).join('')
+    : '<div class="users-empty" style="padding:18px;">No login history yet</div>';
+
+  document.getElementById('profileBody').innerHTML = `
+    <div class="profile-grid">
+      <div class="profile-card">
+        <div class="profile-card-label">Current Zone</div>
+        <div class="profile-card-value">${escHtml(data.zone_label || data.zone_name || data.zone || '—')}</div>
+        <div class="profile-card-sub">${escHtml(data.zone_name || data.zone || '')}</div>
+      </div>
+      <div class="profile-card">
+        <div class="profile-card-label">Active View</div>
+        <div class="profile-card-value">${escHtml(data.active_view_zone_label || data.active_view_zone || '—')}</div>
+        <div class="profile-card-sub">${data.is_super ? 'Super-zone view access' : 'Assigned zone access'}</div>
+      </div>
+      <div class="profile-card">
+        <div class="profile-card-label">Login Time</div>
+        <div class="profile-card-value">${escHtml(data.login_time || '—')}</div>
+        <div class="profile-card-sub">Session: ${escHtml(formatDuration(Number(data.login_duration_seconds)))}</div>
+      </div>
+    </div>
+
+    <div class="profile-section">
+      <div class="profile-section-title">Permissions</div>
+      <div class="permission-grid">${permissionHtml}</div>
+    </div>
+
+    <div class="profile-section">
+      <div class="profile-section-title">Allowed Zones</div>
+      <div class="profile-zone-list">${zones}</div>
+    </div>
+
+    <div class="profile-section">
+      <div class="profile-section-title">Recent Logins</div>
+      <div class="profile-log-list">${logins}</div>
+    </div>
+
+    <div class="profile-actions">
+      <button class="btn btn-primary" onclick="loadProfile()">Refresh Profile</button>
+      <button class="btn btn-logout" onclick="confirmLogout()">Logout</button>
+    </div>
+  `;
 }
 
 // ── LANGUAGE TOGGLE (index) ──
@@ -2475,7 +2779,7 @@ function doExportCSV() {
 // ── KEYBOARD ──
 document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.key === 'f') { e.preventDefault(); document.getElementById('searchInput').focus(); }
-  if (e.key === 'Escape') { closeTxModal(); closeAbout(); cancelPwdModal(); closePrintModal(); closeCsvModal(); closeLogout(); closeDashboard(); closeUsersModal(); document.getElementById('reportsDropdownMenu')?.classList.remove('open'); }
+  if (e.key === 'Escape') { closeTxModal(); closeAbout(); cancelPwdModal(); closePrintModal(); closeCsvModal(); closeLogout(); closeDashboard(); closeProfileModal(); closeUsersModal(); document.getElementById('reportsDropdownMenu')?.classList.remove('open'); }
 });
 
 // ── ABOUT ──
@@ -2765,11 +3069,11 @@ function drawChart(type, labels, datasets, extra={}) {
 // USERS / LOGIN LOG MODAL
 // ══════════════════════════════════════════════════════
 function openUsersModal() {
-  document.getElementById('usersModal').classList.add('open');
+  document.getElementById('usersModal')?.classList.add('open');
   loadLoginLog();
 }
 function closeUsersModal() {
-  document.getElementById('usersModal').classList.remove('open');
+  document.getElementById('usersModal')?.classList.remove('open');
 }
 
 async function loadLoginLog() {

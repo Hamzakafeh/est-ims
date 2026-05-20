@@ -292,6 +292,59 @@ def api_session_info():
         'zones':            [z for z in ZONES if z['id'] not in SUPER_ZONES],
     })
 
+@app.route('/api/profile')
+@zone_required
+def api_profile():
+    """Return the current user's profile summary for the in-app profile modal."""
+    username = session.get('username', '')
+    zone_id = session.get('zone', '')
+    active_view_zone = session.get('active_view_zone', zone_id)
+    login_time = session.get('login_time', '')
+    login_duration_seconds = None
+
+    if login_time:
+        try:
+            login_dt = datetime.strptime(login_time, '%Y-%m-%d %H:%M:%S')
+            login_duration_seconds = max(0, int((datetime.now() - login_dt).total_seconds()))
+        except Exception:
+            login_duration_seconds = None
+
+    active_zone = next((z for z in ZONES if z['id'] == active_view_zone), None)
+    allowed_zones = [z for z in ZONES if z['id'] not in SUPER_ZONES] if session.get('is_super') else [
+        z for z in ZONES if z['id'] == zone_id
+    ]
+
+    with _log_lock:
+        entries = _read_login_log()
+
+    recent_logins = [
+        e for e in reversed(entries)
+        if str(e.get('username', '')).lower() == str(username).lower()
+    ][:8]
+
+    return jsonify({
+        'username': username,
+        'zone': zone_id,
+        'zone_name': session.get('zone_name', ''),
+        'zone_label': session.get('zone_label', ''),
+        'active_view_zone': active_view_zone,
+        'active_view_zone_label': active_zone['label'] if active_zone else session.get('zone_label', ''),
+        'is_super': bool(session.get('is_super', False)),
+        'can_edit': bool(session.get('can_edit', False)),
+        'login_time': login_time,
+        'login_duration_seconds': login_duration_seconds,
+        'permissions': {
+            'can_edit': bool(session.get('can_edit', False)),
+            'can_export': True,
+            'can_print': True,
+            'can_reports': bool(session.get('is_super', False)),
+            'can_view_all_zones': bool(session.get('is_super', False)),
+            'can_switch_zones': bool(session.get('is_super', False)),
+        },
+        'allowed_zones': allowed_zones,
+        'recent_logins': recent_logins,
+    })
+
 @app.route('/api/verify_edit_password', methods=['POST'])
 @zone_required
 def verify_edit_password():
