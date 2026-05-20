@@ -6,12 +6,11 @@
 <title>EST-iMs | Help</title>
 <link rel="icon" type="image/x-icon" href="/static/low1.ico">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Sora:wght@300;400;600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Sora:wght@400;600;700&display=swap');
 
   :root {
     --bg-deep:      #0d1117;
-    --bg-card:      #1c2230;
-    --bg-item:      #21283a;
+    --bg-card:      #21283a;
     --bg-hover:     #2a3347;
     --border:       #2d3748;
     --border-light: #3d4f6a;
@@ -26,7 +25,6 @@
   html.light {
     --bg-deep:      #f0f4f8;
     --bg-card:      #ffffff;
-    --bg-item:      #f8fafc;
     --bg-hover:     #e8edf5;
     --border:       #d1dae8;
     --border-light: #b8c6da;
@@ -46,198 +44,155 @@
     background: var(--bg-deep);
     color: var(--text-main);
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-    position: relative;
     transition: background 0.3s, color 0.3s;
+    position: relative;
+    overflow-x: hidden;
   }
 
-  /* ── PARTICLES ── */
-  #particleCanvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-
-  /* ── BLOBS ── */
   .blob { position: fixed; border-radius: 50%; filter: blur(90px); opacity: 0.06; pointer-events: none; z-index: 0; }
-  html.light .blob { opacity: 0.08; }
-  .blob-1 { width:700px;height:700px;background:radial-gradient(circle,#3b82f6,transparent 70%);top:-200px;left:-200px;animation:bd1 20s ease-in-out infinite; }
-  .blob-2 { width:600px;height:600px;background:radial-gradient(circle,#06b6d4,transparent 70%);bottom:-160px;right:-160px;animation:bd2 24s ease-in-out infinite; }
-  .blob-3 { width:450px;height:450px;background:radial-gradient(circle,#6366f1,transparent 70%);top:38%;left:52%;animation:bd3 18s ease-in-out infinite; }
-  @keyframes bd1 { 0%,100%{transform:translate(0,0)scale(1);}50%{transform:translate(70px,50px)scale(1.1);} }
-  @keyframes bd2 { 0%,100%{transform:translate(0,0)scale(1);}50%{transform:translate(-60px,-40px)scale(1.08);} }
-  @keyframes bd3 { 0%,100%{transform:translate(0,0)scale(1);}50%{transform:translate(-50px,60px)scale(1.12);} }
+  html.light .blob { opacity: 0.1; }
+  .blob-1 { width: 600px; height: 600px; background: radial-gradient(circle, #3b82f6, transparent 70%); top: -150px; left: -150px; animation: bd1 20s ease-in-out infinite; }
+  .blob-2 { width: 500px; height: 500px; background: radial-gradient(circle, #06b6d4, transparent 70%); bottom: -120px; right: -120px; animation: bd2 24s ease-in-out infinite; }
+  @keyframes bd1 { 0%,100%{transform:translate(0,0);} 50%{transform:translate(60px,40px);} }
+  @keyframes bd2 { 0%,100%{transform:translate(0,0);} 50%{transform:translate(-50px,-30px);} }
 
-  /* ── GRID ── */
   .grid-overlay {
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background-image: linear-gradient(rgba(59,130,246,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,0.035) 1px,transparent 1px);
+    background-image: linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
     background-size: 52px 52px;
-    mask-image: radial-gradient(ellipse 75% 75% at 50% 50%,black 30%,transparent 100%);
-  }
-  html.light .grid-overlay {
-    background-image: linear-gradient(rgba(37,99,235,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,0.05) 1px,transparent 1px);
+    mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black 30%, transparent 100%);
   }
 
-  /* ── SIDE DOCK ── */
-  .side-dock { position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:6px;padding:10px 0; }
-  .dock-item { position:relative;display:flex;align-items:center;cursor:pointer;height:44px; }
-  .dock-icon {
-    width:44px;height:44px;border-radius:0 12px 12px 0;
-    background:rgba(28,34,48,0.75);backdrop-filter:blur(14px);
-    border:1px solid var(--border-light);border-left:none;
-    display:flex;align-items:center;justify-content:center;
-    color:var(--text-muted);transition:background 0.2s,color 0.2s;
-    position:relative;z-index:2;flex-shrink:0;
+  .topbar {
+    position: sticky; top: 0; z-index: 200;
+    background: rgba(13,17,23,0.7); backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(59,130,246,0.15);
+    padding: 0 20px; height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
   }
-  html.light .dock-icon { background:rgba(255,255,255,0.8); }
-  .dock-item:hover .dock-icon { background:var(--accent-blue);color:#fff;border-color:var(--accent-blue); }
-  .dock-label {
-    position:absolute;left:44px;white-space:nowrap;
-    font-size:12px;font-weight:600;color:var(--text-main);
-    background:rgba(28,34,48,0.85);backdrop-filter:blur(14px);
-    border:1px solid var(--border-light);border-left:none;
-    border-radius:0 10px 10px 0;padding:0 16px;height:36px;
-    display:flex;align-items:center;pointer-events:none;
-    opacity:0;transform:translateX(-8px);
-    transition:opacity 0.2s,transform 0.2s;z-index:1;
+  html.light .topbar { background: rgba(255,255,255,0.85); border-bottom-color: rgba(37,99,235,0.15); }
+  .topbar-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .back-btn {
+    display: flex; align-items: center; gap: 6px;
+    color: var(--accent-cyan); text-decoration: none;
+    font-size: 13px; font-weight: 500;
+    padding: 6px 12px; border-radius: 8px;
+    border: 1px solid rgba(6,182,212,0.3);
+    background: rgba(6,182,212,0.06);
+    transition: all 0.18s;
+    white-space: nowrap;
   }
-  html.light .dock-label { background:rgba(255,255,255,0.9); }
-  .dock-item:hover .dock-label { opacity:1;transform:translateX(0); }
-  .dock-icon .icon-sun  { display:block; }
-  .dock-icon .icon-moon { display:none;  }
-  html.light .dock-icon .icon-sun  { display:none;  }
-  html.light .dock-icon .icon-moon { display:block; }
+  .back-btn:hover { background: rgba(6,182,212,0.14); border-color: var(--accent-cyan); }
+  .topbar-title { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar-actions { display: flex; gap: 8px; }
+  .icon-btn {
+    width: 36px; height: 36px; border-radius: 8px;
+    border: 1px solid var(--border-light);
+    background: var(--bg-card); color: var(--text-muted);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.18s;
+  }
+  .icon-btn:hover { background: var(--bg-hover); color: var(--text-main); }
+  .icon-sun { display: block; } .icon-moon { display: none; }
+  html.light .icon-sun { display: none; } html.light .icon-moon { display: block; }
+  .lang-btn {
+    padding: 0 12px; width: auto; font-size: 12px; font-weight: 600;
+    color: var(--accent-cyan); border-color: rgba(6,182,212,0.35);
+    background: rgba(6,182,212,0.08);
+  }
+  .lang-btn:hover { background: rgba(6,182,212,0.16); }
 
-  /* ── HELP CARD ── */
-  .help-card {
+  .main {
     position: relative; z-index: 10;
-    width: min(700px, calc(100vw - 80px));
-    background: rgba(21, 28, 42, 0.72);
-    backdrop-filter: blur(28px) saturate(160%);
-    -webkit-backdrop-filter: blur(28px) saturate(160%);
-    border: 1px solid rgba(59,130,246,0.22);
-    border-radius: 28px;
-    box-shadow:
-      0 32px 80px rgba(0,0,0,0.55),
-      0 0 0 1px rgba(255,255,255,0.04) inset,
-      0 1px 0 rgba(255,255,255,0.1) inset;
-    overflow: hidden;
-    animation: cardIn 0.65s cubic-bezier(.34,1.56,.64,1) both;
-  }
-  html.light .help-card {
-    background: rgba(240,244,248,0.78);
-    border-color: rgba(37,99,235,0.18);
-    box-shadow: 0 32px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.6) inset;
-  }
-  /* top accent bar */
-  .help-card::before {
-    content:''; display:block;
-    height: 3px;
-    background: linear-gradient(90deg, #3b82f6, #06b6d4, #818cf8);
-    background-size: 200% 100%;
-    animation: gradShift 4s ease infinite;
-  }
-  .card-inner { padding: 44px 52px 40px; }
-
-  @keyframes gradShift { 0%,100%{background-position:0% 50%;} 50%{background-position:100% 50%;} }
-  @keyframes cardIn {
-    from { opacity:0;transform:scale(0.9) translateY(28px);filter:blur(4px); }
-    to   { opacity:1;transform:scale(1) translateY(0);filter:blur(0); }
+    max-width: 880px; margin: 0 auto;
+    padding: 48px 24px 80px;
   }
 
-  /* ── HEADER ── */
-  .card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 36px; }
-  .header-icon {
-    width: 52px; height: 52px; border-radius: 15px; flex-shrink: 0;
-    background: linear-gradient(135deg,rgba(59,130,246,0.2),rgba(6,182,212,0.12));
-    border: 1px solid rgba(59,130,246,0.3);
+  .hero { text-align: center; margin-bottom: 36px; animation: fadeUp 0.5s ease both; }
+  .hero-logo {
+    width: 80px; height: 80px; border-radius: 22px;
+    background: linear-gradient(135deg, rgba(59,130,246,0.18), rgba(6,182,212,0.12));
+    border: 1px solid rgba(59,130,246,0.25);
     display: flex; align-items: center; justify-content: center;
-    color: var(--accent-blue);
-    box-shadow: 0 6px 24px rgba(59,130,246,0.2);
+    margin: 0 auto 24px;
+    box-shadow: 0 8px 32px rgba(59,130,246,0.2);
   }
-  html.light .header-icon { background:linear-gradient(135deg,rgba(37,99,235,0.12),rgba(8,145,178,0.07));border-color:rgba(37,99,235,0.25); }
-  .header-text { display:flex;flex-direction:column;gap:3px; }
-  .header-chip {
-    font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;
-    color:var(--accent-cyan);letter-spacing:2.5px;text-transform:uppercase;
+  .hero-logo img { width: 48px; height: 48px; object-fit: contain; border-radius: 12px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.3);
+    border-radius: 50px; padding: 5px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 700; color: var(--accent-cyan);
+    letter-spacing: 1.5px; text-transform: uppercase;
+    margin-bottom: 20px;
   }
-  .header-title {
-    font-family:'Sora',sans-serif;font-size:24px;font-weight:700;
-    color:var(--text-main);line-height:1.1;
+  .hero-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(0.65);} }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 8vw, 60px); letter-spacing: 4px;
+    background: linear-gradient(135deg, #60a5fa, #06b6d4, #818cf8);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; margin-bottom: 12px;
   }
+  .hero-sub { font-size: 14px; color: var(--text-muted); line-height: 1.7; max-width: 560px; margin: 0 auto; }
 
-  /* ── DIVIDER ── */
-  .card-divider {
-    height:1px;margin-bottom:30px;
-    background:linear-gradient(90deg,transparent,var(--border-light),transparent);
+  .help-card {
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 28px;
+    animation: fadeUp 0.5s ease 0.08s both;
   }
+  html.light .help-card { background: rgba(255,255,255,0.72); border-color: var(--border); }
 
-  /* ── SEARCH BAR ── */
-  .search-wrap {
-    position: relative; margin-bottom: 28px;
-    animation: fadeUp 0.5s ease 0.3s both; opacity: 0;
-  }
-  .search-icon {
-    position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
-    color: var(--text-dim); pointer-events: none;
-  }
+  .search-wrap { position: relative; margin-bottom: 20px; }
+  .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-dim); pointer-events: none; }
+  html[dir="rtl"] .search-icon { left: auto; right: 16px; }
   .search-input {
     width: 100%; padding: 13px 16px 13px 46px;
-    background: var(--bg-item);
-    border: 1px solid var(--border);
-    border-radius: 14px;
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
     color: var(--text-main);
     font-family: 'Inter', sans-serif;
     font-size: 14px;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
+  html[dir="rtl"] .search-input { padding: 13px 46px 13px 16px; }
+  html.light .search-input { background: rgba(255,255,255,0.72); border-color: var(--border); }
   .search-input::placeholder { color: var(--text-dim); }
-  .search-input:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.12); }
+  .search-input:focus { border-color: var(--accent-cyan); box-shadow: 0 0 0 3px rgba(6,182,212,0.12); }
 
-  /* ── CATEGORY TABS ── */
-  .tabs-row {
-    display: flex; gap: 8px; flex-wrap: wrap;
-    margin-bottom: 24px;
-    animation: fadeUp 0.5s ease 0.4s both; opacity: 0;
-  }
+  .tabs-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
   .tab-btn {
-    padding: 7px 16px;
+    padding: 8px 14px;
     border-radius: 10px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px; font-weight: 500;
-    letter-spacing: 1.5px; text-transform: uppercase;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
     border: 1px solid var(--border);
-    background: var(--bg-item);
+    background: rgba(255,255,255,0.035);
     color: var(--text-muted);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.18s;
   }
-  .tab-btn:hover, .tab-btn.active {
-    background: var(--accent-blue);
-    border-color: var(--accent-blue);
-    color: #fff;
-  }
+  html.light .tab-btn { background: rgba(255,255,255,0.72); }
+  .tab-btn:hover, .tab-btn.active { background: rgba(6,182,212,0.16); border-color: rgba(6,182,212,0.45); color: var(--accent-cyan); }
 
-  /* ── FAQ ITEMS ── */
-  .faq-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+  .faq-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
   .faq-item {
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    background: var(--bg-item);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.035);
     overflow: hidden;
-    transition: border-color 0.2s;
-    animation: fadeUp 0.5s ease both; opacity: 0;
+    transition: border-color 0.2s, background 0.2s;
   }
-  .faq-item:nth-child(1) { animation-delay: 0.5s; }
-  .faq-item:nth-child(2) { animation-delay: 0.58s; }
-  .faq-item:nth-child(3) { animation-delay: 0.66s; }
-  .faq-item:nth-child(4) { animation-delay: 0.74s; }
-  .faq-item:nth-child(5) { animation-delay: 0.82s; }
-  .faq-item:nth-child(6) { animation-delay: 0.9s; }
-  .faq-item:hover { border-color: rgba(59,130,246,0.4); }
-  .faq-item.open { border-color: var(--accent-blue); }
-
+  html.light .faq-item { background: rgba(255,255,255,0.72); border-color: var(--border); }
+  .faq-item:hover, .faq-item.open { border-color: rgba(6,182,212,0.45); background: rgba(6,182,212,0.06); }
   .faq-question {
     display: flex; align-items: center; justify-content: space-between;
     padding: 16px 18px;
@@ -245,339 +200,267 @@
     gap: 12px;
     user-select: none;
   }
-  .faq-q-left { display: flex; align-items: center; gap: 12px; }
+  .faq-q-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
   .faq-badge {
-    width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+    width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
-    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500;
-    background: linear-gradient(135deg,rgba(59,130,246,0.18),rgba(6,182,212,0.1));
-    border: 1px solid rgba(59,130,246,0.2); color: var(--accent-blue);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+    background: linear-gradient(135deg, rgba(59,130,246,0.18), rgba(6,182,212,0.1));
+    border: 1px solid rgba(59,130,246,0.2); color: var(--accent-cyan);
   }
-  .faq-q-text {
-    font-size: 14px; font-weight: 600; color: var(--text-main); line-height: 1.35;
-  }
-  .faq-chevron {
-    flex-shrink: 0; color: var(--text-dim);
-    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), color 0.2s;
-  }
-  .faq-item.open .faq-chevron { transform: rotate(180deg); color: var(--accent-blue); }
-
+  .faq-q-text { font-size: 14px; font-weight: 700; color: var(--text-main); line-height: 1.45; }
+  .faq-chevron { flex-shrink: 0; color: var(--text-dim); transition: transform 0.25s ease, color 0.2s; }
+  .faq-item.open .faq-chevron { transform: rotate(180deg); color: var(--accent-cyan); }
   .faq-answer {
     max-height: 0; overflow: hidden;
     transition: max-height 0.35s ease, padding 0.25s ease;
     padding: 0 18px;
-    font-size: 13px; line-height: 1.7;
+    font-size: 13px; line-height: 1.75;
     color: var(--text-muted);
   }
-  .faq-item.open .faq-answer { max-height: 300px; padding: 0 18px 18px 58px; }
+  .faq-item.open .faq-answer { max-height: 340px; padding: 0 18px 18px 60px; }
+  html[dir="rtl"] .faq-item.open .faq-answer { padding: 0 60px 18px 18px; }
 
-  /* ── SUPPORT SECTION ── */
-  .support-section {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-    margin-bottom: 28px;
-    animation: fadeUp 0.5s ease 1s both; opacity: 0;
-  }
+  .support-section { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px; }
   .support-card {
     display: flex; align-items: center; gap: 14px;
     padding: 16px 18px;
-    background: var(--bg-item);
-    border: 1px solid var(--border);
-    border-radius: 14px;
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
     text-decoration: none;
-    color: var(--text-main);
-    transition: border-color 0.2s, transform 0.18s, background 0.2s;
-    cursor: pointer;
+    transition: border-color 0.18s, background 0.18s, transform 0.18s;
   }
-  .support-card:hover {
-    border-color: var(--accent-blue);
-    background: var(--bg-hover);
-    transform: translateY(-2px);
-  }
+  html.light .support-card { background: rgba(255,255,255,0.72); border-color: var(--border); }
+  .support-card:hover { border-color: rgba(6,182,212,0.45); background: rgba(6,182,212,0.07); transform: translateY(-2px); }
   .support-icon {
-    width: 40px; height: 40px; flex-shrink: 0; border-radius: 11px;
+    width: 40px; height: 40px; border-radius: 11px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(135deg,rgba(59,130,246,0.18),rgba(6,182,212,0.1));
-    border: 1px solid rgba(59,130,246,0.2); color: var(--accent-blue);
+    background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(6,182,212,0.12));
+    border: 1px solid rgba(59,130,246,0.22);
+    color: var(--accent-cyan);
   }
-  .support-text { display: flex; flex-direction: column; gap: 2px; }
-  .support-label {
-    font-size: 13px; font-weight: 600; color: var(--text-main);
-  }
-  .support-sub {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px; color: var(--text-dim); letter-spacing: 0.5px;
-  }
+  .support-text { min-width: 0; }
+  .support-label { font-size: 13px; font-weight: 800; color: var(--text-main); margin-bottom: 3px; }
+  .support-sub { font-size: 12px; color: var(--text-muted); overflow-wrap: anywhere; }
 
-  /* ── TIP BANNER ── */
   .tip-banner {
     display: flex; align-items: flex-start; gap: 12px;
-    padding: 14px 18px;
-    background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(251,191,36,0.04));
-    border: 1px solid rgba(245,158,11,0.25);
-    border-radius: 14px;
-    margin-bottom: 28px;
-    animation: fadeUp 0.5s ease 1.05s both; opacity: 0;
+    padding: 16px;
+    border: 1px solid rgba(245,158,11,0.24);
+    background: rgba(245,158,11,0.07);
+    border-radius: 12px;
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1.7;
   }
-  html.light .tip-banner { background: linear-gradient(135deg,rgba(217,119,6,0.07),rgba(245,158,11,0.03)); border-color: rgba(217,119,6,0.2); }
-  .tip-icon { color: var(--accent-amber); flex-shrink: 0; margin-top: 1px; }
-  .tip-text { font-size: 13px; line-height: 1.6; color: var(--text-muted); }
-  .tip-text strong { color: var(--accent-amber); font-weight: 600; }
+  .tip-icon { flex-shrink: 0; color: var(--accent-amber); margin-top: 2px; }
+  .tip-banner strong { color: var(--text-main); }
 
-  /* ── COPYRIGHT ── */
   .copy-line {
-    font-family:'JetBrains Mono',monospace;
-    font-size:10px;color:var(--text-dim);
-    text-align:center;
-    display:flex;align-items:center;justify-content:center;gap:8px;
-    animation: fadeUp 0.5s ease 1.1s both; opacity: 0;
+    margin-top: 30px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--text-dim);
+    text-align: center;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
   }
-  .copy-dot {
-    width:5px;height:5px;border-radius:50%;
-    background:var(--accent-green);
-    box-shadow:0 0 6px var(--accent-green);
-    animation:pulse 2.2s ease-in-out infinite;
+  .copy-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); animation: pulse 2.2s ease-in-out infinite; }
+
+  @media (max-width: 680px) {
+    .main { padding: 34px 16px 56px; }
+    .help-card { padding: 18px; }
+    .support-section { grid-template-columns: 1fr; }
+    .tabs-row { gap: 7px; }
+    .tab-btn { flex: 1 1 auto; }
+    .faq-question { padding: 15px 14px; }
+    .faq-item.open .faq-answer { padding: 0 14px 16px 56px; }
+    html[dir="rtl"] .faq-item.open .faq-answer { padding: 0 56px 16px 14px; }
   }
-  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.65);} }
-  @keyframes fadeUp { from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);} }
+  @media (max-width: 420px) {
+    .topbar { padding: 0 12px; }
+    .back-btn { padding: 6px 9px; }
+    .hero-logo { width: 70px; height: 70px; }
+    .hero-title { letter-spacing: 3px; }
+  }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
 </style>
 </head>
 <body>
 
-<canvas id="particleCanvas"></canvas>
 <div class="blob blob-1"></div>
 <div class="blob blob-2"></div>
-<div class="blob blob-3"></div>
 <div class="grid-overlay"></div>
 
-<!-- SIDE DOCK -->
-<div class="side-dock">
-  <div class="dock-item" onclick="window.location.href='/'">
-    <div class="dock-icon">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 18 9 12 15 6"/>
-      </svg>
-    </div>
-    <div class="dock-label">Welcome</div>
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="/" class="back-btn" id="backBtn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <span id="backText">Back</span>
+    </a>
+    <span class="topbar-title" id="topbarTitle">Help & FAQ</span>
   </div>
-
-  <div class="dock-item" onclick="toggleTheme()">
-    <div class="dock-icon">
-      <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="5"/>
-        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-      </svg>
-      <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-      </svg>
-    </div>
-    <div class="dock-label" id="dockThemeLabel">Light Mode</div>
-  </div>
-
-  <div class="dock-item" onclick="window.location.href='/contact'">
-    <div class="dock-icon">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-        <circle cx="12" cy="10" r="3"/>
-      </svg>
-    </div>
-    <div class="dock-label">Contact Us</div>
-  </div>
-
-  <div class="dock-item" onclick="window.location.href='/login'">
-    <div class="dock-icon">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-        <polyline points="10 17 15 12 10 7"/>
-        <line x1="15" y1="12" x2="3" y2="12"/>
-      </svg>
-    </div>
-    <div class="dock-label">Log In</div>
+  <div class="topbar-actions">
+    <button class="icon-btn lang-btn" onclick="toggleHelpLang()" id="langBtn">عربي</button>
+    <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle theme">
+      <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
   </div>
 </div>
 
-<!-- HELP CARD -->
-<div class="help-card">
-<div class="card-inner">
+<main class="main">
+  <section class="hero">
+    <div class="hero-logo"><img src="/static/low.ico" alt="EST-iMs"></div>
+    <div class="hero-badge"><span class="hero-dot"></span><span id="badgeText">EST-iMs Support Center</span></div>
+    <div class="hero-title" id="heroTitle">HELP & FAQ</div>
+    <p class="hero-sub" id="heroSub">Find quick answers for accounts, inventory, reports, and supported devices.</p>
+  </section>
 
-  <div class="card-header">
-    <div class="header-icon">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/>
-        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-        <line x1="12" y1="17" x2="12.01" y2="17"/>
-      </svg>
+  <section class="help-card">
+    <div class="search-wrap">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="search-input" type="text" id="searchInput" placeholder="Search for help topics..." oninput="filterFAQ(this.value)">
     </div>
-    <div class="header-text">
-      <div class="header-chip">EST-iMs® Support Center</div>
-      <div class="header-title">Help & FAQ</div>
+
+    <div class="tabs-row">
+      <button class="tab-btn active" onclick="filterTab('all', this)" data-i18n="tabAll">All Topics</button>
+      <button class="tab-btn" onclick="filterTab('account', this)" data-i18n="tabAccount">Account</button>
+      <button class="tab-btn" onclick="filterTab('inventory', this)" data-i18n="tabInventory">Inventory</button>
+      <button class="tab-btn" onclick="filterTab('reports', this)" data-i18n="tabReports">Reports</button>
+      <button class="tab-btn" onclick="filterTab('system', this)" data-i18n="tabSystem">System</button>
     </div>
-  </div>
 
-  <div class="card-divider"></div>
-
-  <!-- SEARCH -->
-  <div class="search-wrap">
-    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-    </svg>
-    <input class="search-input" type="text" id="searchInput" placeholder="Search for help topics…" oninput="filterFAQ(this.value)">
-  </div>
-
-  <!-- TABS -->
-  <div class="tabs-row">
-    <button class="tab-btn active" onclick="filterTab('all', this)">All Topics</button>
-    <button class="tab-btn" onclick="filterTab('account', this)">Account</button>
-    <button class="tab-btn" onclick="filterTab('inventory', this)">Inventory</button>
-    <button class="tab-btn" onclick="filterTab('reports', this)">Reports</button>
-    <button class="tab-btn" onclick="filterTab('system', this)">System</button>
-  </div>
-
-  <!-- FAQ -->
-  <div class="faq-list" id="faqList">
-
-    <div class="faq-item" data-cat="account" data-q="how do i change my password reset">
-      <div class="faq-question" onclick="toggleFAQ(this)">
-        <div class="faq-q-left">
-          <div class="faq-badge">01</div>
-          <div class="faq-q-text">How do I change or reset my password?</div>
+    <div class="faq-list" id="faqList">
+      <div class="faq-item" data-cat="account" data-q="how do i change my password reset">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <div class="faq-q-left"><div class="faq-badge">01</div><div class="faq-q-text">How do I change or reset my password?</div></div>
+          <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
-        <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        <div class="faq-answer">Go to your profile settings and click <strong>Change Password</strong>. Enter your current password followed by your new password, then confirm. If you've forgotten your password, use the <strong>Forgot Password</strong> link on the login page.</div>
       </div>
-      <div class="faq-answer">Go to your profile settings and click <strong>Change Password</strong>. Enter your current password followed by your new password, then confirm. If you've forgotten your password, use the <strong>Forgot Password</strong> link on the login page — a reset link will be sent to your registered email.</div>
-    </div>
 
-    <div class="faq-item" data-cat="account" data-q="login access denied credentials">
-      <div class="faq-question" onclick="toggleFAQ(this)">
-        <div class="faq-q-left">
-          <div class="faq-badge">02</div>
-          <div class="faq-q-text">Why can't I log in to my account?</div>
+      <div class="faq-item" data-cat="account" data-q="login access denied credentials">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <div class="faq-q-left"><div class="faq-badge">02</div><div class="faq-q-text">Why can't I log in to my account?</div></div>
+          <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
-        <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        <div class="faq-answer">Ensure your credentials are correct and that Caps Lock is off. Your account may be temporarily locked after multiple failed attempts. If the issue persists, contact your system administrator.</div>
       </div>
-      <div class="faq-answer">Ensure your credentials are correct and that Caps Lock is off. Your account may be temporarily locked after multiple failed attempts — wait 10 minutes and try again. If the issue persists, contact your system administrator or reach out via the <strong>Contact</strong> page.</div>
-    </div>
 
-    <div class="faq-item" data-cat="inventory" data-q="add new product item stock">
-      <div class="faq-question" onclick="toggleFAQ(this)">
-        <div class="faq-q-left">
-          <div class="faq-badge">03</div>
-          <div class="faq-q-text">How do I add a new product to inventory?</div>
+      <div class="faq-item" data-cat="inventory" data-q="add new product item stock">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <div class="faq-q-left"><div class="faq-badge">03</div><div class="faq-q-text">How do I add a new product to inventory?</div></div>
+          <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
-        <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        <div class="faq-answer">Navigate to the relevant inventory sheet and add the required item details. Once saved, the item will appear in the related views, reports, and stocktaking calculations.</div>
       </div>
-      <div class="faq-answer">Navigate to <strong>Inventory → Products</strong> and click the <strong>+ Add Product</strong> button. Fill in the required fields: product name, SKU, category, unit, and initial stock quantity. Once saved, the item will appear in all relevant reports and stock views.</div>
-    </div>
 
-    <div class="faq-item" data-cat="inventory" data-q="stock alert low quantity threshold notification">
-      <div class="faq-question" onclick="toggleFAQ(this)">
-        <div class="faq-q-left">
-          <div class="faq-badge">04</div>
-          <div class="faq-q-text">How do stock alerts and low-quantity thresholds work?</div>
+      <div class="faq-item" data-cat="inventory" data-q="stock alert low quantity threshold notification">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <div class="faq-q-left"><div class="faq-badge">04</div><div class="faq-q-text">How do stock alerts and low-quantity thresholds work?</div></div>
+          <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
-        <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        <div class="faq-answer">When current quantity drops at or below the configured threshold, the system flags the item and includes it in dashboard warnings or low-stock reports.</div>
       </div>
-      <div class="faq-answer">Each product has a configurable <strong>Minimum Stock</strong> level. When current quantity drops at or below this threshold, the system flags the item in red on the dashboard and includes it in the Low Stock report. You can update thresholds from the product's edit page.</div>
-    </div>
 
-    <div class="faq-item" data-cat="reports" data-q="export report pdf excel download">
-      <div class="faq-question" onclick="toggleFAQ(this)">
-        <div class="faq-q-left">
-          <div class="faq-badge">05</div>
-          <div class="faq-q-text">How do I export a report to PDF or Excel?</div>
+      <div class="faq-item" data-cat="reports" data-q="export report pdf excel download">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <div class="faq-q-left"><div class="faq-badge">05</div><div class="faq-q-text">How do I export a report to PDF or Excel?</div></div>
+          <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
-        <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        <div class="faq-answer">Open the report you need, apply the required filters, then use the available export or print option. Date and zone filters apply to the exported data.</div>
       </div>
-      <div class="faq-answer">Open any report from the <strong>Reports</strong> section, then use the <strong>Export</strong> dropdown in the top-right corner. Choose PDF for printable formatted reports or Excel (.xlsx) for raw data you can further analyze. Date range filters apply to the exported file as well.</div>
-    </div>
 
-    <div class="faq-item" data-cat="system" data-q="browser support mobile tablet device">
-      <div class="faq-question" onclick="toggleFAQ(this)">
-        <div class="faq-q-left">
-          <div class="faq-badge">06</div>
-          <div class="faq-q-text">What browsers and devices are supported?</div>
+      <div class="faq-item" data-cat="system" data-q="browser support mobile tablet device">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <div class="faq-q-left"><div class="faq-badge">06</div><div class="faq-q-text">What browsers and devices are supported?</div></div>
+          <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
-        <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        <div class="faq-answer">EST-iMs is optimized for modern browsers including Chrome, Edge, Firefox, and Safari. It works on desktop, tablet, and mobile screens.</div>
       </div>
-      <div class="faq-answer">EST-iMs® is optimized for modern browsers: <strong>Chrome 90+, Firefox 88+, Edge 90+</strong>, and <strong>Safari 14+</strong>. It is fully responsive and works on desktop, tablet, and mobile. For the best experience, we recommend using the latest version of Chrome on a desktop.</div>
     </div>
 
-  </div>
-
-  <!-- SUPPORT CARDS -->
-  <div class="support-section">
-    <a class="support-card" href="/contact">
-      <div class="support-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-          <polyline points="22,6 12,13 2,6"/>
-        </svg>
-      </div>
-      <div class="support-text">
-        <div class="support-label">Email Support</div>
-        <div class="support-sub">info@alestesharia.com.jo</div>
-      </div>
-    </a>
-    <a class="support-card" href="/contact">
-      <div class="support-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.08 6.08l.88-.88a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-        </svg>
-      </div>
-      <div class="support-text">
-        <div class="support-label">Phone Support</div>
-        <div class="support-sub">+962 6 532 0131</div>
-      </div>
-    </a>
-  </div>
-
-  <!-- TIP BANNER -->
-  <div class="tip-banner">
-    <svg class="tip-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-    </svg>
-    <div class="tip-text">
-      <strong>Pro Tip:</strong> Use the search bar above to quickly find answers. Our support team is available <strong>weekdays 9AM–7PM</strong> and typically responds within 2 hours.
+    <div class="support-section">
+      <a class="support-card" href="/contact">
+        <div class="support-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+        <div class="support-text"><div class="support-label" id="emailSupportLabel">Email Support</div><div class="support-sub">info@alestesharia.com.jo</div></div>
+      </a>
+      <a class="support-card" href="/contact">
+        <div class="support-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.08 6.08l.88-.88a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+        <div class="support-text"><div class="support-label" id="phoneSupportLabel">Phone Support</div><div class="support-sub">+962 6 532 0131</div></div>
+      </a>
     </div>
-  </div>
 
-  <div class="copy-line">
-    <span class="copy-dot"></span>
-    Copyright 2026   |   All Rights Reserved ©  </div>
+    <div class="tip-banner">
+      <svg class="tip-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <div id="tipText"><strong>Pro Tip:</strong> Use the search bar above to quickly find answers. Support is available on weekdays from 9AM to 7PM.</div>
+    </div>
 
-
-</div><!-- /card-inner -->
-</div><!-- /help-card -->
+    <div class="copy-line"><span class="copy-dot"></span><span id="copyText">Copyright 2026 | All Rights Reserved</span></div>
+  </section>
+</main>
 
 <script>
-// ── THEME ──
 (function() {
-  if (localStorage.getItem('est-theme') === 'light')
-    document.documentElement.classList.add('light');
-  updateDockTheme();
+  if (localStorage.getItem('est-theme') === 'light') document.documentElement.classList.add('light');
 })();
-function updateDockTheme() {
-  const isLight = document.documentElement.classList.contains('light');
-  const label = document.getElementById('dockThemeLabel');
-  if (label) label.textContent = isLight ? 'Dark Mode' : 'Light Mode';
-}
 function toggleTheme() {
   const isLight = document.documentElement.classList.toggle('light');
   localStorage.setItem('est-theme', isLight ? 'light' : 'dark');
-  updateDockTheme();
 }
 
-// ── FAQ TOGGLE ──
+const HELP_LANG = {
+  en: {
+    back: 'Back', topbar: 'Help & FAQ', lang: 'عربي', badge: 'EST-iMs Support Center',
+    heroTitle: 'HELP & FAQ', heroSub: 'Find quick answers for accounts, inventory, reports, and supported devices.',
+    search: 'Search for help topics...', tabAll: 'All Topics', tabAccount: 'Account', tabInventory: 'Inventory', tabReports: 'Reports', tabSystem: 'System',
+    emailSupport: 'Email Support', phoneSupport: 'Phone Support',
+    tip: '<strong>Pro Tip:</strong> Use the search bar above to quickly find answers. Support is available on weekdays from 9AM to 7PM.',
+    copy: 'Copyright 2026 | All Rights Reserved'
+  },
+  ar: {
+    back: 'رجوع', topbar: 'المساعدة والأسئلة', lang: 'English', badge: 'مركز دعم EST-iMs',
+    heroTitle: 'المساعدة', heroSub: 'اعثر بسرعة على إجابات تخص الحسابات والمخزون والتقارير والأجهزة المدعومة.',
+    search: 'ابحث في مواضيع المساعدة...', tabAll: 'الكل', tabAccount: 'الحساب', tabInventory: 'المخزون', tabReports: 'التقارير', tabSystem: 'النظام',
+    emailSupport: 'الدعم عبر البريد', phoneSupport: 'الدعم عبر الهاتف',
+    tip: '<strong>نصيحة:</strong> استخدم شريط البحث للوصول السريع للإجابات. الدعم متاح أيام الأسبوع من 9 صباحاً إلى 7 مساءً.',
+    copy: 'حقوق النشر 2026 | جميع الحقوق محفوظة'
+  }
+};
+let helpLang = localStorage.getItem('est-lang') || 'en';
+function ht(key) { return HELP_LANG[helpLang][key]; }
+function applyHelpLang(lang) {
+  helpLang = lang;
+  localStorage.setItem('est-lang', lang);
+  const isAr = lang === 'ar';
+  document.documentElement.lang = lang;
+  document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+  document.getElementById('backText').textContent = ht('back');
+  document.getElementById('topbarTitle').textContent = ht('topbar');
+  document.getElementById('langBtn').textContent = ht('lang');
+  document.getElementById('badgeText').textContent = ht('badge');
+  document.getElementById('heroTitle').textContent = ht('heroTitle');
+  document.getElementById('heroSub').textContent = ht('heroSub');
+  document.getElementById('searchInput').placeholder = ht('search');
+  document.querySelector('[data-i18n="tabAll"]').textContent = ht('tabAll');
+  document.querySelector('[data-i18n="tabAccount"]').textContent = ht('tabAccount');
+  document.querySelector('[data-i18n="tabInventory"]').textContent = ht('tabInventory');
+  document.querySelector('[data-i18n="tabReports"]').textContent = ht('tabReports');
+  document.querySelector('[data-i18n="tabSystem"]').textContent = ht('tabSystem');
+  document.getElementById('emailSupportLabel').textContent = ht('emailSupport');
+  document.getElementById('phoneSupportLabel').textContent = ht('phoneSupport');
+  document.getElementById('tipText').innerHTML = ht('tip');
+  document.getElementById('copyText').textContent = ht('copy');
+}
+function toggleHelpLang() { applyHelpLang(helpLang === 'en' ? 'ar' : 'en'); }
+
 function toggleFAQ(el) {
   const item = el.closest('.faq-item');
   const wasOpen = item.classList.contains('open');
   document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
   if (!wasOpen) item.classList.add('open');
 }
-
-// ── SEARCH ──
 function filterFAQ(val) {
   const q = val.toLowerCase();
   document.querySelectorAll('.faq-item').forEach(item => {
@@ -585,8 +468,6 @@ function filterFAQ(val) {
     item.style.display = text.includes(q) ? '' : 'none';
   });
 }
-
-// ── TABS ──
 function filterTab(cat, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
@@ -595,57 +476,7 @@ function filterTab(cat, btn) {
     item.style.display = (cat === 'all' || item.dataset.cat === cat) ? '' : 'none';
   });
 }
-
-// ── PARTICLES ──
-(function() {
-  const canvas = document.getElementById('particleCanvas');
-  const ctx    = canvas.getContext('2d');
-  let W, H, particles = [], mouse = { x:-999, y:-999 };
-  const isLight = () => document.documentElement.classList.contains('light');
-  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-  function Particle() {
-    this.x=Math.random()*W; this.y=Math.random()*H;
-    this.vx=(Math.random()-0.5)*0.35; this.vy=(Math.random()-0.5)*0.35;
-    this.r=Math.random()*1.6+0.4; this.alpha=Math.random()*0.4+0.08;
-  }
-  Particle.prototype.update = function() {
-    this.x+=this.vx; this.y+=this.vy;
-    if(this.x<0)this.x=W; if(this.x>W)this.x=0;
-    if(this.y<0)this.y=H; if(this.y>H)this.y=0;
-    const dx=this.x-mouse.x, dy=this.y-mouse.y, d=Math.sqrt(dx*dx+dy*dy);
-    if(d<110){this.x+=dx/d*1.4; this.y+=dy/d*1.4;}
-  };
-  function init() {
-    resize(); particles=[];
-    const n=Math.floor((W*H)/13000);
-    for(let i=0;i<n;i++) particles.push(new Particle());
-  }
-  function draw() {
-    ctx.clearRect(0,0,W,H);
-    const light=isLight();
-    const dc=light?'rgba(37,99,235,':'rgba(59,130,246,';
-    const md=135;
-    for(let i=0;i<particles.length;i++){
-      const p=particles[i]; p.update();
-      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle=dc+p.alpha+')'; ctx.fill();
-      for(let j=i+1;j<particles.length;j++){
-        const q=particles[j];
-        const dx=p.x-q.x,dy=p.y-q.y,d=Math.sqrt(dx*dx+dy*dy);
-        if(d<md){
-          const a=(1-d/md)*0.15*(light?1:0.65);
-          ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
-          ctx.strokeStyle=dc+a+')'; ctx.lineWidth=0.6; ctx.stroke();
-        }
-      }
-    }
-    requestAnimationFrame(draw);
-  }
-  window.addEventListener('resize',init);
-  window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
-  window.addEventListener('mouseleave',()=>{mouse.x=-999;mouse.y=-999;});
-  init(); draw();
-})();
+applyHelpLang(helpLang);
 </script>
 </body>
 </html>
