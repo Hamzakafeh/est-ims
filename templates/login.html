@@ -61,7 +61,8 @@
     justify-content: center;
     transition: background 0.25s, color 0.25s;
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   /* ── AMBIENT BLOBS ── */
@@ -179,6 +180,7 @@
   .login-wrapper {
     position: relative; z-index: 10;
     width: 100%;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -220,7 +222,7 @@
     border-radius: 20px;
     padding: 44px 48px;
     width: 100%;
-    max-width: 400px;
+    max-width: min(400px, 92vw);
     box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05), inset 0 1px 0 rgba(255,255,255,0.08);
     animation: cardIn 0.45s cubic-bezier(.34,1.56,.64,1);
     transition: background 0.25s, border-color 0.25s, box-shadow 0.25s;
@@ -403,6 +405,87 @@
     margin-top: 24px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px; color: var(--text-dim);
+  }
+
+  /* MOBILE */
+  @media (max-width: 600px) {
+    body {
+      align-items: flex-start;
+      min-height: 100svh;
+    }
+
+    .login-wrapper {
+      min-height: 100svh;
+      padding: 24px 16px;
+    }
+
+    .login-card {
+      padding: 34px 22px;
+      border-radius: 18px;
+    }
+
+    .login-logo {
+      width: 58px;
+      height: 58px;
+      margin-bottom: 20px;
+    }
+
+    .login-title {
+      font-size: 17px;
+    }
+
+    .login-subtitle {
+      margin-bottom: 26px;
+      letter-spacing: 1px;
+    }
+
+    .divider {
+      margin-bottom: 24px;
+    }
+
+    .field-wrap {
+      margin-bottom: 16px;
+    }
+
+    .field-wrap input {
+      min-height: 46px;
+      font-size: 16px;
+    }
+
+    .btn-login {
+      min-height: 46px;
+    }
+
+    .side-dock {
+      top: auto;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      flex-direction: row;
+      padding: 0;
+      gap: 10px;
+    }
+
+    .dock-icon {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+    }
+
+    .dock-label {
+      display: none;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .login-wrapper {
+      padding: 18px 12px;
+    }
+
+    .login-card {
+      padding: 28px 18px;
+    }
   }
 </style>
 </head>
