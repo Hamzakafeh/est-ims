@@ -22,7 +22,7 @@ from collections import defaultdict
 import time as _time
 
 _login_attempts  = defaultdict(list)   # ip -> [timestamp, ...]
-_MAX_ATTEMPTS    = 4
+_MAX_ATTEMPTS    = 5
 _LOCKOUT_SECONDS = 300                 # 5 دقائق
 
 def _get_ip():

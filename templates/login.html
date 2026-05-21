@@ -698,6 +698,9 @@ function clearLockout() {
 }
 
 let _lockoutTimer = null;
+let _failedAttempts = 0;
+const MAX_WARN_ATTEMPTS = 5;
+
 function startLockoutCountdown(remaining) {
   const loginBtn = document.getElementById('loginBtn');
   const btnText  = document.getElementById('btnText');
@@ -711,6 +714,7 @@ function startLockoutCountdown(remaining) {
     if (secs <= 0) {
       clearInterval(_lockoutTimer);
       clearLockout();
+      _failedAttempts = 0;
       loginBtn.disabled = false;
       btnText.textContent = 'Sign In';
       spinner.style.display = 'none';
@@ -719,10 +723,11 @@ function startLockoutCountdown(remaining) {
     }
     const m = Math.floor(secs / 60);
     const s = secs % 60;
-    loginBtn.disabled = true;
+    // Keep button enabled — correct password still allows entry
+    loginBtn.disabled = false;
     spinner.style.display = 'none';
-    btnText.textContent = `Locked — ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    showError(`Too many failed attempts. Try again in ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`);
+    btnText.textContent = 'Sign In';
+    showError(`⚠️ ${MAX_WARN_ATTEMPTS} failed attempts — Enter correct password to login (${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')})`);
   }
   tick();
   _lockoutTimer = setInterval(tick, 1000);
@@ -776,19 +781,29 @@ async function doLogin() {
     const data = await res.json();
     if (data.success) {
       clearLockout();
+      _failedAttempts = 0;
       finishProgress(true);
       btnText.textContent = '✓ Success';
       spinner.style.display = 'none';
       loginBtn.classList.add('success');
       setTimeout(() => { window.location.href = data.redirect || '/zones'; }, 600);
     } else if (data.locked) {
-      // Server says locked — set persistent countdown
+      // Server says locked — show warning countdown but keep button enabled
       finishProgress(false);
+      _failedAttempts++;
       setLockoutUntil(data.remaining || 300);
       shakeCard();
+      resetBtn();
     } else {
       finishProgress(false);
-      showError(data.message || 'Incorrect username or password');
+      _failedAttempts++;
+      let msg = data.message || 'Incorrect username or password';
+      if (_failedAttempts >= MAX_WARN_ATTEMPTS) {
+        msg = `⚠️ ${_failedAttempts} failed attempts — You can still login with the correct password`;
+      } else {
+        msg = `${msg} (${_failedAttempts}/${MAX_WARN_ATTEMPTS} attempts)`;
+      }
+      showError(msg);
       shakeCard();
       resetBtn();
     }
