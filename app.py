@@ -39,8 +39,12 @@ def _record_failed_attempt(ip):
 def _clear_attempts(ip):
     _login_attempts.pop(ip, None)
 
-_LOGIN_LOG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'login_log.json')
+_LOGIN_LOG_FILE = os.getenv(
+    'LOGIN_LOG_FILE',
+    os.path.join(os.getenv('RENDER_DISK_PATH', os.path.dirname(os.path.abspath(__file__))), 'login_log.json')
+)
 _log_lock = threading.Lock()
+_country_cache = {}
 
 def _read_login_log():
     try:
@@ -50,8 +54,23 @@ def _read_login_log():
         return []
 
 def _write_login_log(entries):
+    os.makedirs(os.path.dirname(_LOGIN_LOG_FILE), exist_ok=True)
     with open(_LOGIN_LOG_FILE, 'w', encoding='utf-8') as f:
         json.dump(entries[-500:], f, ensure_ascii=False)  # keep last 500
+
+def _ip_country(ip):
+    if not ip or ip.startswith(('127.', '10.', '192.168.', '172.16.', '172.17.', '172.18.', '172.19.', '172.20.', '172.21.', '172.22.', '172.23.', '172.24.', '172.25.', '172.26.', '172.27.', '172.28.', '172.29.', '172.30.', '172.31.')):
+        return 'Local / Private'
+    if ip in _country_cache:
+        return _country_cache[ip]
+    try:
+        res = _requests.get(f'https://ipapi.co/{ip}/json/', timeout=2)
+        data = res.json() if res.ok else {}
+        country = data.get('country_name') or data.get('country') or 'Unknown'
+    except Exception:
+        country = 'Unknown'
+    _country_cache[ip] = country
+    return country
 
 def _record_login(username, zone_id, zone_label, ip):
     with _log_lock:
@@ -61,6 +80,7 @@ def _record_login(username, zone_id, zone_label, ip):
             'zone_id':    zone_id,
             'zone_label': zone_label,
             'ip':         ip,
+            'country':    _ip_country(ip),
             'time':       datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         })
         _write_login_log(entries)
@@ -769,6 +789,7 @@ def index():
                            zone=zone,
                            zone_label=zone_label,
                            is_super=is_super,
+                           is_dev=(zone == 'dev'),
                            can_edit=can_edit,
                            username=username,
                            login_time=session.get('login_time',''))
@@ -1556,8 +1577,8 @@ def api_dashboard():
 @app.route('/api/login_log')
 @zone_required
 def api_login_log():
-    """Return login history — admin/dev only."""
-    if not session.get('is_super'):
+    """Return login history — dev only."""
+    if session.get('zone') != 'dev':
         return jsonify({'error': 'غير مصرح'}), 403
     with _log_lock:
         entries = _read_login_log()
