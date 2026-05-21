@@ -195,13 +195,98 @@
   }
   .topbar-actions .btn-icon svg { width: 15px; height: 15px; }
   #homeBtn { background:#fff; color:#0d1117; border-color:#e2e8f0; box-shadow:0 2px 10px rgba(255,255,255,.18); }
-  #homeBtn:hover { background:#f1f5f9; color:#0d1117; }
+  #homeBtn:hover { background:#f1f5f9; color:#0d1117; transform: scale(1.1); box-shadow: 0 6px 20px rgba(255,255,255,0.28); }
+
   #reportsBtn { background:linear-gradient(135deg, rgba(245,158,11,.24), rgba(16,185,129,.16)); border-color:rgba(245,158,11,.6); color:var(--accent-amber); }
-  #reportsBtn:hover { background:rgba(245,158,11,.24); color:var(--accent-amber); }
+  #reportsBtn:hover { background: rgba(245,158,11,.32); color: var(--accent-amber); transform: scale(1.1); box-shadow: 0 6px 20px rgba(245,158,11,0.28); }
+
   #langBtn { min-width:58px; height:32px; padding:0 9px; justify-content:center; }
   #langBtn svg { display:none; }
-  #logoutThemeBtn { color: #fca5a5; border-color: rgba(239,68,68,0.4); }
-  #logoutThemeBtn:hover { background: rgba(239,68,68,0.18); color: #fca5a5; border-color: rgba(239,68,68,0.6); }
+
+  /* ── Refresh — Blue (sync/update) ── */
+  #refreshBtn {
+    background: rgba(59,130,246,0.14);
+    border-color: rgba(59,130,246,0.5);
+    color: var(--accent-blue);
+    transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.18s;
+  }
+  #refreshBtn:hover {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: #fff;
+    transform: scale(1.1) rotate(180deg);
+    box-shadow: 0 6px 20px rgba(59,130,246,0.38);
+  }
+
+  /* ── Print — Amber (document/paper) ── */
+  #printBtn {
+    background: rgba(245,158,11,0.14);
+    border-color: rgba(245,158,11,0.5);
+    color: var(--accent-amber);
+  }
+  #printBtn:hover {
+    background: var(--accent-amber);
+    border-color: var(--accent-amber);
+    color: #000;
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(245,158,11,0.38);
+  }
+
+  /* ── CSV Export — Green (download/data) ── */
+  #csvBtn {
+    background: rgba(16,185,129,0.14);
+    border-color: rgba(16,185,129,0.5);
+    color: var(--accent-green);
+  }
+  #csvBtn:hover {
+    background: var(--accent-green);
+    border-color: var(--accent-green);
+    color: #fff;
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(16,185,129,0.38);
+  }
+
+  /* ── About — Cyan (info) ── */
+  #aboutBtn {
+    background: rgba(6,182,212,0.14);
+    border-color: rgba(6,182,212,0.5);
+    color: var(--accent-cyan);
+  }
+  #aboutBtn:hover {
+    background: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+    color: #fff;
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(6,182,212,0.38);
+  }
+
+  /* ── Logout — Red (danger/exit) ── */
+  #logoutBtn {
+    background: rgba(239,68,68,0.14);
+    border-color: rgba(239,68,68,0.55);
+    color: #fca5a5;
+  }
+  #logoutBtn:hover {
+    background: var(--accent-red);
+    border-color: var(--accent-red);
+    color: #fff;
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(239,68,68,0.38);
+  }
+
+  /* light mode overrides for new buttons */
+  html.light #refreshBtn { background: rgba(37,99,235,0.1); border-color: rgba(37,99,235,0.45); color: #2563eb; }
+  html.light #refreshBtn:hover { background: #2563eb; color: #fff; box-shadow: 0 6px 20px rgba(37,99,235,0.3); }
+  html.light #printBtn { background: rgba(217,119,6,0.1); border-color: rgba(217,119,6,0.45); color: #d97706; }
+  html.light #printBtn:hover { background: #d97706; color: #fff; box-shadow: 0 6px 20px rgba(217,119,6,0.3); }
+  html.light #csvBtn { background: rgba(5,150,105,0.1); border-color: rgba(5,150,105,0.45); color: #059669; }
+  html.light #csvBtn:hover { background: #059669; color: #fff; box-shadow: 0 6px 20px rgba(5,150,105,0.3); }
+  html.light #aboutBtn { background: rgba(8,145,178,0.1); border-color: rgba(8,145,178,0.45); color: #0891b2; }
+  html.light #aboutBtn:hover { background: #0891b2; color: #fff; box-shadow: 0 6px 20px rgba(8,145,178,0.3); }
+  html.light #logoutBtn { background: rgba(220,38,38,0.1); border-color: rgba(220,38,38,0.45); color: #dc2626; }
+  html.light #logoutBtn:hover { background: #dc2626; color: #fff; box-shadow: 0 6px 20px rgba(220,38,38,0.3); }
+  html.light #logoutThemeBtn { background: rgba(220,38,38,0.1); border-color: rgba(220,38,38,0.45); color: #dc2626; }
+  html.light #logoutThemeBtn:hover { background: #dc2626; color: #fff; }
 
   /* ── LAYOUT ── */
   .layout { display: flex; flex: 1; overflow: hidden; min-height: 0; }
@@ -1630,19 +1715,19 @@ EST-iMs © | 2026    </div>
       </div>
       {% endif %}
 
-      <button class="btn btn-primary btn-icon" onclick="refreshData()" title="Refresh">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.3"/><path d="M3 12A9 9 0 0 1 18.5 5.7"/><path d="M18 2v4h4"/><path d="M6 22v-4H2"/></svg>
+      <button class="theme-btn" id="refreshBtn" onclick="refreshData()" title="Refresh">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.3"/><path d="M3 12A9 9 0 0 1 18.5 5.7"/><path d="M18 2v4h4"/><path d="M6 22v-4H2"/></svg>
       </button>
-      <button class="theme-btn" onclick="openPrintModal()" title="Print">
+      <button class="theme-btn" id="printBtn" onclick="openPrintModal()" title="Print">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
       </button>
-      <button class="theme-btn" onclick="exportCSV()" title="Export CSV">
+      <button class="theme-btn" id="csvBtn" onclick="exportCSV()" title="Export CSV">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       </button>
-      <button class="theme-btn" onclick="showAbout()" title="About">
+      <button class="theme-btn" id="aboutBtn" onclick="showAbout()" title="About">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
       </button>
-      <button class="theme-btn" id="logoutThemeBtn" onclick="confirmLogout()" title="Logout">
+      <button class="theme-btn" id="logoutBtn" onclick="confirmLogout()" title="Logout">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       </button>
     </div>
