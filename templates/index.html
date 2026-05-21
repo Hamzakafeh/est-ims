@@ -1061,7 +1061,7 @@
     border-radius: 14px; padding: 22px 24px; margin-bottom: 20px;
   }
   .dash-chart-title { font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 16px; }
-  .dash-chart-wrap canvas { max-height: 300px; }
+  .dash-chart-wrap canvas { width: 100%; height: 300px; max-height: 300px; }
   /* Alert items */
   .dash-alert-list { display: flex; flex-direction: column; gap: 10px; }
   .dash-alert-item {
@@ -1109,6 +1109,97 @@
     transition: color 0.15s; line-height: 1;
   }
   .dash-close-btn:hover { color: var(--text-main); }
+  .dash-top-row {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 18px; margin-bottom: 22px; padding-right: 34px;
+  }
+  .dash-actions { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+  .dash-refresh-btn {
+    border:1px solid var(--border-light);
+    background:var(--bg-card);
+    color:var(--text-main);
+    border-radius:9px;
+    padding:8px 12px;
+    font-family:inherit;
+    font-size:12px;
+    font-weight:600;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    transition:background .15s, border-color .15s, transform .15s;
+  }
+  .dash-refresh-btn:hover { background:var(--bg-hover); border-color:var(--accent-blue); transform:translateY(-1px); }
+  .dash-refresh-btn:disabled { opacity:.55; cursor:wait; transform:none; }
+  .dash-meta-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:10px;
+    margin-bottom:22px;
+  }
+  .dash-meta-card {
+    background:rgba(255,255,255,.03);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:12px 14px;
+  }
+  html.light .dash-meta-card { background:rgba(255,255,255,.65); }
+  .dash-meta-label {
+    color:var(--text-dim);
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.8px;
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .dash-meta-value {
+    color:var(--text-main);
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .dash-section-grid {
+    display:grid;
+    grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);
+    gap:18px;
+  }
+  .dash-empty {
+    min-height:220px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--text-muted);
+    border:1px dashed var(--border-light);
+    border-radius:14px;
+    background:rgba(255,255,255,.025);
+    text-align:center;
+    padding:22px;
+  }
+  .dash-alert-list.compact { max-height:360px; overflow:auto; padding-right:4px; }
+  .dash-zone-table-wrap { overflow:auto; }
+  @media (max-width: 900px) {
+    .dash-box { width:96vw; height:90vh; flex-direction:column; }
+    .dash-sidebar {
+      width:100%; flex-direction:row; overflow-x:auto; overflow-y:hidden;
+      border-right:none; border-bottom:1px solid var(--border);
+      padding:10px; gap:8px;
+    }
+    .dash-sidebar-title, .dash-nav-sep { display:none; }
+    .dash-nav-item { white-space:nowrap; flex-shrink:0; }
+    .dash-content { padding:22px 18px; }
+    .dash-section-grid { grid-template-columns:1fr; }
+    .dash-top-row { flex-direction:column; padding-right:34px; }
+  }
+  @media (max-width: 520px) {
+    .dash-box { width:100vw; height:100svh; border-radius:0; }
+    .dash-kpi-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .dash-kpi-card { padding:14px 12px; }
+    .dash-kpi-value { font-size:22px; }
+    .dash-chart-wrap { padding:16px 14px; }
+    .dash-meta-grid { grid-template-columns:1fr; }
+  }
   .reports-dropdown-menu.open { display: block; }
   .reports-dropdown-item {
     display: flex; align-items: center; gap: 9px;
@@ -1383,7 +1474,7 @@ EST-iMs © | 2026    </div>
       </button>
       {% if is_super %}
       <div style="position:relative;display:inline-flex;">
-        <button class="theme-btn" onclick="openSoonModal('dashboard')" id="dashBtn" title="Dashboard — Coming Soon">
+        <button class="theme-btn" onclick="openDashboard()" id="dashBtn" title="Dashboard">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
         </button>
         <span id="alertBadge" style="display:none;position:absolute;top:-4px;right:-4px;
@@ -2800,22 +2891,25 @@ window.location.href = '/logout';}
 // ══════════════════════════════════════════════════════
 let _dashData   = null;
 let _dashView   = 'overview';
-let _dashChart  = null;
+let _dashCharts = [];
 
 async function openDashboard() {
   document.getElementById('dashModal').classList.add('open');
-  if (!_dashData) await loadDashData();
-  else dashShow(_dashView);
+  await loadDashData();
 }
 function closeDashboard() {
   document.getElementById('dashModal').classList.remove('open');
+  destroyDashCharts();
 }
 
 async function loadDashData() {
-  setDashContent('<div class="dash-loading"><div class="spinner"></div><span>Loading data...</span></div>');
+  setDashContent('<div class="dash-loading"><div class="spinner"></div><span>Reading Excel files...</span></div>');
+  const btn = document.getElementById('dashBtn');
+  if (btn) btn.disabled = false;
   try {
-    const res  = await fetch('/api/dashboard');
+    const res  = await fetch('/api/dashboard', { cache: 'no-store' });
     _dashData  = await res.json();
+    if (!res.ok || _dashData.error) throw new Error(_dashData.error || 'Dashboard request failed');
     dashShow(_dashView);
   } catch(e) {
     setDashContent('<div class="dash-loading">⚠️ Failed to load dashboard data</div>');
@@ -2827,6 +2921,19 @@ function setDashContent(html) {
   c.innerHTML = `<button class="dash-close-btn" onclick="closeDashboard()">✕</button>` + html;
 }
 
+function setDashContentSafe(html) {
+  const c = document.getElementById('dashContent');
+  c.innerHTML = '<button class="dash-close-btn" onclick="closeDashboard()">x</button>' + html;
+}
+setDashContent = setDashContentSafe;
+
+function destroyDashCharts() {
+  _dashCharts.forEach(ch => {
+    try { ch.destroy(); } catch(e) {}
+  });
+  _dashCharts = [];
+}
+
 function dashShow(view) {
   _dashView = view;
   // update nav active
@@ -2834,7 +2941,7 @@ function dashShow(view) {
   const navEl = document.getElementById('dnav-' + view);
   if (navEl) navEl.classList.add('active');
   // destroy old chart
-  if (_dashChart) { _dashChart.destroy(); _dashChart = null; }
+  destroyDashCharts();
 
   const d = _dashData;
   if (!d) return;
@@ -3020,6 +3127,103 @@ function drawChart(type, labels, datasets, extra={}) {
 }
 
 // ══════════════════════════════════════════════════════
+function fmtDashNum(v) {
+  const n = Number(v || 0);
+  return Number.isInteger(n) ? n.toLocaleString() : n.toLocaleString(undefined, { maximumFractionDigits: 2 });
+}
+
+function dashHeader(title, sub) {
+  const d = _dashData || {};
+  return `
+    <div class="dash-top-row">
+      <div>
+        <div class="dash-content-title">${escHtml(String(title))}</div>
+        <div class="dash-content-sub">${escHtml(String(sub))}</div>
+      </div>
+      <div class="dash-actions">
+        <button class="dash-refresh-btn" onclick="loadDashData()">Refresh</button>
+      </div>
+    </div>
+    <div class="dash-meta-grid">
+      <div class="dash-meta-card"><div class="dash-meta-label">Scope</div><div class="dash-meta-value">${escHtml(String(d.scope || 'Current zone'))}</div></div>
+      <div class="dash-meta-card"><div class="dash-meta-label">Excel files</div><div class="dash-meta-value">${fmtDashNum(d.file_count)} scanned</div></div>
+      <div class="dash-meta-card"><div class="dash-meta-label">Last file update</div><div class="dash-meta-value">${escHtml(String(d.latest_file_update || 'N/A'))}</div></div>
+      <div class="dash-meta-card"><div class="dash-meta-label">Dashboard refresh</div><div class="dash-meta-value">${escHtml(String(d.generated_at || 'N/A'))}</div></div>
+    </div>`;
+}
+
+function dashKpi(label, value, sub, cls) {
+  return `<div class="dash-kpi-card ${cls}"><div class="dash-kpi-label">${escHtml(String(label))}</div><div class="dash-kpi-value">${escHtml(String(value))}</div><div class="dash-kpi-sub">${escHtml(String(sub))}</div></div>`;
+}
+
+function dashOverview(d) {
+  const labels = Object.keys(d.zone_in || {});
+  const kpis = [
+    dashKpi('Total Items', fmtDashNum(d.total_items), 'Rows with inventory data', 'blue'),
+    dashKpi('Total IN', fmtDashNum(d.total_in), 'Quantity received', 'green'),
+    dashKpi('Total OUT', fmtDashNum(d.total_out), 'Quantity issued', 'red'),
+    dashKpi('Net Movement', fmtDashNum((d.total_in || 0) - (d.total_out || 0)), 'IN minus OUT', 'cyan'),
+    dashKpi('Low Stock', fmtDashNum(d.low_stock), 'Below threshold', 'amber'),
+    dashKpi('Zero Stock', fmtDashNum(d.zero_stock), 'Immediate attention', 'red'),
+  ].join('');
+  setDashContent(`${dashHeader('Dashboard Overview', 'Live summary based on current Excel files')}<div class="dash-kpi-grid">${kpis}</div><div class="dash-chart-wrap"><div class="dash-chart-title">IN vs OUT by Zone</div>${labels.length ? '<canvas id="dashChartCanvas"></canvas>' : '<div class="dash-empty">No movement data found yet.</div>'}</div>`);
+  if (labels.length) {
+    drawDashChart('dashChartCanvas', 'bar', labels, [
+      { label:'IN', data: labels.map(z => d.zone_in[z] || 0), backgroundColor:'rgba(16,185,129,0.7)' },
+      { label:'OUT', data: labels.map(z => d.zone_out[z] || 0), backgroundColor:'rgba(239,68,68,0.7)' },
+    ]);
+  }
+}
+
+function dashMovement(d) {
+  const labels = Object.keys(d.zone_in || {});
+  setDashContent(`${dashHeader('Movement Analysis', 'Compare received and issued quantities across zones')}<div class="dash-section-grid"><div class="dash-chart-wrap"><div class="dash-chart-title">IN per Zone</div>${labels.length ? '<canvas id="dashChartCanvas"></canvas>' : '<div class="dash-empty">No IN data available.</div>'}</div><div class="dash-chart-wrap"><div class="dash-chart-title">OUT per Zone</div>${labels.length ? '<canvas id="dashChartCanvas2"></canvas>' : '<div class="dash-empty">No OUT data available.</div>'}</div></div>`);
+  if (labels.length) {
+    drawDashChart('dashChartCanvas', 'bar', labels, [{ label:'IN', data: labels.map(z => d.zone_in[z] || 0), backgroundColor:'rgba(16,185,129,0.75)' }], {}, 'IN Quantity');
+    drawDashChart('dashChartCanvas2', 'bar', labels, [{ label:'OUT', data: labels.map(z => d.zone_out[z] || 0), backgroundColor:'rgba(239,68,68,0.75)' }], {}, 'OUT Quantity');
+  }
+}
+
+function dashAlerts(d) {
+  const items = d.alerts || [];
+  const rows = items.length ? items.map(a => `<div class="dash-alert-item ${a.level}"><div class="dash-alert-icon">${a.level === 'danger' ? '!' : 'i'}</div><div class="dash-alert-text"><div class="dash-alert-name">${escHtml(String(a.name || 'Item'))}</div><div class="dash-alert-desc">${escHtml(String(a.sheet || ''))} - Balance: ${fmtDashNum(a.balance)}</div></div><div class="dash-alert-badge ${a.level === 'danger' ? 'red' : 'amber'}">${a.level === 'danger' ? 'ZERO' : 'LOW'}</div></div>`).join('') : '<div class="dash-empty">No low-stock or zero-stock items found.</div>';
+  setDashContent(`${dashHeader('Stock Alerts', `${items.length} item(s) need attention`)}<div class="dash-alert-list compact">${rows}</div>`);
+}
+
+function dashTop(d) {
+  const items = (d.top_items || []).slice(0, 10);
+  const labels = items.map(i => i.name);
+  setDashContent(`${dashHeader('Top Items by Consumption', 'Items with the highest OUT quantity')}<div class="dash-chart-wrap"><div class="dash-chart-title">Top 10 Most Consumed Items</div>${items.length ? '<canvas id="dashChartCanvas"></canvas>' : '<div class="dash-empty">No OUT movement found yet.</div>'}</div>`);
+  if (items.length) drawDashChart('dashChartCanvas', 'bar', labels, [{ label:'OUT Qty', data: items.map(i => i.out), backgroundColor:'rgba(59,130,246,0.75)' }], { indexAxis:'y' });
+}
+
+function dashZones(d) {
+  const zones = Array.from(new Set([...Object.keys(d.zone_in || {}), ...Object.keys(d.zone_out || {}), ...Object.keys(d.zone_items || {})]));
+  const rows = zones.map(z => `<tr><td>${escHtml(String(z))}</td><td>${fmtDashNum((d.zone_files || {})[z])}</td><td>${fmtDashNum((d.zone_items || {})[z])}</td><td style="color:var(--accent-green);font-weight:600;">${fmtDashNum((d.zone_in || {})[z])}</td><td style="color:var(--accent-red);font-weight:600;">${fmtDashNum((d.zone_out || {})[z])}</td><td style="color:var(--accent-cyan);font-weight:600;">${fmtDashNum(((d.zone_in || {})[z] || 0) - ((d.zone_out || {})[z] || 0))}</td></tr>`).join('');
+  setDashContent(`${dashHeader('Zones Summary', 'Files, rows, IN, OUT, and net movement per zone')}<div class="dash-chart-wrap dash-zone-table-wrap" style="padding:0;overflow:hidden;"><table class="dash-zone-table"><thead><tr><th>Zone</th><th>Files</th><th>Items</th><th>Total IN</th><th>Total OUT</th><th>Net</th></tr></thead><tbody>${rows || '<tr><td colspan="6">No zone data found.</td></tr>'}</tbody></table></div><div class="dash-chart-wrap" style="margin-top:16px;"><div class="dash-chart-title">Zone Comparison</div>${zones.length ? '<canvas id="dashChartCanvas"></canvas>' : '<div class="dash-empty">No zone movement available.</div>'}</div>`);
+  if (zones.length) drawDashChart('dashChartCanvas', 'bar', zones, [
+    { label:'IN', data: zones.map(z => (d.zone_in || {})[z] || 0), backgroundColor:'rgba(16,185,129,0.7)' },
+    { label:'OUT', data: zones.map(z => (d.zone_out || {})[z] || 0), backgroundColor:'rgba(239,68,68,0.7)' },
+  ]);
+}
+
+function drawDashChart(canvasId, type, labels, datasets, extra={}, yLabel='') {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const chart = new Chart(canvas, {
+    type,
+    data: { labels, datasets: datasets.map(ds => ({...ds, borderRadius:6})) },
+    options: {
+      responsive:true,
+      maintainAspectRatio:false,
+      ...extra,
+      plugins:{ legend:{ labels:{ color:'#8b9db8', font:{size:11}, usePointStyle:true } }, tooltip:{ mode:'index', intersect:false } },
+      scales:{ x:{ ticks:{color:'#8b9db8'}, grid:{color:'rgba(255,255,255,0.05)'} }, y:{ ticks:{color:'#8b9db8'}, grid:{color:'rgba(255,255,255,0.05)'}, title:{display:!!yLabel,text:yLabel,color:'#8b9db8'} } }
+    }
+  });
+  _dashCharts.push(chart);
+}
+
 // WELCOME TOAST
 // ══════════════════════════════════════════════════════
 (function() {

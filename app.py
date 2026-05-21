@@ -1318,7 +1318,7 @@ def api_add_row():
 @app.route('/api/dashboard')
 @zone_required
 def api_dashboard():
-    """Scan all Excel files for the current zone and return dashboard data."""
+    """Scan Excel files for the current dashboard scope and return live metrics."""
     zone_id = session.get('active_view_zone') or session.get('zone', '')
     is_super = session.get('is_super', False)
 
@@ -1326,7 +1326,6 @@ def api_dashboard():
     if not root:
         return jsonify({'error': 'No data directory'}), 404
 
-    # Collect all xlsx/xlsm files for the zone
     files_to_scan = []
     scan_zones = [z['id'] for z in ZONES if z['id'] not in SUPER_ZONES] if is_super else [zone_id]
 
@@ -1336,7 +1335,10 @@ def api_dashboard():
             continue
         for root_dir, dirs, files in os.walk(zone_path):
             for f in files:
-                if f.lower().endswith(('.xlsx', '.xlsm', '.xls')):
+                lf = f.lower()
+                if f.startswith('~$'):
+                    continue
+                if lf.endswith(('.xlsx', '.xlsm')):
                     files_to_scan.append((zid, os.path.join(root_dir, f)))
 
     total_items = 0
@@ -1349,12 +1351,61 @@ def api_dashboard():
     item_out    = {}   # name -> total out
     zone_in     = {}   # zone -> total in
     zone_out    = {}   # zone -> total out
+    zone_items  = {}   # zone -> row count
+    zone_files  = {}   # zone -> file count
+    unreadable  = 0
+    latest_mtime = None
+
+    def to_number(value):
+        if value in (None, ''):
+            return 0
+        try:
+            return float(value)
+        except Exception:
+            try:
+                text = str(value).replace(',', '').strip()
+                return float(text) if text else 0
+            except Exception:
+                return 0
+
+    def clean_header(value):
+        return re.sub(r'\s+', ' ', str(value or '').strip()).lower()
+
+    def build_header_map(row):
+        aliases = {
+            'color': {'color', 'colour', 'item', 'item name', 'name', 'الصنف', 'اللون'},
+            'type': {'type', 'category', 'item type', 'النوع', 'الفئة'},
+            'size': {'size', 'الحجم', 'المقاس'},
+            'in': {'in', 'in qty', 'in quantity', 'qty in', 'الوارد'},
+            'out': {'out', 'out qty', 'out quantity', 'qty out', 'الصادر'},
+            'balance': {'current balance', 'current', 'balance', 'stock', 'الرصيد الحالي', 'الرصيد'},
+        }
+        header_map = {}
+        normalized = [clean_header(c) for c in row]
+        for key, names in aliases.items():
+            for idx, header in enumerate(normalized):
+                if header in names:
+                    header_map[key] = idx
+                    break
+        return header_map
+
+    def get_cell(row, idx):
+        return row[idx] if idx is not None and idx < len(row) else None
 
     for zid, fpath in files_to_scan:
-        zone_label = next((z['label'] for z in ZONES if z['id'] == zid), zid)
+        zone_meta = next((z for z in ZONES if z['id'] == zid), None)
+        zone_label = zone_meta['name'] if zone_meta else zid
+        zone_files[zone_label] = zone_files.get(zone_label, 0) + 1
+        try:
+            mtime = os.path.getmtime(fpath)
+            latest_mtime = mtime if latest_mtime is None else max(latest_mtime, mtime)
+        except Exception:
+            pass
+
         try:
             wb = openpyxl.load_workbook(fpath, data_only=True, read_only=True)
         except Exception:
+            unreadable += 1
             continue
 
         for sheet_name in wb.sheetnames:
@@ -1365,57 +1416,48 @@ def api_dashboard():
             if not rows:
                 continue
 
-            # Detect header row
             header_idx = None
-            headers    = []
+            header_map = {}
             for i, row in enumerate(rows):
-                rv = [str(c).strip() if c else '' for c in row]
-                if any(k in rv for k in ('Color', 'IN', 'OUT', 'Current Balance', 'Basic')):
+                candidate = build_header_map(row)
+                if ('in' in candidate or 'out' in candidate) and ('balance' in candidate or 'color' in candidate):
                     header_idx = i
-                    headers    = rv
+                    header_map = candidate
                     break
+
             if header_idx is None:
-                continue
-
-            def col(name):
-                for h in (name, name.lower(), name.upper()):
-                    if h in headers:
-                        return headers.index(h)
-                return None
-
-            ci_color   = col('Color')
-            ci_in      = col('IN')
-            ci_out     = col('OUT')
-            ci_balance = col('Current Balance')
+                header_idx = DATA_START_ROW - 2
+                header_map = {
+                    'type': COL_TYPE - 1,
+                    'color': COL_COLOR - 1,
+                    'size': COL_SIZE - 1,
+                    'in': COL_IN - 1,
+                    'out': COL_OUT - 1,
+                    'balance': COL_CURRENT - 1,
+                }
 
             for row in rows[header_idx + 1:]:
-                if all(c is None or str(c).strip() == '' for c in row):
+                color_val = get_cell(row, header_map.get('color'))
+                type_val = get_cell(row, header_map.get('type'))
+                size_val = get_cell(row, header_map.get('size'))
+                in_val = to_number(get_cell(row, header_map.get('in')))
+                out_val = to_number(get_cell(row, header_map.get('out')))
+                bal_cell = get_cell(row, header_map.get('balance'))
+                bal_val = None if bal_cell in (None, '') else to_number(bal_cell)
+
+                meaningful = any(str(v or '').strip() for v in (color_val, type_val, size_val)) or in_val or out_val or bal_val not in (None, 0)
+                if not meaningful:
                     continue
                 total_items += 1
-
-                in_val  = 0
-                out_val = 0
-                bal_val = None
-
-                if ci_in  is not None and ci_in  < len(row):
-                    try: in_val  = float(row[ci_in]  or 0)
-                    except: pass
-                if ci_out is not None and ci_out < len(row):
-                    try: out_val = float(row[ci_out] or 0)
-                    except: pass
-                if ci_balance is not None and ci_balance < len(row):
-                    try: bal_val = float(row[ci_balance] or 0)
-                    except: pass
+                zone_items[zone_label] = zone_items.get(zone_label, 0) + 1
 
                 total_in  += in_val
                 total_out += out_val
                 zone_in[zone_label]  = zone_in.get(zone_label,  0) + in_val
                 zone_out[zone_label] = zone_out.get(zone_label, 0) + out_val
 
-                # Item name
-                item_name = ''
-                if ci_color is not None and ci_color < len(row):
-                    item_name = str(row[ci_color] or '').strip()
+                name_parts = [str(v).strip() for v in (type_val, color_val, size_val) if str(v or '').strip()]
+                item_name = ' - '.join(name_parts) if name_parts else ''
 
                 if item_name and out_val > 0:
                     item_out[item_name] = item_out.get(item_name, 0) + out_val
@@ -1434,6 +1476,8 @@ def api_dashboard():
 
     top_items = sorted([{'name': k, 'out': v} for k, v in item_out.items()],
                        key=lambda x: x['out'], reverse=True)[:10]
+    latest_file_update = datetime.fromtimestamp(latest_mtime).strftime('%Y-%m-%d %H:%M:%S') if latest_mtime else ''
+    generated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     return jsonify({
         'total_items': total_items,
@@ -1445,6 +1489,13 @@ def api_dashboard():
         'top_items':   top_items,
         'zone_in':     {k: round(v, 2) for k, v in zone_in.items()},
         'zone_out':    {k: round(v, 2) for k, v in zone_out.items()},
+        'zone_items':  zone_items,
+        'zone_files':  zone_files,
+        'file_count':  len(files_to_scan),
+        'unreadable_files': unreadable,
+        'latest_file_update': latest_file_update,
+        'generated_at': generated_at,
+        'scope': 'All zones' if is_super else (next((z['name'] for z in ZONES if z['id'] == zone_id), zone_id) or zone_id),
     })
 
 @app.route('/api/login_log')
