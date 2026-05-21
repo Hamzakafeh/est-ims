@@ -578,6 +578,61 @@
       font-size: 22px;
     }
   }
+
+  /* ── ACCESS DENIED MODAL ── */
+  .denied-overlay {
+    position:fixed;inset:0;z-index:2000;
+    display:none;align-items:center;justify-content:center;
+    background:rgba(0,0,0,0.55);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    animation:overlayIn 0.2s ease;
+  }
+  .denied-overlay.open { display:flex; }
+  .denied-panel {
+    width:calc(100% - 40px);max-width:360px;
+    background:rgba(22,27,34,0.92);
+    backdrop-filter:blur(28px);
+    -webkit-backdrop-filter:blur(28px);
+    border:1px solid rgba(239,68,68,0.25);
+    border-radius:20px;
+    padding:36px 32px 28px;
+    text-align:center;
+    position:relative;
+    animation:pwIn 0.32s cubic-bezier(.34,1.56,.64,1);
+    box-shadow:0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(239,68,68,0.08);
+  }
+  html.light .denied-panel {
+    background:rgba(255,255,255,0.92);
+    border-color:rgba(220,38,38,0.2);
+    box-shadow:0 32px 80px rgba(0,0,0,0.12);
+  }
+  .denied-panel::before {
+    content:'';position:absolute;top:0;left:20%;right:20%;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(239,68,68,0.6),rgba(239,68,68,0.5),transparent);
+    border-radius:2px;
+  }
+  .denied-icon {
+    width:56px;height:56px;border-radius:16px;margin:0 auto 18px;
+    background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--accent-red);
+  }
+  .denied-title {
+    font-size:18px;font-weight:700;color:var(--text-main);margin-bottom:10px;
+    letter-spacing:0.3px;
+  }
+  .denied-msg {
+    font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:24px;
+  }
+  .denied-btn {
+    width:100%;padding:11px;border:none;border-radius:10px;
+    background:rgba(239,68,68,0.12);color:var(--accent-red);
+    border:1px solid rgba(239,68,68,0.3);
+    font-family:inherit;font-size:14px;font-weight:600;
+    cursor:pointer;transition:all 0.18s;
+  }
+  .denied-btn:hover { background:rgba(239,68,68,0.22); }
 </style>
 </head>
 <body>
@@ -730,7 +785,38 @@ function toggleTheme() {
 // ── ZONE SELECTION ──
 let selectedZone = null;
 
-function selectZone(zoneId) {
+const RESTRICTED_ZONES = ['admin', 'dev'];
+
+function showDenied() {
+  document.getElementById('deniedOverlay').classList.add('open');
+  // deactivate zone card
+  document.querySelectorAll('.zone-card').forEach(c => c.classList.remove('active'));
+  selectedZone = null;
+}
+
+function closeDenied() {
+  document.getElementById('deniedOverlay').classList.remove('open');
+}
+
+async function selectZone(zoneId) {
+  // For restricted zones, check access BEFORE showing password modal
+  if (RESTRICTED_ZONES.includes(zoneId)) {
+    try {
+      const res = await fetch('/api/zone_access_check', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ zone_id: zoneId })
+      });
+      const data = await res.json();
+      if (!data.allowed) {
+        showDenied();
+        return;
+      }
+    } catch(e) {
+      // Network error — fallback to showing the password modal
+    }
+  }
+
   selectedZone = zoneId;
   document.querySelectorAll('.zone-card').forEach(c => c.classList.remove('active'));
   document.getElementById('card-' + zoneId).classList.add('active');
@@ -744,8 +830,6 @@ function selectZone(zoneId) {
     zone4:'زون 4', zone5:'زون 5', qc:'Quality Control', admin:'Administration', dev:''
   };
 
-  const panel = document.getElementById('pwPanel');
-  const overlay = document.getElementById('pwOverlay');
   document.getElementById('pwTitle').textContent = names[zoneId] || zoneId;
   document.getElementById('pwSub').textContent = `Enter password for ${names[zoneId] || zoneId} — ${labels[zoneId] || ''}`;
   document.getElementById('pwInput').value = '';
@@ -754,7 +838,7 @@ function selectZone(zoneId) {
   document.getElementById('enterBtn').disabled = false;
   document.getElementById('enterBtn').classList.remove('success');
 
-  overlay.classList.add('open');
+  document.getElementById('pwOverlay').classList.add('open');
   setTimeout(() => document.getElementById('pwInput').focus(), 120);
 }
 
@@ -786,6 +870,12 @@ async function submitZone() {
       btnText.textContent   = '✓ Access Granted';
       enterBtn.classList.add('success');
       setTimeout(() => { window.location.href = data.redirect || '/index'; }, 600);
+    } else if (data.not_allowed) {
+      spinner.style.display = 'none';
+      btnText.textContent   = 'Enter Zone';
+      enterBtn.disabled     = false;
+      closeModal();
+      showDenied();
     } else {
       spinner.style.display = 'none';
       btnText.textContent   = 'Enter Zone';
@@ -833,7 +923,7 @@ document.getElementById('pwToggle').addEventListener('click', function() {
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && selectedZone) submitZone();
-  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Escape') { closeModal(); closeDenied(); }
 });
 
 // Click on overlay backdrop to close
@@ -941,5 +1031,20 @@ function toggleLang() {
 // تطبيق اللغة عند التحميل
 applyLang(currentLang);
 </script>
+
+<!-- ACCESS DENIED MODAL -->
+<div class="denied-overlay" id="deniedOverlay">
+  <div class="denied-panel">
+    <div class="denied-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+      </svg>
+    </div>
+    <div class="denied-title">Access Not Permitted</div>
+    <div class="denied-msg">You are not authorized to access this zone.<br>This area is restricted to specific users only.</div>
+    <button class="denied-btn" onclick="closeDenied()">Understood</button>
+  </div>
+</div>
 </body>
 </html>

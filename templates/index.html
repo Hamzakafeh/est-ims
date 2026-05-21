@@ -1595,7 +1595,7 @@ EST-iMs © | 2026    </div>
     </div>
     <div class="topbar-actions">
       <button class="btn btn-lang" id="langBtn" onclick="toggleIndexLang()" title="Toggle Language">
-        <span id="langBtnText">Ar-En</span>
+        <span id="langBtnText">EN</span>
       </button>
       <button class="theme-btn" id="themeBtn" title="Toggle light/dark mode">
         <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
@@ -2166,6 +2166,11 @@ const INDEX_LANG = {
   }
 };
 let indexLang = localStorage.getItem('est-lang') || 'en';
+// Set initial lang button text immediately before full apply
+(function() {
+  const btn = document.getElementById('langBtnText');
+  if (btn) btn.textContent = (localStorage.getItem('est-lang') || 'en') === 'ar' ? 'AR' : 'EN';
+})();
 function applyIndexLang(lang) {
   indexLang = lang;
   localStorage.setItem('est-lang', lang);
@@ -2185,7 +2190,7 @@ function applyIndexLang(lang) {
     if (oc.includes('confirmLogout')) btn.lastChild.textContent = ' ' + t.logout;
   });
   const langBtnText = document.getElementById('langBtnText');
-  if (langBtnText) langBtnText.textContent = 'Ar-En';
+  if (langBtnText) langBtnText.textContent = lang === 'ar' ? 'AR' : 'EN';
   // Search
   const si = document.getElementById('searchInput');
   if (si) si.placeholder = t.searchPh;
@@ -3098,6 +3103,9 @@ function dashShow(view) {
   if (view === 'top')       dashTop(d);
   if (view === 'summary')   dashConsumptionSummary(d);
   if (view === 'zones')     dashZones(d);
+
+  // After rendering, update countdown in the newly created element (preserves ongoing timer)
+  updateDashCountdown();
 }
 
 /* ── OVERVIEW ── */
@@ -3338,7 +3346,12 @@ function dashAlerts(d) {
 }
 
 function dashTop(d) {
-  const items = (d.top_items || []).slice(0, 10);
+  // Prefer Log sheet top items (actual operations), fallback to inventory columns
+  const hasLog = (d.log_ops_count || 0) > 0;
+  const rawItems = hasLog && (d.log_top_items || []).length > 0
+    ? d.log_top_items
+    : (d.top_items || []);
+  const items = rawItems.slice(0, 10);
   const labels = items.map(i => i.name);
   const rows = items.map((item, idx) => `
     <tr>
@@ -3524,6 +3537,7 @@ async function loadDashData(silent=false, isAuto=false) {
     const changed = _dashLastSignature && nextSignature !== _dashLastSignature;
     _dashLastSignature = nextSignature;
     _dashData = data;
+    // Only reset countdown on actual data fetch (not view switches)
     _dashRefreshRemaining = 60;
     dashShow(_dashView);
     updateDashCountdown();
@@ -3535,6 +3549,9 @@ async function loadDashData(silent=false, isAuto=false) {
     if (nextBtn) { nextBtn.disabled = false; nextBtn.textContent = 'Refresh'; }
   }
 }
+
+// View switch does NOT reset the countdown — timer continues
+const _origDashShow_wrapped = dashShow;
 
 function onDashZoneChange(value) {
   _dashSelectedZone = value || 'all';
@@ -3608,12 +3625,19 @@ function dashRiskCards(d) {
 
 function dashOverview(d) {
   const labels = Object.keys(d.zone_in || {});
+  // Use Log sheet data when available for IN/OUT, fallback to inventory columns
+  const hasLog = (d.log_ops_count || 0) > 0;
+  const displayIn  = hasLog ? (d.log_total_in  || d.total_in  || 0) : (d.total_in  || 0);
+  const displayOut = hasLog ? (d.log_total_out || d.total_out || 0) : (d.total_out || 0);
+  // Top item from Log sheet
+  const logTop = (d.log_top_items || [])[0];
+  const topFromLog = logTop ? `${escHtml(String(logTop.name))} (${fmtDashNum(logTop.out)} OUT)` : (d.top_items?.[0] ? `${escHtml(String(d.top_items[0].name))} (${fmtDashNum(d.top_items[0].out)} OUT)` : 'N/A');
   const kpis = [
-    dashKpi('Total Items', fmtDashNum(d.total_items), 'Item rows found in Other+ and Sacks', 'blue'),
-    dashKpi('Total IN', fmtDashNum(d.total_in), 'Total received quantity from IN columns', 'green'),
-    dashKpi('Total OUT', fmtDashNum(d.total_out), 'Total issued/consumed quantity from OUT columns', 'red'),
-    dashKpi('Net Movement', fmtDashNum((d.total_in || 0) - (d.total_out || 0)), 'IN minus OUT', 'cyan'),
-    dashKpi('Low Stock', fmtDashNum(d.low_stock), 'Items below stock threshold', 'amber'),
+    dashKpi('Total Items', fmtDashNum(d.total_items), 'Item rows in Other+ and Sacks sheets', 'blue'),
+    dashKpi('Total IN', fmtDashNum(displayIn), hasLog ? 'From Log sheet operations' : 'From IN columns', 'green'),
+    dashKpi('Total OUT', fmtDashNum(displayOut), hasLog ? 'From Log sheet operations' : 'From OUT columns', 'red'),
+    dashKpi('Net Movement', fmtDashNum(displayIn - displayOut), 'IN minus OUT', 'cyan'),
+    dashKpi('Top Consumption', topFromLog, 'Highest consumed item', 'amber'),
     dashKpi('Zero Stock', fmtDashNum(d.zero_stock), 'Items with zero current balance', 'red'),
   ].join('');
   setDashContent(`

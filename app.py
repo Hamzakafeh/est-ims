@@ -28,16 +28,36 @@ _LOCKOUT_SECONDS = 300                 # 5 دقائق
 def _get_ip():
     return request.headers.get('X-Forwarded-For', request.remote_addr).split(',')[0].strip()
 
+_lockout_until = {}  # ip -> timestamp when lockout expires
+
 def _is_locked_out(ip):
+    """Returns True only if IP is actively locked out (enough FAILED attempts, no correct login)."""
     now = _time.time()
+    # Remove expired lockout
+    if ip in _lockout_until and now >= _lockout_until[ip]:
+        _lockout_until.pop(ip, None)
+        _login_attempts.pop(ip, None)
+    if ip in _lockout_until:
+        return True
     _login_attempts[ip] = [t for t in _login_attempts[ip] if now - t < _LOCKOUT_SECONDS]
-    return len(_login_attempts[ip]) >= _MAX_ATTEMPTS
+    if len(_login_attempts[ip]) >= _MAX_ATTEMPTS:
+        # Set explicit lockout timer
+        _lockout_until[ip] = now + _LOCKOUT_SECONDS
+        return True
+    return False
+
+def _lockout_remaining(ip):
+    """Seconds remaining in lockout, 0 if not locked."""
+    now = _time.time()
+    until = _lockout_until.get(ip, 0)
+    return max(0, int(until - now))
 
 def _record_failed_attempt(ip):
     _login_attempts[ip].append(_time.time())
 
 def _clear_attempts(ip):
     _login_attempts.pop(ip, None)
+    _lockout_until.pop(ip, None)
 
 _LOGIN_LOG_FILE = os.getenv(
     'LOGIN_LOG_FILE',
@@ -126,6 +146,14 @@ app.secret_key = _secret_key
 @app.route("/ping")
 def ping():
     return {"status": "ok"}, 200
+
+@app.route('/api/lockout_status')
+def api_lockout_status():
+    """Check if current IP is locked out and how many seconds remain."""
+    ip = _get_ip()
+    locked = _is_locked_out(ip)
+    remaining = _lockout_remaining(ip) if locked else 0
+    return jsonify({'locked': locked, 'remaining': remaining})
 # ── بيانات الدخول ──────────────────────────────────────────────────
 import os
 
@@ -226,14 +254,26 @@ def zone3_qr():
 @app.route('/login', methods=['POST'])
 def do_login():
     ip = _get_ip()
-    if _is_locked_out(ip):
-        return jsonify({'success': False, 'message': 'تم تجاوز عدد المحاولات المسموح بها. حاول مرة أخرى بعد 5 دقائق'}), 429
-
     data = request.get_json(silent=True) or {}
     username = data.get('username', '').strip()
     password = data.get('password', '').strip()
     next_url = data.get('next', '/zones')
-    if USERS.get(username) == password and username in USERS and USERS[username] is not None:
+
+    # Check if password is correct FIRST — correct password bypasses lockout
+    correct = (username in USERS and USERS[username] is not None and USERS.get(username) == password)
+
+    if not correct and _is_locked_out(ip):
+        remaining = _lockout_remaining(ip)
+        mins = remaining // 60
+        secs = remaining % 60
+        return jsonify({
+            'success': False,
+            'locked': True,
+            'remaining': remaining,
+            'message': f'تم تجاوز عدد المحاولات. الرجاء الانتظار {mins}:{secs:02d}'
+        }), 429
+
+    if correct:
         _clear_attempts(ip)
         session['logged_in'] = True
         session['username']  = username
@@ -246,7 +286,7 @@ def do_login():
         session.pop('zone', None)
         return jsonify({'success': True, 'redirect': '/zones'})
     _record_failed_attempt(ip)
-    return jsonify({'success': False, 'message': '  Incorrect username or password    '}), 401
+    return jsonify({'success': False, 'message': 'Incorrect username or password'}), 401
 
 # ── ZONES PAGE ──────────────────────────────────────────────────────
 @app.route('/zones')
@@ -262,9 +302,6 @@ def zones_page():
 @login_required
 def api_zone_login():
     ip = _get_ip()
-    if _is_locked_out(ip):
-        return jsonify({'success': False, 'message': 'تم تجاوز عدد المحاولات. حاول بعد 5 دقائق'}), 429
-
     data     = request.get_json(silent=True) or {}
     zone_id  = data.get('zone_id', '').strip()
     password = data.get('password', '').strip()
@@ -274,7 +311,16 @@ def api_zone_login():
         return jsonify({'success': False, 'message': 'زون غير معروف'}), 400
 
     expected = ZONE_PASSWORDS.get(zone_id)
-    if not expected or password != expected:
+    correct = (expected and password == expected)
+
+    if not correct and _is_locked_out(ip):
+        remaining = _lockout_remaining(ip)
+        mins = remaining // 60
+        secs = remaining % 60
+        return jsonify({'success': False, 'locked': True, 'remaining': remaining,
+                        'message': f'تم تجاوز عدد المحاولات. انتظر {mins}:{secs:02d}'}), 429
+
+    if not correct:
         _record_failed_attempt(ip)
         return jsonify({'success': False, 'message': 'Incorrect password'}), 401
 
@@ -282,7 +328,7 @@ def api_zone_login():
     current_username = str(session.get('username', '')).strip().lower()
     if restricted_username and current_username != restricted_username.lower():
         _record_failed_attempt(ip)
-        return jsonify({'success': False, 'message': 'This zone is restricted to an authorized user'}), 403
+        return jsonify({'success': False, 'not_allowed': True, 'message': 'Access Denied'}), 403
 
     _clear_attempts(ip)
     session['zone']        = zone_id
@@ -295,6 +341,18 @@ def api_zone_login():
     # إذا في صفحة مطلوبة بعد اللوغن (مثل /scan)، حوّل عليها
     next_url = session.pop('next_after_zone', '/index')
     return jsonify({'success': True, 'redirect': next_url})
+
+@app.route('/api/zone_access_check', methods=['POST'])
+@login_required
+def api_zone_access_check():
+    """Check if the current user is allowed to even attempt a zone login."""
+    data = request.get_json(silent=True) or {}
+    zone_id = data.get('zone_id', '').strip()
+    restricted_username = ZONE_USER_RESTRICTIONS.get(zone_id)
+    current_username = str(session.get('username', '')).strip().lower()
+    if restricted_username and current_username != restricted_username.lower():
+        return jsonify({'allowed': False}), 200
+    return jsonify({'allowed': True}), 200
 
 @app.route('/api/switch_zone', methods=['POST'])
 @zone_required
@@ -1403,6 +1461,10 @@ def api_dashboard():
     latest_files = []
     unreadable  = 0
     latest_mtime = None
+    # Log sheet data: IN/OUT operations
+    log_in_ops  = []   # list of {'time','qty','item','category','file','zone'}
+    log_out_ops = []
+    log_item_out = {}  # item_name -> total out from Log
 
     def to_number(value):
         if value in (None, ''):
@@ -1462,6 +1524,45 @@ def api_dashboard():
         except Exception:
             unreadable += 1
             continue
+
+        # Read Log sheet for actual IN/OUT operations
+        for log_sheet in wb.sheetnames:
+            if log_sheet.lower() != 'log':
+                continue
+            try:
+                ws_log = wb[log_sheet]
+                log_rows_all = list(ws_log.iter_rows(values_only=True))
+                if not log_rows_all:
+                    continue
+                log_headers = [str(v).strip() if v else '' for v in log_rows_all[0]]
+                # Find column indices: Time(0), Type(1), Qty(2), Balance(3), Color(4/name), Size(5), ItemType(6), Category(7)
+                # Based on LOG_COL_* constants
+                lh = {h.lower(): i for i, h in enumerate(log_headers) if h}
+                # Try by position fallback or header name
+                ci_type = lh.get('type', lh.get('operation', 1))
+                ci_qty  = lh.get('qty', lh.get('quantity', 2))
+                ci_color = lh.get('color', lh.get('item', lh.get('name', 4)))
+                ci_cat  = lh.get('category', lh.get('item type', 7))
+                ci_size = lh.get('size', 5)
+                for lrow in log_rows_all[1:]:
+                    if not lrow or all(v is None for v in lrow):
+                        continue
+                    def lget(idx):
+                        try: return lrow[idx] if idx < len(lrow) else None
+                        except: return None
+                    op  = str(lget(ci_type) or '').strip().upper()
+                    qty = to_number(lget(ci_qty))
+                    color = str(lget(ci_color) or '').strip()
+                    cat   = str(lget(ci_cat) or '').strip()
+                    size  = str(lget(ci_size) or '').strip()
+                    item_label = ' - '.join(p for p in [cat, color, size] if p) or color or '—'
+                    if op == 'IN' and qty:
+                        log_in_ops.append({'qty': qty, 'item': item_label, 'zone': zone_label})
+                    elif op == 'OUT' and qty:
+                        log_out_ops.append({'qty': qty, 'item': item_label, 'zone': zone_label})
+                        log_item_out[item_label] = log_item_out.get(item_label, 0) + qty
+            except Exception as _le:
+                pass
 
         for sheet_name in wb.sheetnames:
             if 'log' in sheet_name.lower():
@@ -1553,6 +1654,14 @@ def api_dashboard():
     generated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     scope = 'All zones' if len(scan_zones) > 1 else (next((z['name'] for z in ZONES if z['id'] == scan_zones[0]), scan_zones[0]) if scan_zones else zone_id)
 
+    # Build log-based top items (from actual Log sheet operations)
+    log_top_items = sorted(
+        [{'name': k, 'out': round(v, 2)} for k, v in log_item_out.items()],
+        key=lambda x: x['out'], reverse=True
+    )[:10]
+    log_total_in  = round(sum(op['qty'] for op in log_in_ops), 2)
+    log_total_out = round(sum(op['qty'] for op in log_out_ops), 2)
+
     return jsonify({
         'total_items': total_items,
         'total_in':    round(total_in,  2),
@@ -1578,6 +1687,11 @@ def api_dashboard():
         'scope': scope,
         'selected_zone': requested_zone if is_super and requested_zone else ('all' if is_super else zone_id),
         'dashboard_zones': [{'id': 'all', 'name': 'All zones'}] + [{'id': z['id'], 'name': z['name'], 'label': z['label']} for z in available_dashboard_zones] if is_super else [],
+        # Log sheet data
+        'log_top_items': log_top_items,
+        'log_total_in':  log_total_in,
+        'log_total_out': log_total_out,
+        'log_ops_count': len(log_in_ops) + len(log_out_ops),
     })
 
 @app.route('/api/login_log')

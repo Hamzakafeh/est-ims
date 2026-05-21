@@ -680,6 +680,70 @@ function shakeCard() {
   setTimeout(() => card.classList.remove('shake'), 600);
 }
 
+// ── LOCKOUT COUNTDOWN (persistent via localStorage) ──
+const LOCKOUT_KEY = 'est_lockout_until';
+
+function getLockoutUntil() {
+  try { return parseInt(localStorage.getItem(LOCKOUT_KEY) || '0', 10); } catch(e) { return 0; }
+}
+
+function setLockoutUntil(seconds) {
+  const until = Date.now() + seconds * 1000;
+  try { localStorage.setItem(LOCKOUT_KEY, String(until)); } catch(e) {}
+  startLockoutCountdown(seconds);
+}
+
+function clearLockout() {
+  try { localStorage.removeItem(LOCKOUT_KEY); } catch(e) {}
+}
+
+let _lockoutTimer = null;
+function startLockoutCountdown(remaining) {
+  const loginBtn = document.getElementById('loginBtn');
+  const btnText  = document.getElementById('btnText');
+  const spinner  = document.getElementById('spinner');
+  clearInterval(_lockoutTimer);
+
+  function tick() {
+    const until = getLockoutUntil();
+    const now = Date.now();
+    const secs = Math.max(0, Math.ceil((until - now) / 1000));
+    if (secs <= 0) {
+      clearInterval(_lockoutTimer);
+      clearLockout();
+      loginBtn.disabled = false;
+      btnText.textContent = 'Sign In';
+      spinner.style.display = 'none';
+      document.getElementById('errorBox').classList.add('hidden');
+      return;
+    }
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    loginBtn.disabled = true;
+    spinner.style.display = 'none';
+    btnText.textContent = `Locked — ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    showError(`Too many failed attempts. Try again in ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`);
+  }
+  tick();
+  _lockoutTimer = setInterval(tick, 1000);
+}
+
+// Check on page load
+(function() {
+  const until = getLockoutUntil();
+  if (until > Date.now()) {
+    const remaining = Math.ceil((until - Date.now()) / 1000);
+    startLockoutCountdown(remaining);
+  }
+})();
+
+// Also check lockout status from server on load
+fetch('/api/lockout_status').then(r => r.json()).then(d => {
+  if (d.locked && d.remaining > 0) {
+    setLockoutUntil(d.remaining);
+  }
+}).catch(() => {});
+
 // ── LOGIN ──
 async function doLogin() {
   const username = document.getElementById('username').value.trim();
@@ -692,7 +756,7 @@ async function doLogin() {
   errorBox.classList.add('hidden');
 
   if (!username || !password) {
-    showError('Please enter your username and password.     ');
+    showError('Please enter your username and password.');
     shakeCard();
     return;
   }
@@ -711,14 +775,20 @@ async function doLogin() {
     });
     const data = await res.json();
     if (data.success) {
+      clearLockout();
       finishProgress(true);
       btnText.textContent = '✓ Success';
       spinner.style.display = 'none';
       loginBtn.classList.add('success');
       setTimeout(() => { window.location.href = data.redirect || '/zones'; }, 600);
+    } else if (data.locked) {
+      // Server says locked — set persistent countdown
+      finishProgress(false);
+      setLockoutUntil(data.remaining || 300);
+      shakeCard();
     } else {
       finishProgress(false);
-      showError(data.message || '  Incorrect username or password    ');
+      showError(data.message || 'Incorrect username or password');
       shakeCard();
       resetBtn();
     }
