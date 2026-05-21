@@ -1,4 +1,4 @@
-﻿"""
+"""
 EST Inventory System - Full Read/Write
 Alestesharia Animal Nutrition
 """
@@ -22,7 +22,7 @@ from collections import defaultdict
 import time as _time
 
 _login_attempts  = defaultdict(list)   # ip -> [timestamp, ...]
-_MAX_ATTEMPTS    = 4
+_MAX_ATTEMPTS    = 5
 _LOCKOUT_SECONDS = 300                 # 5 دقائق
 
 def _get_ip():
@@ -167,10 +167,6 @@ SUPER_ZONES = {'admin', 'dev'}
 EDIT_ZONES  = {'dev'}
 # Warehouse zones available in zone switcher for super users
 WAREHOUSE_ZONES = ('zone1', 'zone2', 'zone3', 'zone4', 'zone5', 'qc')
-ZONE_USER_RESTRICTIONS = {
-    'dev': 'mlo5',
-    'admin': 'ink',
-}
 # ───────────────────────────────────────────────────────────────────
 
 from flask import send_from_directory
@@ -277,12 +273,6 @@ def api_zone_login():
     if not expected or password != expected:
         _record_failed_attempt(ip)
         return jsonify({'success': False, 'message': 'Incorrect password'}), 401
-
-    restricted_username = ZONE_USER_RESTRICTIONS.get(zone_id)
-    current_username = str(session.get('username', '')).strip().lower()
-    if restricted_username and current_username != restricted_username.lower():
-        _record_failed_attempt(ip)
-        return jsonify({'success': False, 'message': 'This zone is restricted to an authorized user'}), 403
 
     _clear_attempts(ip)
     session['zone']        = zone_id
@@ -1383,7 +1373,7 @@ def api_dashboard():
                 lf = f.lower()
                 if f.startswith('~$'):
                     continue
-                if lf in ('other+.xlsm', 'sacks.xlsm'):
+                if lf.endswith(('.xlsx', '.xlsm')):
                     files_to_scan.append((zid, os.path.join(root_dir, f)))
 
     total_items = 0
@@ -1475,13 +1465,21 @@ def api_dashboard():
             header_map = {}
             for i, row in enumerate(rows):
                 candidate = build_header_map(row)
-                if 'in' in candidate and 'out' in candidate and ('balance' in candidate or 'color' in candidate):
+                if ('in' in candidate or 'out' in candidate) and ('balance' in candidate or 'color' in candidate):
                     header_idx = i
                     header_map = candidate
                     break
 
             if header_idx is None:
-                continue
+                header_idx = DATA_START_ROW - 2
+                header_map = {
+                    'type': COL_TYPE - 1,
+                    'color': COL_COLOR - 1,
+                    'size': COL_SIZE - 1,
+                    'in': COL_IN - 1,
+                    'out': COL_OUT - 1,
+                    'balance': COL_CURRENT - 1,
+                }
 
             for row in rows[header_idx + 1:]:
                 color_val = get_cell(row, header_map.get('color'))
@@ -1560,7 +1558,7 @@ def api_dashboard():
         'zero_stock':  zero_stock,
         'low_stock':   low_stock,
         'alerts':      alerts[:50],
-        'top_items':   [{'name': item['name'], 'out': round(item['out'], 2)} for item in top_items],
+        'top_items':   top_items,
         'zone_in':     {k: round(v, 2) for k, v in zone_in.items()},
         'zone_out':    {k: round(v, 2) for k, v in zone_out.items()},
         'zone_items':  zone_items,
@@ -2203,6 +2201,3 @@ if __name__ == '__main__':
             webbrowser.open('http://127.0.0.1:3049')
         threading.Thread(target=_open, daemon=True).start()
         app.run(host='127.0.0.1', port=3049, debug=False)
-
-
-

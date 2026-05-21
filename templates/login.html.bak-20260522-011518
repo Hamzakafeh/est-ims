@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
@@ -374,14 +374,6 @@
   .btn-login:active:not(:disabled) { transform: translateY(0); box-shadow: none; }
   .btn-login:disabled { opacity: 0.55; cursor: not-allowed; }
   .btn-login.success { background: var(--accent-green) !important; transform: none !important; box-shadow: 0 4px 20px rgba(16,185,129,0.4) !important; }
-  .login-links {
-    display:flex; align-items:center; justify-content:space-between; gap:12px;
-    margin-top:16px; font-size:12px;
-  }
-  .login-link-disabled {
-    color:var(--text-muted); text-decoration:none; cursor:not-allowed; opacity:.68;
-  }
-  .login-link-disabled:hover { color:var(--text-muted); }
 
   /* error box */
   .error-box {
@@ -587,10 +579,6 @@
       <span id="btnText">Sign In</span>
     </button>
 
-    <div class="login-links" aria-label="Future account options">
-      <a class="login-link-disabled" href="#" onclick="return false;" aria-disabled="true">Sign Up</a>
-      <a class="login-link-disabled" href="#" onclick="return false;" aria-disabled="true">Forgot password?</a>
-    </div>
 
   </div>
 </div>
@@ -829,4 +817,3 @@ function resetBtn() {
 </script>
 </body>
 </html>
-

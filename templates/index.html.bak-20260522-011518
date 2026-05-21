@@ -1,4 +1,4 @@
-﻿
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
@@ -161,7 +161,7 @@
   .brand-text p  { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
   .topbar-right  { display: flex; align-items: center; gap: 16px; }
   .clock { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-muted); letter-spacing: 1px; }
-  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+  .topbar-actions { display: flex; gap: 8px; }
 
   .btn {
     display: inline-flex; align-items: center; gap: 6px;
@@ -189,17 +189,6 @@
   .btn-logout:hover { background:rgba(239,68,68,0.28); transform:translateY(-1px); }
   .btn-lang { background: rgba(6,182,212,0.12); color: var(--accent-cyan); border: 1.5px solid rgba(6,182,212,0.4); font-weight:600; }
   .btn-lang:hover { background: rgba(6,182,212,0.22); transform:translateY(-1px); }
-  .topbar-actions .btn-icon {
-    width: 32px; height: 32px; padding: 0; border-radius: 8px;
-    display: inline-flex; align-items: center; justify-content: center; gap: 0;
-  }
-  .topbar-actions .btn-icon svg { width: 15px; height: 15px; }
-  #homeBtn { background:#fff; color:#0d1117; border-color:#e2e8f0; box-shadow:0 2px 10px rgba(255,255,255,.18); }
-  #homeBtn:hover { background:#f1f5f9; color:#0d1117; }
-  #reportsBtn { background:linear-gradient(135deg, rgba(245,158,11,.24), rgba(16,185,129,.16)); border-color:rgba(245,158,11,.6); color:var(--accent-amber); }
-  #reportsBtn:hover { background:rgba(245,158,11,.24); color:var(--accent-amber); }
-  #langBtn { min-width:58px; height:32px; padding:0 9px; justify-content:center; }
-  #langBtn svg { display:none; }
 
   /* ── LAYOUT ── */
   .layout { display: flex; flex: 1; overflow: hidden; min-height: 0; }
@@ -1594,9 +1583,6 @@ EST-iMs © | 2026    </div>
       </span>
     </div>
     <div class="topbar-actions">
-      <button class="btn btn-lang" id="langBtn" onclick="toggleIndexLang()" title="Toggle Language">
-        <span id="langBtnText">Ar-En</span>
-      </button>
       <button class="theme-btn" id="themeBtn" title="Toggle light/dark mode">
         <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -1627,21 +1613,20 @@ EST-iMs © | 2026    </div>
         <div class="reports-dropdown-menu" id="reportsDropdownMenu"></div>
       </div>
       {% endif %}
-
-      <button class="btn btn-primary btn-icon" onclick="refreshData()" title="Refresh">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.3"/><path d="M3 12A9 9 0 0 1 18.5 5.7"/><path d="M18 2v4h4"/><path d="M6 22v-4H2"/></svg>
+      <button class="btn btn-lang" id="langBtn" onclick="toggleIndexLang()" title="Toggle Language">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span id="langBtnText">عربي</span>
       </button>
-      <button class="btn btn-warning btn-icon" onclick="openPrintModal()" title="Print">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            <button class="btn btn-primary"  onclick="refreshData()">Refresh</button>
+      <button class="btn btn-warning"  onclick="openPrintModal()">Print</button>
+      <button class="btn btn-success"  onclick="exportCSV()">Export CSV</button>
+      <button class="btn btn-about"    onclick="showAbout()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        About
       </button>
-      <button class="btn btn-success btn-icon" onclick="exportCSV()" title="Export CSV">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      </button>
-      <button class="btn btn-about btn-icon" onclick="showAbout()" title="About">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-      </button>
-      <button class="btn btn-logout btn-icon" onclick="confirmLogout()" title="Logout">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <button class="btn btn-logout" onclick="confirmLogout()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Logout
       </button>
     </div>
   </div>
@@ -2150,7 +2135,7 @@ function renderProfile(data) {
 const INDEX_LANG = {
   en: {
     refresh: 'Refresh', print: 'Print', exportCSV: 'Export CSV',
-    about: 'About', logout: 'Logout', lang: 'Ar-En',
+    about: 'About', logout: 'Logout', lang: 'عربي',
     selectMonth: 'Select a month to begin',
     searchPh: 'Search data...',
     yearLabel: 'Year', monthsLabel: 'Months', filesLabel: 'Files', sheetsLabel: 'Sheets',
@@ -2158,7 +2143,7 @@ const INDEX_LANG = {
   },
   ar: {
     refresh: 'تحديث', print: 'طباعة', exportCSV: 'تصدير CSV',
-    about: 'عن النظام', logout: 'خروج', lang: 'Ar-En',
+    about: 'عن النظام', logout: 'خروج', lang: 'English',
     selectMonth: 'اختر شهراً للبدء',
     searchPh: 'بحث في البيانات...',
     yearLabel: 'السنة', monthsLabel: 'الأشهر', filesLabel: 'الملفات', sheetsLabel: 'الأوراق',
@@ -2185,7 +2170,7 @@ function applyIndexLang(lang) {
     if (oc.includes('confirmLogout')) btn.lastChild.textContent = ' ' + t.logout;
   });
   const langBtnText = document.getElementById('langBtnText');
-  if (langBtnText) langBtnText.textContent = 'Ar-En';
+  if (langBtnText) langBtnText.textContent = t.lang;
   // Search
   const si = document.getElementById('searchInput');
   if (si) si.placeholder = t.searchPh;
@@ -3288,7 +3273,7 @@ function dashHeader(title, sub) {
         <div class="dash-content-sub">${escHtml(String(sub))}</div>
       </div>
       <div class="dash-actions">
-        <button class="dash-refresh-btn" id="dashRefreshBtn" onclick="loadDashData(false, true)">Refresh</button>
+        <button class="dash-refresh-btn" onclick="loadDashData()">Refresh</button>
       </div>
     </div>
     <div class="dash-meta-grid">
@@ -3306,12 +3291,12 @@ function dashKpi(label, value, sub, cls) {
 function dashOverview(d) {
   const labels = Object.keys(d.zone_in || {});
   const kpis = [
-    dashKpi('Total Items', fmtDashNum(d.total_items), 'Item rows found in Other+ and Sacks', 'blue'),
-    dashKpi('Total IN', fmtDashNum(d.total_in), 'Total received quantity from IN columns', 'green'),
-    dashKpi('Total OUT', fmtDashNum(d.total_out), 'Total issued/consumed quantity from OUT columns', 'red'),
+    dashKpi('Total Items', fmtDashNum(d.total_items), 'Rows with inventory data', 'blue'),
+    dashKpi('Total IN', fmtDashNum(d.total_in), 'Quantity received', 'green'),
+    dashKpi('Total OUT', fmtDashNum(d.total_out), 'Quantity issued', 'red'),
     dashKpi('Net Movement', fmtDashNum((d.total_in || 0) - (d.total_out || 0)), 'IN minus OUT', 'cyan'),
-    dashKpi('Low Stock', fmtDashNum(d.low_stock), 'Items below stock threshold', 'amber'),
-    dashKpi('Zero Stock', fmtDashNum(d.zero_stock), 'Items with zero current balance', 'red'),
+    dashKpi('Low Stock', fmtDashNum(d.low_stock), 'Below threshold', 'amber'),
+    dashKpi('Zero Stock', fmtDashNum(d.zero_stock), 'Immediate attention', 'red'),
   ].join('');
   setDashContent(`${dashHeader('Dashboard Overview', 'Live summary based on current Excel files')}<div class="dash-kpi-grid">${kpis}</div><div class="dash-chart-wrap"><div class="dash-chart-title">IN vs OUT by Zone</div>${labels.length ? '<canvas id="dashChartCanvas"></canvas>' : '<div class="dash-empty">No movement data found yet.</div>'}</div>`);
   if (labels.length) {
@@ -3389,8 +3374,8 @@ function dashConsumptionSummary(d) {
       <div class="dash-kpi-grid">
         ${dashKpi('Total OUT', fmtDashNum(d.total_out), 'Selected scope consumption', 'red')}
         ${dashKpi('Moving Items', fmtDashNum(items.length), 'Items with OUT movement', 'blue')}
-        ${dashKpi('Most Consumed', topItem ? topItem.name : 'No item', topItem ? (fmtDashNum(topItem.out) + ' OUT') : 'No item', 'amber')}
-        ${dashKpi('Least Consumed', lowItem ? lowItem.name : 'No item', lowItem ? (fmtDashNum(lowItem.out) + ' OUT') : 'No item', 'cyan')}
+        ${dashKpi('Most Consumed', topItem ? fmtDashNum(topItem.out) : 'N/A', topItem ? topItem.name : 'No item', 'amber')}
+        ${dashKpi('Least Consumed', lowItem ? fmtDashNum(lowItem.out) : 'N/A', lowItem ? lowItem.name : 'No item', 'cyan')}
       </div>
       <div class="dash-chart-wrap dash-zone-table-wrap" style="padding:0;overflow:hidden;">
         <table class="dash-zone-table">
@@ -3472,7 +3457,7 @@ function startDashboardAutoRefresh() {
     _dashRefreshRemaining -= 1;
     if (_dashRefreshRemaining <= 0) {
       _dashRefreshRemaining = 60;
-      loadDashData(false, true);
+      loadDashData(true);
     }
     updateDashCountdown();
   }, 1000);
@@ -3511,10 +3496,8 @@ function closeDashboard() {
   destroyDashCharts();
 }
 
-async function loadDashData(silent=false, isAuto=false) {
-  const refreshBtn = document.getElementById('dashRefreshBtn');
-  if (refreshBtn) { refreshBtn.disabled = true; refreshBtn.textContent = 'Refreshing...'; }
-  if (!silent) setDashContent('<div class="dash-loading"><div class="spinner"></div><span>Refreshing dashboard...</span></div>');
+async function loadDashData(silent=false) {
+  if (!silent) setDashContent('<div class="dash-loading"><div class="spinner"></div><span>Reading Excel files...</span></div>');
   try {
     const query = _dashSelectedZone ? `?zone=${encodeURIComponent(_dashSelectedZone)}` : '';
     const res = await fetch('/api/dashboard' + query, { cache: 'no-store' });
@@ -3530,9 +3513,6 @@ async function loadDashData(silent=false, isAuto=false) {
     if (!silent || changed) playDashboardAlertSound(data);
   } catch(e) {
     if (!silent) setDashContent(`<div class="dash-empty">Failed to load dashboard data.<br>${escHtml(String(e.message || e))}</div>`);
-  } finally {
-    const nextBtn = document.getElementById('dashRefreshBtn');
-    if (nextBtn) { nextBtn.disabled = false; nextBtn.textContent = 'Refresh'; }
   }
 }
 
@@ -3555,7 +3535,7 @@ function dashHeader(title, sub) {
       <div class="dash-actions">
         ${selector}
         <span class="dash-countdown" id="dashCountdown">Next refresh in 01:00</span>
-        <button class="dash-refresh-btn" id="dashRefreshBtn" onclick="loadDashData(false, true)">Refresh</button>
+        <button class="dash-refresh-btn" onclick="loadDashData()">Refresh</button>
       </div>
     </div>
     <div class="dash-meta-grid">
@@ -3563,7 +3543,6 @@ function dashHeader(title, sub) {
       <div class="dash-meta-card"><div class="dash-meta-label">Excel files</div><div class="dash-meta-value">${fmtDashNum(d.file_count)} scanned</div></div>
       <div class="dash-meta-card"><div class="dash-meta-label">Last file update</div><div class="dash-meta-value">${escHtml(String(d.latest_file_update || 'N/A'))}</div></div>
       <div class="dash-meta-card"><div class="dash-meta-label">Auto refresh</div><div class="dash-meta-value">Every 60 seconds</div></div>
-      <div class="dash-meta-card"><div class="dash-meta-label">Dashboard refresh</div><div class="dash-meta-value">${escHtml(String(d.generated_at || 'N/A'))}</div></div>
     </div>`;
 }
 
@@ -3609,12 +3588,12 @@ function dashRiskCards(d) {
 function dashOverview(d) {
   const labels = Object.keys(d.zone_in || {});
   const kpis = [
-    dashKpi('Total Items', fmtDashNum(d.total_items), 'Item rows found in Other+ and Sacks', 'blue'),
-    dashKpi('Total IN', fmtDashNum(d.total_in), 'Total received quantity from IN columns', 'green'),
-    dashKpi('Total OUT', fmtDashNum(d.total_out), 'Total issued/consumed quantity from OUT columns', 'red'),
+    dashKpi('Total Items', fmtDashNum(d.total_items), 'Rows with inventory data', 'blue'),
+    dashKpi('Total IN', fmtDashNum(d.total_in), 'Quantity received', 'green'),
+    dashKpi('Total OUT', fmtDashNum(d.total_out), 'Quantity issued', 'red'),
     dashKpi('Net Movement', fmtDashNum((d.total_in || 0) - (d.total_out || 0)), 'IN minus OUT', 'cyan'),
-    dashKpi('Low Stock', fmtDashNum(d.low_stock), 'Items below stock threshold', 'amber'),
-    dashKpi('Zero Stock', fmtDashNum(d.zero_stock), 'Items with zero current balance', 'red'),
+    dashKpi('Low Stock', fmtDashNum(d.low_stock), 'Below threshold', 'amber'),
+    dashKpi('Zero Stock', fmtDashNum(d.zero_stock), 'Immediate attention', 'red'),
   ].join('');
   setDashContent(`
     ${dashHeader('Dashboard Overview', 'Live summary based on current Excel files')}
@@ -3764,9 +3743,8 @@ async function loadLoginLog() {
         <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);">${escHtml(e.ip || '-')}</td>
       </tr>`).join('');
     body.innerHTML = `
-      <div style="padding:10px 16px;border-bottom:1px solid var(--border);font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;display:flex;align-items:center;justify-content:space-between;gap:10px;">
-        <span>Total: ${fmtDashNum(data.total ?? entries.length)} | Log file: ${escHtml(data.log_file || 'default login_log.json')}</span>
-        <button class="dash-refresh-btn" style="padding:5px 9px;font-size:11px;" onclick="loadLoginLog()">Refresh</button>
+      <div style="padding:10px 16px;border-bottom:1px solid var(--border);font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;">
+        Total: ${fmtDashNum(data.total ?? entries.length)} | Log file: ${escHtml(data.log_file || 'default login_log.json')}
       </div>
       <table class="users-table">
         <thead><tr><th>#</th><th>Username</th><th>Zone</th><th>Time</th><th>Country</th><th>IP</th></tr></thead>
@@ -3832,5 +3810,3 @@ init();
 </script>
 </body>
 </html>
-
-
