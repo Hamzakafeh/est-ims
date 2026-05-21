@@ -45,6 +45,7 @@ _LOGIN_LOG_FILE = os.getenv(
 )
 _log_lock = threading.Lock()
 _country_cache = {}
+VERIFIED_USERS = {'mlo5'}
 
 def _read_login_log():
     try:
@@ -54,7 +55,9 @@ def _read_login_log():
         return []
 
 def _write_login_log(entries):
-    os.makedirs(os.path.dirname(_LOGIN_LOG_FILE), exist_ok=True)
+    log_dir = os.path.dirname(_LOGIN_LOG_FILE)
+    if log_dir:
+        os.makedirs(log_dir, exist_ok=True)
     with open(_LOGIN_LOG_FILE, 'w', encoding='utf-8') as f:
         json.dump(entries[-500:], f, ensure_ascii=False)  # keep last 500
 
@@ -344,6 +347,7 @@ def api_profile():
 
     return jsonify({
         'username': username,
+        'is_verified': str(username).lower() in VERIFIED_USERS,
         'zone': zone_id,
         'zone_name': session.get('zone_name', ''),
         'zone_label': session.get('zone_label', ''),
@@ -1582,7 +1586,11 @@ def api_login_log():
         return jsonify({'error': 'غير مصرح'}), 403
     with _log_lock:
         entries = _read_login_log()
-    return jsonify({'entries': list(reversed(entries))})
+    return jsonify({
+        'entries': list(reversed(entries)),
+        'total': len(entries),
+        'log_file': _LOGIN_LOG_FILE,
+    })
 
 @app.route('/api/alert_count')
 @zone_required

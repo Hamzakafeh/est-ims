@@ -561,7 +561,27 @@
     transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.15s;
     flex-shrink: 0;
   }
-  .theme-btn:hover { background: var(--bg-hover); color: var(--text-main); transform: rotate(15deg); }
+  .theme-btn:hover { background: var(--bg-hover); color: var(--text-main); transform: scale(1.08); }
+  .theme-btn.login-history-btn {
+    background: rgba(239,68,68,0.14);
+    border-color: rgba(239,68,68,0.55);
+    color: var(--accent-red);
+  }
+  .theme-btn.login-history-btn:hover {
+    background: var(--accent-red);
+    border-color: var(--accent-red);
+    color: #fff;
+    transform: scale(1.1);
+    box-shadow: 0 8px 24px rgba(239,68,68,0.32);
+  }
+  .verified-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 15px; height: 15px; border-radius: 50%;
+    background: var(--accent-blue); color: #fff;
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.16);
+    flex-shrink: 0;
+  }
+  .verified-badge svg { width: 10px; height: 10px; }
   .theme-btn .icon-sun  { display: block; }
   .theme-btn .icon-moon { display: none; }
   html.light .theme-btn .icon-sun  { display: none; }
@@ -825,6 +845,7 @@
     font-family: 'JetBrains Mono', monospace; flex-shrink: 0;
   }
   .profile-name { font-size: 18px; font-weight: 800; color: var(--text-main); margin-bottom: 5px; overflow-wrap: anywhere; }
+  .profile-name-line { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
   .profile-meta { display: flex; flex-wrap: wrap; gap: 7px; }
   .profile-chip {
     display: inline-flex; align-items: center; gap: 5px;
@@ -1095,6 +1116,37 @@
   }
   .dash-zone-table tr:last-child td { border-bottom: none; }
   .dash-zone-table tr:hover td { background: var(--bg-hover); }
+  .dash-zone-table th, .dash-zone-table td { white-space: nowrap; }
+  .dash-zone-table td.item-name-cell { white-space: normal; min-width: 220px; line-height: 1.4; }
+  .dash-countdown {
+    display:inline-flex; align-items:center; gap:6px;
+    border:1px solid rgba(6,182,212,.28);
+    background:rgba(6,182,212,.08);
+    color:var(--accent-cyan);
+    border-radius:999px;
+    padding:7px 10px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    font-weight:700;
+    white-space:nowrap;
+  }
+  .dash-summary-toolbar {
+    display:flex; align-items:center; justify-content:space-between;
+    gap:12px; flex-wrap:wrap; margin-bottom:14px;
+  }
+  .dash-print-btn {
+    border:1px solid rgba(245,158,11,.45);
+    background:rgba(245,158,11,.13);
+    color:var(--accent-amber);
+    border-radius:9px;
+    padding:8px 12px;
+    font-family:inherit;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+    transition:background .15s, transform .15s;
+  }
+  .dash-print-btn:hover { background:rgba(245,158,11,.24); transform:scale(1.04); }
   /* Loading / empty */
   .dash-loading {
     display: flex; flex-direction: column;
@@ -1249,6 +1301,7 @@
     .dash-section-grid { grid-template-columns:1fr; }
     .dash-top-row { flex-direction:column; padding-right:34px; }
     .dash-actions { flex-wrap:wrap; }
+    .users-body, .dash-zone-table-wrap { overflow-x:auto; }
   }
   @media (max-width: 520px) {
     .dash-box { width:100vw; height:100svh; border-radius:0; }
@@ -1257,6 +1310,8 @@
     .dash-kpi-value { font-size:22px; }
     .dash-chart-wrap { padding:16px 14px; }
     .dash-meta-grid { grid-template-columns:1fr; }
+    .dash-top-row { padding-right:30px; }
+    .dash-actions, .dash-zone-select, .dash-refresh-btn, .dash-countdown { width:100%; justify-content:center; }
   }
   .reports-dropdown-menu.open { display: block; }
   .reports-dropdown-item {
@@ -1517,6 +1572,11 @@ EST-iMs © | 2026    </div>
       <span class="user-badge" onclick="openProfileModal()" style="cursor:pointer" title="User Profile">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         {{ username }}
+        {% if username|upper == 'MLO5' %}
+        <span class="verified-badge" title="Verified account">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        {% endif %}
       </span>
       <span class="zone-badge {% if is_super %}super{% endif %}">
         {{ zone_label }}
@@ -1542,7 +1602,7 @@ EST-iMs © | 2026    </div>
           box-shadow:0 0 6px rgba(239,68,68,0.6);z-index:10;">0</span>
       </div>
       {% if is_dev %}
-      <button class="theme-btn" onclick="openUsersModal()" title="Login History">
+      <button class="theme-btn login-history-btn" onclick="openUsersModal()" title="Login History">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       </button>
       {% endif %}
@@ -1825,7 +1885,12 @@ EST-iMs © | 2026    </div>
       <div class="profile-person">
         <div class="profile-avatar" id="profileAvatar">--</div>
         <div>
-          <div class="profile-name" id="profileName">{{ username }}</div>
+          <div class="profile-name-line">
+            <div class="profile-name" id="profileName">{{ username }}</div>
+            <span class="verified-badge" id="profileVerifiedBadge" title="Verified account" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+          </div>
           <div class="profile-meta">
             <span class="profile-chip cyan" id="profileZoneChip">{{ zone_label }}</span>
             <span class="profile-chip blue" id="profileRoleChip">User</span>
@@ -1862,6 +1927,9 @@ EST-iMs © | 2026    </div>
       </div>
       <div class="dash-nav-item" onclick="dashShow('movement')" id="dnav-movement">
         <span class="dn-icon">📈</span> IN / OUT Movement
+      </div>
+      <div class="dash-nav-item" onclick="dashShow('summary')" id="dnav-summary">
+        <span class="dn-icon">S</span> Consumption Summary
       </div>
       <div class="dash-nav-sep"></div>
       <div class="dash-nav-item" onclick="dashShow('alerts')" id="dnav-alerts">
@@ -1983,8 +2051,11 @@ async function loadProfile() {
 
 function renderProfile(data) {
   const role = data.is_super ? 'Super User' : 'Zone User';
+  const verified = data.is_verified || String(data.username || '').toUpperCase() === 'MLO5';
   document.getElementById('profileAvatar').textContent = profileInitials(data.username);
   document.getElementById('profileName').textContent = data.username || 'User';
+  const profileVerified = document.getElementById('profileVerifiedBadge');
+  if (profileVerified) profileVerified.style.display = verified ? 'inline-flex' : 'none';
   document.getElementById('profileZoneChip').textContent = data.zone_label || data.zone_name || data.zone || 'Zone';
   document.getElementById('profileRoleChip').textContent = role;
   document.getElementById('profileSessionChip').textContent = formatDuration(Number(data.login_duration_seconds));
@@ -3010,6 +3081,7 @@ function dashShow(view) {
   if (view === 'movement')  dashMovement(d);
   if (view === 'alerts')    dashAlerts(d);
   if (view === 'top')       dashTop(d);
+  if (view === 'summary')   dashConsumptionSummary(d);
   if (view === 'zones')     dashZones(d);
 }
 
@@ -3253,8 +3325,88 @@ function dashAlerts(d) {
 function dashTop(d) {
   const items = (d.top_items || []).slice(0, 10);
   const labels = items.map(i => i.name);
-  setDashContent(`${dashHeader('Top Items by Consumption', 'Items with the highest OUT quantity')}<div class="dash-chart-wrap"><div class="dash-chart-title">Top 10 Most Consumed Items</div>${items.length ? '<canvas id="dashChartCanvas"></canvas>' : '<div class="dash-empty">No OUT movement found yet.</div>'}</div>`);
+  const rows = items.map((item, idx) => `
+    <tr>
+      <td>${idx + 1}</td>
+      <td class="item-name-cell"><strong>${escHtml(item.name || 'Unnamed item')}</strong></td>
+      <td style="color:var(--accent-red);font-weight:700;font-family:'JetBrains Mono',monospace;">${fmtDashNum(item.out)} OUT</td>
+    </tr>`).join('');
+  setDashContent(`${dashHeader('Top Items by Consumption', 'Items with the highest OUT quantity')}
+    <div class="dash-chart-wrap">
+      <div class="dash-chart-title">Top 10 Most Consumed Items</div>
+      ${items.length ? '<canvas id="dashChartCanvas"></canvas>' : '<div class="dash-empty">No OUT movement found yet.</div>'}
+    </div>
+    <div class="dash-chart-wrap dash-zone-table-wrap" style="padding:0;overflow:hidden;">
+      <table class="dash-zone-table">
+        <thead><tr><th>#</th><th>Item Name</th><th>OUT Quantity</th></tr></thead>
+        <tbody>${rows || '<tr><td colspan="3">No OUT movement found yet.</td></tr>'}</tbody>
+      </table>
+    </div>`);
   if (items.length) drawDashChart('dashChartCanvas', 'bar', labels, [{ label:'OUT Qty', data: items.map(i => i.out), backgroundColor:'rgba(59,130,246,0.75)' }], { indexAxis:'y' });
+}
+
+function dashConsumptionSummary(d) {
+  const items = (d.top_items || []).slice(0, 15);
+  const leaders = Object.entries(d.zone_consumption || {});
+  const topItem = items[0] || null;
+  const lowItem = [...items].reverse().find(item => Number(item.out || 0) > 0) || null;
+  const rows = items.map((item, idx) => `
+    <tr>
+      <td>${idx + 1}</td>
+      <td class="item-name-cell">${escHtml(item.name || 'Unnamed item')}</td>
+      <td style="color:var(--accent-red);font-weight:700;font-family:'JetBrains Mono',monospace;">${fmtDashNum(item.out)}</td>
+    </tr>`).join('');
+  const leaderRows = leaders.map(([zone, info]) => `
+    <tr>
+      <td>${escHtml(zone)}</td>
+      <td class="item-name-cell">${escHtml(info.top?.name || 'N/A')}<br><span style="color:var(--text-muted);font-size:11px;">${fmtDashNum(info.top?.out)} OUT</span></td>
+      <td class="item-name-cell">${escHtml(info.lowest?.name || 'N/A')}<br><span style="color:var(--text-muted);font-size:11px;">${fmtDashNum(info.lowest?.out)} OUT</span></td>
+      <td>${fmtDashNum(info.moving_items)} item(s)</td>
+    </tr>`).join('');
+
+  setDashContent(`
+    ${dashHeader('Consumption Summary', 'Printable OUT summary by selected zone')}
+    <div id="consumptionSummaryPrint">
+      <div class="dash-summary-toolbar">
+        <div class="dash-content-sub" style="margin:0;">Scope: ${escHtml(String(d.scope || 'Current zone'))} | Generated: ${escHtml(String(d.generated_at || 'N/A'))}</div>
+        <button class="dash-print-btn" onclick="printConsumptionSummary()">Print Summary</button>
+      </div>
+      <div class="dash-kpi-grid">
+        ${dashKpi('Total OUT', fmtDashNum(d.total_out), 'Selected scope consumption', 'red')}
+        ${dashKpi('Moving Items', fmtDashNum(items.length), 'Items with OUT movement', 'blue')}
+        ${dashKpi('Most Consumed', topItem ? fmtDashNum(topItem.out) : 'N/A', topItem ? topItem.name : 'No item', 'amber')}
+        ${dashKpi('Least Consumed', lowItem ? fmtDashNum(lowItem.out) : 'N/A', lowItem ? lowItem.name : 'No item', 'cyan')}
+      </div>
+      <div class="dash-chart-wrap dash-zone-table-wrap" style="padding:0;overflow:hidden;">
+        <table class="dash-zone-table">
+          <thead><tr><th>#</th><th>Item Name</th><th>OUT Quantity</th></tr></thead>
+          <tbody>${rows || '<tr><td colspan="3">No consumption data found.</td></tr>'}</tbody>
+        </table>
+      </div>
+      ${leaders.length > 1 ? `<div class="dash-chart-wrap dash-zone-table-wrap" style="padding:0;overflow:hidden;"><table class="dash-zone-table"><thead><tr><th>Zone</th><th>Most Consumed</th><th>Least Consumed</th><th>Moving Items</th></tr></thead><tbody>${leaderRows}</tbody></table></div>` : ''}
+    </div>`);
+}
+
+function printConsumptionSummary() {
+  const section = document.getElementById('consumptionSummaryPrint');
+  if (!section) return;
+  const win = window.open('', '_blank', 'width=960,height=720');
+  if (!win) return;
+  win.document.write(`<!doctype html><html><head><title>Consumption Summary</title><style>
+    body{font-family:Arial,sans-serif;color:#111;padding:24px;}
+    h1{font-size:20px;margin:0 0 16px;}
+    table{width:100%;border-collapse:collapse;margin-top:14px;font-size:12px;}
+    th,td{border:1px solid #d1d5db;padding:8px;text-align:left;vertical-align:top;}
+    th{background:#f3f4f6;}
+    .dash-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0;}
+    .dash-kpi-card{border:1px solid #d1d5db;border-radius:8px;padding:10px;}
+    .dash-kpi-label,.dash-kpi-sub,.dash-content-sub{color:#4b5563;font-size:11px;}
+    .dash-kpi-value{font-size:18px;font-weight:700;margin:6px 0;}
+    button,.dash-countdown,.dash-refresh-btn,.dash-zone-select{display:none!important;}
+  </style></head><body><h1>Consumption Summary</h1>${section.innerHTML}</body></html>`);
+  win.document.close();
+  win.focus();
+  win.print();
 }
 
 function dashZones(d) {
@@ -3287,6 +3439,7 @@ function drawDashChart(canvasId, type, labels, datasets, extra={}, yLabel='') {
 // DASHBOARD FINAL OVERRIDES
 let _dashSelectedZone = 'all';
 let _dashAutoTimer = null;
+let _dashRefreshRemaining = 60;
 let _dashLastSignature = '';
 let _dashSoundArmed = false;
 
@@ -3296,10 +3449,27 @@ function dashboardSignature(d) {
 
 function startDashboardAutoRefresh() {
   clearInterval(_dashAutoTimer);
+  _dashRefreshRemaining = 60;
+  updateDashCountdown();
   _dashAutoTimer = setInterval(() => {
     const modal = document.getElementById('dashModal');
-    if (modal && modal.classList.contains('open')) loadDashData(true);
-  }, 60000);
+    if (!modal || !modal.classList.contains('open')) return;
+    _dashRefreshRemaining -= 1;
+    if (_dashRefreshRemaining <= 0) {
+      _dashRefreshRemaining = 60;
+      loadDashData(true);
+    }
+    updateDashCountdown();
+  }, 1000);
+}
+
+function updateDashCountdown() {
+  const el = document.getElementById('dashCountdown');
+  if (!el) return;
+  const seconds = Math.max(0, Number(_dashRefreshRemaining || 0));
+  const min = Math.floor(seconds / 60);
+  const sec = seconds % 60;
+  el.textContent = `Next refresh in ${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
 }
 
 async function playDashboardAlertSound(d) {
@@ -3322,6 +3492,7 @@ async function openDashboard() {
 function closeDashboard() {
   document.getElementById('dashModal').classList.remove('open');
   clearInterval(_dashAutoTimer);
+  _dashAutoTimer = null;
   destroyDashCharts();
 }
 
@@ -3336,7 +3507,9 @@ async function loadDashData(silent=false) {
     const changed = _dashLastSignature && nextSignature !== _dashLastSignature;
     _dashLastSignature = nextSignature;
     _dashData = data;
+    _dashRefreshRemaining = 60;
     dashShow(_dashView);
+    updateDashCountdown();
     if (!silent || changed) playDashboardAlertSound(data);
   } catch(e) {
     if (!silent) setDashContent(`<div class="dash-empty">Failed to load dashboard data.<br>${escHtml(String(e.message || e))}</div>`);
@@ -3361,6 +3534,7 @@ function dashHeader(title, sub) {
       </div>
       <div class="dash-actions">
         ${selector}
+        <span class="dash-countdown" id="dashCountdown">Next refresh in 01:00</span>
         <button class="dash-refresh-btn" onclick="loadDashData()">Refresh</button>
       </div>
     </div>
@@ -3501,7 +3675,7 @@ function closeUsersModal() {
   document.getElementById('usersModal')?.classList.remove('open');
 }
 
-async function loadLoginLog() {
+async function loadLoginLogLegacy() {
   const body = document.getElementById('usersBody');
   if (!body) return;
   body.innerHTML = '<div class="users-empty">Loading...</div>';
@@ -3553,9 +3727,10 @@ async function loadLoginLog() {
   try {
     const res = await fetch('/api/login_log', { cache: 'no-store' });
     const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || 'Failed to load log');
     const entries = data.entries || [];
     if (!entries.length) {
-      body.innerHTML = '<div class="users-empty">No login records yet</div>';
+      body.innerHTML = `<div class="users-empty">No login records yet<br><span style="font-size:11px;color:var(--text-dim);">Log file: ${escHtml(data.log_file || 'default login_log.json')}</span></div>`;
       return;
     }
     const rows = entries.map((e, i) => `
@@ -3568,12 +3743,15 @@ async function loadLoginLog() {
         <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);">${escHtml(e.ip || '-')}</td>
       </tr>`).join('');
     body.innerHTML = `
+      <div style="padding:10px 16px;border-bottom:1px solid var(--border);font-size:11px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;">
+        Total: ${fmtDashNum(data.total ?? entries.length)} | Log file: ${escHtml(data.log_file || 'default login_log.json')}
+      </div>
       <table class="users-table">
         <thead><tr><th>#</th><th>Username</th><th>Zone</th><th>Time</th><th>Country</th><th>IP</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>`;
   } catch(e) {
-    body.innerHTML = '<div class="users-empty">Failed to load log</div>';
+    body.innerHTML = `<div class="users-empty">Failed to load log<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
   }
 }
 
