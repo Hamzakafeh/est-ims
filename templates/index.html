@@ -1131,6 +1131,28 @@
   }
   .dash-refresh-btn:hover { background:var(--bg-hover); border-color:var(--accent-blue); transform:translateY(-1px); }
   .dash-refresh-btn:disabled { opacity:.55; cursor:wait; transform:none; }
+  #dashBtn {
+    background: linear-gradient(135deg, rgba(59,130,246,.24), rgba(6,182,212,.18));
+    border-color: rgba(59,130,246,.65);
+    color: var(--accent-cyan);
+    box-shadow: 0 0 18px rgba(59,130,246,.22);
+  }
+  #dashBtn:hover {
+    background: var(--accent-blue);
+    color: #fff;
+    box-shadow: 0 8px 26px rgba(59,130,246,.38);
+  }
+  .dash-zone-select {
+    min-width: 160px;
+    background: var(--bg-card);
+    color: var(--text-main);
+    border: 1px solid var(--border-light);
+    border-radius: 9px;
+    padding: 8px 10px;
+    font-family: inherit;
+    font-size: 12px;
+    outline: none;
+  }
   .dash-meta-grid {
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
@@ -1179,6 +1201,41 @@
   }
   .dash-alert-list.compact { max-height:360px; overflow:auto; padding-right:4px; }
   .dash-zone-table-wrap { overflow:auto; }
+  .dash-leader-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:12px;
+    margin-bottom:22px;
+  }
+  .dash-leader-card {
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:16px;
+  }
+  .dash-leader-zone { font-weight:700; color:var(--text-main); margin-bottom:12px; }
+  .dash-leader-row { display:flex; justify-content:space-between; gap:12px; padding:8px 0; border-top:1px solid var(--border); }
+  .dash-leader-label { color:var(--text-muted); font-size:11px; text-transform:uppercase; letter-spacing:.7px; }
+  .dash-leader-name { color:var(--text-main); font-weight:600; font-size:12px; margin-top:3px; }
+  .dash-leader-value { color:var(--accent-cyan); font-family:'JetBrains Mono',monospace; font-size:12px; white-space:nowrap; }
+  .dash-mini-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:12px;
+    margin-bottom:22px;
+  }
+  .dash-mini-card {
+    background:rgba(255,255,255,.03);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:14px 16px;
+  }
+  .dash-mini-title { color:var(--text-muted); font-size:11px; text-transform:uppercase; letter-spacing:.7px; margin-bottom:8px; }
+  .dash-mini-value { color:var(--text-main); font-size:16px; font-weight:700; }
+  .dash-file-list { display:flex; flex-direction:column; gap:8px; }
+  .dash-file-item { display:flex; justify-content:space-between; gap:12px; background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-size:12px; }
+  .dash-file-name { color:var(--text-main); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .dash-file-date { color:var(--text-muted); font-family:'JetBrains Mono',monospace; white-space:nowrap; }
   @media (max-width: 900px) {
     .dash-box { width:96vw; height:90vh; flex-direction:column; }
     .dash-sidebar {
@@ -1191,6 +1248,7 @@
     .dash-content { padding:22px 18px; }
     .dash-section-grid { grid-template-columns:1fr; }
     .dash-top-row { flex-direction:column; padding-right:34px; }
+    .dash-actions { flex-wrap:wrap; }
   }
   @media (max-width: 520px) {
     .dash-box { width:100vw; height:100svh; border-radius:0; }
@@ -3222,6 +3280,167 @@ function drawDashChart(canvasId, type, labels, datasets, extra={}, yLabel='') {
     }
   });
   _dashCharts.push(chart);
+}
+
+// DASHBOARD FINAL OVERRIDES
+let _dashSelectedZone = 'all';
+let _dashAutoTimer = null;
+let _dashLastSignature = '';
+let _dashSoundArmed = false;
+
+function dashboardSignature(d) {
+  return [d.latest_file_update || '', d.total_in || 0, d.total_out || 0, d.low_stock || 0, d.zero_stock || 0, d.scope || ''].join('|');
+}
+
+function startDashboardAutoRefresh() {
+  clearInterval(_dashAutoTimer);
+  _dashAutoTimer = setInterval(() => {
+    const modal = document.getElementById('dashModal');
+    if (modal && modal.classList.contains('open')) loadDashData(true);
+  }, 60000);
+}
+
+async function playDashboardAlertSound(d) {
+  const hasRisk = (d.zero_stock || 0) > 0 || (d.low_stock || 0) > 0 || (d.high_usage_items || []).length > 0;
+  if (!hasRisk || !_dashSoundArmed) return;
+  try {
+    const audio = new Audio('/static/alert.mp3');
+    audio.volume = 0.65;
+    await audio.play();
+  } catch(e) {}
+}
+
+async function openDashboard() {
+  _dashSoundArmed = true;
+  document.getElementById('dashModal').classList.add('open');
+  await loadDashData();
+  startDashboardAutoRefresh();
+}
+
+function closeDashboard() {
+  document.getElementById('dashModal').classList.remove('open');
+  clearInterval(_dashAutoTimer);
+  destroyDashCharts();
+}
+
+async function loadDashData(silent=false) {
+  if (!silent) setDashContent('<div class="dash-loading"><div class="spinner"></div><span>Reading Excel files...</span></div>');
+  try {
+    const query = _dashSelectedZone ? `?zone=${encodeURIComponent(_dashSelectedZone)}` : '';
+    const res = await fetch('/api/dashboard' + query, { cache: 'no-store' });
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || 'Dashboard request failed');
+    const nextSignature = dashboardSignature(data);
+    const changed = _dashLastSignature && nextSignature !== _dashLastSignature;
+    _dashLastSignature = nextSignature;
+    _dashData = data;
+    dashShow(_dashView);
+    if (!silent || changed) playDashboardAlertSound(data);
+  } catch(e) {
+    if (!silent) setDashContent(`<div class="dash-empty">Failed to load dashboard data.<br>${escHtml(String(e.message || e))}</div>`);
+  }
+}
+
+function onDashZoneChange(value) {
+  _dashSelectedZone = value || 'all';
+  _dashLastSignature = '';
+  loadDashData();
+}
+
+function dashHeader(title, sub) {
+  const d = _dashData || {};
+  const options = (d.dashboard_zones || []).map(z => `<option value="${escHtml(String(z.id))}" ${String(z.id) === String(d.selected_zone || _dashSelectedZone) ? 'selected' : ''}>${escHtml(String(z.name || z.id))}</option>`).join('');
+  const selector = options ? `<select class="dash-zone-select" onchange="onDashZoneChange(this.value)">${options}</select>` : '';
+  return `
+    <div class="dash-top-row">
+      <div>
+        <div class="dash-content-title">${escHtml(String(title))}</div>
+        <div class="dash-content-sub">${escHtml(String(sub))}</div>
+      </div>
+      <div class="dash-actions">
+        ${selector}
+        <button class="dash-refresh-btn" onclick="loadDashData()">Refresh</button>
+      </div>
+    </div>
+    <div class="dash-meta-grid">
+      <div class="dash-meta-card"><div class="dash-meta-label">Scope</div><div class="dash-meta-value">${escHtml(String(d.scope || 'Current zone'))}</div></div>
+      <div class="dash-meta-card"><div class="dash-meta-label">Excel files</div><div class="dash-meta-value">${fmtDashNum(d.file_count)} scanned</div></div>
+      <div class="dash-meta-card"><div class="dash-meta-label">Last file update</div><div class="dash-meta-value">${escHtml(String(d.latest_file_update || 'N/A'))}</div></div>
+      <div class="dash-meta-card"><div class="dash-meta-label">Auto refresh</div><div class="dash-meta-value">Every 60 seconds</div></div>
+    </div>`;
+}
+
+function dashLeaderCards(d) {
+  const entries = Object.entries(d.zone_consumption || {});
+  if (!entries.length) return '<div class="dash-empty">No consumption leaders found yet.</div>';
+  return `<div class="dash-leader-grid">${entries.map(([zone, data]) => `
+    <div class="dash-leader-card">
+      <div class="dash-leader-zone">${escHtml(zone)}</div>
+      <div class="dash-leader-row">
+        <div><div class="dash-leader-label">Most consumed</div><div class="dash-leader-name">${escHtml(data.top?.name || 'N/A')}</div></div>
+        <div class="dash-leader-value">${fmtDashNum(data.top?.out)} OUT</div>
+      </div>
+      <div class="dash-leader-row">
+        <div><div class="dash-leader-label">Least consumed</div><div class="dash-leader-name">${escHtml(data.lowest?.name || 'N/A')}</div></div>
+        <div class="dash-leader-value">${fmtDashNum(data.lowest?.out)} OUT</div>
+      </div>
+    </div>`).join('')}</div>`;
+}
+
+function dashRiskCards(d) {
+  const lowZero = Object.entries(d.zone_low_zero || {});
+  const high = d.high_usage_items || [];
+  const latest = d.latest_files || [];
+  return `
+    <div class="dash-mini-grid">
+      <div class="dash-mini-card"><div class="dash-mini-title">Most active zone</div><div class="dash-mini-value">${escHtml(d.most_active_zone?.zone || 'N/A')} ${d.most_active_zone ? `(${fmtDashNum(d.most_active_zone.movement)})` : ''}</div></div>
+      <div class="dash-mini-card"><div class="dash-mini-title">High usage alerts</div><div class="dash-mini-value">${fmtDashNum(high.length)} item(s)</div></div>
+      <div class="dash-mini-card"><div class="dash-mini-title">Unreadable files</div><div class="dash-mini-value">${fmtDashNum(d.unreadable_files)}</div></div>
+    </div>
+    <div class="dash-section-grid">
+      <div class="dash-chart-wrap">
+        <div class="dash-chart-title">Low / Zero Stock by Zone</div>
+        ${lowZero.length ? `<table class="dash-zone-table"><thead><tr><th>Zone</th><th>Low</th><th>Zero</th></tr></thead><tbody>${lowZero.map(([z, v]) => `<tr><td>${escHtml(z)}</td><td>${fmtDashNum(v.low)}</td><td>${fmtDashNum(v.zero)}</td></tr>`).join('')}</tbody></table>` : '<div class="dash-empty">No stock risk by zone.</div>'}
+      </div>
+      <div class="dash-chart-wrap">
+        <div class="dash-chart-title">Latest Updated Files</div>
+        ${latest.length ? `<div class="dash-file-list">${latest.map(f => `<div class="dash-file-item"><div><div class="dash-file-name">${escHtml(f.zone)} / ${escHtml(f.file)}</div><div class="dash-content-sub" style="margin:4px 0 0;">${escHtml(f.path || '')}</div></div><div class="dash-file-date">${escHtml(f.updated || '')}</div></div>`).join('')}</div>` : '<div class="dash-empty">No file updates found.</div>'}
+      </div>
+    </div>`;
+}
+
+function dashOverview(d) {
+  const labels = Object.keys(d.zone_in || {});
+  const kpis = [
+    dashKpi('Total Items', fmtDashNum(d.total_items), 'Rows with inventory data', 'blue'),
+    dashKpi('Total IN', fmtDashNum(d.total_in), 'Quantity received', 'green'),
+    dashKpi('Total OUT', fmtDashNum(d.total_out), 'Quantity issued', 'red'),
+    dashKpi('Net Movement', fmtDashNum((d.total_in || 0) - (d.total_out || 0)), 'IN minus OUT', 'cyan'),
+    dashKpi('Low Stock', fmtDashNum(d.low_stock), 'Below threshold', 'amber'),
+    dashKpi('Zero Stock', fmtDashNum(d.zero_stock), 'Immediate attention', 'red'),
+  ].join('');
+  setDashContent(`
+    ${dashHeader('Dashboard Overview', 'Live summary based on current Excel files')}
+    <div class="dash-kpi-grid">${kpis}</div>
+    ${dashLeaderCards(d)}
+    ${dashRiskCards(d)}
+    <div class="dash-chart-wrap">
+      <div class="dash-chart-title">IN vs OUT by Zone</div>
+      ${labels.length ? '<canvas id="dashChartCanvas"></canvas>' : '<div class="dash-empty">No movement data found yet.</div>'}
+    </div>`);
+  if (labels.length) drawDashChart('dashChartCanvas', 'bar', labels, [
+    { label:'IN', data: labels.map(z => d.zone_in[z] || 0), backgroundColor:'rgba(16,185,129,0.7)' },
+    { label:'OUT', data: labels.map(z => d.zone_out[z] || 0), backgroundColor:'rgba(239,68,68,0.7)' },
+  ]);
+}
+
+function dashZones(d) {
+  const zones = Array.from(new Set([...Object.keys(d.zone_in || {}), ...Object.keys(d.zone_out || {}), ...Object.keys(d.zone_items || {}), ...Object.keys(d.zone_consumption || {})]));
+  const rows = zones.map(z => {
+    const leader = (d.zone_consumption || {})[z] || {};
+    return `<tr><td>${escHtml(String(z))}</td><td>${fmtDashNum((d.zone_files || {})[z])}</td><td>${fmtDashNum((d.zone_items || {})[z])}</td><td>${escHtml(leader.top?.name || 'N/A')}<br><span style="color:var(--text-muted);font-size:11px;">${fmtDashNum(leader.top?.out)} OUT</span></td><td>${escHtml(leader.lowest?.name || 'N/A')}<br><span style="color:var(--text-muted);font-size:11px;">${fmtDashNum(leader.lowest?.out)} OUT</span></td><td style="color:var(--accent-green);font-weight:600;">${fmtDashNum((d.zone_in || {})[z])}</td><td style="color:var(--accent-red);font-weight:600;">${fmtDashNum((d.zone_out || {})[z])}</td></tr>`;
+  }).join('');
+  setDashContent(`${dashHeader('Zones Summary', 'Consumption leaders and movement per zone')}<div class="dash-chart-wrap dash-zone-table-wrap" style="padding:0;overflow:hidden;"><table class="dash-zone-table"><thead><tr><th>Zone</th><th>Files</th><th>Items</th><th>Most Consumed</th><th>Least Consumed</th><th>Total IN</th><th>Total OUT</th></tr></thead><tbody>${rows || '<tr><td colspan="7">No zone data found.</td></tr>'}</tbody></table></div>`);
 }
 
 // WELCOME TOAST

@@ -1321,13 +1321,23 @@ def api_dashboard():
     """Scan Excel files for the current dashboard scope and return live metrics."""
     zone_id = session.get('active_view_zone') or session.get('zone', '')
     is_super = session.get('is_super', False)
+    requested_zone = request.args.get('zone', '').strip()
 
     root = get_years_root()
     if not root:
         return jsonify({'error': 'No data directory'}), 404
 
     files_to_scan = []
-    scan_zones = [z['id'] for z in ZONES if z['id'] not in SUPER_ZONES] if is_super else [zone_id]
+    available_dashboard_zones = [z for z in ZONES if z['id'] not in SUPER_ZONES]
+    valid_zone_ids = {z['id'] for z in available_dashboard_zones}
+    if is_super and requested_zone and requested_zone != 'all':
+        if requested_zone not in valid_zone_ids:
+            return jsonify({'error': 'Invalid dashboard zone'}), 400
+        scan_zones = [requested_zone]
+    elif is_super:
+        scan_zones = [z['id'] for z in available_dashboard_zones]
+    else:
+        scan_zones = [zone_id]
 
     for zid in scan_zones:
         zone_path = os.path.join(root, zid)
@@ -1353,6 +1363,9 @@ def api_dashboard():
     zone_out    = {}   # zone -> total out
     zone_items  = {}   # zone -> row count
     zone_files  = {}   # zone -> file count
+    zone_item_out = {}  # zone -> item -> total out
+    zone_low_zero = {}  # zone -> low/zero counters
+    latest_files = []
     unreadable  = 0
     latest_mtime = None
 
@@ -1399,6 +1412,13 @@ def api_dashboard():
         try:
             mtime = os.path.getmtime(fpath)
             latest_mtime = mtime if latest_mtime is None else max(latest_mtime, mtime)
+            latest_files.append({
+                'zone': zone_label,
+                'file': os.path.basename(fpath),
+                'path': os.path.relpath(fpath, root),
+                'updated': datetime.fromtimestamp(mtime).strftime('%Y-%m-%d %H:%M:%S'),
+                'mtime': mtime,
+            })
         except Exception:
             pass
 
@@ -1461,14 +1481,18 @@ def api_dashboard():
 
                 if item_name and out_val > 0:
                     item_out[item_name] = item_out.get(item_name, 0) + out_val
+                    zone_bucket = zone_item_out.setdefault(zone_label, {})
+                    zone_bucket[item_name] = zone_bucket.get(item_name, 0) + out_val
 
                 if bal_val is not None:
                     if bal_val == 0:
                         zero_stock += 1
+                        zone_low_zero.setdefault(zone_label, {'low': 0, 'zero': 0})['zero'] += 1
                         alerts.append({'name': item_name or '—', 'sheet': sheet_name,
                                        'balance': 0, 'level': 'danger'})
                     elif bal_val < LOW_THRESHOLD:
                         low_stock += 1
+                        zone_low_zero.setdefault(zone_label, {'low': 0, 'zero': 0})['low'] += 1
                         alerts.append({'name': item_name or '—', 'sheet': sheet_name,
                                        'balance': bal_val, 'level': 'warn'})
 
@@ -1476,8 +1500,31 @@ def api_dashboard():
 
     top_items = sorted([{'name': k, 'out': v} for k, v in item_out.items()],
                        key=lambda x: x['out'], reverse=True)[:10]
+    zone_consumption = {}
+    for zname, items in zone_item_out.items():
+        ranked = sorted(items.items(), key=lambda kv: kv[1], reverse=True)
+        positive = [kv for kv in ranked if kv[1] > 0]
+        zone_consumption[zname] = {
+            'top': {'name': ranked[0][0], 'out': round(ranked[0][1], 2)} if ranked else None,
+            'lowest': {'name': positive[-1][0], 'out': round(positive[-1][1], 2)} if positive else None,
+            'top5': [{'name': name, 'out': round(value, 2)} for name, value in ranked[:5]],
+            'moving_items': len(positive),
+        }
+    most_active_zone = None
+    for zname in set(list(zone_in.keys()) + list(zone_out.keys())):
+        movement = zone_in.get(zname, 0) + zone_out.get(zname, 0)
+        if most_active_zone is None or movement > most_active_zone['movement']:
+            most_active_zone = {'zone': zname, 'movement': round(movement, 2)}
+    latest_files = sorted(latest_files, key=lambda f: f.get('mtime', 0), reverse=True)[:8]
+    high_usage_threshold = max(100, (total_out / max(len(item_out), 1)) * 2) if item_out else 100
+    high_usage_items = [
+        {'name': item['name'], 'out': round(item['out'], 2)}
+        for item in top_items
+        if item.get('out', 0) >= high_usage_threshold
+    ]
     latest_file_update = datetime.fromtimestamp(latest_mtime).strftime('%Y-%m-%d %H:%M:%S') if latest_mtime else ''
     generated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    scope = 'All zones' if len(scan_zones) > 1 else (next((z['name'] for z in ZONES if z['id'] == scan_zones[0]), scan_zones[0]) if scan_zones else zone_id)
 
     return jsonify({
         'total_items': total_items,
@@ -1491,11 +1538,19 @@ def api_dashboard():
         'zone_out':    {k: round(v, 2) for k, v in zone_out.items()},
         'zone_items':  zone_items,
         'zone_files':  zone_files,
+        'zone_consumption': zone_consumption,
+        'zone_low_zero': zone_low_zero,
+        'latest_files': [{k: v for k, v in item.items() if k != 'mtime'} for item in latest_files],
+        'most_active_zone': most_active_zone,
+        'high_usage_items': high_usage_items,
+        'high_usage_threshold': round(high_usage_threshold, 2),
         'file_count':  len(files_to_scan),
         'unreadable_files': unreadable,
         'latest_file_update': latest_file_update,
         'generated_at': generated_at,
-        'scope': 'All zones' if is_super else (next((z['name'] for z in ZONES if z['id'] == zone_id), zone_id) or zone_id),
+        'scope': scope,
+        'selected_zone': requested_zone if is_super and requested_zone else ('all' if is_super else zone_id),
+        'dashboard_zones': [{'id': 'all', 'name': 'All zones'}] + [{'id': z['id'], 'name': z['name'], 'label': z['label']} for z in available_dashboard_zones] if is_super else [],
     })
 
 @app.route('/api/login_log')
