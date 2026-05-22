@@ -379,9 +379,9 @@
     margin-top:16px; font-size:12px;
   }
   .login-link-disabled {
-    color:var(--text-muted); text-decoration:none; cursor:not-allowed; opacity:.68;
+    color:var(--text-muted); text-decoration:none; cursor:pointer; opacity:.85; transition: color 0.15s;
   }
-  .login-link-disabled:hover { color:var(--text-muted); }
+  .login-link-disabled:hover { color:var(--accent-cyan); }
 
   /* error box */
   .error-box {
@@ -588,8 +588,8 @@
     </button>
 
     <div class="login-links" aria-label="Future account options">
-      <a class="login-link-disabled" href="#" onclick="return false;" aria-disabled="true">Sign Up</a>
-      <a class="login-link-disabled" href="#" onclick="return false;" aria-disabled="true">Forgot password?</a>
+      <a class="login-link-disabled" href="/register">Sign Up</a>
+      <a class="login-link-disabled" href="/forgot-password">Forgot password?</a>
     </div>
 
   </div>
@@ -914,4 +914,3 @@ function resetBtn() {
 </script>
 </body>
 </html>
-

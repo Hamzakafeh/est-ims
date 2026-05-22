@@ -8,6 +8,9 @@ import os
 import sys
 import json
 import re
+import sqlite3
+import hashlib
+import secrets
 import warnings
 import threading
 import requests as _requests
@@ -109,6 +112,153 @@ def _record_login(username, zone_id, zone_label, ip):
         _write_login_log(entries)
 
 
+AUTH_DB_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'auth.sqlite3')
+
+
+def _normalize_username(value):
+    return str(value or '').strip().lower()
+
+
+def _normalize_text(value):
+    return re.sub(r'\s+', ' ', str(value or '').strip()).lower()
+
+
+def _hash_secret(value, salt=None):
+    salt = salt or secrets.token_hex(16)
+    digest = hashlib.pbkdf2_hmac(
+        'sha256',
+        str(value or '').encode('utf-8'),
+        bytes.fromhex(salt),
+        200_000,
+    ).hex()
+    return f'pbkdf2_sha256${salt}${digest}'
+
+
+def _verify_secret(value, stored):
+    if not stored:
+        return False
+    try:
+        algo, salt, digest = str(stored).split('$', 2)
+    except ValueError:
+        return False
+    if algo != 'pbkdf2_sha256':
+        return False
+    test = hashlib.pbkdf2_hmac(
+        'sha256',
+        str(value or '').encode('utf-8'),
+        bytes.fromhex(salt),
+        200_000,
+    ).hex()
+    return test == digest
+
+
+def _db_connect():
+    conn = sqlite3.connect(AUTH_DB_FILE)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def _init_auth_db():
+    with _db_connect() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                full_name TEXT NOT NULL,
+                username TEXT NOT NULL UNIQUE,
+                email TEXT NOT NULL,
+                phone TEXT NOT NULL,
+                job_title TEXT NOT NULL,
+                password_hash TEXT NOT NULL,
+                security_question TEXT NOT NULL,
+                security_answer_hash TEXT NOT NULL,
+                approved INTEGER NOT NULL DEFAULT 0,
+                is_admin INTEGER NOT NULL DEFAULT 0,
+                created_at TEXT NOT NULL,
+                approved_at TEXT,
+                created_by TEXT
+            )
+        """)
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS registration_requests (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                full_name TEXT NOT NULL,
+                username TEXT NOT NULL,
+                email TEXT NOT NULL,
+                phone TEXT NOT NULL,
+                job_title TEXT NOT NULL,
+                password_hash TEXT NOT NULL,
+                security_question TEXT NOT NULL,
+                security_answer_hash TEXT NOT NULL,
+                status TEXT NOT NULL DEFAULT 'pending',
+                created_at TEXT NOT NULL,
+                reviewed_at TEXT,
+                reviewed_by TEXT,
+                review_note TEXT
+            )
+        """)
+
+
+def _username_in_env(username):
+    uname = _normalize_username(username)
+    return uname in ENV_USERS
+
+
+def _get_db_user(username):
+    uname = _normalize_username(username)
+    if not uname:
+        return None
+    with _db_connect() as conn:
+        return conn.execute(
+            "SELECT * FROM users WHERE lower(username) = ?",
+            (uname,),
+        ).fetchone()
+
+
+def _username_exists_everywhere(username):
+    uname = _normalize_username(username)
+    if not uname:
+        return False
+    if uname in ENV_USERS:
+        return True
+    with _db_connect() as conn:
+        user = conn.execute("SELECT 1 FROM users WHERE lower(username) = ?", (uname,)).fetchone()
+        if user:
+            return True
+        req = conn.execute(
+            "SELECT 1 FROM registration_requests WHERE lower(username) = ? AND status = 'pending'",
+            (uname,),
+        ).fetchone()
+        return bool(req)
+
+
+def _approved_db_user(username):
+    user = _get_db_user(username)
+    if user and int(user['approved'] or 0) == 1:
+        return user
+    return None
+
+
+def _pending_request_count():
+    with _db_connect() as conn:
+        row = conn.execute(
+            "SELECT COUNT(*) AS c FROM registration_requests WHERE status = 'pending'"
+        ).fetchone()
+    return int(row['c'] if row else 0)
+
+
+_init_auth_db()
+ENV_USERS = {
+    _normalize_username(k): v
+    for k, v in {
+        os.getenv("USER1"): os.getenv("PASS1"),
+        os.getenv("USER2"): os.getenv("PASS2"),
+        os.getenv("USER3"): os.getenv("PASS3"),
+        os.getenv("USER4"): os.getenv("PASS4"),
+    }.items()
+    if k
+}
+
+
 try:
     import openpyxl
 except ImportError:
@@ -155,14 +305,11 @@ def api_lockout_status():
     remaining = _lockout_remaining(ip) if locked else 0
     return jsonify({'locked': locked, 'remaining': remaining})
 # ── بيانات الدخول ──────────────────────────────────────────────────
-import os
-
 USERS = {
     os.getenv("USER1"): os.getenv("PASS1"),
     os.getenv("USER2"): os.getenv("PASS2"),
     os.getenv("USER3"): os.getenv("PASS3"),
     os.getenv("USER4"): os.getenv("PASS4"),
-
 }
 EDIT_PASSWORD = os.getenv("EDIT_PASSWORD")
 
@@ -238,6 +385,129 @@ def login_page():
         return redirect(url_for('zones_page'))
     return render_template('login.html')
 
+@app.route('/register')
+def register_page():
+    if session.get('logged_in'):
+        return redirect(url_for('index') if session.get('zone') else url_for('zones_page'))
+    return render_template('register.html')
+
+@app.route('/forgot-password')
+def forgot_password_page():
+    if session.get('logged_in'):
+        return redirect(url_for('index') if session.get('zone') else url_for('zones_page'))
+    return render_template('forgot_password.html')
+
+@app.route('/api/captcha')
+def api_captcha():
+    a = secrets.randbelow(8) + 2
+    b = secrets.randbelow(8) + 2
+    token = secrets.token_hex(8)
+    session['register_captcha'] = {'token': token, 'answer': str(a + b)}
+    return jsonify({
+        'token': token,
+        'question': f'{a} + {b} = ?',
+    })
+
+@app.route('/api/register', methods=['POST'])
+def api_register():
+    data = request.get_json(silent=True) or {}
+    full_name = str(data.get('full_name', '')).strip()
+    username = _normalize_username(data.get('username', ''))
+    email = str(data.get('email', '')).strip()
+    phone = str(data.get('phone', '')).strip()
+    job_title = str(data.get('job_title', '')).strip()
+    password = str(data.get('password', '')).strip()
+    confirm_password = str(data.get('confirm_password', '')).strip()
+    security_question = str(data.get('security_question', '')).strip()
+    security_answer = str(data.get('security_answer', '')).strip()
+    captcha_answer = str(data.get('captcha_answer', '')).strip()
+    captcha_token = str(data.get('captcha_token', '')).strip()
+
+    required = [full_name, username, email, phone, job_title, password, confirm_password, security_question, security_answer, captcha_answer, captcha_token]
+    if not all(required):
+        return jsonify({'success': False, 'message': 'يرجى تعبئة جميع الحقول'}), 400
+    if password != confirm_password:
+        return jsonify({'success': False, 'message': 'كلمة المرور وتأكيدها غير متطابقين'}), 400
+
+    captcha = session.get('register_captcha') or {}
+    if captcha.get('token') != captcha_token or str(captcha.get('answer', '')).strip() != captcha_answer:
+        return jsonify({'success': False, 'message': 'التحقق الأمني غير صحيح'}), 400
+
+    if _username_exists_everywhere(username):
+        return jsonify({'success': False, 'message': 'اسم المستخدم مستخدم مسبقاً'}), 409
+
+    password_hash = _hash_secret(password)
+    answer_hash = _hash_secret(_normalize_text(security_answer))
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    with _db_connect() as conn:
+        conn.execute("""
+            INSERT INTO registration_requests
+            (full_name, username, email, phone, job_title, password_hash, security_question, security_answer_hash, status, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)
+        """, (
+            full_name,
+            username,
+            email,
+            phone,
+            job_title,
+            password_hash,
+            security_question,
+            answer_hash,
+            now,
+        ))
+
+    session.pop('register_captcha', None)
+    return jsonify({
+        'success': True,
+        'message': 'تم إرسال طلب التسجيل بنجاح. بانتظار موافقة الأدمن.',
+    })
+
+@app.route('/api/password_reset/verify', methods=['POST'])
+def api_password_reset_verify():
+    data = request.get_json(silent=True) or {}
+    username = _normalize_username(data.get('username', ''))
+    security_question = str(data.get('security_question', '')).strip()
+    security_answer = str(data.get('security_answer', '')).strip()
+
+    user = _approved_db_user(username)
+    if not user:
+        return jsonify({'success': False, 'message': 'المستخدم غير موجود أو غير مفعل'}), 404
+    if _normalize_text(user['security_question']) != _normalize_text(security_question):
+        return jsonify({'success': False, 'message': 'السؤال الأمني غير صحيح'}), 401
+    if not _verify_secret(_normalize_text(security_answer), user['security_answer_hash']):
+        return jsonify({'success': False, 'message': 'الجواب الأمني غير صحيح'}), 401
+
+    session['password_reset_username'] = user['username']
+    return jsonify({'success': True, 'message': 'تم التحقق بنجاح'})
+
+@app.route('/api/password_reset/complete', methods=['POST'])
+def api_password_reset_complete():
+    data = request.get_json(silent=True) or {}
+    username = _normalize_username(session.get('password_reset_username') or data.get('username', ''))
+    new_password = str(data.get('new_password', '')).strip()
+    confirm_password = str(data.get('confirm_password', '')).strip()
+
+    if not username:
+        return jsonify({'success': False, 'message': 'انتهت جلسة الاسترجاع، أعد التحقق من البيانات'}), 400
+    if not new_password or not confirm_password:
+        return jsonify({'success': False, 'message': 'يرجى إدخال كلمة المرور الجديدة'}), 400
+    if new_password != confirm_password:
+        return jsonify({'success': False, 'message': 'كلمة المرور وتأكيدها غير متطابقين'}), 400
+
+    password_hash = _hash_secret(new_password)
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    with _db_connect() as conn:
+        cur = conn.execute(
+            "UPDATE users SET password_hash = ?, approved_at = COALESCE(approved_at, ?) WHERE lower(username) = ?",
+            (password_hash, now, username),
+        )
+        if cur.rowcount == 0:
+            return jsonify({'success': False, 'message': 'تعذر تحديث كلمة المرور'}), 404
+
+    session.pop('password_reset_username', None)
+    return jsonify({'success': True, 'message': 'تم تغيير كلمة المرور بنجاح'})
+
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
@@ -259,8 +529,14 @@ def do_login():
     password = data.get('password', '').strip()
     next_url = data.get('next', '/zones')
 
+    username_key = _normalize_username(username)
     # Check if password is correct FIRST — correct password bypasses lockout
-    correct = (username in USERS and USERS[username] is not None and USERS.get(username) == password)
+    env_password = ENV_USERS.get(username_key)
+    db_user = _approved_db_user(username)
+    correct = (
+        (env_password is not None and env_password == password)
+        or (db_user is not None and _verify_secret(password, db_user['password_hash']))
+    )
 
     if not correct and _is_locked_out(ip):
         remaining = _lockout_remaining(ip)
@@ -276,7 +552,7 @@ def do_login():
     if correct:
         _clear_attempts(ip)
         session['logged_in'] = True
-        session['username']  = username
+        session['username']  = db_user['username'] if db_user is not None else username
         # لو في صفحة QR scan منتظرة (بدون zone)، روّح عليها مباشرة
         qr_next = session.pop('qr_next', None)
         if qr_next and qr_next.startswith('/'):
@@ -429,7 +705,7 @@ def api_profile():
             'can_edit': bool(session.get('can_edit', False)),
             'can_export': True,
             'can_print': True,
-            'can_reports': bool(session.get('is_super', False)),
+            'can_reports': True,
             'can_view_all_zones': bool(session.get('is_super', False)),
             'can_switch_zones': bool(session.get('is_super', False)),
         },
@@ -1729,6 +2005,134 @@ def api_login_log():
         'log_file': _LOGIN_LOG_FILE,
     })
 
+@app.route('/api/admin/pending_requests_count')
+@zone_required
+def api_admin_pending_requests_count():
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    return jsonify({'count': _pending_request_count()})
+
+@app.route('/api/admin/registration_requests')
+@zone_required
+def api_admin_registration_requests():
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    with _db_connect() as conn:
+        rows = conn.execute(
+            "SELECT * FROM registration_requests WHERE status = 'pending' ORDER BY created_at DESC, id DESC"
+        ).fetchall()
+    return jsonify({
+        'count': len(rows),
+        'requests': [
+            {
+                'id': row['id'],
+                'full_name': row['full_name'],
+                'username': row['username'],
+                'email': row['email'],
+                'phone': row['phone'],
+                'job_title': row['job_title'],
+                'security_question': row['security_question'],
+                'created_at': row['created_at'],
+            }
+            for row in rows
+        ],
+    })
+
+@app.route('/api/admin/registration_requests/<int:request_id>/approve', methods=['POST'])
+@zone_required
+def api_admin_approve_registration(request_id):
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    admin_user = session.get('username', '')
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    with _db_connect() as conn:
+        row = conn.execute(
+            "SELECT * FROM registration_requests WHERE id = ? AND status = 'pending'",
+            (request_id,),
+        ).fetchone()
+        if not row:
+            return jsonify({'success': False, 'message': 'الطلب غير موجود'}), 404
+        exists = conn.execute(
+            "SELECT 1 FROM users WHERE lower(username) = ?",
+            (_normalize_username(row['username']),),
+        ).fetchone()
+        if exists:
+            conn.execute(
+                "UPDATE registration_requests SET status = 'approved', reviewed_at = ?, reviewed_by = ? WHERE id = ?",
+                (now, admin_user, request_id),
+            )
+            return jsonify({'success': False, 'message': 'اسم المستخدم موجود مسبقاً'}), 409
+        conn.execute(
+            """
+            INSERT INTO users
+            (full_name, username, email, phone, job_title, password_hash, security_question, security_answer_hash, approved, is_admin, created_at, approved_at, created_by)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, 0, ?, ?, ?)
+            """,
+            (
+                row['full_name'],
+                row['username'],
+                row['email'],
+                row['phone'],
+                row['job_title'],
+                row['password_hash'],
+                row['security_question'],
+                row['security_answer_hash'],
+                row['created_at'],
+                now,
+                admin_user,
+            ),
+        )
+        conn.execute(
+            "UPDATE registration_requests SET status = 'approved', reviewed_at = ?, reviewed_by = ? WHERE id = ?",
+            (now, admin_user, request_id),
+        )
+    return jsonify({'success': True, 'message': 'تمت الموافقة على الطلب'})
+
+@app.route('/api/admin/registration_requests/<int:request_id>/reject', methods=['POST'])
+@zone_required
+def api_admin_reject_registration(request_id):
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    admin_user = session.get('username', '')
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    with _db_connect() as conn:
+        row = conn.execute(
+            "SELECT id FROM registration_requests WHERE id = ? AND status = 'pending'",
+            (request_id,),
+        ).fetchone()
+        if not row:
+            return jsonify({'success': False, 'message': 'الطلب غير موجود'}), 404
+        conn.execute(
+            "UPDATE registration_requests SET status = 'rejected', reviewed_at = ?, reviewed_by = ? WHERE id = ?",
+            (now, admin_user, request_id),
+        )
+    return jsonify({'success': True, 'message': 'تم رفض الطلب'})
+
+@app.route('/api/admin/registered_users')
+@zone_required
+def api_admin_registered_users():
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    with _db_connect() as conn:
+        rows = conn.execute(
+            "SELECT full_name, username, email, phone, job_title, approved_at, created_at FROM users WHERE approved = 1 ORDER BY approved_at DESC, id DESC"
+        ).fetchall()
+    return jsonify({
+        'count': len(rows),
+        'users': [
+            {
+                'full_name': row['full_name'],
+                'username': row['username'],
+                'email': row['email'],
+                'phone': row['phone'],
+                'job_title': row['job_title'],
+                'approved_at': row['approved_at'],
+                'created_at': row['created_at'],
+            }
+            for row in rows
+        ],
+    })
+
 @app.route('/api/alert_count')
 @zone_required
 def api_alert_count():
@@ -2338,6 +2742,3 @@ if __name__ == '__main__':
             webbrowser.open('http://127.0.0.1:3049')
         threading.Thread(target=_open, daemon=True).start()
         app.run(host='127.0.0.1', port=3049, debug=False)
-
-
-

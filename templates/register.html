@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EST-iMs | التسجيل</title>
+<link rel="icon" type="image/x-icon" href="/static/low1.ico">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg-deep: #0d1117;
+    --bg-card: #21283a;
+    --bg-hover: #2a3347;
+    --border: #2d3748;
+    --border-light: #3d4f6a;
+    --accent-blue: #3b82f6;
+    --accent-cyan: #06b6d4;
+    --accent-green: #10b981;
+    --accent-purple: #8b5cf6;
+    --accent-red: #ef4444;
+    --text-main: #e2e8f0;
+    --text-muted: #8b9db8;
+    --text-dim: #4a5568;
+  }
+  html.light {
+    --bg-deep: #f0f4f8;
+    --bg-card: #ffffff;
+    --bg-hover: #e8edf5;
+    --border: #d1dae8;
+    --border-light: #b8c6da;
+    --accent-blue: #2563eb;
+    --accent-cyan: #0891b2;
+    --accent-green: #059669;
+    --accent-purple: #7c3aed;
+    --accent-red: #dc2626;
+    --text-main: #1a2332;
+    --text-muted: #4a6080;
+    --text-dim: #8fa3be;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .blob { position: fixed; border-radius: 50%; filter: blur(90px); opacity: .06; pointer-events: none; z-index: 0; }
+  html.light .blob { opacity: .08; }
+  .blob-1 { width: 640px; height: 640px; background: radial-gradient(circle, #3b82f6, transparent 70%); top: -180px; left: -180px; }
+  .blob-2 { width: 520px; height: 520px; background: radial-gradient(circle, #06b6d4, transparent 70%); bottom: -160px; right: -160px; }
+  .grid-overlay {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
+    background-size: 52px 52px;
+    mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black 30%, transparent 100%);
+  }
+  .topbar {
+    position: sticky; top: 0; z-index: 20;
+    height: 58px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+    background: rgba(13,17,23,0.72);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(59,130,246,0.14);
+  }
+  html.light .topbar { background: rgba(255,255,255,0.86); }
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--accent-cyan); text-decoration: none;
+    padding: 7px 12px; border-radius: 9px;
+    border: 1px solid rgba(6,182,212,0.3);
+    background: rgba(6,182,212,0.08);
+    font-size: 13px; font-weight: 600;
+  }
+  .topbar-title { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-muted); }
+  .icon-btn {
+    width: 36px; height: 36px; border-radius: 9px;
+    border: 1px solid var(--border-light);
+    background: var(--bg-card); color: var(--text-muted);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .icon-sun { display: block; } .icon-moon { display: none; }
+  html.light .icon-sun { display: none; } html.light .icon-moon { display: block; }
+  .page {
+    position: relative; z-index: 1;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 36px 20px 60px;
+  }
+  .hero {
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+  .hero-main, .hero-side, .section, .mini-card {
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+  }
+  html.light .hero-main, html.light .hero-side, html.light .section, html.light .mini-card {
+    background: rgba(255,255,255,0.72);
+    border-color: var(--border);
+  }
+  .hero-main { padding: 28px; }
+  .hero-side { padding: 24px; display: flex; flex-direction: column; gap: 14px; justify-content: center; }
+  .hero-logo {
+    width: 72px; height: 72px; border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 18px;
+    background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(6,182,212,0.12));
+    border: 1px solid rgba(59,130,246,0.25);
+  }
+  .hero-logo img { width: 44px; height: 44px; object-fit: contain; }
+  .hero-kicker {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--accent-cyan);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1.4px; text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .hero-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
+  .hero-title {
+    font-size: clamp(30px, 5vw, 48px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+  .hero-sub { color: var(--text-muted); font-size: 14px; line-height: 1.8; max-width: 620px; }
+  .mini-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .mini-card { padding: 16px; }
+  .mini-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .mini-value { font-size: 13px; color: var(--text-main); line-height: 1.6; }
+  .section {
+    padding: 24px;
+    margin-top: 16px;
+  }
+  .section-title {
+    font-size: 12px; font-weight: 700;
+    color: var(--text-dim);
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .field { display: flex; flex-direction: column; gap: 8px; }
+  .field.full { grid-column: 1 / -1; }
+  .field label {
+    font-size: 11px; color: var(--text-muted); font-weight: 700;
+    letter-spacing: .8px; text-transform: uppercase;
+  }
+  .field input, .field textarea, .field select {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-main);
+    padding: 12px 14px;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+  }
+  .field textarea { min-height: 100px; resize: vertical; }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.14);
+  }
+  .helper {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-top: 10px;
+  }
+  .captcha-box {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(139,92,246,0.28);
+    background: rgba(139,92,246,0.08);
+  }
+  .captcha-code {
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 2px;
+    font-size: 18px;
+    color: var(--accent-purple);
+    font-weight: 700;
+  }
+  .actions {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin-top: 18px;
+  }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    border: none; border-radius: 10px;
+    padding: 12px 18px;
+    font-family: inherit; font-size: 14px; font-weight: 700;
+    cursor: pointer; text-decoration: none;
+  }
+  .btn-primary { background: var(--accent-blue); color: #fff; }
+  .btn-purple { background: var(--accent-purple); color: #fff; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+  .status {
+    display: none;
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .status.ok { display: block; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.28); color: var(--accent-green); }
+  .status.err { display: block; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.28); color: var(--accent-red); }
+  .footer-note {
+    margin-top: 18px;
+    color: var(--text-dim);
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 720px) {
+    .page { padding: 22px 14px 48px; }
+    .form-grid, .mini-grid { grid-template-columns: 1fr; }
+    .section, .hero-main, .hero-side { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="grid-overlay"></div>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a class="back-btn" href="/login">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>العودة</span>
+    </a>
+    <span class="topbar-title">التسجيل</span>
+  </div>
+  <button class="icon-btn" type="button" onclick="toggleTheme()" title="تبديل المظهر">
+    <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+</div>
+
+<div class="page">
+  <div class="hero">
+    <div class="hero-main">
+      <div class="hero-logo">
+        <img src="/static/low.ico" alt="EST-iMs">
+      </div>
+      <div class="hero-kicker"><span class="hero-dot"></span><span>EST-iMs / Registration</span></div>
+      <div class="hero-title">طلب تسجيل موظف جديد</div>
+      <p class="hero-sub">
+        أدخل البيانات المطلوبة كاملة، وبعد الإرسال سيظهر الطلب عند الأدمن للموافقة. بعد الموافقة فقط سيتمكن الحساب من تسجيل الدخول.
+      </p>
+    </div>
+    <div class="hero-side">
+      <div class="mini-grid">
+        <div class="mini-card">
+          <div class="mini-label">الخطوة 1</div>
+          <div class="mini-value">البيانات الأساسية + كلمة المرور + السؤال الأمني.</div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-label">الخطوة 2</div>
+          <div class="mini-value">الكابتشا ثم إرسال الطلب إلى لوحة الموافقات.</div>
+        </div>
+      </div>
+      <div class="mini-card">
+        <div class="mini-label">مهم</div>
+        <div class="mini-value">اسم المستخدم يجب أن يكون فريداً، والطلب لا يتحول إلى حساب فعّال إلا بعد موافقة الأدمن.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">بيانات التسجيل</div>
+    <form id="registerForm">
+      <div class="form-grid">
+        <div class="field full">
+          <label>الاسم الكامل</label>
+          <input id="fullName" dir="auto" placeholder="الاسم الكامل">
+        </div>
+        <div class="field">
+          <label>اسم المستخدم</label>
+          <input id="username" dir="ltr" placeholder="username">
+        </div>
+        <div class="field">
+          <label>الايميل</label>
+          <input id="email" dir="ltr" type="email" placeholder="name@example.com">
+        </div>
+        <div class="field">
+          <label>رقم الهاتف</label>
+          <input id="phone" dir="ltr" placeholder="+962...">
+        </div>
+        <div class="field">
+          <label>وظيفته في الشركة</label>
+          <input id="jobTitle" dir="auto" placeholder="مثال: مخزن / محاسب / مشرف">
+        </div>
+        <div class="field">
+          <label>كلمة المرور</label>
+          <input id="password" dir="ltr" type="password" placeholder="••••••••">
+        </div>
+        <div class="field">
+          <label>تأكيد كلمة المرور</label>
+          <input id="confirmPassword" dir="ltr" type="password" placeholder="••••••••">
+        </div>
+        <div class="field full">
+          <label>السؤال الأمني</label>
+          <input id="securityQuestion" dir="auto" placeholder="اكتب السؤال الأمني الذي ستستخدمه لاحقاً">
+        </div>
+        <div class="field full">
+          <label>إجابة السؤال الأمني</label>
+          <input id="securityAnswer" dir="auto" placeholder="أدخل الجواب">
+        </div>
+        <div class="field full">
+          <label>كابتشا</label>
+          <div class="captcha-box">
+            <div class="captcha-code" id="captchaQuestion">...</div>
+            <input id="captchaAnswer" dir="ltr" style="max-width:180px" placeholder="الجواب">
+            <button class="btn btn-ghost" type="button" id="reloadCaptchaBtn">تحديث</button>
+          </div>
+          <div class="helper">حل الكابتشا للتأكد من أن الطلب يتم من شخص حقيقي.</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-purple" type="submit" id="submitBtn">إرسال الطلب</button>
+        <a class="btn btn-ghost" href="/login">العودة للدخول</a>
+      </div>
+      <div class="status" id="statusBox"></div>
+      <div class="footer-note">EST-iMs | طلبات التسجيل تحفظ في SQLite وتنتظر موافقة الأدمن.</div>
+    </form>
+  </div>
+</div>
+
+<script>
+(function() {
+  const saved = localStorage.getItem('est-theme');
+  if (saved === 'light') document.documentElement.classList.add('light');
+})();
+function toggleTheme() {
+  const isLight = document.documentElement.classList.toggle('light');
+  localStorage.setItem('est-theme', isLight ? 'light' : 'dark');
+}
+
+let captchaToken = '';
+async function loadCaptcha() {
+  const res = await fetch('/api/captcha', { cache: 'no-store' });
+  const data = await res.json();
+  captchaToken = data.token || '';
+  document.getElementById('captchaQuestion').textContent = data.question || '...';
+}
+
+function setStatus(msg, ok) {
+  const box = document.getElementById('statusBox');
+  box.className = 'status ' + (ok ? 'ok' : 'err');
+  box.textContent = msg;
+}
+
+document.getElementById('reloadCaptchaBtn').addEventListener('click', loadCaptcha);
+
+document.getElementById('registerForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const payload = {
+    full_name: document.getElementById('fullName').value.trim(),
+    username: document.getElementById('username').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    job_title: document.getElementById('jobTitle').value.trim(),
+    password: document.getElementById('password').value,
+    confirm_password: document.getElementById('confirmPassword').value,
+    security_question: document.getElementById('securityQuestion').value.trim(),
+    security_answer: document.getElementById('securityAnswer').value.trim(),
+    captcha_answer: document.getElementById('captchaAnswer').value.trim(),
+    captcha_token: captchaToken,
+  };
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'جاري الإرسال...';
+  try {
+    const res = await fetch('/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.message || 'تعذر إرسال الطلب');
+    setStatus(data.message, true);
+    e.target.reset();
+    await loadCaptcha();
+  } catch (err) {
+    setStatus(err.message || 'حدث خطأ', false);
+    await loadCaptcha();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'إرسال الطلب';
+  }
+});
+
+loadCaptcha().catch(() => setStatus('تعذر تحميل الكابتشا', false));
+</script>
+</body>
+</html>

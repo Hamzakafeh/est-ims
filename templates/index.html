@@ -176,6 +176,8 @@
   .btn-success:hover  { background: #059669; border-color: #059669; transform: translateY(-1px); }
   .btn-warning  { background: var(--accent-amber); color: #000; border: 1.5px solid var(--accent-amber); }
   .btn-warning:hover  { background: #d97706; border-color: #d97706; transform: translateY(-1px); }
+  .btn-purple   { background: var(--accent-purple); color: #fff; border: 1.5px solid var(--accent-purple); }
+  .btn-purple:hover { background: #7c3aed; border-color: #7c3aed; transform: translateY(-1px); }
   .btn-danger   { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1.5px solid rgba(239,68,68,0.5); }
   .btn-danger:hover   { background: rgba(239,68,68,0.28); transform: translateY(-1px); }
   .btn-ghost {
@@ -199,6 +201,33 @@
 
   #reportsBtn { background:linear-gradient(135deg, rgba(245,158,11,.24), rgba(16,185,129,.16)); border-color:rgba(245,158,11,.6); color:var(--accent-amber); }
   #reportsBtn:hover { background: rgba(245,158,11,.32); color: var(--accent-amber); transform: scale(1.1); box-shadow: 0 6px 20px rgba(245,158,11,0.28); }
+  .admin-stack { position: relative; display: inline-flex; }
+  .admin-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: var(--accent-red);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 800;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 6px rgba(239,68,68,0.55);
+    z-index: 10;
+  }
+  #adminRequestsBtn { background: linear-gradient(135deg, rgba(139,92,246,.22), rgba(124,58,237,.14)); border-color: rgba(139,92,246,.58); color: #c4b5fd; }
+  #adminRequestsBtn:hover { background: rgba(139,92,246,.34); color: #fff; transform: scale(1.1); box-shadow: 0 6px 20px rgba(139,92,246,0.25); }
+  #adminUsersBtn { background: rgba(139,92,246,0.14); border-color: rgba(139,92,246,0.48); color: #c4b5fd; }
+  #adminUsersBtn:hover { background: var(--accent-purple); color: #fff; transform: scale(1.1); box-shadow: 0 6px 20px rgba(139,92,246,0.28); }
+  html.light #adminRequestsBtn { background: rgba(124,58,237,0.12); border-color: rgba(124,58,237,0.42); color: #7c3aed; }
+  html.light #adminRequestsBtn:hover { background: #7c3aed; color: #fff; box-shadow: 0 6px 20px rgba(124,58,237,0.3); }
+  html.light #adminUsersBtn { background: rgba(124,58,237,0.1); border-color: rgba(124,58,237,0.38); color: #7c3aed; }
+  html.light #adminUsersBtn:hover { background: #7c3aed; color: #fff; box-shadow: 0 6px 20px rgba(124,58,237,0.3); }
 
   #langBtn { min-width:58px; height:32px; padding:0 9px; justify-content:center; }
   #langBtn svg { display:none; }
@@ -1706,6 +1735,15 @@ EST-iMs © | 2026    </div>
       <button class="theme-btn login-history-btn" onclick="openUsersModal()" title="Login History">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       </button>
+      <div class="admin-stack">
+        <button class="theme-btn" id="adminRequestsBtn" onclick="openAdminRequestsModal()" title="طلبات التسجيل">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </button>
+        <span class="admin-badge" id="adminRequestsBadge">0</span>
+      </div>
+      <button class="theme-btn" id="adminUsersBtn" onclick="openAdminUsersModal()" title="المستخدمون المسجلون">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </button>
       {% endif %}
       {% endif %}
       <div class="reports-dropdown-wrap" id="reportsDropdownWrap">
@@ -1974,6 +2012,38 @@ EST-iMs © | 2026    </div>
       <button onclick="closeUsersModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
     </div>
     <div class="users-body" id="usersBody">
+      <div class="users-empty">Loading...</div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if is_dev %}
+<div id="adminRequestsModal" onclick="if(event.target===this)closeAdminRequestsModal()">
+  <div class="users-box" style="max-width:980px;">
+    <div class="users-header">
+      <h3>🟣 طلبات التسجيل</h3>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="dash-refresh-btn" onclick="loadAdminRequests()" style="padding:6px 10px;font-size:11px;">تحديث</button>
+        <button onclick="closeAdminRequestsModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
+      </div>
+    </div>
+    <div class="users-body" id="adminRequestsBody">
+      <div class="users-empty">Loading...</div>
+    </div>
+  </div>
+</div>
+
+<div id="adminUsersModal" onclick="if(event.target===this)closeAdminUsersModal()">
+  <div class="users-box" style="max-width:980px;">
+    <div class="users-header">
+      <h3>👤 المستخدمون المسجلون</h3>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="dash-refresh-btn" onclick="loadAdminUsers()" style="padding:6px 10px;font-size:11px;">تحديث</button>
+        <button onclick="closeAdminUsersModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
+      </div>
+    </div>
+    <div class="users-body" id="adminUsersBody">
       <div class="users-empty">Loading...</div>
     </div>
   </div>
@@ -3108,7 +3178,7 @@ function doExportCSV() {
 // ── KEYBOARD ──
 document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.key === 'f') { e.preventDefault(); document.getElementById('searchInput').focus(); }
-  if (e.key === 'Escape') { closeTxModal(); closeAbout(); cancelPwdModal(); closePrintModal(); closeCsvModal(); closeLogout(); closeDashboard(); closeProfileModal(); closeUsersModal(); document.getElementById('reportsDropdownMenu')?.classList.remove('open'); }
+  if (e.key === 'Escape') { closeTxModal(); closeAbout(); cancelPwdModal(); closePrintModal(); closeCsvModal(); closeLogout(); closeDashboard(); closeProfileModal(); closeUsersModal(); closeAdminRequestsModal(); closeAdminUsersModal(); document.getElementById('reportsDropdownMenu')?.classList.remove('open'); }
 });
 
 // ── ABOUT ──
@@ -3796,6 +3866,15 @@ function dashZones(d) {
     }).catch(() => {});
 })();
 
+{% if is_dev %}
+(function() {
+  fetch('/api/admin/pending_requests_count', { cache: 'no-store' })
+    .then(r => r.json())
+    .then(d => setAdminRequestBadge(d.count || 0))
+    .catch(() => setAdminRequestBadge(0));
+})();
+{% endif %}
+
 // ══════════════════════════════════════════════════════
 // USERS / LOGIN LOG MODAL
 // ══════════════════════════════════════════════════════
@@ -3888,6 +3967,136 @@ async function loadLoginLog() {
   }
 }
 
+function setAdminRequestBadge(count) {
+  const badge = document.getElementById('adminRequestsBadge');
+  if (!badge) return;
+  const n = Number(count || 0);
+  badge.textContent = String(n);
+  badge.style.display = n > 0 ? 'inline-flex' : 'none';
+}
+
+function openAdminRequestsModal() {
+  document.getElementById('adminRequestsModal')?.classList.add('open');
+  loadAdminRequests();
+}
+
+function closeAdminRequestsModal() {
+  document.getElementById('adminRequestsModal')?.classList.remove('open');
+}
+
+function openAdminUsersModal() {
+  document.getElementById('adminUsersModal')?.classList.add('open');
+  loadAdminUsers();
+}
+
+function closeAdminUsersModal() {
+  document.getElementById('adminUsersModal')?.classList.remove('open');
+}
+
+async function loadAdminRequests() {
+  const body = document.getElementById('adminRequestsBody');
+  if (!body) return;
+  body.innerHTML = '<div class="users-empty">Loading...</div>';
+  try {
+    const res = await fetch('/api/admin/registration_requests', { cache: 'no-store' });
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || 'Failed');
+    setAdminRequestBadge(data.count || 0);
+    const items = data.requests || [];
+    if (!items.length) {
+      body.innerHTML = '<div class="users-empty">لا توجد طلبات تسجيل حالياً</div>';
+      return;
+    }
+    body.innerHTML = items.map((r) => `
+      <div style="border:1px solid var(--border);background:var(--bg-card);border-radius:12px;padding:14px 16px;margin-bottom:10px;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <div style="min-width:240px;">
+            <div style="font-size:15px;font-weight:700;color:var(--text-main);">${escHtml(r.full_name || '—')}</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">@${escHtml(r.username || '—')} • ${escHtml(r.job_title || '—')}</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">${escHtml(r.email || '—')} • ${escHtml(r.phone || '—')}</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">السؤال الأمني: ${escHtml(r.security_question || '—')}</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">${escHtml(r.created_at || '—')}</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-purple" style="padding:8px 12px;font-size:12px;" onclick="approveRegistration(${Number(r.id)})">موافقة</button>
+            <button class="btn btn-ghost" style="padding:8px 12px;font-size:12px;" onclick="rejectRegistration(${Number(r.id)})">رفض</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) {
+    body.innerHTML = `<div class="users-empty">فشل تحميل الطلبات<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
+  }
+}
+
+async function approveRegistration(id) {
+  try {
+    const res = await fetch(`/api/admin/registration_requests/${id}/approve`, { method: 'POST' });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
+    await loadAdminRequests();
+    await loadAdminUsers();
+  } catch (e) {
+    alert(e.message || 'تعذر الموافقة على الطلب');
+  }
+}
+
+async function rejectRegistration(id) {
+  try {
+    const res = await fetch(`/api/admin/registration_requests/${id}/reject`, { method: 'POST' });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
+    await loadAdminRequests();
+  } catch (e) {
+    alert(e.message || 'تعذر رفض الطلب');
+  }
+}
+
+async function loadAdminUsers() {
+  const body = document.getElementById('adminUsersBody');
+  if (!body) return;
+  body.innerHTML = '<div class="users-empty">Loading...</div>';
+  try {
+    const res = await fetch('/api/admin/registered_users', { cache: 'no-store' });
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || 'Failed');
+    const users = data.users || [];
+    if (!users.length) {
+      body.innerHTML = '<div class="users-empty">لا يوجد مستخدمون مسجلون بعد</div>';
+      return;
+    }
+    body.innerHTML = `
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>الاسم</th>
+            <th>اسم المستخدم</th>
+            <th>الوظيفة</th>
+            <th>الايميل</th>
+            <th>الهاتف</th>
+            <th>تاريخ التفعيل</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${users.map((u, i) => `
+            <tr>
+              <td style="color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:11px;">${i + 1}</td>
+              <td><strong>${escHtml(u.full_name || '—')}</strong></td>
+              <td>${escHtml(u.username || '—')}</td>
+              <td>${escHtml(u.job_title || '—')}</td>
+              <td>${escHtml(u.email || '—')}</td>
+              <td>${escHtml(u.phone || '—')}</td>
+              <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);">${escHtml(u.approved_at || u.created_at || '—')}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>`;
+  } catch (e) {
+    body.innerHTML = `<div class="users-empty">فشل تحميل المستخدمين<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
+  }
+}
+
 let _reportsLoaded = false;
 
 async function toggleReportsDropdown(e) {
@@ -3943,5 +4152,3 @@ init();
 </script>
 </body>
 </html>
-
-
