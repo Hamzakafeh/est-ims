@@ -799,7 +799,7 @@ async function doLogin() {
       _failedAttempts++;
       let msg = data.message || 'Incorrect username or password';
       if (_failedAttempts >= MAX_WARN_ATTEMPTS) {
-        msg = `⚠️ ${_failedAttempts} failed attempts — You can still login with the correct password`;
+        msg = ` ${_failedAttempts} Please wait`;
       } else {
         msg = `${msg} (${_failedAttempts}/${MAX_WARN_ATTEMPTS} attempts)`;
       }

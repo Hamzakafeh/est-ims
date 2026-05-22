@@ -1588,9 +1588,29 @@ def api_dashboard():
                 color_val = get_cell(row, header_map.get('color'))
                 type_val = get_cell(row, header_map.get('type'))
                 size_val = get_cell(row, header_map.get('size'))
+
+                # Fallback to fixed column indices for merged cells
+                # (openpyxl read_only=True returns None for non-master merged cells)
+                def _fb(val, col_idx):
+                    if val is None or str(val).strip() in ('', 'None'):
+                        try: return row[col_idx - 1] if col_idx - 1 < len(row) else None
+                        except: return None
+                    return val
+                color_val = _fb(color_val, COL_COLOR)
+                type_val  = _fb(type_val,  COL_TYPE)
+                size_val  = _fb(size_val,  COL_SIZE)
+                # Category column as extra fallback for type
+                if type_val is None or str(type_val).strip() in ('', 'None'):
+                    try: type_val = row[COL_CATEGORY - 1] if COL_CATEGORY - 1 < len(row) else None
+                    except: pass
+
                 in_val = to_number(get_cell(row, header_map.get('in')))
                 out_val = to_number(get_cell(row, header_map.get('out')))
                 bal_cell = get_cell(row, header_map.get('balance'))
+                # Fallback balance to fixed column
+                if bal_cell is None or str(bal_cell).strip() in ('', 'None'):
+                    try: bal_cell = row[COL_CURRENT - 1] if COL_CURRENT - 1 < len(row) else None
+                    except: pass
                 bal_val = None if bal_cell in (None, '') else to_number(bal_cell)
 
                 meaningful = any(str(v or '').strip() for v in (color_val, type_val, size_val)) or in_val or out_val or bal_val not in (None, 0)
@@ -1604,7 +1624,8 @@ def api_dashboard():
                 zone_in[zone_label]  = zone_in.get(zone_label,  0) + in_val
                 zone_out[zone_label] = zone_out.get(zone_label, 0) + out_val
 
-                name_parts = [str(v).strip() for v in (type_val, color_val, size_val) if str(v or '').strip()]
+                # Color is the primary identifier; size next, then type/category
+                name_parts = [str(v).strip() for v in (color_val, size_val, type_val) if str(v or '').strip()]
                 item_name = ' - '.join(name_parts) if name_parts else ''
 
                 if item_name and out_val > 0:
