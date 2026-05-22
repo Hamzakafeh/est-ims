@@ -244,7 +244,7 @@ function applyAuthLang(lang){
   setText('langBtn', t.lang); setText('backText', t.back); setText('topbarTitle', t.topbar); setText('badgeText', t.badge); setText('heroTitle', t.heroTitle); setText('heroSub', t.heroSub);
   setText('card1Title', t.c1t); setText('card1Text', t.c1); setText('card2Title', t.c2t); setText('card2Text', t.c2); setText('formTitle', t.formTitle);
   setText('fullNameLabel', t.fullName); setText('usernameLabel', t.username); setText('emailLabel', t.email); setText('phoneLabel', t.phone); setText('jobTitleLabel', t.jobTitle); setText('passwordLabel', t.password); setText('confirmPasswordLabel', t.confirmPassword); setText('securityQuestionLabel', t.securityQuestion); setText('securityAnswerLabel', t.securityAnswer); setText('captchaLabel', t.captcha); setText('reloadCaptchaBtn', t.refresh); setText('captchaHelp', t.captchaHelp); setText('submitBtn', t.submit); setText('loginBackBtn', t.loginBack);
-  const sel = document.getElementById('securityQuestion'); const current = sel.value; sel.innerHTML = questions[lang].map(q => <option value=""></option>).join(''); if (questions[lang].includes(current)) sel.value = current;
+  const sel = document.getElementById('securityQuestion'); const current = sel.value; sel.innerHTML = ''; questions[lang].forEach(q => { const opt = document.createElement('option'); opt.value = q; opt.textContent = q; sel.appendChild(opt); }); if (questions[lang].includes(current)) sel.value = current;
 }
 function toggleAuthLang(){ applyAuthLang(authLang === 'en' ? 'ar' : 'en'); }
 async function loadCaptcha(){ const res = await fetch('/api/captcha', {cache:'no-store'}); const data = await res.json(); captchaToken = data.token || ''; document.getElementById('captchaQuestion').textContent = data.question || '...'; }
@@ -262,3 +262,4 @@ applyAuthLang(authLang); loadCaptcha().catch(() => setStatus(AUTH_LANG[authLang]
 </script>
 </body>
 </html>
+
