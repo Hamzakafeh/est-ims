@@ -14,7 +14,7 @@ import secrets
 import warnings
 import threading
 import requests as _requests
-from datetime import datetime
+from datetime import datetime, timedelta
 from functools import wraps
 from flask import Flask, render_template, jsonify, request, session, redirect, url_for
 
@@ -69,6 +69,55 @@ _LOGIN_LOG_FILE = os.getenv(
 _log_lock = threading.Lock()
 _country_cache = {}
 VERIFIED_USERS = {'mlo5'}
+_active_user_sessions = {}
+_active_sessions_lock = threading.Lock()
+_ACTIVE_SESSION_TTL = 8 * 60 * 60
+
+
+def _is_single_login_exempt(username):
+    uname = _normalize_username(username)
+    privileged = {_normalize_username(v) for v in ZONE_USER_RESTRICTIONS.values() if v}
+    return uname in privileged
+
+
+def _active_session_alive(record):
+    return bool(record) and (_time.time() - float(record.get('last_seen', 0))) < _ACTIVE_SESSION_TTL
+
+
+def _register_active_session(username):
+    token = secrets.token_hex(16)
+    uname = _normalize_username(username)
+    with _active_sessions_lock:
+        _active_user_sessions[uname] = {'token': token, 'last_seen': _time.time()}
+    session['session_token'] = token
+
+
+def _clear_active_session(username=None):
+    explicit_username = username is not None
+    uname = _normalize_username(username or session.get('username', ''))
+    token = session.get('session_token')
+    if not uname:
+        return
+    with _active_sessions_lock:
+        record = _active_user_sessions.get(uname)
+        if explicit_username or not token or (record and record.get('token') == token):
+            _active_user_sessions.pop(uname, None)
+
+
+def _validate_active_session():
+    if not session.get('logged_in'):
+        return True
+    username = session.get('username', '')
+    if _is_single_login_exempt(username):
+        return True
+    uname = _normalize_username(username)
+    token = session.get('session_token')
+    with _active_sessions_lock:
+        record = _active_user_sessions.get(uname)
+        if not record or record.get('token') != token:
+            return False
+        record['last_seen'] = _time.time()
+    return True
 
 def _read_login_log():
     try:
@@ -196,8 +245,15 @@ def _init_auth_db():
                 review_note TEXT
             )
         """)
-
-
+        for column_sql in (
+            "ALTER TABLE users ADD COLUMN suspended_until TEXT",
+            "ALTER TABLE users ADD COLUMN suspended_by TEXT",
+            "ALTER TABLE users ADD COLUMN suspended_at TEXT",
+        ):
+            try:
+                conn.execute(column_sql)
+            except sqlite3.OperationalError:
+                pass
 def _username_in_env(username):
     uname = _normalize_username(username)
     return uname in ENV_USERS
@@ -236,6 +292,20 @@ def _approved_db_user(username):
     if user and int(user['approved'] or 0) == 1:
         return user
     return None
+
+
+def _user_suspension_remaining(user):
+    if not user:
+        return 0
+    until = user['suspended_until'] if 'suspended_until' in user.keys() else None
+    if not until:
+        return 0
+    try:
+        dt = datetime.strptime(until, '%Y-%m-%d %H:%M:%S')
+    except Exception:
+        return 0
+    remaining = int((dt - datetime.now()).total_seconds())
+    return max(0, remaining)
 
 
 def _pending_request_count():
@@ -288,6 +358,17 @@ def add_security_headers(response):
     response.headers['X-XSS-Protection']       = '1; mode=block'
     response.headers['Referrer-Policy']        = 'strict-origin-when-cross-origin'
     return response
+
+@app.before_request
+def enforce_single_active_session():
+    if request.endpoint in {'static', 'login_page', 'do_login', 'logout', 'api_lockout_status', 'api_captcha', 'api_register', 'register_page', 'forgot_password_page', 'api_password_reset_verify', 'api_password_reset_complete'}:
+        return None
+    if not _validate_active_session():
+        session.clear()
+        if request.path.startswith('/api/'):
+            return jsonify({'error': 'تم تسجيل الدخول من جهاز آخر، يرجى الدخول من جديد'}), 409
+        return redirect(url_for('login_page'))
+    return None
 _secret_key = os.getenv("SECRET_KEY")
 if not _secret_key:
     raise RuntimeError("SECRET_KEY environment variable is not set. Refusing to start.")
@@ -550,9 +631,34 @@ def do_login():
         }), 429
 
     if correct:
+        if db_user is not None:
+            suspended_remaining = _user_suspension_remaining(db_user)
+            if suspended_remaining > 0:
+                mins = suspended_remaining // 60
+                secs = suspended_remaining % 60
+                return jsonify({
+                    'success': False,
+                    'suspended': True,
+                    'remaining': suspended_remaining,
+                    'message': f'الحساب موقوف مؤقتاً. الوقت المتبقي {mins}:{secs:02d}'
+                }), 403
+        login_username = db_user['username'] if db_user is not None else username
+        if not _is_single_login_exempt(login_username):
+            uname = _normalize_username(login_username)
+            with _active_sessions_lock:
+                record = _active_user_sessions.get(uname)
+                if _active_session_alive(record):
+                    return jsonify({
+                        'success': False,
+                        'active_elsewhere': True,
+                        'message': 'هذا المستخدم مسجل دخوله من جهاز آخر حالياً'
+                    }), 409
+                _active_user_sessions.pop(uname, None)
         _clear_attempts(ip)
         session['logged_in'] = True
-        session['username']  = db_user['username'] if db_user is not None else username
+        session['username']  = login_username
+        if not _is_single_login_exempt(login_username):
+            _register_active_session(login_username)
         # لو في صفحة QR scan منتظرة (بدون zone)، روّح عليها مباشرة
         qr_next = session.pop('qr_next', None)
         if qr_next and qr_next.startswith('/'):
@@ -2115,12 +2221,14 @@ def api_admin_registered_users():
         return jsonify({'error': 'غير مصرح'}), 403
     with _db_connect() as conn:
         rows = conn.execute(
-            "SELECT full_name, username, email, phone, job_title, approved_at, created_at FROM users WHERE approved = 1 ORDER BY approved_at DESC, id DESC"
+            "SELECT id, full_name, username, email, phone, job_title, approved_at, created_at, suspended_until, suspended_by, suspended_at FROM users WHERE approved = 1 ORDER BY approved_at DESC, id DESC"
         ).fetchall()
     return jsonify({
         'count': len(rows),
+        'db_file': AUTH_DB_FILE,
         'users': [
             {
+                'id': row['id'],
                 'full_name': row['full_name'],
                 'username': row['username'],
                 'email': row['email'],
@@ -2128,10 +2236,67 @@ def api_admin_registered_users():
                 'job_title': row['job_title'],
                 'approved_at': row['approved_at'],
                 'created_at': row['created_at'],
+                'suspended_until': row['suspended_until'],
+                'suspended_by': row['suspended_by'],
+                'suspended_at': row['suspended_at'],
             }
             for row in rows
         ],
     })
+
+@app.route('/api/admin/registered_users/<int:user_id>/suspend', methods=['POST'])
+@zone_required
+def api_admin_suspend_user(user_id):
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    data = request.get_json(silent=True) or {}
+    minutes = int(data.get('minutes') or 0)
+    if minutes <= 0 or minutes > 43200:
+        return jsonify({'success': False, 'message': 'مدة الإيقاف يجب أن تكون بين دقيقة و 30 يوم'}), 400
+    now = datetime.now()
+    until = now + timedelta(minutes=minutes)
+    admin_user = session.get('username', '')
+    with _db_connect() as conn:
+        row = conn.execute("SELECT username FROM users WHERE id = ?", (user_id,)).fetchone()
+        if not row:
+            return jsonify({'success': False, 'message': 'المستخدم غير موجود'}), 404
+        if _is_single_login_exempt(row['username']):
+            return jsonify({'success': False, 'message': 'لا يمكن إيقاف حساب الأدمن أو الديف'}), 400
+        conn.execute(
+            "UPDATE users SET suspended_until = ?, suspended_by = ?, suspended_at = ? WHERE id = ?",
+            (until.strftime('%Y-%m-%d %H:%M:%S'), admin_user, now.strftime('%Y-%m-%d %H:%M:%S'), user_id),
+        )
+    _clear_active_session(row['username'])
+    return jsonify({'success': True, 'message': 'تم إيقاف المستخدم مؤقتاً', 'suspended_until': until.strftime('%Y-%m-%d %H:%M:%S')})
+
+@app.route('/api/admin/registered_users/<int:user_id>/unsuspend', methods=['POST'])
+@zone_required
+def api_admin_unsuspend_user(user_id):
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    with _db_connect() as conn:
+        cur = conn.execute(
+            "UPDATE users SET suspended_until = NULL, suspended_by = NULL, suspended_at = NULL WHERE id = ?",
+            (user_id,),
+        )
+    if cur.rowcount == 0:
+        return jsonify({'success': False, 'message': 'المستخدم غير موجود'}), 404
+    return jsonify({'success': True, 'message': 'تم إلغاء الإيقاف'})
+
+@app.route('/api/admin/registered_users/<int:user_id>', methods=['DELETE'])
+@zone_required
+def api_admin_delete_user(user_id):
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    with _db_connect() as conn:
+        row = conn.execute("SELECT username FROM users WHERE id = ?", (user_id,)).fetchone()
+        if not row:
+            return jsonify({'success': False, 'message': 'المستخدم غير موجود'}), 404
+        if _is_single_login_exempt(row['username']):
+            return jsonify({'success': False, 'message': 'لا يمكن حذف حساب الأدمن أو الديف'}), 400
+        conn.execute("DELETE FROM users WHERE id = ?", (user_id,))
+    _clear_active_session(row['username'])
+    return jsonify({'success': True, 'message': 'تم حذف الحساب بالكامل'})
 
 @app.route('/api/alert_count')
 @zone_required
@@ -2742,3 +2907,6 @@ if __name__ == '__main__':
             webbrowser.open('http://127.0.0.1:3049')
         threading.Thread(target=_open, daemon=True).start()
         app.run(host='127.0.0.1', port=3049, debug=False)
+
+
+

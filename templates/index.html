@@ -199,8 +199,8 @@
   #homeBtn { background:#fff; color:#0d1117; border-color:#e2e8f0; box-shadow:0 2px 10px rgba(255,255,255,.18); }
   #homeBtn:hover { background:#f1f5f9; color:#0d1117; transform: scale(1.1); box-shadow: 0 6px 20px rgba(255,255,255,0.28); }
 
-  #reportsBtn { background:linear-gradient(135deg, rgba(245,158,11,.24), rgba(16,185,129,.16)); border-color:rgba(245,158,11,.6); color:var(--accent-amber); }
-  #reportsBtn:hover { background: rgba(245,158,11,.32); color: var(--accent-amber); transform: scale(1.1); box-shadow: 0 6px 20px rgba(245,158,11,0.28); }
+  #reportsBtn { background:linear-gradient(135deg, rgba(236,72,153,.24), rgba(244,114,182,.12)); border-color:rgba(236,72,153,.62); color:#f9a8d4; }
+  #reportsBtn:hover { background: rgba(236,72,153,.34); color: #fff; transform: scale(1.1); box-shadow: 0 6px 20px rgba(236,72,153,0.28); }
   .admin-stack { position: relative; display: inline-flex; }
   .admin-badge {
     position: absolute;
@@ -222,12 +222,12 @@
   }
   #adminRequestsBtn { background: linear-gradient(135deg, rgba(139,92,246,.22), rgba(124,58,237,.14)); border-color: rgba(139,92,246,.58); color: #c4b5fd; }
   #adminRequestsBtn:hover { background: rgba(139,92,246,.34); color: #fff; transform: scale(1.1); box-shadow: 0 6px 20px rgba(139,92,246,0.25); }
-  #adminUsersBtn { background: rgba(139,92,246,0.14); border-color: rgba(139,92,246,0.48); color: #c4b5fd; }
-  #adminUsersBtn:hover { background: var(--accent-purple); color: #fff; transform: scale(1.1); box-shadow: 0 6px 20px rgba(139,92,246,0.28); }
+  #adminUsersBtn { background: rgba(20,184,166,0.14); border-color: rgba(20,184,166,0.48); color: #5eead4; }
+  #adminUsersBtn:hover { background: #14b8a6; color: #fff; transform: scale(1.1); box-shadow: 0 6px 20px rgba(20,184,166,0.28); }
   html.light #adminRequestsBtn { background: rgba(124,58,237,0.12); border-color: rgba(124,58,237,0.42); color: #7c3aed; }
   html.light #adminRequestsBtn:hover { background: #7c3aed; color: #fff; box-shadow: 0 6px 20px rgba(124,58,237,0.3); }
-  html.light #adminUsersBtn { background: rgba(124,58,237,0.1); border-color: rgba(124,58,237,0.38); color: #7c3aed; }
-  html.light #adminUsersBtn:hover { background: #7c3aed; color: #fff; box-shadow: 0 6px 20px rgba(124,58,237,0.3); }
+  html.light #adminUsersBtn { background: rgba(13,148,136,0.1); border-color: rgba(13,148,136,0.38); color: #0f766e; }
+  html.light #adminUsersBtn:hover { background: #0f766e; color: #fff; box-shadow: 0 6px 20px rgba(13,148,136,0.3); }
 
   #langBtn { min-width:58px; height:32px; padding:0 9px; justify-content:center; }
   #langBtn svg { display:none; }
@@ -936,6 +936,40 @@
   .users-table tr:hover td { background: var(--bg-hover); }
   .users-empty {
     text-align: center; padding: 40px; color: var(--text-dim); font-size: 13px;
+  }
+
+  .pulse-btn { animation: adminPulse 1.7s ease-in-out infinite; }
+  @keyframes adminPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.0); transform: translateZ(0); }
+    45% { box-shadow: 0 0 0 7px rgba(59,130,246,0.13); }
+  }
+  #adminRequestsModal, #adminUsersModal, #adminUserDetailModal {
+    display: none; position: fixed; inset: 0; z-index: 9550;
+    background: rgba(0,0,0,0.72); backdrop-filter: blur(7px);
+    align-items: center; justify-content: center; padding: 16px;
+  }
+  #adminRequestsModal.open, #adminUsersModal.open, #adminUserDetailModal.open { display: flex; }
+  .admin-user-list { display: grid; gap: 8px; padding: 14px; }
+  .admin-user-row {
+    width: 100%; border: 1px solid var(--border); background: var(--bg-card);
+    color: var(--text-main); border-radius: 10px; padding: 12px 14px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    cursor: pointer; text-align: left; font-family: inherit;
+  }
+  .admin-user-row:hover { background: var(--bg-hover); border-color: var(--border-light); }
+  .admin-user-row strong { font-size: 14px; }
+  .admin-user-row span { color: var(--text-muted); font-size: 11px; }
+  .admin-detail-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; padding: 16px; }
+  .admin-detail-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; min-width: 0; }
+  .admin-detail-label { color: var(--text-dim); font-size: 10px; letter-spacing: .7px; text-transform: uppercase; margin-bottom: 5px; }
+  .admin-detail-value { color: var(--text-main); font-size: 13px; overflow-wrap: anywhere; }
+  .admin-danger-zone { border-top: 1px solid var(--border); padding: 14px 16px 18px; display:flex; gap:8px; flex-wrap:wrap; }
+  .admin-danger-zone input { width: 120px; border-radius: 8px; border:1px solid var(--border); background:var(--bg-card); color:var(--text-main); padding:9px 10px; }
+  @media (max-width: 720px) {
+    .users-box { width: 100%; max-width: 100%; max-height: 88vh; border-radius: 14px; }
+    .users-header { padding: 16px; }
+    .admin-detail-grid { grid-template-columns: 1fr; }
+    .admin-danger-zone input, .admin-danger-zone .btn { flex: 1 1 140px; }
   }
 
   /* ── PROFILE MODAL ── */
@@ -1736,13 +1770,13 @@ EST-iMs © | 2026    </div>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       </button>
       <div class="admin-stack">
-        <button class="theme-btn" id="adminRequestsBtn" onclick="openAdminRequestsModal()" title="طلبات التسجيل">
+        <button class="theme-btn pulse-btn" id="adminRequestsBtn" onclick="openAdminRequestsModal()" title="طلبات التسجيل">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
         </button>
         <span class="admin-badge" id="adminRequestsBadge">0</span>
       </div>
-      <button class="theme-btn" id="adminUsersBtn" onclick="openAdminUsersModal()" title="المستخدمون المسجلون">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <button class="theme-btn pulse-btn" id="adminUsersBtn" onclick="openAdminUsersModal()" title="المستخدمون المسجلون">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M7 16c.6-1.4 3.4-1.4 4 0"/><path d="M14 9h4"/><path d="M14 13h4"/></svg>
       </button>
       {% endif %}
       {% endif %}
@@ -2048,7 +2082,15 @@ EST-iMs © | 2026    </div>
     </div>
   </div>
 </div>
-{% endif %}
+<div id="adminUserDetailModal" onclick="if(event.target===this)closeAdminUserDetailModal()">
+  <div class="users-box" style="max-width:720px;">
+    <div class="users-header">
+      <h3>بيانات المستخدم</h3>
+      <button onclick="closeAdminUserDetailModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
+    </div>
+    <div class="users-body" id="adminUserDetailBody"></div>
+  </div>
+</div>{% endif %}
 
 <!-- ══ PROFILE MODAL ══ -->
 <div id="profileModal" onclick="if(event.target===this)closeProfileModal()">
@@ -3178,7 +3220,7 @@ function doExportCSV() {
 // ── KEYBOARD ──
 document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.key === 'f') { e.preventDefault(); document.getElementById('searchInput').focus(); }
-  if (e.key === 'Escape') { closeTxModal(); closeAbout(); cancelPwdModal(); closePrintModal(); closeCsvModal(); closeLogout(); closeDashboard(); closeProfileModal(); closeUsersModal(); closeAdminRequestsModal(); closeAdminUsersModal(); document.getElementById('reportsDropdownMenu')?.classList.remove('open'); }
+  if (e.key === 'Escape') { closeTxModal(); closeAbout(); cancelPwdModal(); closePrintModal(); closeCsvModal(); closeLogout(); closeDashboard(); closeProfileModal(); closeUsersModal(); closeAdminRequestsModal(); closeAdminUsersModal(); closeAdminUserDetailModal(); document.getElementById('reportsDropdownMenu')?.classList.remove('open'); }
 });
 
 // ── ABOUT ──
@@ -3967,12 +4009,26 @@ async function loadLoginLog() {
   }
 }
 
+function playNewRequestSound(count) {
+  const n = Number(count || 0);
+  const key = 'est-admin-request-count';
+  const prevRaw = sessionStorage.getItem(key);
+  const prev = prevRaw === null ? n : Number(prevRaw || 0);
+  sessionStorage.setItem(key, String(n));
+  if (n > prev) {
+    const audio = new Audio('/static/newapp.mp3');
+    audio.volume = 0.8;
+    audio.play().catch(() => {});
+  }
+}
+
 function setAdminRequestBadge(count) {
   const badge = document.getElementById('adminRequestsBadge');
   if (!badge) return;
   const n = Number(count || 0);
   badge.textContent = String(n);
   badge.style.display = n > 0 ? 'inline-flex' : 'none';
+  playNewRequestSound(n);
 }
 
 function openAdminRequestsModal() {
@@ -4052,6 +4108,8 @@ async function rejectRegistration(id) {
   }
 }
 
+let adminUsersCache = [];
+
 async function loadAdminUsers() {
   const body = document.getElementById('adminUsersBody');
   if (!body) return;
@@ -4060,41 +4118,85 @@ async function loadAdminUsers() {
     const res = await fetch('/api/admin/registered_users', { cache: 'no-store' });
     const data = await res.json();
     if (!res.ok || data.error) throw new Error(data.error || 'Failed');
-    const users = data.users || [];
-    if (!users.length) {
+    adminUsersCache = data.users || [];
+    if (!adminUsersCache.length) {
       body.innerHTML = '<div class="users-empty">لا يوجد مستخدمون مسجلون بعد</div>';
       return;
     }
     body.innerHTML = `
-      <table class="users-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>الاسم</th>
-            <th>اسم المستخدم</th>
-            <th>الوظيفة</th>
-            <th>الايميل</th>
-            <th>الهاتف</th>
-            <th>تاريخ التفعيل</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${users.map((u, i) => `
-            <tr>
-              <td style="color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:11px;">${i + 1}</td>
-              <td><strong>${escHtml(u.full_name || '—')}</strong></td>
-              <td>${escHtml(u.username || '—')}</td>
-              <td>${escHtml(u.job_title || '—')}</td>
-              <td>${escHtml(u.email || '—')}</td>
-              <td>${escHtml(u.phone || '—')}</td>
-              <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);">${escHtml(u.approved_at || u.created_at || '—')}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>`;
+      <div class="users-empty" style="padding:12px 16px;text-align:start;">Database: ${escHtml(data.db_file || 'auth.sqlite3')}</div>
+      <div class="admin-user-list">
+        ${adminUsersCache.map((u, i) => `
+          <button class="admin-user-row" type="button" onclick="openAdminUserDetail(${Number(u.id)})">
+            <strong>${i + 1}. ${escHtml(u.username || '—')}</strong>
+            <span>${u.suspended_until ? 'موقوف حتى ' + escHtml(u.suspended_until) : 'عرض البيانات'}</span>
+          </button>
+        `).join('')}
+      </div>`;
   } catch (e) {
     body.innerHTML = `<div class="users-empty">فشل تحميل المستخدمين<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
   }
+}
+
+function openAdminUserDetail(id) {
+  const u = adminUsersCache.find(x => Number(x.id) === Number(id));
+  if (!u) return;
+  const body = document.getElementById('adminUserDetailBody');
+  if (!body) return;
+  const rows = [
+    ['Full name', u.full_name], ['Username', u.username], ['Job title', u.job_title], ['Email', u.email],
+    ['Phone', u.phone], ['Approved at', u.approved_at || u.created_at], ['Suspended until', u.suspended_until || '—'], ['Suspended by', u.suspended_by || '—']
+  ];
+  body.innerHTML = `
+    <div class="admin-detail-grid">
+      ${rows.map(([label, value]) => `<div class="admin-detail-item"><div class="admin-detail-label">${escHtml(label)}</div><div class="admin-detail-value">${escHtml(value || '—')}</div></div>`).join('')}
+    </div>
+    <div class="admin-danger-zone">
+      <input id="suspendMinutes" type="number" min="1" max="43200" value="60" title="مدة الإيقاف بالدقائق">
+      <button class="btn btn-purple" onclick="suspendAdminUser(${Number(u.id)})">إيقاف مؤقت</button>
+      <button class="btn btn-ghost" onclick="unsuspendAdminUser(${Number(u.id)})">إلغاء الإيقاف</button>
+      <button class="btn btn-logout" onclick="deleteAdminUser(${Number(u.id)}, '${escAttr(u.username || '')}')">حذف الحساب</button>
+    </div>`;
+  document.getElementById('adminUserDetailModal')?.classList.add('open');
+}
+
+function closeAdminUserDetailModal() {
+  document.getElementById('adminUserDetailModal')?.classList.remove('open');
+}
+
+async function suspendAdminUser(id) {
+  const minutes = Number(document.getElementById('suspendMinutes')?.value || 0);
+  try {
+    const res = await fetch(`/api/admin/registered_users/${id}/suspend`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ minutes }) });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
+    toast(data.message || 'تم الإيقاف', true);
+    await loadAdminUsers();
+    closeAdminUserDetailModal();
+  } catch(e) { alert(e.message || 'تعذر إيقاف المستخدم'); }
+}
+
+async function unsuspendAdminUser(id) {
+  try {
+    const res = await fetch(`/api/admin/registered_users/${id}/unsuspend`, { method:'POST' });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
+    toast(data.message || 'تم إلغاء الإيقاف', true);
+    await loadAdminUsers();
+    closeAdminUserDetailModal();
+  } catch(e) { alert(e.message || 'تعذر إلغاء الإيقاف'); }
+}
+
+async function deleteAdminUser(id, username) {
+  if (!confirm(`حذف حساب ${username} بالكامل؟`)) return;
+  try {
+    const res = await fetch(`/api/admin/registered_users/${id}`, { method:'DELETE' });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
+    toast(data.message || 'تم الحذف', true);
+    await loadAdminUsers();
+    closeAdminUserDetailModal();
+  } catch(e) { alert(e.message || 'تعذر حذف المستخدم'); }
 }
 
 let _reportsLoaded = false;
@@ -4152,3 +4254,4 @@ init();
 </script>
 </body>
 </html>
+
