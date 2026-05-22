@@ -2073,6 +2073,7 @@ EST-iMs © | 2026    </div>
     <div class="users-header">
       <h3>👤 المستخدمون المسجلون</h3>
       <div style="display:flex;align-items:center;gap:8px;">
+        <button class="dash-refresh-btn" onclick="exportAdminUsers()" style="padding:6px 10px;font-size:11px;">تصدير Excel</button>
         <button class="dash-refresh-btn" onclick="loadAdminUsers()" style="padding:6px 10px;font-size:11px;">تحديث</button>
         <button onclick="closeAdminUsersModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
       </div>
@@ -4049,6 +4050,10 @@ function closeAdminUsersModal() {
   document.getElementById('adminUsersModal')?.classList.remove('open');
 }
 
+function exportAdminUsers() {
+  window.location.href = '/api/admin/registered_users/export.xlsx';
+}
+
 async function loadAdminRequests() {
   const body = document.getElementById('adminRequestsBody');
   if (!body) return;
@@ -4145,7 +4150,9 @@ function openAdminUserDetail(id) {
   if (!body) return;
   const rows = [
     ['Full name', u.full_name], ['Username', u.username], ['Job title', u.job_title], ['Email', u.email],
-    ['Phone', u.phone], ['Approved at', u.approved_at || u.created_at], ['Suspended until', u.suspended_until || '—'], ['Suspended by', u.suspended_by || '—']
+    ['Phone', u.phone], ['Security question', u.security_question], ['Password', u.password_stored_as ? 'Hidden (one-way hash)' : '—'],
+    ['Security answer', u.security_answer_stored_as ? 'Hidden (one-way hash)' : '—'],
+    ['Approved at', u.approved_at || u.created_at], ['Suspended until', u.suspended_until || '—'], ['Suspended by', u.suspended_by || '—']
   ];
   body.innerHTML = `
     <div class="admin-detail-grid">
@@ -4156,6 +4163,16 @@ function openAdminUserDetail(id) {
       <button class="btn btn-purple" onclick="suspendAdminUser(${Number(u.id)})">إيقاف مؤقت</button>
       <button class="btn btn-ghost" onclick="unsuspendAdminUser(${Number(u.id)})">إلغاء الإيقاف</button>
       <button class="btn btn-logout" onclick="deleteAdminUser(${Number(u.id)}, '${escAttr(u.username || '')}')">حذف الحساب</button>
+    </div>
+    <div class="admin-danger-zone">
+      <input id="adminNewPassword" type="password" placeholder="New password">
+      <input id="adminConfirmPassword" type="password" placeholder="Confirm password">
+      <button class="btn btn-purple" onclick="resetAdminUserPassword(${Number(u.id)})">تغيير كلمة السر</button>
+    </div>
+    <div class="admin-danger-zone">
+      <input id="adminSecurityQuestion" type="text" value="${escAttr(u.security_question || '')}" placeholder="Security question" style="flex:2 1 260px;">
+      <input id="adminSecurityAnswer" type="text" placeholder="New security answer" style="flex:1.4 1 180px;">
+      <button class="btn btn-purple" onclick="resetAdminUserSecurity(${Number(u.id)})">تغيير السؤال الأمني</button>
     </div>`;
   document.getElementById('adminUserDetailModal')?.classList.add('open');
 }
@@ -4185,6 +4202,32 @@ async function unsuspendAdminUser(id) {
     await loadAdminUsers();
     closeAdminUserDetailModal();
   } catch(e) { alert(e.message || 'تعذر إلغاء الإيقاف'); }
+}
+
+async function resetAdminUserPassword(id) {
+  const new_password = document.getElementById('adminNewPassword')?.value || '';
+  const confirm_password = document.getElementById('adminConfirmPassword')?.value || '';
+  try {
+    const res = await fetch(`/api/admin/registered_users/${id}/password`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ new_password, confirm_password }) });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
+    toast(data.message || 'تم تغيير كلمة السر', true);
+    await loadAdminUsers();
+    closeAdminUserDetailModal();
+  } catch(e) { alert(e.message || 'تعذر تغيير كلمة السر'); }
+}
+
+async function resetAdminUserSecurity(id) {
+  const security_question = document.getElementById('adminSecurityQuestion')?.value || '';
+  const security_answer = document.getElementById('adminSecurityAnswer')?.value || '';
+  try {
+    const res = await fetch(`/api/admin/registered_users/${id}/security`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ security_question, security_answer }) });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
+    toast(data.message || 'تم تغيير السؤال الأمني', true);
+    await loadAdminUsers();
+    closeAdminUserDetailModal();
+  } catch(e) { alert(e.message || 'تعذر تغيير السؤال الأمني'); }
 }
 
 async function deleteAdminUser(id, username) {
@@ -4254,4 +4297,7 @@ init();
 </script>
 </body>
 </html>
+
+
+
 

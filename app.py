@@ -5,6 +5,7 @@ Alestesharia Animal Nutrition
 from dotenv import load_dotenv
 load_dotenv()
 import os
+import io
 import sys
 import json
 import re
@@ -13,10 +14,11 @@ import hashlib
 import secrets
 import warnings
 import threading
+import shutil
 import requests as _requests
 from datetime import datetime, timedelta
 from functools import wraps
-from flask import Flask, render_template, jsonify, request, session, redirect, url_for
+from flask import Flask, render_template, jsonify, request, session, redirect, url_for, send_file
 
 warnings.filterwarnings('ignore')
 
@@ -161,7 +163,22 @@ def _record_login(username, zone_id, zone_label, ip):
         _write_login_log(entries)
 
 
-AUTH_DB_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'auth.sqlite3')
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+LEGACY_AUTH_DB_FILE = os.path.join(APP_DIR, 'auth.sqlite3')
+AUTH_DB_FILE = os.getenv(
+    'AUTH_DB_FILE',
+    os.path.join(os.getenv('RENDER_DISK_PATH', APP_DIR), 'auth.sqlite3')
+)
+
+
+def _prepare_auth_db_file():
+    db_dir = os.path.dirname(AUTH_DB_FILE)
+    if db_dir:
+        os.makedirs(db_dir, exist_ok=True)
+    if os.path.abspath(AUTH_DB_FILE) != os.path.abspath(LEGACY_AUTH_DB_FILE):
+        if not os.path.exists(AUTH_DB_FILE) and os.path.exists(LEGACY_AUTH_DB_FILE):
+            shutil.copy2(LEGACY_AUTH_DB_FILE, AUTH_DB_FILE)
+
 
 
 def _normalize_username(value):
@@ -208,6 +225,7 @@ def _db_connect():
 
 
 def _init_auth_db():
+    _prepare_auth_db_file()
     with _db_connect() as conn:
         conn.execute("""
             CREATE TABLE IF NOT EXISTS users (
@@ -331,6 +349,7 @@ ENV_USERS = {
 
 try:
     import openpyxl
+    from openpyxl.styles import Font, PatternFill
 except ImportError:
     print("ERROR: openpyxl not installed.")
     sys.exit(1)
@@ -2221,7 +2240,7 @@ def api_admin_registered_users():
         return jsonify({'error': 'غير مصرح'}), 403
     with _db_connect() as conn:
         rows = conn.execute(
-            "SELECT id, full_name, username, email, phone, job_title, approved_at, created_at, suspended_until, suspended_by, suspended_at FROM users WHERE approved = 1 ORDER BY approved_at DESC, id DESC"
+            "SELECT id, full_name, username, email, phone, job_title, security_question, password_hash, security_answer_hash, approved_at, created_at, suspended_until, suspended_by, suspended_at FROM users WHERE approved = 1 ORDER BY approved_at DESC, id DESC"
         ).fetchall()
     return jsonify({
         'count': len(rows),
@@ -2234,6 +2253,9 @@ def api_admin_registered_users():
                 'email': row['email'],
                 'phone': row['phone'],
                 'job_title': row['job_title'],
+                'security_question': row['security_question'],
+                'password_stored_as': 'one_way_hash' if row['password_hash'] else '',
+                'security_answer_stored_as': 'one_way_hash' if row['security_answer_hash'] else '',
                 'approved_at': row['approved_at'],
                 'created_at': row['created_at'],
                 'suspended_until': row['suspended_until'],
@@ -2244,6 +2266,64 @@ def api_admin_registered_users():
         ],
     })
 
+@app.route('/api/admin/registered_users/export.xlsx')
+@zone_required
+def api_admin_export_registered_users():
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    with _db_connect() as conn:
+        rows = conn.execute("""
+            SELECT id, full_name, username, email, phone, job_title,
+                   security_question, password_hash, security_answer_hash,
+                   approved, is_admin, created_at, approved_at, created_by,
+                   suspended_until, suspended_by, suspended_at
+            FROM users
+            WHERE approved = 1
+            ORDER BY approved_at DESC, id DESC
+        """).fetchall()
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = 'Registered Users'
+    headers = [
+        'ID', 'Full Name', 'Username', 'Email', 'Phone', 'Job Title',
+        'Password', 'Security Question', 'Security Answer',
+        'Password Hash', 'Security Answer Hash',
+        'Approved', 'Is Admin', 'Created At', 'Approved At', 'Created By',
+        'Suspended Until', 'Suspended By', 'Suspended At',
+    ]
+    ws.append(headers)
+    for row in rows:
+        ws.append([
+            row['id'], row['full_name'], row['username'], row['email'], row['phone'], row['job_title'],
+            'Not recoverable - stored as one-way hash',
+            row['security_question'],
+            'Not recoverable - stored as one-way hash',
+            row['password_hash'], row['security_answer_hash'],
+            row['approved'], row['is_admin'], row['created_at'], row['approved_at'], row['created_by'],
+            row['suspended_until'], row['suspended_by'], row['suspended_at'],
+        ])
+    ws.freeze_panes = 'A2'
+    for cell in ws[1]:
+        cell.font = Font(bold=True)
+        cell.fill = PatternFill('solid', fgColor='D9EAF7')
+    for col in ws.columns:
+        max_len = 0
+        letter = col[0].column_letter
+        for cell in col:
+            max_len = max(max_len, len(str(cell.value or '')))
+        ws.column_dimensions[letter].width = min(max(max_len + 2, 12), 60)
+
+    output = io.BytesIO()
+    wb.save(output)
+    output.seek(0)
+    filename = 'registered_users_' + datetime.now().strftime('%Y%m%d_%H%M%S') + '.xlsx'
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name=filename,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    )
 @app.route('/api/admin/registered_users/<int:user_id>/suspend', methods=['POST'])
 @zone_required
 def api_admin_suspend_user(user_id):
@@ -2282,6 +2362,46 @@ def api_admin_unsuspend_user(user_id):
     if cur.rowcount == 0:
         return jsonify({'success': False, 'message': 'المستخدم غير موجود'}), 404
     return jsonify({'success': True, 'message': 'تم إلغاء الإيقاف'})
+
+@app.route('/api/admin/registered_users/<int:user_id>/password', methods=['POST'])
+@zone_required
+def api_admin_reset_user_password(user_id):
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    data = request.get_json(silent=True) or {}
+    new_password = str(data.get('new_password', '')).strip()
+    confirm_password = str(data.get('confirm_password', '')).strip()
+    if not new_password:
+        return jsonify({'success': False, 'message': 'يرجى إدخال كلمة المرور الجديدة'}), 400
+    if new_password != confirm_password:
+        return jsonify({'success': False, 'message': 'كلمة المرور وتأكيدها غير متطابقين'}), 400
+    with _db_connect() as conn:
+        row = conn.execute("SELECT username FROM users WHERE id = ?", (user_id,)).fetchone()
+        if not row:
+            return jsonify({'success': False, 'message': 'المستخدم غير موجود'}), 404
+        conn.execute("UPDATE users SET password_hash = ? WHERE id = ?", (_hash_secret(new_password), user_id))
+    _clear_active_session(row['username'])
+    return jsonify({'success': True, 'message': 'تم تغيير كلمة مرور المستخدم'})
+
+@app.route('/api/admin/registered_users/<int:user_id>/security', methods=['POST'])
+@zone_required
+def api_admin_reset_user_security(user_id):
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    data = request.get_json(silent=True) or {}
+    security_question = str(data.get('security_question', '')).strip()
+    security_answer = str(data.get('security_answer', '')).strip()
+    if not security_question or not security_answer:
+        return jsonify({'success': False, 'message': 'يرجى إدخال السؤال والجواب الأمني'}), 400
+    with _db_connect() as conn:
+        row = conn.execute("SELECT username FROM users WHERE id = ?", (user_id,)).fetchone()
+        if not row:
+            return jsonify({'success': False, 'message': 'المستخدم غير موجود'}), 404
+        conn.execute(
+            "UPDATE users SET security_question = ?, security_answer_hash = ? WHERE id = ?",
+            (security_question, _hash_secret(_normalize_text(security_answer)), user_id),
+        )
+    return jsonify({'success': True, 'message': 'تم تغيير السؤال والجواب الأمني'})
 
 @app.route('/api/admin/registered_users/<int:user_id>', methods=['DELETE'])
 @zone_required
@@ -2907,6 +3027,9 @@ if __name__ == '__main__':
             webbrowser.open('http://127.0.0.1:3049')
         threading.Thread(target=_open, daemon=True).start()
         app.run(host='127.0.0.1', port=3049, debug=False)
+
+
+
 
 
 
