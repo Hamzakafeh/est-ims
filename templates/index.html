@@ -1,4 +1,4 @@
-﻿
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
@@ -199,8 +199,8 @@
   #homeBtn { background:#fff; color:#0d1117; border-color:#e2e8f0; box-shadow:0 2px 10px rgba(255,255,255,.18); }
   #homeBtn:hover { background:#f1f5f9; color:#0d1117; transform: scale(1.1); box-shadow: 0 6px 20px rgba(255,255,255,0.28); }
 
-  #reportsBtn { background: rgba(245,158,11,0.14); border-color: rgba(245,158,11,0.5); color: var(--accent-amber); }
-  #reportsBtn:hover { background: var(--accent-amber); border-color: var(--accent-amber); color: #000; transform: scale(1.1); box-shadow: 0 6px 20px rgba(245,158,11,0.38); }
+  #reportsBtn { background: rgba(244,63,94,0.14); border-color: rgba(244,63,94,0.52); color: #fb7185; }
+  #reportsBtn:hover { background: #f43f5e; border-color: #f43f5e; color: #fff; transform: scale(1.1); box-shadow: 0 6px 20px rgba(244,63,94,0.34); }
   .admin-stack { position: relative; display: inline-flex; }
   .admin-badge {
     position: absolute;
@@ -222,12 +222,12 @@
   }
   #adminRequestsBtn { background: linear-gradient(135deg, rgba(139,92,246,.22), rgba(124,58,237,.14)); border-color: rgba(139,92,246,.58); color: #c4b5fd; }
   #adminRequestsBtn:hover { background: rgba(139,92,246,.34); color: #fff; transform: scale(1.1); box-shadow: 0 6px 20px rgba(139,92,246,0.25); }
-  #adminUsersBtn { background: rgba(20,184,166,0.14); border-color: rgba(20,184,166,0.48); color: #5eead4; }
-  #adminUsersBtn:hover { background: #14b8a6; color: #fff; transform: scale(1.1); box-shadow: 0 6px 20px rgba(20,184,166,0.28); }
+  #adminUsersBtn { background: rgba(132,204,22,0.14); border-color: rgba(132,204,22,0.5); color: #a3e635; }
+  #adminUsersBtn:hover { background: #84cc16; border-color: #84cc16; color: #10220a; transform: scale(1.1); box-shadow: 0 6px 20px rgba(132,204,22,0.3); }
   html.light #adminRequestsBtn { background: rgba(124,58,237,0.12); border-color: rgba(124,58,237,0.42); color: #7c3aed; }
   html.light #adminRequestsBtn:hover { background: #7c3aed; color: #fff; box-shadow: 0 6px 20px rgba(124,58,237,0.3); }
-  html.light #adminUsersBtn { background: rgba(13,148,136,0.1); border-color: rgba(13,148,136,0.38); color: #0f766e; }
-  html.light #adminUsersBtn:hover { background: #0f766e; color: #fff; box-shadow: 0 6px 20px rgba(13,148,136,0.3); }
+  html.light #adminUsersBtn { background: rgba(101,163,13,0.1); border-color: rgba(101,163,13,0.42); color: #4d7c0f; }
+  html.light #adminUsersBtn:hover { background: #65a30d; color: #fff; box-shadow: 0 6px 20px rgba(101,163,13,0.28); }
 
   #langBtn { min-width:58px; height:32px; padding:0 9px; justify-content:center; }
   #langBtn svg { display:none; }
@@ -305,8 +305,8 @@
 
   /* light mode overrides for new buttons */
   html.light #refreshBtn { background: rgba(37,99,235,0.1); border-color: rgba(37,99,235,0.45); color: #2563eb; }
-  html.light #reportsBtn { background: rgba(217,119,6,0.1); border-color: rgba(217,119,6,0.45); color: #d97706; }
-  html.light #reportsBtn:hover { background: #d97706; color: #fff; box-shadow: 0 6px 20px rgba(217,119,6,0.3); }
+  html.light #reportsBtn { background: rgba(225,29,72,0.1); border-color: rgba(225,29,72,0.42); color: #e11d48; }
+  html.light #reportsBtn:hover { background: #e11d48; color: #fff; box-shadow: 0 6px 20px rgba(225,29,72,0.28); }
   html.light #refreshBtn:hover { background: #2563eb; color: #fff; box-shadow: 0 6px 20px rgba(37,99,235,0.3); }
   html.light #printBtn { background: rgba(217,119,6,0.1); border-color: rgba(217,119,6,0.45); color: #d97706; }
   html.light #printBtn:hover { background: #d97706; color: #fff; box-shadow: 0 6px 20px rgba(217,119,6,0.3); }
@@ -1756,16 +1756,16 @@ EST-iMs © | 2026    </div>
           box-shadow:0 0 6px rgba(239,68,68,0.6);z-index:10;">0</span>
       </div>
       {% if is_dev %}
-      <button class="theme-btn login-history-btn pulse-btn" onclick="openUsersModal()" title="Login History">
+      <button class="theme-btn login-history-btn" onclick="openUsersModal()" title="Login History">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       </button>
       <div class="admin-stack">
-        <button class="theme-btn pulse-btn" id="adminRequestsBtn" onclick="openAdminRequestsModal()" title="طلبات التسجيل">
+        <button class="theme-btn" id="adminRequestsBtn" onclick="openAdminRequestsModal()" title="طلبات التسجيل">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
         </button>
         <span class="admin-badge" id="adminRequestsBadge">0</span>
       </div>
-      <button class="theme-btn pulse-btn" id="adminUsersBtn" onclick="openAdminUsersModal()" title="المستخدمون المسجلون">
+      <button class="theme-btn" id="adminUsersBtn" onclick="openAdminUsersModal()" title="المستخدمون المسجلون">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M16 11l2 2 4-4"/></svg>
       </button>
       {% endif %}
@@ -4039,6 +4039,7 @@ function setAdminRequestBadge(count) {
   const n = Number(count || 0);
   badge.textContent = String(n);
   badge.style.display = n > 0 ? 'inline-flex' : 'none';
+  document.getElementById('adminRequestsBtn')?.classList.toggle('pulse-btn', n > 0);
   playNewRequestSound(n);
 }
 
@@ -4127,6 +4128,23 @@ async function rejectRegistration(id) {
   }
 }
 
+const ADMIN_SECURITY_QUESTIONS = [
+  'What was the name of your first school?',
+  'What is your mother\'s maiden name?',
+  'What city were you born in?',
+  'What is the name of your favorite teacher?',
+  'What was your first phone number?',
+  'ما اسم أول مدرسة التحقت بها؟',
+  'ما اسم عائلة والدتك قبل الزواج؟',
+  'في أي مدينة ولدت؟',
+  'ما اسم معلمك المفضل؟',
+  'ما هو أول رقم هاتف استخدمته؟'
+];
+function adminSecurityOptions(current) {
+  const value = String(current || '');
+  const list = ADMIN_SECURITY_QUESTIONS.includes(value) || !value ? ADMIN_SECURITY_QUESTIONS : [value, ...ADMIN_SECURITY_QUESTIONS];
+  return list.map(q => `<option value="${escAttr(q)}" ${q === value ? 'selected' : ''}>${escHtml(q)}</option>`).join('');
+}
 let adminUsersCache = [];
 
 async function loadAdminUsers() {
@@ -4184,7 +4202,7 @@ function openAdminUserDetail(id) {
       <button class="btn btn-purple" onclick="resetAdminUserPassword(${Number(u.id)})">تغيير كلمة السر</button>
     </div>
     <div class="admin-danger-zone">
-      <input id="adminSecurityQuestion" type="text" value="${escAttr(u.security_question || '')}" placeholder="Security question" style="flex:2 1 260px;">
+      <select id="adminSecurityQuestion" style="flex:2 1 260px;">${adminSecurityOptions(u.security_question)}</select>
       <input id="adminSecurityAnswer" type="text" placeholder="New security answer" style="flex:1.4 1 180px;">
       <button class="btn btn-purple" onclick="resetAdminUserSecurity(${Number(u.id)})">تغيير السؤال الأمني</button>
     </div>`;
@@ -4311,5 +4329,3 @@ init();
 </script>
 </body>
 </html>
-
-
