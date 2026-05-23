@@ -171,26 +171,26 @@
     white-space: nowrap;
   }
   .btn-primary  { background: var(--accent-blue); color: #fff; border: 1.5px solid var(--accent-blue); }
-  .btn-primary:hover  { background: #2563eb; border-color: #2563eb; transform: translateY(-1px); }
+  .btn-primary:hover  { background: #2563eb; border-color: #2563eb; transform: translateY(-1px) scale(1.04); }
   .btn-success  { background: var(--accent-green); color: #fff; border: 1.5px solid var(--accent-green); }
-  .btn-success:hover  { background: #059669; border-color: #059669; transform: translateY(-1px); }
+  .btn-success:hover  { background: #059669; border-color: #059669; transform: translateY(-1px) scale(1.04); }
   .btn-warning  { background: var(--accent-amber); color: #000; border: 1.5px solid var(--accent-amber); }
-  .btn-warning:hover  { background: #d97706; border-color: #d97706; transform: translateY(-1px); }
+  .btn-warning:hover  { background: #d97706; border-color: #d97706; transform: translateY(-1px) scale(1.04); }
   .btn-purple   { background: var(--accent-purple); color: #fff; border: 1.5px solid var(--accent-purple); }
-  .btn-purple:hover { background: #7c3aed; border-color: #7c3aed; transform: translateY(-1px); }
+  .btn-purple:hover { background: #7c3aed; border-color: #7c3aed; transform: translateY(-1px) scale(1.04); }
   .btn-danger   { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1.5px solid rgba(239,68,68,0.5); }
-  .btn-danger:hover   { background: rgba(239,68,68,0.28); transform: translateY(-1px); }
+  .btn-danger:hover   { background: rgba(239,68,68,0.28); transform: translateY(-1px) scale(1.04); }
   .btn-ghost {
     background: var(--bg-card); color: var(--text-muted);
     border: 1px solid var(--border);
   }
-  .btn-ghost:hover { background: var(--bg-hover); color: var(--text-main); }
+  .btn-ghost:hover { background: var(--bg-hover); color: var(--text-main); transform: scale(1.04); }
   .btn-about { background:#ffffff; color:#0d1117; font-weight:600; border: 1.5px solid #cbd5e1; }
-  .btn-about:hover { background:#e2e8f0; transform:translateY(-1px); }
+  .btn-about:hover { background:#e2e8f0; transform:translateY(-1px) scale(1.04); }
   .btn-logout { background:rgba(239,68,68,0.15); color:#fca5a5; border:1.5px solid rgba(239,68,68,0.5); font-weight:600; }
-  .btn-logout:hover { background:rgba(239,68,68,0.28); transform:translateY(-1px); }
+  .btn-logout:hover { background:rgba(239,68,68,0.28); transform:translateY(-1px) scale(1.04); }
   .btn-lang { background: rgba(6,182,212,0.12); color: var(--accent-cyan); border: 1.5px solid rgba(6,182,212,0.4); font-weight:600; }
-  .btn-lang:hover { background: rgba(6,182,212,0.22); transform:translateY(-1px); }
+  .btn-lang:hover { background: rgba(6,182,212,0.22); transform:translateY(-1px) scale(1.04); }
   .topbar-actions .btn-icon {
     width: 32px; height: 32px; padding: 0; border-radius: 8px;
     display: inline-flex; align-items: center; justify-content: center; gap: 0;
@@ -199,12 +199,8 @@
   #homeBtn { background:#fff; color:#0d1117; border-color:#e2e8f0; box-shadow:0 2px 10px rgba(255,255,255,.18); }
   #homeBtn:hover { background:#f1f5f9; color:#0d1117; transform: scale(1.1); box-shadow: 0 6px 20px rgba(255,255,255,0.28); }
 
-  #reportsBtn { background:linear-gradient(135deg, rgba(236,72,153,.24), rgba(244,114,182,.12)); border-color:rgba(236,72,153,.62); color:#f9a8d4; animation: reportsPulse 1.9s ease-in-out infinite; }
-  #reportsBtn:hover { background: rgba(236,72,153,.34); color: #fff; transform: scale(1.1); box-shadow: 0 6px 20px rgba(236,72,153,0.28); }
-  @keyframes reportsPulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(236,72,153,0); }
-    45% { box-shadow: 0 0 0 7px rgba(236,72,153,0.13); }
-  }
+  #reportsBtn { background: rgba(245,158,11,0.14); border-color: rgba(245,158,11,0.5); color: var(--accent-amber); }
+  #reportsBtn:hover { background: var(--accent-amber); border-color: var(--accent-amber); color: #000; transform: scale(1.1); box-shadow: 0 6px 20px rgba(245,158,11,0.38); }
   .admin-stack { position: relative; display: inline-flex; }
   .admin-badge {
     position: absolute;
@@ -309,6 +305,8 @@
 
   /* light mode overrides for new buttons */
   html.light #refreshBtn { background: rgba(37,99,235,0.1); border-color: rgba(37,99,235,0.45); color: #2563eb; }
+  html.light #reportsBtn { background: rgba(217,119,6,0.1); border-color: rgba(217,119,6,0.45); color: #d97706; }
+  html.light #reportsBtn:hover { background: #d97706; color: #fff; box-shadow: 0 6px 20px rgba(217,119,6,0.3); }
   html.light #refreshBtn:hover { background: #2563eb; color: #fff; box-shadow: 0 6px 20px rgba(37,99,235,0.3); }
   html.light #printBtn { background: rgba(217,119,6,0.1); border-color: rgba(217,119,6,0.45); color: #d97706; }
   html.light #printBtn:hover { background: #d97706; color: #fff; box-shadow: 0 6px 20px rgba(217,119,6,0.3); }
@@ -556,11 +554,11 @@
     transition: all 0.15s; font-family: inherit;
   }
   .btn-in  { background: rgba(16,185,129,0.15); color: var(--accent-green); border: 1px solid rgba(16,185,129,0.3); margin-right: 4px; }
-  .btn-in:hover  { background: rgba(16,185,129,0.3); }
+  .btn-in:hover  { background: rgba(16,185,129,0.3); transform: scale(1.04); }
   .btn-out { background: rgba(239,68,68,0.15);  color: var(--accent-red);   border: 1px solid rgba(239,68,68,0.3); margin-right: 4px; }
-  .btn-out:hover { background: rgba(239,68,68,0.3); }
+  .btn-out:hover { background: rgba(239,68,68,0.3); transform: scale(1.04); }
   .btn-del { background: rgba(100,100,120,0.15); color: var(--text-muted);  border: 1px solid rgba(100,100,120,0.3); }
-  .btn-del:hover { background: rgba(239,68,68,0.2); color: var(--accent-red); border-color: rgba(239,68,68,0.4); }
+  .btn-del:hover { background: rgba(239,68,68,0.2); color: var(--accent-red); border-color: rgba(239,68,68,0.4); transform: scale(1.04); }
 
   /* Empty / loading states */
   .empty-state {
@@ -646,9 +644,9 @@
   .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
   .modal-actions .btn { flex: 1; justify-content: center; padding: 10px; font-size: 13px; }
   .btn-in-modal  { background: var(--accent-green); color: #fff; }
-  .btn-in-modal:hover  { background: #059669; }
+  .btn-in-modal:hover  { background: #059669; transform: scale(1.04); }
   .btn-out-modal { background: var(--accent-red); color: #fff; }
-  .btn-out-modal:hover { background: #dc2626; }
+  .btn-out-modal:hover { background: #dc2626; transform: scale(1.04); }
 
   /* Toast */
   #toast {
@@ -692,19 +690,13 @@
     transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.15s;
     flex-shrink: 0;
   }
-  .theme-btn:hover { background: var(--bg-hover); color: var(--text-main); transform: scale(1.08); }
+  .theme-btn:hover { background: var(--bg-hover); color: var(--text-main); transform: scale(1.1); }
   .theme-btn.login-history-btn {
-    background: rgba(239,68,68,0.14);
-    border-color: rgba(239,68,68,0.55);
-    color: var(--accent-red);
+    background: linear-gradient(135deg, rgba(139,92,246,.22), rgba(124,58,237,.14));
+    border-color: rgba(139,92,246,.58);
+    color: #c4b5fd;
   }
-  .theme-btn.login-history-btn:hover {
-    background: var(--accent-red);
-    border-color: var(--accent-red);
-    color: #fff;
-    transform: scale(1.1);
-    box-shadow: 0 8px 24px rgba(239,68,68,0.32);
-  }
+  .theme-btn.login-history-btn:hover { background: rgba(139,92,246,.34); color:#fff; transform: scale(1.1); box-shadow:0 6px 20px rgba(139,92,246,.25); }
   .verified-badge {
     display: inline-flex; align-items: center; justify-content: center;
     width: 15px; height: 15px; border-radius: 50%;
@@ -911,20 +903,22 @@
   }
   #usersModal.open { display: flex; }
   .users-box {
-    background: var(--bg-panel); border: 1px solid var(--border-light);
+    background: linear-gradient(180deg, rgba(33,40,58,.98), rgba(16,22,34,.98)); border: 1px solid rgba(96,165,250,.28);
     border-radius: 18px; width: 700px; max-width: 95vw; max-height: 80vh;
     display: flex; flex-direction: column;
     box-shadow: 0 24px 80px rgba(0,0,0,0.7);
     animation: modalIn 0.22s cubic-bezier(.34,1.56,.64,1);
     overflow: hidden;
   }
+  html.light .users-box { background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(240,244,248,.98)); }
   .users-header {
-    padding: 20px 24px 16px; border-bottom: 1px solid var(--border);
+    padding: 18px 22px 15px; border-bottom: 1px solid rgba(96,165,250,.18);
+    background: linear-gradient(90deg, rgba(59,130,246,.11), rgba(6,182,212,.04));
     display: flex; align-items: center; justify-content: space-between;
     flex-shrink: 0;
   }
   .users-header h3 { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-  .users-body { overflow-y: auto; flex: 1; }
+  .users-body { overflow-y: auto; flex: 1; background: rgba(13,17,23,.18); }
   .users-table { width: 100%; border-collapse: collapse; font-size: 13px; }
   .users-table th {
     position: sticky; top: 0;
@@ -958,9 +952,9 @@
     width: 100%; border: 1px solid var(--border); background: var(--bg-card);
     color: var(--text-main); border-radius: 10px; padding: 12px 14px;
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    cursor: pointer; text-align: left; font-family: inherit;
+    cursor: pointer; text-align: left; font-family: inherit; transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease;
   }
-  .admin-user-row:hover { background: var(--bg-hover); border-color: var(--border-light); }
+  .admin-user-row:hover { background: var(--bg-hover); border-color: var(--accent-blue); transform: translateY(-1px) scale(1.01); box-shadow: 0 12px 28px rgba(0,0,0,.22); }
   .admin-user-row strong { font-size: 14px; }
   .admin-user-row span { color: var(--text-muted); font-size: 11px; }
   .admin-detail-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; padding: 16px; }
@@ -1169,18 +1163,19 @@
   }
   #dashModal.open { display: flex; }
   .dash-box {
-    background: var(--bg-main);
-    border: 1px solid var(--border-light);
+    background: linear-gradient(180deg, rgba(17,24,39,.98), rgba(13,17,23,.98));
+    border: 1px solid rgba(96,165,250,.3);
     border-radius: 20px;
     width: 92vw; height: 86vh;
     display: flex; overflow: hidden;
     box-shadow: 0 24px 80px rgba(0,0,0,0.7);
     animation: modalIn 0.24s cubic-bezier(.34,1.56,.64,1);
   }
+  html.light .dash-box { background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(240,244,248,.98)); }
   /* LEFT SIDEBAR */
   .dash-sidebar {
     width: 220px; flex-shrink: 0;
-    background: var(--bg-panel);
+    background: linear-gradient(180deg, var(--bg-panel), rgba(13,17,23,.72));
     border-right: 1px solid var(--border);
     display: flex; flex-direction: column;
     padding: 20px 12px; gap: 4px;
@@ -1198,7 +1193,7 @@
     transition: all 0.15s; border: 1px solid transparent;
     user-select: none;
   }
-  .dash-nav-item:hover { background: var(--bg-hover); color: var(--text-main); }
+  .dash-nav-item:hover { background: var(--bg-hover); color: var(--text-main); transform: translateX(2px) scale(1.02); }
   .dash-nav-item.active {
     background: var(--bg-active); border-color: var(--border-light);
     color: var(--accent-blue); font-weight: 600;
@@ -1346,19 +1341,10 @@
     gap:8px;
     transition:background .15s, border-color .15s, transform .15s;
   }
-  .dash-refresh-btn:hover { background:var(--bg-hover); border-color:var(--accent-blue); transform:translateY(-1px); }
+  .dash-refresh-btn:hover { background:var(--bg-hover); border-color:var(--accent-blue); transform:translateY(-1px) scale(1.04); box-shadow:0 10px 22px rgba(59,130,246,.16); }
   .dash-refresh-btn:disabled { opacity:.55; cursor:wait; transform:none; }
-  #dashBtn {
-    background: linear-gradient(135deg, rgba(59,130,246,.24), rgba(6,182,212,.18));
-    border-color: rgba(59,130,246,.65);
-    color: var(--accent-cyan);
-    box-shadow: 0 0 18px rgba(59,130,246,.22);
-  }
-  #dashBtn:hover {
-    background: var(--accent-blue);
-    color: #fff;
-    box-shadow: 0 8px 26px rgba(59,130,246,.38);
-  }
+  #dashBtn { background:#fff; color:#0d1117; border-color:#e2e8f0; box-shadow:0 2px 10px rgba(255,255,255,.18); }
+  #dashBtn:hover { background:#f1f5f9; color:#0d1117; transform: scale(1.1); box-shadow: 0 6px 20px rgba(255,255,255,0.28); }
   .dash-zone-select {
     min-width: 160px;
     background: var(--bg-card);
@@ -1770,7 +1756,7 @@ EST-iMs © | 2026    </div>
           box-shadow:0 0 6px rgba(239,68,68,0.6);z-index:10;">0</span>
       </div>
       {% if is_dev %}
-      <button class="theme-btn login-history-btn" onclick="openUsersModal()" title="Login History">
+      <button class="theme-btn login-history-btn pulse-btn" onclick="openUsersModal()" title="Login History">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       </button>
       <div class="admin-stack">
@@ -1780,13 +1766,13 @@ EST-iMs © | 2026    </div>
         <span class="admin-badge" id="adminRequestsBadge">0</span>
       </div>
       <button class="theme-btn pulse-btn" id="adminUsersBtn" onclick="openAdminUsersModal()" title="المستخدمون المسجلون">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M7 16c.6-1.4 3.4-1.4 4 0"/><path d="M14 9h4"/><path d="M14 13h4"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M16 11l2 2 4-4"/></svg>
       </button>
       {% endif %}
       {% endif %}
       <div class="reports-dropdown-wrap" id="reportsDropdownWrap">
         <button class="theme-btn" onclick="toggleReportsDropdown(event)" id="reportsBtn" title="Reports">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-7"/><path d="M17 7h2v2"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
         </button>
         <div class="reports-dropdown-menu" id="reportsDropdownMenu"></div>
       </div>
@@ -3172,8 +3158,8 @@ function printTable() {
 }
 
 function exportCSV() {
-  if (!state.headers.length) {
-    openCsvModal();
+  if (!state.headers.length || !state.allRows.length) {
+    toast('⚠️ No data to export', false);
     return;
   }
   openCsvModal();
@@ -4075,6 +4061,10 @@ function closeAdminUsersModal() {
 }
 
 function exportAdminUsers() {
+  if (!adminUsersCache.length) {
+    toast('⚠️ No registered users to export', false);
+    return;
+  }
   window.location.href = '/api/admin/registered_users/export.xlsx';
 }
 
@@ -4173,7 +4163,7 @@ function openAdminUserDetail(id) {
   const body = document.getElementById('adminUserDetailBody');
   if (!body) return;
   const rows = [
-    ['Full name', u.full_name], ['Username', u.username], ['Job title', u.job_title], ['Email', u.email],
+    ['Full name', u.full_name], ['Username', u.username], ['Job title', u.job_title], ['Gender', u.gender], ['Birth date', u.birth_date], ['Privacy accepted', u.privacy_accepted ? 'Yes' : 'No'], ['Email', u.email],
     ['Phone', u.phone], ['Security question', u.security_question], ['Password', u.password_stored_as ? 'Hidden (one-way hash)' : '—'],
     ['Security answer', u.security_answer_stored_as ? 'Hidden (one-way hash)' : '—'],
     ['Approved at', u.approved_at || u.created_at], ['Suspended until', u.suspended_until || '—'], ['Suspended by', u.suspended_by || '—']
@@ -4321,8 +4311,5 @@ init();
 </script>
 </body>
 </html>
-
-
-
 
 

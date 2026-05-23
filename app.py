@@ -235,6 +235,9 @@ def _init_auth_db():
                 email TEXT NOT NULL,
                 phone TEXT NOT NULL,
                 job_title TEXT NOT NULL,
+                gender TEXT,
+                birth_date TEXT,
+                privacy_accepted INTEGER NOT NULL DEFAULT 0,
                 password_hash TEXT NOT NULL,
                 security_question TEXT NOT NULL,
                 security_answer_hash TEXT NOT NULL,
@@ -253,6 +256,9 @@ def _init_auth_db():
                 email TEXT NOT NULL,
                 phone TEXT NOT NULL,
                 job_title TEXT NOT NULL,
+                gender TEXT,
+                birth_date TEXT,
+                privacy_accepted INTEGER NOT NULL DEFAULT 0,
                 password_hash TEXT NOT NULL,
                 security_question TEXT NOT NULL,
                 security_answer_hash TEXT NOT NULL,
@@ -267,6 +273,12 @@ def _init_auth_db():
             "ALTER TABLE users ADD COLUMN suspended_until TEXT",
             "ALTER TABLE users ADD COLUMN suspended_by TEXT",
             "ALTER TABLE users ADD COLUMN suspended_at TEXT",
+            "ALTER TABLE users ADD COLUMN gender TEXT",
+            "ALTER TABLE users ADD COLUMN birth_date TEXT",
+            "ALTER TABLE users ADD COLUMN privacy_accepted INTEGER NOT NULL DEFAULT 0",
+            "ALTER TABLE registration_requests ADD COLUMN gender TEXT",
+            "ALTER TABLE registration_requests ADD COLUMN birth_date TEXT",
+            "ALTER TABLE registration_requests ADD COLUMN privacy_accepted INTEGER NOT NULL DEFAULT 0",
         ):
             try:
                 conn.execute(column_sql)
@@ -380,7 +392,7 @@ def add_security_headers(response):
 
 @app.before_request
 def enforce_single_active_session():
-    if request.endpoint in {'static', 'login_page', 'do_login', 'logout', 'api_lockout_status', 'api_captcha', 'api_register', 'register_page', 'forgot_password_page', 'api_password_reset_verify', 'api_password_reset_complete'}:
+    if request.endpoint in {'static', 'login_page', 'do_login', 'logout', 'api_lockout_status', 'api_captcha', 'api_register', 'register_page', 'forgot_password_page', 'privacy_page', 'terms_page', 'for_more_page', 'about_page', 'welcome', 'api_password_reset_verify', 'api_password_reset_complete'}:
         return None
     if not _validate_active_session():
         session.clear()
@@ -516,6 +528,9 @@ def api_register():
     email = str(data.get('email', '')).strip()
     phone = str(data.get('phone', '')).strip()
     job_title = str(data.get('job_title', '')).strip()
+    gender = str(data.get('gender', '')).strip()
+    birth_date = str(data.get('birth_date', '')).strip()
+    privacy_accepted = bool(data.get('privacy_accepted'))
     password = str(data.get('password', '')).strip()
     confirm_password = str(data.get('confirm_password', '')).strip()
     security_question = str(data.get('security_question', '')).strip()
@@ -523,9 +538,20 @@ def api_register():
     captcha_answer = str(data.get('captcha_answer', '')).strip()
     captcha_token = str(data.get('captcha_token', '')).strip()
 
-    required = [full_name, username, email, phone, job_title, password, confirm_password, security_question, security_answer, captcha_answer, captcha_token]
+    required = [full_name, username, email, phone, job_title, gender, birth_date, password, confirm_password, security_question, security_answer, captcha_answer, captcha_token]
     if not all(required):
         return jsonify({'success': False, 'message': 'يرجى تعبئة جميع الحقول'}), 400
+    reserved_usernames = {'admin', 'administrator', 'dev', 'developer', 'root', 'superadmin'}
+    if username in reserved_usernames:
+        return jsonify({'success': False, 'message': 'اسم المستخدم محجوز ولا يمكن التسجيل به'}), 400
+    if len(username) < 5:
+        return jsonify({'success': False, 'message': 'اسم المستخدم يجب أن يكون 5 أحرف على الأقل'}), 400
+    if not re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', email):
+        return jsonify({'success': False, 'message': 'يرجى إدخال بريد إلكتروني صحيح'}), 400
+    if not (re.search(r'[A-Za-z]', password) and re.search(r'\d', password)):
+        return jsonify({'success': False, 'message': 'كلمة المرور يجب أن تحتوي أحرفاً وأرقاماً'}), 400
+    if not privacy_accepted:
+        return jsonify({'success': False, 'message': 'يجب الموافقة على سياسة الخصوصية وشروط الاستخدام'}), 400
     if password != confirm_password:
         return jsonify({'success': False, 'message': 'كلمة المرور وتأكيدها غير متطابقين'}), 400
 
@@ -543,14 +569,17 @@ def api_register():
     with _db_connect() as conn:
         conn.execute("""
             INSERT INTO registration_requests
-            (full_name, username, email, phone, job_title, password_hash, security_question, security_answer_hash, status, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)
+            (full_name, username, email, phone, job_title, gender, birth_date, privacy_accepted, password_hash, security_question, security_answer_hash, status, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)
         """, (
             full_name,
             username,
             email,
             phone,
             job_title,
+            gender,
+            birth_date,
+            1 if privacy_accepted else 0,
             password_hash,
             security_question,
             answer_hash,
@@ -2156,6 +2185,9 @@ def api_admin_registration_requests():
                 'email': row['email'],
                 'phone': row['phone'],
                 'job_title': row['job_title'],
+                'gender': row['gender'] if 'gender' in row.keys() else '',
+                'birth_date': row['birth_date'] if 'birth_date' in row.keys() else '',
+                'privacy_accepted': bool(row['privacy_accepted'] if 'privacy_accepted' in row.keys() else 0),
                 'security_question': row['security_question'],
                 'created_at': row['created_at'],
             }
@@ -2190,8 +2222,8 @@ def api_admin_approve_registration(request_id):
         conn.execute(
             """
             INSERT INTO users
-            (full_name, username, email, phone, job_title, password_hash, security_question, security_answer_hash, approved, is_admin, created_at, approved_at, created_by)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, 0, ?, ?, ?)
+            (full_name, username, email, phone, job_title, gender, birth_date, privacy_accepted, password_hash, security_question, security_answer_hash, approved, is_admin, created_at, approved_at, created_by)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 0, ?, ?, ?)
             """,
             (
                 row['full_name'],
@@ -2199,6 +2231,9 @@ def api_admin_approve_registration(request_id):
                 row['email'],
                 row['phone'],
                 row['job_title'],
+                row['gender'] if 'gender' in row.keys() else '',
+                row['birth_date'] if 'birth_date' in row.keys() else '',
+                row['privacy_accepted'] if 'privacy_accepted' in row.keys() else 0,
                 row['password_hash'],
                 row['security_question'],
                 row['security_answer_hash'],
@@ -2240,7 +2275,7 @@ def api_admin_registered_users():
         return jsonify({'error': 'غير مصرح'}), 403
     with _db_connect() as conn:
         rows = conn.execute(
-            "SELECT id, full_name, username, email, phone, job_title, security_question, password_hash, security_answer_hash, approved_at, created_at, suspended_until, suspended_by, suspended_at FROM users WHERE approved = 1 ORDER BY approved_at DESC, id DESC"
+            "SELECT id, full_name, username, email, phone, job_title, gender, birth_date, privacy_accepted, security_question, password_hash, security_answer_hash, approved_at, created_at, suspended_until, suspended_by, suspended_at FROM users WHERE approved = 1 ORDER BY approved_at DESC, id DESC"
         ).fetchall()
     return jsonify({
         'count': len(rows),
@@ -2253,6 +2288,9 @@ def api_admin_registered_users():
                 'email': row['email'],
                 'phone': row['phone'],
                 'job_title': row['job_title'],
+                'gender': row['gender'] if 'gender' in row.keys() else '',
+                'birth_date': row['birth_date'] if 'birth_date' in row.keys() else '',
+                'privacy_accepted': bool(row['privacy_accepted'] if 'privacy_accepted' in row.keys() else 0),
                 'security_question': row['security_question'],
                 'password_stored_as': 'one_way_hash' if row['password_hash'] else '',
                 'security_answer_stored_as': 'one_way_hash' if row['security_answer_hash'] else '',
@@ -2273,7 +2311,7 @@ def api_admin_export_registered_users():
         return jsonify({'error': 'غير مصرح'}), 403
     with _db_connect() as conn:
         rows = conn.execute("""
-            SELECT id, full_name, username, email, phone, job_title,
+            SELECT id, full_name, username, email, phone, job_title, gender, birth_date, privacy_accepted,
                    security_question, password_hash, security_answer_hash,
                    approved, is_admin, created_at, approved_at, created_by,
                    suspended_until, suspended_by, suspended_at
@@ -2286,7 +2324,7 @@ def api_admin_export_registered_users():
     ws = wb.active
     ws.title = 'Registered Users'
     headers = [
-        'ID', 'Full Name', 'Username', 'Email', 'Phone', 'Job Title',
+        'ID', 'Full Name', 'Username', 'Email', 'Phone', 'Job Title', 'Gender', 'Birth Date', 'Privacy Accepted',
         'Password', 'Security Question', 'Security Answer',
         'Password Hash', 'Security Answer Hash',
         'Approved', 'Is Admin', 'Created At', 'Approved At', 'Created By',
@@ -2296,6 +2334,9 @@ def api_admin_export_registered_users():
     for row in rows:
         ws.append([
             row['id'], row['full_name'], row['username'], row['email'], row['phone'], row['job_title'],
+            row['gender'] if 'gender' in row.keys() else '',
+            row['birth_date'] if 'birth_date' in row.keys() else '',
+            'Yes' if (row['privacy_accepted'] if 'privacy_accepted' in row.keys() else 0) else 'No',
             'Not recoverable - stored as one-way hash',
             row['security_question'],
             'Not recoverable - stored as one-way hash',
@@ -2774,6 +2815,23 @@ def about_page():
     return render_template('about.html')
 
 
+
+@app.route('/privacy')
+def privacy_page():
+    """Privacy Policy page - public."""
+    return render_template('privacy.html')
+
+@app.route('/terms')
+def terms_page():
+    """Terms of Use page - public."""
+    return render_template('terms.html')
+
+@app.route('/for-more')
+def for_more_page():
+    """Developer / For More page - public."""
+    return render_template('formore.html')
+
+
 @app.route('/api/scan/<sku>')
 @zone_required
 def api_scan(sku):
@@ -3027,9 +3085,4 @@ if __name__ == '__main__':
             webbrowser.open('http://127.0.0.1:3049')
         threading.Thread(target=_open, daemon=True).start()
         app.run(host='127.0.0.1', port=3049, debug=False)
-
-
-
-
-
 
