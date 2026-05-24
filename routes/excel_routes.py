@@ -32,7 +32,7 @@ def api_structure():
         view_zone = request.args.get('zone') or session.get('active_view_zone', 'zone1')
     else:
         view_zone = zone
-    return jsonify(get_structure(view_zone))
+    return jsonify(get_structure(zone_id=view_zone))
 
 
 @excel_bp.route('/api/years')

@@ -5,7 +5,8 @@ from datetime import datetime, timedelta
 from flask import Blueprint, jsonify, request, session, send_file
 from core import (
     zone_required, _db_connect, _normalize_username, _hash_secret,
-    _is_single_login_exempt, _clear_active_session, AUTH_DB_FILE
+    _is_single_login_exempt, _clear_active_session, AUTH_DB_FILE,
+    CONTACT_MESSAGES_FILE, _read_json_list, _write_json_list, _data_lock,
 )
 
 admin_bp = Blueprint('admin', __name__)
@@ -295,3 +296,28 @@ def api_admin_reset_user_password(user_id):
     _clear_active_session(row['username'])
     return jsonify({'success': True, 'message': 'تم تغيير كلمة مرور المستخدم'})
 
+
+@admin_bp.route('/api/admin/contact_messages')
+@zone_required
+def api_admin_contact_messages():
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    with _data_lock:
+        messages = _read_json_list(CONTACT_MESSAGES_FILE)
+    unread = sum(1 for m in messages if m.get('status') == 'new')
+    return jsonify({'messages': list(reversed(messages)), 'count': unread})
+
+
+@admin_bp.route('/api/admin/contact_messages/<int:msg_id>/read', methods=['POST'])
+@zone_required
+def api_admin_contact_message_read(msg_id):
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    with _data_lock:
+        messages = _read_json_list(CONTACT_MESSAGES_FILE)
+        for m in messages:
+            if int(m.get('id', -1)) == msg_id:
+                m['status'] = 'read'
+                break
+        _write_json_list(CONTACT_MESSAGES_FILE, messages)
+    return jsonify({'success': True})
