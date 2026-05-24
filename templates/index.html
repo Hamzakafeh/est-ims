@@ -978,6 +978,25 @@
     display: flex; align-items: center; gap: 4px;
   }
 
+  /* ── MODAL HEADER UTILITY BUTTONS (lang, theme, close) ── */
+  .modal-hdr-actions {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .modal-hdr-btn {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: rgba(255,255,255,0.05); color: var(--text-muted);
+    border: 1px solid rgba(255,255,255,0.09);
+    cursor: pointer; font-size: 13px; font-weight: 600;
+    transition: all 0.2s; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: inherit;
+  }
+  .modal-hdr-btn:hover { background: rgba(255,255,255,0.1); color: var(--text-main); transform: scale(1.08); }
+  .modal-hdr-close:hover { background: rgba(239,68,68,0.14); color: #fca5a5; border-color: rgba(239,68,68,0.28); transform: rotate(90deg) scale(1.1); }
+  .modal-hdr-lang { font-size: 11px; letter-spacing: 0.5px; min-width: 34px; padding: 0 6px; }
+  html.light .modal-hdr-btn { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1); color: var(--text-muted); }
+  html.light .modal-hdr-btn:hover { background: rgba(0,0,0,0.08); color: var(--text-main); }
+
   /* ── USERS MODAL ── */
   #usersModal {
     display: none; position: fixed; inset: 0; z-index: 9500;
@@ -1937,10 +1956,10 @@ EST-iMs © | 2026    </div>
       </span>
     </div>
     <div class="topbar-actions">
-      <button class="btn btn-lang hideable-btn" id="langBtn" onclick="toggleIndexLang()" title="Toggle Language">
+      <button class="btn btn-lang" id="langBtn" onclick="toggleIndexLang()" title="Toggle Language">
         <span id="langBtnText">EN</span>
       </button>
-      <button class="theme-btn hideable-btn" id="themeBtn" title="Toggle light/dark mode">
+      <button class="theme-btn" id="themeBtn" title="Toggle light/dark mode">
         <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
@@ -2012,7 +2031,14 @@ EST-iMs © | 2026    </div>
 <!-- ABOUT MODAL -->
 <div id="aboutModal" onclick="if(event.target===this)closeAbout()" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);align-items:center;justify-content:center;">
   <div class="beta-card" style="max-width:380px;">
-    <button onclick="closeAbout()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text-dim);font-size:17px;cursor:pointer;line-height:1;transition:color 0.15s;">✕</button>
+    <div style="position:absolute;top:14px;right:14px;display:flex;gap:6px;z-index:20;">
+      <button class="modal-hdr-btn modal-hdr-lang" id="aboutModalLangBtn" onclick="toggleIndexLang()" title="Toggle Language">EN</button>
+      <button class="modal-hdr-btn" id="aboutModalThemeBtn" onclick="toggleTheme()" title="Toggle light/dark mode">
+        <svg class="icon-sun" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="modal-hdr-btn modal-hdr-close" onclick="closeAbout()" title="Close">✕</button>
+    </div>
     <div class="beta-badge">
       <span class="beta-dot"></span>
       EST-iMs © | 2026
@@ -2258,7 +2284,14 @@ EST-iMs © | 2026    </div>
   <div class="users-box">
     <div class="users-header">
       <h3>👥 Login History</h3>
-      <button onclick="closeUsersModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
+      <div class="modal-hdr-actions">
+        <button class="modal-hdr-btn modal-hdr-lang" id="usersModalLangBtn" onclick="toggleIndexLang()" title="Toggle Language">EN</button>
+        <button class="modal-hdr-btn" id="usersModalThemeBtn" onclick="toggleTheme()" title="Toggle light/dark mode">
+          <svg class="icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="modal-hdr-btn modal-hdr-close" onclick="closeUsersModal()" title="Close">✕</button>
+      </div>
     </div>
     <div class="users-body" id="usersBody">
       <div class="users-empty">Loading...</div>
@@ -2272,9 +2305,14 @@ EST-iMs © | 2026    </div>
   <div class="users-box" style="max-width:980px;">
     <div class="users-header">
       <h3>🟣 طلبات التسجيل</h3>
-      <div style="display:flex;align-items:center;gap:8px;">
+      <div class="modal-hdr-actions">
         <button class="dash-refresh-btn" onclick="loadAdminRequests()" style="padding:6px 10px;font-size:11px;">تحديث</button>
-        <button onclick="closeAdminRequestsModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
+        <button class="modal-hdr-btn modal-hdr-lang" id="reqModalLangBtn" onclick="toggleIndexLang()" title="Toggle Language">EN</button>
+        <button class="modal-hdr-btn" id="reqModalThemeBtn" onclick="toggleTheme()" title="Toggle light/dark mode">
+          <svg class="icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="modal-hdr-btn modal-hdr-close" onclick="closeAdminRequestsModal()" title="Close">✕</button>
       </div>
     </div>
     <div class="users-body" id="adminRequestsBody">
@@ -2287,9 +2325,14 @@ EST-iMs © | 2026    </div>
   <div class="users-box" style="max-width:980px;">
     <div class="users-header">
       <h3>For More Messages</h3>
-      <div style="display:flex;align-items:center;gap:8px;">
+      <div class="modal-hdr-actions">
         <button class="dash-refresh-btn" onclick="loadAdminMessages()" style="padding:6px 10px;font-size:11px;">Refresh</button>
-        <button onclick="closeAdminMessagesModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;">x</button>
+        <button class="modal-hdr-btn modal-hdr-lang" id="msgModalLangBtn" onclick="toggleIndexLang()" title="Toggle Language">EN</button>
+        <button class="modal-hdr-btn" id="msgModalThemeBtn" onclick="toggleTheme()" title="Toggle light/dark mode">
+          <svg class="icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="modal-hdr-btn modal-hdr-close" onclick="closeAdminMessagesModal()" title="Close">✕</button>
       </div>
     </div>
     <div class="users-body" id="adminMessagesBody"><div class="users-empty">Loading...</div></div>
@@ -2299,10 +2342,15 @@ EST-iMs © | 2026    </div>
   <div class="users-box" style="max-width:980px;">
     <div class="users-header">
       <h3>👤 المستخدمون المسجلون</h3>
-      <div style="display:flex;align-items:center;gap:8px;">
+      <div class="modal-hdr-actions">
         <button class="dash-refresh-btn" onclick="exportAdminUsers()" style="padding:6px 10px;font-size:11px;">تصدير Excel</button>
         <button class="dash-refresh-btn" onclick="loadAdminUsers()" style="padding:6px 10px;font-size:11px;">تحديث</button>
-        <button onclick="closeAdminUsersModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
+        <button class="modal-hdr-btn modal-hdr-lang" id="usrModalLangBtn" onclick="toggleIndexLang()" title="Toggle Language">EN</button>
+        <button class="modal-hdr-btn" id="usrModalThemeBtn" onclick="toggleTheme()" title="Toggle light/dark mode">
+          <svg class="icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="modal-hdr-btn modal-hdr-close" onclick="closeAdminUsersModal()" title="Close">✕</button>
       </div>
     </div>
     <div class="users-body" id="adminUsersBody">
@@ -2340,7 +2388,14 @@ EST-iMs © | 2026    </div>
           </div>
         </div>
       </div>
-      <button class="profile-close" onclick="closeProfileModal()">✕</button>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+        <button class="modal-hdr-btn modal-hdr-lang" id="profileModalLangBtn" onclick="toggleIndexLang()" title="Toggle Language">EN</button>
+        <button class="modal-hdr-btn" id="profileModalThemeBtn" onclick="toggleTheme()" title="Toggle light/dark mode">
+          <svg class="icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="profile-close" onclick="closeProfileModal()">✕</button>
+      </div>
     </div>
     <div class="profile-body" id="profileBody">
       <div class="profile-loading">Loading profile...</div>
@@ -2396,7 +2451,14 @@ EST-iMs © | 2026    </div>
 
     <!-- RIGHT CONTENT -->
     <div class="dash-content" id="dashContent" style="position:relative;">
-      <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
+      <div style="position:absolute;top:14px;right:14px;display:flex;gap:6px;z-index:20;">
+        <button class="modal-hdr-btn modal-hdr-lang" id="dashModalLangBtn" onclick="toggleIndexLang()" title="Toggle Language">EN</button>
+        <button class="modal-hdr-btn" id="dashModalThemeBtn" onclick="toggleTheme()" title="Toggle light/dark mode">
+          <svg class="icon-sun" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="modal-hdr-btn modal-hdr-close" onclick="closeDashboard()" title="Close">✕</button>
+      </div>
       <div class="dash-loading"><div class="spinner"></div><span>Loading dashboard...</span></div>
     </div>
   </div>
@@ -2624,8 +2686,15 @@ function applyIndexLang(lang) {
     if (oc.includes('showAbout'))     btn.lastChild.textContent = ' ' + t.about;
     if (oc.includes('confirmLogout')) btn.lastChild.textContent = ' ' + t.logout;
   });
+  const langLabel = lang === 'ar' ? 'AR' : 'EN';
   const langBtnText = document.getElementById('langBtnText');
-  if (langBtnText) langBtnText.textContent = lang === 'ar' ? 'AR' : 'EN';
+  if (langBtnText) langBtnText.textContent = langLabel;
+  // Sync lang button text across all modal headers
+  ['usersModalLangBtn','reqModalLangBtn','msgModalLangBtn','usrModalLangBtn',
+   'aboutModalLangBtn','dashModalLangBtn','profileModalLangBtn'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = langLabel;
+  });
   // Search
   const si = document.getElementById('searchInput');
   if (si) si.placeholder = t.searchPh;
@@ -2703,10 +2772,11 @@ const NON_INVENTORY_SHEETS = ['Stocktaking'];
   const saved = localStorage.getItem('est-theme');
   if (saved === 'light') document.documentElement.classList.add('light');
 })();
-document.getElementById('themeBtn').addEventListener('click', function() {
+function toggleTheme() {
   const isLight = document.documentElement.classList.toggle('light');
   localStorage.setItem('est-theme', isLight ? 'light' : 'dark');
-});
+}
+document.getElementById('themeBtn').addEventListener('click', toggleTheme);
 
 // ── CLOCK (disabled per update) ──
 // function updateClock() { ... }
@@ -4228,33 +4298,122 @@ async function loadAdminMessages() {
 }
 async function markAdminMessageRead(id) { await fetch(`/api/admin/contact_messages/${id}/read`, { method:'POST' }); loadAdminMessages(); }
 setInterval(() => { if (document.getElementById('forMoreMessagesBadge')) fetch('/api/admin/contact_messages',{cache:'no-store'}).then(r=>r.json()).then(d=>setForMoreMessagesBadge(d.count||0)).catch(()=>{}); }, 30000);
-{% if is_dev %}
-let _adminRequestsPollTimer = null;
-let _adminRequestsPollInFlight = false;
-async function refreshAdminRequestBadge() {
-  if (_adminRequestsPollInFlight) return;
-  _adminRequestsPollInFlight = true;
-  try {
-    const res = await fetch('/api/admin/pending_requests_count', { cache: 'no-store' });
-    const data = await res.json();
-    if (!res.ok || data.error) throw new Error(data.error || 'Failed');
-    setAdminRequestBadge(data.count || 0);
-  } catch (e) {
-    setAdminRequestBadge(0);
-  } finally {
-    _adminRequestsPollInFlight = false;
+
+// ══════════════════════════════════════════════════════
+// BACKGROUND NOTIFICATION SYSTEM
+// Works even when page is minimized or in another tab
+// ══════════════════════════════════════════════════════
+(function() {
+  // Request notification permission on load
+  function requestNotifPermission() {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission().catch(() => {});
+    }
   }
-}
-function startAdminRequestsPolling() {
-  refreshAdminRequestBadge();
-  if (_adminRequestsPollTimer) clearInterval(_adminRequestsPollTimer);
-  _adminRequestsPollTimer = setInterval(refreshAdminRequestBadge, 30000);
-}
-startAdminRequestsPolling();
-document.addEventListener('visibilitychange', () => {
-  if (!document.hidden) refreshAdminRequestBadge();
-});
-window.addEventListener('focus', refreshAdminRequestBadge);
+  requestNotifPermission();
+
+  // Show browser notification if page is not visible
+  function showBrowserNotif(title, body, icon) {
+    if (!('Notification' in window)) return;
+    if (Notification.permission !== 'granted') return;
+    try {
+      new Notification(title, {
+        body: body,
+        icon: icon || '/static/low.ico',
+        badge: '/static/low.ico',
+        tag: title, // prevent duplicate stacking
+        requireInteraction: false,
+        silent: false
+      });
+    } catch(e) {}
+  }
+
+  // Play sound always, show browser notif only when hidden
+  function notifyNewMessages(prevCount, newCount) {
+    if (newCount <= prevCount) return;
+    // Always play sound
+    try {
+      const audio = new Audio('/static/newapp.mp3');
+      audio.volume = 0.85;
+      audio.play().catch(() => {});
+    } catch(e) {}
+    // Show browser notification if page hidden/minimized
+    if (document.hidden || !document.hasFocus()) {
+      showBrowserNotif(
+        '💬 رسائل جديدة - For More Messages',
+        `وصل ${newCount - prevCount} رسالة جديدة`,
+        '/static/low.ico'
+      );
+    }
+  }
+
+  function notifyNewRequests(prevCount, newCount) {
+    if (newCount <= prevCount) return;
+    try {
+      const audio = new Audio('/static/newapp.mp3');
+      audio.volume = 0.85;
+      audio.play().catch(() => {});
+    } catch(e) {}
+    if (document.hidden || !document.hasFocus()) {
+      showBrowserNotif(
+        '🟣 طلب تسجيل جديد',
+        `وصل ${newCount - prevCount} طلب جديد`,
+        '/static/low.ico'
+      );
+    }
+  }
+
+  // Poll for messages every 20 seconds (background-aware)
+  let _msgPrev = Number(sessionStorage.getItem('est-admin-msg-count') || 0);
+  function pollMessages() {
+    if (!document.getElementById('forMoreMessagesBadge')) return;
+    fetch('/api/admin/contact_messages', { cache: 'no-store' })
+      .then(r => r.json())
+      .then(d => {
+        const n = Number(d.count || 0);
+        notifyNewMessages(_msgPrev, n);
+        _msgPrev = n;
+        sessionStorage.setItem('est-admin-msg-count', String(n));
+        setForMoreMessagesBadge(n);
+      })
+      .catch(() => {});
+  }
+
+  let _reqPrev = Number(sessionStorage.getItem('est-admin-request-count') || 0);
+  function pollRequests() {
+    if (!document.getElementById('adminRequestsBadge')) return;
+    fetch('/api/admin/pending_requests_count', { cache: 'no-store' })
+      .then(r => r.json())
+      .then(d => {
+        const n = Number(d.count || 0);
+        notifyNewRequests(_reqPrev, n);
+        _reqPrev = n;
+        sessionStorage.setItem('est-admin-request-count', String(n));
+        setAdminRequestBadge(n);
+      })
+      .catch(() => {});
+  }
+
+  // Poll every 20 seconds
+  setInterval(pollMessages, 20000);
+  setInterval(pollRequests, 20000);
+
+  // Also poll immediately when tab becomes visible again (catches up)
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      pollMessages();
+      pollRequests();
+    }
+  });
+
+  // Poll when window regains focus
+  window.addEventListener('focus', () => {
+    pollMessages();
+    pollRequests();
+  });
+})();
+{% if is_dev %}
+// Admin requests badge refresh handled by background notification system above
 {% endif %}
 
 // ══════════════════════════════════════════════════════
