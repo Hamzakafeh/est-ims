@@ -116,7 +116,15 @@ def _validate_active_session():
     token = session.get('session_token')
     with _active_sessions_lock:
         record = _active_user_sessions.get(uname)
-        if not record or record.get('token') != token:
+        # No record at all — session was cleared (e.g. after logout), let them through
+        if not record:
+            return False
+        # Token mismatch — someone else logged in
+        if record.get('token') != token:
+            return False
+        # Record is stale (TTL expired) — auto-clean and reject
+        if not _active_session_alive(record):
+            _active_user_sessions.pop(uname, None)
             return False
         record['last_seen'] = _time.time()
     return True
@@ -421,7 +429,7 @@ def add_security_headers(response):
 
 @app.before_request
 def enforce_single_active_session():
-    if request.endpoint in {'static', 'login_page', 'do_login', 'logout', 'api_lockout_status', 'api_captcha', 'api_register', 'register_page', 'forgot_password_page', 'privacy_page', 'terms_page', 'for_more_page', 'about_page', 'welcome', 'api_password_reset_verify', 'api_password_reset_complete'}:
+    if request.endpoint in {'static', 'login_page', 'do_login', 'logout', 'api_lockout_status', 'api_captcha', 'api_register', 'register_page', 'forgot_password_page', 'privacy_page', 'terms_page', 'for_more_page', 'about_page', 'welcome', 'api_password_reset_verify', 'api_password_reset_complete', 'force_logout_other'}:
         return None
     if not _validate_active_session():
         session.clear()
@@ -487,6 +495,14 @@ ZONE_USER_RESTRICTIONS = {
     'dev': 'mlo5',
     'admin': 'ink',
 }
+
+# Zones that require the user to be in an allowed-list (supports multiple users)
+# Leave empty list = open to all logged-in users
+ZONE_ALLOWED_USERS = {
+    'qc': [],   # ← ضيف هون أسماء المستخدمين المسموح لهم بالـ QC مثلاً: ['ali', 'sara']
+                #   لو تركتها فاضية = الكل يقدر يدخل (الوضع الحالي)
+}
+
 # ───────────────────────────────────────────────────────────────────
 
 from flask import send_from_directory
@@ -796,6 +812,12 @@ def api_zone_login():
         _record_failed_attempt(ip)
         return jsonify({'success': False, 'not_allowed': True, 'message': 'Access Denied'}), 403
 
+    # Check ZONE_ALLOWED_USERS (multi-user allowlist for zones like QC)
+    allowed_list = ZONE_ALLOWED_USERS.get(zone_id)
+    if allowed_list and current_username not in [u.lower() for u in allowed_list]:
+        _record_failed_attempt(ip)
+        return jsonify({'success': False, 'not_allowed': True, 'message': 'Access Denied'}), 403
+
     _clear_attempts(ip)
     session['zone']        = zone_id
     session['zone_name']   = zone['name']
@@ -819,8 +841,10 @@ def api_zone_access_check():
     """Check if the current user is allowed to even attempt a zone login."""
     data = request.get_json(silent=True) or {}
     zone_id = data.get('zone_id', '').strip()
-    restricted_username = ZONE_USER_RESTRICTIONS.get(zone_id)
     current_username = str(session.get('username', '')).strip().lower()
+
+    # Check ZONE_USER_RESTRICTIONS (single-user allowlist)
+    restricted_username = ZONE_USER_RESTRICTIONS.get(zone_id)
     allowed_usernames = []
     if restricted_username:
         allowed_usernames.append(restricted_username.lower())
@@ -830,6 +854,13 @@ def api_zone_access_check():
                 allowed_usernames.append(dev_user.lower())
     if restricted_username and current_username not in allowed_usernames:
         return jsonify({'allowed': False}), 200
+
+    # Check ZONE_ALLOWED_USERS (multi-user allowlist)
+    allowed_list = ZONE_ALLOWED_USERS.get(zone_id)
+    if allowed_list:  # non-empty list = restricted
+        if current_username not in [u.lower() for u in allowed_list]:
+            return jsonify({'allowed': False}), 200
+
     return jsonify({'allowed': True}), 200
 
 @app.route('/api/switch_zone', methods=['POST'])
@@ -847,7 +878,33 @@ def api_switch_zone():
     session['active_view_zone_name'] = zone['name'] if zone else zone_id
     return jsonify({'success': True})
 
-@app.route('/api/session_info')
+@app.route('/api/force_logout_other', methods=['POST'])
+def force_logout_other():
+    """
+    Allow a user to forcefully clear their active session on another device
+    so they can log in from the current device.
+    Requires correct credentials to prevent abuse.
+    """
+    ip = _get_ip()
+    data = request.get_json(silent=True) or {}
+    username = data.get('username', '').strip()
+    password = data.get('password', '').strip()
+
+    username_key = _normalize_username(username)
+    env_password = ENV_USERS.get(username_key)
+    db_user = _approved_db_user(username)
+    correct = (
+        (env_password is not None and env_password == password)
+        or (db_user is not None and _verify_secret(password, db_user['password_hash']))
+    )
+    if not correct:
+        return jsonify({'success': False, 'message': 'بيانات الدخول غير صحيحة'}), 401
+
+    login_username = db_user['username'] if db_user is not None else username
+    _clear_active_session(login_username)
+    return jsonify({'success': True, 'message': 'تم تسجيل الخروج من الجهاز الآخر'})
+
+
 @zone_required
 def api_session_info():
     return jsonify({
@@ -928,7 +985,10 @@ def verify_edit_password():
 
 @app.route('/logout')
 def logout():
-    _clear_active_session()
+    # Must grab username BEFORE session.clear(), then force-clear the active session
+    username = session.get('username', '')
+    if username:
+        _clear_active_session(username)
     session.clear()
     return redirect(url_for('welcome'))
 
@@ -3249,6 +3309,153 @@ def api_stats():
         'today': data.get('today', 0),
     })
 
+
+# ══════════════════════════════════════════════════════════════════
+#  WEB PUSH NOTIFICATIONS (VAPID) — إشعارات الخلفية
+#  يتطلب: pip install pywebpush
+#  متغيرات البيئة: VAPID_PRIVATE_KEY, VAPID_PUBLIC_KEY, VAPID_CLAIMS_EMAIL
+# ══════════════════════════════════════════════════════════════════
+
+_PUSH_SUBS_FILE = os.path.join(DATA_STORE_DIR, 'push_subscriptions.json')
+_push_subs_lock = threading.Lock()
+
+
+def _read_push_subs():
+    try:
+        with open(_PUSH_SUBS_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else {}
+    except Exception:
+        return {}
+
+
+def _write_push_subs(data):
+    os.makedirs(os.path.dirname(_PUSH_SUBS_FILE) or '.', exist_ok=True)
+    with open(_PUSH_SUBS_FILE, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False)
+
+
+@app.route('/api/push/vapid_public_key')
+def push_vapid_public_key():
+    """Return the VAPID public key so the frontend can subscribe."""
+    key = os.getenv('VAPID_PUBLIC_KEY', '')
+    if not key:
+        return jsonify({'error': 'Push not configured'}), 503
+    return jsonify({'publicKey': key})
+
+
+@app.route('/api/push/subscribe', methods=['POST'])
+@login_required
+def push_subscribe():
+    """Save a push subscription for the current user."""
+    data = request.get_json(silent=True) or {}
+    subscription = data.get('subscription')
+    if not subscription or not subscription.get('endpoint'):
+        return jsonify({'success': False, 'message': 'Invalid subscription'}), 400
+
+    username = session.get('username', 'unknown')
+    endpoint = subscription['endpoint']
+    sub_key = hashlib.sha256(endpoint.encode()).hexdigest()[:16]
+
+    with _push_subs_lock:
+        subs = _read_push_subs()
+        subs[sub_key] = {
+            'username': username,
+            'subscription': subscription,
+            'saved_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        }
+        _write_push_subs(subs)
+
+    return jsonify({'success': True})
+
+
+@app.route('/api/push/unsubscribe', methods=['POST'])
+@login_required
+def push_unsubscribe():
+    """Remove a push subscription."""
+    data = request.get_json(silent=True) or {}
+    endpoint = (data.get('subscription') or {}).get('endpoint', '')
+    if endpoint:
+        sub_key = hashlib.sha256(endpoint.encode()).hexdigest()[:16]
+        with _push_subs_lock:
+            subs = _read_push_subs()
+            subs.pop(sub_key, None)
+            _write_push_subs(subs)
+    return jsonify({'success': True})
+
+
+def _send_push_notification(subscription_info, title, body, url='/qc-workflow', tag='qc-update'):
+    """Send a single Web Push notification. Returns True on success."""
+    try:
+        from pywebpush import webpush, WebPushException
+        private_key = os.getenv('VAPID_PRIVATE_KEY', '')
+        email = os.getenv('VAPID_CLAIMS_EMAIL', 'admin@example.com')
+        if not private_key:
+            return False
+        payload = json.dumps({
+            'title': title,
+            'body':  body,
+            'url':   url,
+            'tag':   tag,
+            'icon':  '/static/icons/icon-192.png',
+            'badge': '/static/icons/icon-192.png',
+        })
+        webpush(
+            subscription_info=subscription_info,
+            data=payload,
+            vapid_private_key=private_key,
+            vapid_claims={'sub': f'mailto:{email}'},
+        )
+        return True
+    except Exception as e:
+        _logger.warning(f'Push send failed: {e}')
+        return False
+
+
+def broadcast_qc_push(title, body, url='/qc-workflow', tag='qc-update'):
+    """
+    Send Web Push to all subscribed users.
+    Call this when a new QC submission arrives or status changes.
+    """
+    with _push_subs_lock:
+        subs = _read_push_subs()
+
+    dead_keys = []
+    for key, record in subs.items():
+        ok = _send_push_notification(record['subscription'], title, body, url, tag)
+        if not ok:
+            dead_keys.append(key)
+
+    if dead_keys:
+        with _push_subs_lock:
+            subs = _read_push_subs()
+            for k in dead_keys:
+                subs.pop(k, None)
+            _write_push_subs(subs)
+
+
+@app.route('/api/push/test', methods=['POST'])
+@zone_required
+def push_test():
+    """Admin/Dev can send a test push to themselves."""
+    if not session.get('is_super'):
+        return jsonify({'error': 'غير مصرح'}), 403
+    data = request.get_json(silent=True) or {}
+    subscription = data.get('subscription')
+    if not subscription:
+        return jsonify({'success': False, 'message': 'No subscription provided'}), 400
+    ok = _send_push_notification(
+        subscription,
+        title='EST-iMs QC 🔬',
+        body='اختبار الإشعارات — يعمل بشكل صحيح ✅',
+        tag='qc-test',
+    )
+    return jsonify({'success': ok})
+
+
+# ── VAPID Key Generation Helper (run once from CLI to generate keys) ──
+# python -c "from py_vapid import Vapid; v=Vapid(); v.generate_keys(); print('Private:',v.private_key); print('Public:',v.public_key)"
+
 # ══════════════════════════════════════════════════════════════════
 #  AI CHAT PROXY
 # ══════════════════════════════════════════════════════════════════
@@ -3306,7 +3513,7 @@ _qc_subs_lock      = threading.Lock()
 
 
 def _broadcast_qc_event(event_data: str):
-    """Push SSE event to all QC subscribed clients."""
+    """Push SSE event to all QC subscribed clients, and Web Push to background devices."""
     dead = []
     with _qc_subs_lock:
         for q in _qc_subscribers:
@@ -3319,6 +3526,29 @@ def _broadcast_qc_event(event_data: str):
                 _qc_subscribers.remove(q)
             except ValueError:
                 pass
+
+    # Parse event data to build a meaningful push notification
+    try:
+        # SSE format: "event: xxx\ndata: {...}\n\n"
+        for line in event_data.split('\n'):
+            if line.startswith('data:'):
+                payload = json.loads(line[5:].strip())
+                event_type = payload.get('type', '')
+                if event_type == 'new_submission':
+                    threading.Thread(
+                        target=broadcast_qc_push,
+                        args=('EST-iMs QC 🔬', f"طلب جودة جديد — {payload.get('product', '')}"),
+                        daemon=True
+                    ).start()
+                elif event_type == 'status_update':
+                    threading.Thread(
+                        target=broadcast_qc_push,
+                        args=('EST-iMs QC 🔬', f"تحديث حالة — {payload.get('label', 'تم التحديث')}"),
+                        daemon=True
+                    ).start()
+                break
+    except Exception:
+        pass
 
 
 @app.route('/api/qc/stream')

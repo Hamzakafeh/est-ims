@@ -1,100 +1,117 @@
-// qc-sw.js — EST-iMs QC Service Worker
-// Handles background push notifications even when the browser is closed
+// ══════════════════════════════════════════════════════════════════
+//  QC Service Worker — Background Push Notifications
+//  يدعم: Android (Chrome/Firefox/Samsung) + iOS 16.4+ (Safari PWA)
+//  الملف يُسجَّل من qc-workflow.html كـ Service Worker
+// ══════════════════════════════════════════════════════════════════
+const QC_SW_VERSION = 'qc-sw-v3';
 
-const CACHE_NAME = 'qc-sw-v1';
-
-self.addEventListener('install', () => self.skipWaiting());
-self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
-
-// ── Background Sync polling ──────────────────────────
-// Registers a periodic check so notifications fire even when browser is closed
-self.addEventListener('periodicsync', event => {
-  if(event.tag === 'qc-poll'){
-    event.waitUntil(checkQCUpdates());
-  }
+// ── INSTALL ──────────────────────────────────────────────────────
+self.addEventListener('install', event => {
+  self.skipWaiting();
 });
 
-// ── Push event (from server-sent push) ───────────────
+// ── ACTIVATE ─────────────────────────────────────────────────────
+self.addEventListener('activate', event => {
+  event.waitUntil(self.clients.claim());
+});
+
+// ── PUSH (Web Push API — يشتغل بالخلفية على Android و iOS PWA) ──
 self.addEventListener('push', event => {
-  let data = {};
-  try { data = event.data ? event.data.json() : {}; } catch(e){}
-  const title = data.title || '📸 QC Alert';
-  const body  = data.body  || 'New update in QC Workflow';
+  let payload = {};
+  try {
+    payload = event.data ? event.data.json() : {};
+  } catch(e) {
+    payload = { title: 'EST-iMs QC', body: event.data ? event.data.text() : 'إشعار جديد' };
+  }
+
+  const title   = payload.title || 'EST-iMs QC 🔬';
+  const options = {
+    body:    payload.body    || 'يوجد تحديث جديد في قسم الجودة',
+    icon:    payload.icon    || '/static/icons/icon-192.png',
+    badge:   payload.badge   || '/static/icons/icon-192.png',
+    tag:     payload.tag     || 'qc-notification',
+    renotify: true,
+    requireInteraction: payload.requireInteraction ?? false,
+    data:    payload.data    || { url: '/qc-workflow' },
+    vibrate: [200, 100, 200],
+    actions: payload.actions || [
+      { action: 'open',    title: 'فتح QC' },
+      { action: 'dismiss', title: 'تجاهل' },
+    ],
+  };
+
   event.waitUntil(
-    self.registration.showNotification(title, {
-      body,
-      icon: '/static/low.ico',
-      badge: '/static/low.ico',
-      tag: 'qc-alert',
-      requireInteraction: true,
-      vibrate: [200, 100, 200],
-      data: { url: '/qc-workflow' }
-    })
+    self.registration.showNotification(title, options)
   );
 });
 
-// ── Notification click ────────────────────────────────
+// ── NOTIFICATION CLICK ────────────────────────────────────────────
 self.addEventListener('notificationclick', event => {
   event.notification.close();
-  const url = (event.notification.data && event.notification.data.url) || '/qc-workflow';
+
+  if (event.action === 'dismiss') return;
+
+  const targetUrl = (event.notification.data && event.notification.data.url)
+    ? event.notification.data.url
+    : '/qc-workflow';
+
   event.waitUntil(
-    self.clients.matchAll({type:'window', includeUncontrolled:true}).then(clients => {
-      for(const client of clients){
-        if(client.url.includes('/qc-workflow') && 'focus' in client){
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(windowClients => {
+      // إذا في تاب مفتوح على نفس الـ URL، حوّله وركّز عليه
+      for (const client of windowClients) {
+        if (client.url.includes('/qc') && 'focus' in client) {
+          client.postMessage({ type: 'QC_NOTIFICATION_CLICK', url: targetUrl });
           return client.focus();
         }
       }
-      if(self.clients.openWindow) return self.clients.openWindow(url);
+      // افتح تاب جديد
+      if (clients.openWindow) {
+        return clients.openWindow(targetUrl);
+      }
     })
   );
 });
 
-// ── Background polling via fetch ─────────────────────
-let _lastCount    = null;
-let _lastStatuses = {};
+// ── NOTIFICATION CLOSE ────────────────────────────────────────────
+self.addEventListener('notificationclose', event => {
+  // يمكن إضافة تتبع هنا إذا احتجت
+});
 
-async function checkQCUpdates(){
-  try {
-    const res  = await fetch('/api/qc/submissions', {credentials:'include', cache:'no-store'});
-    if(!res.ok) return;
-    const data = await res.json();
-    const items = data.items || [];
-    const role  = data.role  || '';
-
-    if(role === 'qc' && _lastCount !== null && items.length > _lastCount){
-      const diff = items.length - _lastCount;
-      await self.registration.showNotification('📸 New QC Submission', {
-        body: `${diff} new photo${diff > 1 ? 's' : ''} waiting for review`,
-        icon: '/static/low.ico', badge: '/static/low.ico',
-        tag: 'qc-new', requireInteraction: true, vibrate: [200,100,200],
-        data: {url:'/qc-workflow'}
-      });
-    }
-    _lastCount = items.length;
-
-    if(role === 'labeling' && Object.keys(_lastStatuses).length > 0){
-      for(const item of items){
-        const prev = _lastStatuses[item.id];
-        if(prev !== undefined && prev !== item.status){
-          const emoji = item.status === 'approved' ? '✅' : item.status === 'rejected' ? '❌' : '⏳';
-          await self.registration.showNotification(`${emoji} Photo #${item.id} ${item.status.toUpperCase()}`, {
-            body: item.review_note ? `Note: ${item.review_note}` : `Your photo was marked as ${item.status}`,
-            icon: '/static/low.ico', badge: '/static/low.ico',
-            tag: `qc-status-${item.id}`, requireInteraction: true, vibrate: [200,100,200],
-            data: {url:'/qc-workflow'}
-          });
-          break;
-        }
-      }
-    }
-    for(const item of items) _lastStatuses[item.id] = item.status;
-
-  } catch(e){ /* ignore network errors */ }
-}
-
-// ── Message from page: manual poll trigger ────────────
+// ── MESSAGE من الصفحة — للإشعارات الداخلية (foreground polling) ──
 self.addEventListener('message', event => {
-  if(event.data && event.data.type === 'QC_POLL'){
-    checkQCUpdates();
+  const data = event.data || {};
+
+  // الصفحة بتطلب إرسال إشعار محلي (بديل بسيط لما Push مش مفعّل)
+  if (data.type === 'SHOW_NOTIFICATION') {
+    const title   = data.title   || 'EST-iMs QC';
+    const options = {
+      body:    data.body    || 'تحديث جديد',
+      icon:    data.icon    || '/static/icons/icon-192.png',
+      badge:                   '/static/icons/icon-192.png',
+      tag:     data.tag     || 'qc-local',
+      renotify: true,
+      requireInteraction: false,
+      data:    { url: data.url || '/qc-workflow' },
+      vibrate: [150, 80, 150],
+    };
+    event.waitUntil(
+      self.registration.showNotification(title, options)
+    );
   }
+
+  // ping من الصفحة — الـ SW يرد برد حي
+  if (data.type === 'PING') {
+    event.source?.postMessage({ type: 'PONG', version: QC_SW_VERSION });
+  }
+});
+
+// ── FETCH — Network First (لا كاش للـ QC data) ───────────────────
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+  // API calls: network only — لا كاش أبداً
+  if (event.request.url.includes('/api/')) return;
+  // SSE stream: تجاهل
+  if (event.request.url.includes('/stream')) return;
+  // للبقية: network first بدون كاش (online mode)
+  // لا نتدخل — الـ browser يتعامل معها مباشرة
 });

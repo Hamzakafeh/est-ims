@@ -620,6 +620,7 @@
     <div class="login-alert-title" id="loginAlertTitle">Access warning</div>
     <div class="login-alert-text" id="loginAlertText">This account cannot be used here.</div>
     <button class="login-alert-btn" type="button" onclick="closeLoginAlert()">OK</button>
+    <button class="login-alert-btn" type="button" id="forceLogoutBtn" style="display:none;margin-top:8px;background:linear-gradient(135deg,#ef4444,#dc2626);" onclick="forceLogoutOther()">تسجيل خروج من الجهاز الآخر والدخول هنا</button>
   </div>
 </div>
 <script>
@@ -783,7 +784,37 @@ function showLoginAlert(title, text) {
 }
 function closeLoginAlert() {
   document.getElementById('loginAlertModal')?.classList.remove('open');
+  document.getElementById('forceLogoutBtn').style.display = 'none';
 }
+
+async function forceLogoutOther() {
+  const username = document.getElementById('username')?.value?.trim() || '';
+  const password = document.getElementById('password')?.value?.trim() || '';
+  const btn = document.getElementById('forceLogoutBtn');
+  btn.disabled = true;
+  btn.textContent = 'جارٍ الطرد...';
+  try {
+    const res = await fetch('/api/force_logout_other', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ username, password })
+    });
+    const d = await res.json();
+    if (d.success) {
+      closeLoginAlert();
+      // Retry login automatically
+      await doLogin();
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'تسجيل خروج من الجهاز الآخر والدخول هنا';
+      document.getElementById('loginAlertText').textContent = d.message || 'فشل الطرد. تأكد من كلمة المرور.';
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'تسجيل خروج من الجهاز الآخر والدخول هنا';
+  }
+}
+
 // ── LOGIN ──
 async function doLogin() {
   const username = document.getElementById('username').value.trim();
@@ -830,7 +861,9 @@ async function doLogin() {
       setTimeout(() => { window.location.href = data.redirect || '/zones'; }, 600);
     } else if (data.active_elsewhere) {
       finishProgress(false);
-      showLoginAlert('Account already active', data.message || 'This account is already signed in on another device. Please log out there first.');
+      // Show force-logout button so user can kick the other session
+      document.getElementById('forceLogoutBtn').style.display = 'block';
+      showLoginAlert('الحساب مفتوح من جهاز آخر', data.message || 'هذا الحساب مسجل الدخول من جهاز آخر حالياً. يمكنك طرد تلك الجلسة والدخول من هنا.');
       shakeCard();
       resetBtn();
     } else if (data.locked) {
