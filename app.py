@@ -806,7 +806,7 @@ def api_zone_login():
     if zone_id == 'qc':
         role = str(data.get('qc_role', '')).strip()
         session['qc_role'] = role if role in {'qc', 'labeling'} else 'qc'
-    _record_login(session.get('username',''), zone_id, zone['label'], ip)
+    threading.Thread(target=_record_login, args=(session.get('username',''), zone_id, zone['label'], ip), daemon=True).start()
     # إذا في صفحة مطلوبة بعد اللوغن (مثل /scan)، حوّل عليها
     next_url = session.pop('next_after_zone', '/index')
     if zone_id == 'qc':
@@ -928,6 +928,7 @@ def verify_edit_password():
 
 @app.route('/logout')
 def logout():
+    _clear_active_session()
     session.clear()
     return redirect(url_for('welcome'))
 
