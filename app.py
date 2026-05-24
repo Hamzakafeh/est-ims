@@ -2972,6 +2972,9 @@ def api_qc_submissions():
         }
         items.append(item)
         _write_json_list(QC_SUBMISSIONS_FILE, items)
+    # Broadcast new submission to all QC clients instantly
+    sse_payload = 'event: new_submission\ndata: ' + json.dumps(item, ensure_ascii=False) + '\n\n'
+    _broadcast_qc_event(sse_payload)
     return jsonify({'success': True, 'item': item})
 
 @app.route('/api/qc/submissions/<int:item_id>', methods=['DELETE'])
@@ -3002,6 +3005,9 @@ def api_qc_submission_delete(item_id):
             except Exception:
                 pass
         _write_json_list(QC_SUBMISSIONS_FILE, new_items)
+    # Broadcast deletion to all QC clients
+    sse_payload = 'event: deleted\ndata: ' + json.dumps({'id': item_id}, ensure_ascii=False) + '\n\n'
+    _broadcast_qc_event(sse_payload)
     return jsonify({'success': True})
 
 @app.route('/api/qc/submissions/<int:item_id>/status', methods=['POST'])
@@ -3027,6 +3033,11 @@ def api_qc_submission_status(item_id):
         if not found:
             return jsonify({'success': False, 'message': 'Not found'}), 404
         _write_json_list(QC_SUBMISSIONS_FILE, items)
+    # Broadcast status update to all QC clients
+    updated = next((x for x in items if int(x.get('id',0)) == item_id), None)
+    if updated:
+        sse_payload = 'event: status_update\ndata: ' + json.dumps(updated, ensure_ascii=False) + '\n\n'
+        _broadcast_qc_event(sse_payload)
     return jsonify({'success': True})
 
 @app.route('/api/dashboard/excel_status')
@@ -3286,149 +3297,57 @@ def ai_chat():
         return jsonify({'error': str(e)}), 500
 
 # ══════════════════════════════════════════════════════════════════
-#  REAL-TIME CHAT — SSE-based
+#  QC REAL-TIME — SSE broadcast for instant updates (no page refresh)
 # ══════════════════════════════════════════════════════════════════
-import queue
+import queue as _queue
 
-_chat_messages_file = os.path.join(DATA_STORE_DIR, 'chat_messages.json')
-_chat_lock = threading.Lock()
-_chat_subscribers = []          # list of Queue objects for SSE clients
-_chat_subs_lock = threading.Lock()
-_online_users = {}              # username -> last_seen timestamp
-_online_lock = threading.Lock()
-_ONLINE_TTL = 30               # seconds before considered offline
+_qc_subscribers    = []          # list of Queue objects for SSE clients
+_qc_subs_lock      = threading.Lock()
 
 
-def _read_chat_messages():
-    try:
-        with open(_chat_messages_file, 'r', encoding='utf-8') as f:
-            msgs = json.load(f)
-        return msgs if isinstance(msgs, list) else []
-    except Exception:
-        return []
-
-
-def _write_chat_messages(msgs):
-    os.makedirs(os.path.dirname(_chat_messages_file), exist_ok=True)
-    with open(_chat_messages_file, 'w', encoding='utf-8') as f:
-        json.dump(msgs[-500:], f, ensure_ascii=False, indent=2)
-
-
-def _broadcast_chat_event(event_data: str):
-    """Push SSE event to all subscribed clients."""
+def _broadcast_qc_event(event_data: str):
+    """Push SSE event to all QC subscribed clients."""
     dead = []
-    with _chat_subs_lock:
-        for q in _chat_subscribers:
+    with _qc_subs_lock:
+        for q in _qc_subscribers:
             try:
                 q.put_nowait(event_data)
             except Exception:
                 dead.append(q)
         for q in dead:
             try:
-                _chat_subscribers.remove(q)
+                _qc_subscribers.remove(q)
             except ValueError:
                 pass
 
 
-def _get_online_users():
-    now = _time.time()
-    with _online_lock:
-        active = {u: ts for u, ts in _online_users.items() if now - ts < _ONLINE_TTL}
-        _online_users.clear()
-        _online_users.update(active)
-    return list(active.keys())
-
-
-@app.route('/api/chat/heartbeat', methods=['POST'])
+@app.route('/api/qc/stream')
 @zone_required
-def api_chat_heartbeat():
-    username = session.get('username', '')
-    if username:
-        with _online_lock:
-            _online_users[username] = _time.time()
-    return jsonify({'ok': True})
-
-
-@app.route('/api/chat/online')
-@zone_required
-def api_chat_online():
-    return jsonify({'users': _get_online_users()})
-
-
-@app.route('/api/chat/messages')
-@zone_required
-def api_chat_messages():
-    since = request.args.get('since', 0)
-    try:
-        since = float(since)
-    except Exception:
-        since = 0
-    with _chat_lock:
-        msgs = _read_chat_messages()
-    if since:
-        msgs = [m for m in msgs if float(m.get('ts', 0)) > since]
-    return jsonify({'messages': msgs[-100:]})
-
-
-@app.route('/api/chat/send', methods=['POST'])
-@zone_required
-def api_chat_send():
-    data = request.get_json(silent=True) or {}
-    text = str(data.get('text', '')).strip()
-    if not text or len(text) > 2000:
-        return jsonify({'success': False, 'message': 'Invalid message'}), 400
-    username = session.get('username', '')
-    # Mark online
-    with _online_lock:
-        _online_users[username] = _time.time()
-    msg = {
-        'id': int(_time.time() * 1000),
-        'ts': _time.time(),
-        'username': username,
-        'text': text,
-        'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-    }
-    with _chat_lock:
-        msgs = _read_chat_messages()
-        msgs.append(msg)
-        _write_chat_messages(msgs)
-    # Broadcast to SSE subscribers
-    sse_payload = 'event: message\ndata: ' + json.dumps(msg, ensure_ascii=False) + '\n\n'
-    _broadcast_chat_event(sse_payload)
-    return jsonify({'success': True, 'message': msg})
-
-
-@app.route('/api/chat/stream')
-@zone_required
-def api_chat_stream():
-    """SSE endpoint — streams new chat messages to the client."""
+def api_qc_stream():
+    """SSE endpoint — streams QC updates to all connected clients."""
     from flask import Response, stream_with_context
+    if session.get('zone') != 'qc':
+        return jsonify({'error': 'غير مصرح'}), 403
 
-    username = session.get('username', '')
-    with _online_lock:
-        _online_users[username] = _time.time()
-
-    q = queue.Queue(maxsize=50)
-    with _chat_subs_lock:
-        _chat_subscribers.append(q)
+    q = _queue.Queue(maxsize=50)
+    with _qc_subs_lock:
+        _qc_subscribers.append(q)
 
     def generate():
         try:
-            # Send initial ping
             yield 'event: ping\ndata: ok\n\n'
             while True:
                 try:
                     data = q.get(timeout=25)
                     yield data
-                except queue.Empty:
-                    # Send keepalive ping
+                except _queue.Empty:
                     yield 'event: ping\ndata: ok\n\n'
         except GeneratorExit:
             pass
         finally:
-            with _chat_subs_lock:
+            with _qc_subs_lock:
                 try:
-                    _chat_subscribers.remove(q)
+                    _qc_subscribers.remove(q)
                 except ValueError:
                     pass
 
@@ -3440,6 +3359,22 @@ def api_chat_stream():
             'X-Accel-Buffering': 'no',
             'Connection': 'keep-alive',
         }
+    )
+
+
+@app.route('/static/qc-sw.js')
+def serve_qc_sw():
+    """Serve the QC Service Worker from static folder."""
+    from flask import Response
+    sw_path = os.path.join(APP_DIR, 'static', 'qc-sw.js')
+    if not os.path.isfile(sw_path):
+        return 'Not found', 404
+    with open(sw_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    return Response(
+        content,
+        mimetype='application/javascript',
+        headers={'Service-Worker-Allowed': '/'}
     )
 
 
