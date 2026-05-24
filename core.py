@@ -245,7 +245,7 @@ def login_required(f):
         if not session.get('logged_in'):
             if request.is_json or request.path.startswith('/api/'):
                 return jsonify({'error': 'Unauthorized'}), 401
-            return redirect(url_for('login_page'))
+            return redirect(url_for('auth.login_page'))
         return f(*args, **kwargs)
     return decorated
 
@@ -256,9 +256,9 @@ def zone_required(f):
         if not session.get('logged_in'):
             if request.is_json or request.path.startswith('/api/'):
                 return jsonify({'error': 'Unauthorized'}), 401
-            return redirect(url_for('login_page'))
+            return redirect(url_for('auth.login_page'))
         if not session.get('zone'):
-            return redirect(url_for('zones_page'))
+            return redirect(url_for('zones.zones_page'))
         return f(*args, **kwargs)
     return decorated
 

@@ -12,7 +12,7 @@ qc_bp = Blueprint('qc', __name__)
 @zone_required
 def qc_workflow_page():
     if session.get('zone') != 'qc':
-        return redirect(url_for('index'))
+        return redirect(url_for('pages.index'))
     return render_template('qc.html', qc_role=session.get('qc_role', 'qc'), username=session.get('username', ''))
 
 

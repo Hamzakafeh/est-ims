@@ -35,7 +35,7 @@ zone_bp = Blueprint('zones', __name__)
 @login_required
 def zones_page():
     if session.get('zone'):
-        return redirect(url_for('index'))
+        return redirect(url_for('pages.index'))
     return render_template('zones.html', username=session.get('username', ''), zones=ZONES)
 
 
@@ -240,7 +240,7 @@ def logout():
     if username:
         _clear_active_session(username)
     session.clear()
-    return redirect(url_for('welcome'))
+    return redirect(url_for('pages.welcome'))
 
 
 @zone_bp.route('/logout_zone')
