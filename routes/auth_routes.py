@@ -36,21 +36,21 @@ def login_page():
         if session.get('zone'):
             next_url = request.args.get('next', url_for('index'))
             return redirect(next_url)
-        return redirect(url_for('zones_page'))
+        return redirect(url_for('zones.zones_page'))
     return render_template('login.html')
 
 
 @auth_bp.route('/register')
 def register_page():
     if session.get('logged_in'):
-        return redirect(url_for('index') if session.get('zone') else url_for('zones_page'))
+        return redirect(url_for('index') if session.get('zone') else url_for('zones.zones_page'))
     return render_template('register.html')
 
 
 @auth_bp.route('/forgot-password')
 def forgot_password_page():
     if session.get('logged_in'):
-        return redirect(url_for('index') if session.get('zone') else url_for('zones_page'))
+        return redirect(url_for('index') if session.get('zone') else url_for('zones.zones_page'))
     return render_template('forgot_password.html')
 
 

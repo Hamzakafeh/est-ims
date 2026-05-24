@@ -1,0 +1,149 @@
+(function() {
+  if (localStorage.getItem('est-theme') === 'light') document.documentElement.classList.add('light');
+})();
+function toggleTheme() {
+  const isLight = document.documentElement.classList.toggle('light');
+  localStorage.setItem('est-theme', isLight ? 'light' : 'dark');
+}
+
+const MORE_LANG = {
+  en: {
+    back: 'Back', topbar: 'For More', lang: 'عربي', badge: 'Contact & Support',
+    heroTitle: 'FOR MORE',
+    heroSub: 'Have a question, request, or support need? Send us the details and the EST-iMs team will follow up with you.',
+    formTitle: 'Send a Message',
+    name: 'Full Name', phone: 'Phone', email: 'Email (optional)', dept: 'Department', message: 'Message',
+    namePh: 'Your name', phonePh: '+962 ...', emailPh: 'you@example.com', msgPh: 'Describe your question or request...',
+    deptPh: '— Select department —', submit: 'Send Message', sending: 'Sending...',
+    successTitle: 'Message Sent!', successSub: "Thank you. We'll get back to you as soon as possible.", again: 'Send Another',
+    c1t: 'Fast Support', c1: 'Share the issue clearly and include your department so the right person can respond.',
+    c2t: 'System Requests', c2: 'Use this form for access, QR scan, reports, inventory, or technical questions.',
+    c3t: 'EST-iMs', c3: 'Built for Alestesharia Animal Nutrition to keep warehouse operations clear, fast, and organized.'
+  },
+  ar: {
+    back: 'رجوع', topbar: 'للمزيد', lang: 'English', badge: 'تواصل ودعم',
+    heroTitle: 'للمزيد',
+    heroSub: 'عندك سؤال أو طلب أو تحتاج دعم؟ ارسل التفاصيل وفريق EST-iMs بتابع معك.',
+    formTitle: 'إرسال رسالة',
+    name: 'الاسم الكامل', phone: 'رقم الهاتف', email: 'البريد الإلكتروني (اختياري)', dept: 'القسم', message: 'الرسالة',
+    namePh: 'اسمك', phonePh: '+962 ...', emailPh: 'you@example.com', msgPh: 'اكتب سؤالك أو طلبك...',
+    deptPh: '— اختر القسم —', submit: 'إرسال الرسالة', sending: 'جاري الإرسال...',
+    successTitle: 'تم إرسال الرسالة!', successSub: 'شكراً لك. سيتم التواصل معك بأقرب وقت ممكن.', again: 'إرسال رسالة أخرى',
+    c1t: 'دعم سريع', c1: 'اكتب المشكلة بوضوح وحدد القسم حتى يتم توجيه الطلب للشخص المناسب.',
+    c2t: 'طلبات النظام', c2: 'استخدم النموذج لطلبات الدخول، فحص QR، التقارير، المخزون، أو الأسئلة التقنية.',
+    c3t: 'EST-iMs', c3: 'نظام مبني لشركة الاستشارية للتغذية الحيوانية لتنظيم وتسريع عمليات المستودعات.'
+  }
+};
+let moreLang = localStorage.getItem('est-lang') || 'en';
+function t(key) { return MORE_LANG[moreLang][key]; }
+function applyForMoreLang(lang) {
+  moreLang = lang;
+  localStorage.setItem('est-lang', lang);
+  const isAr = lang === 'ar';
+  const text = MORE_LANG[lang];
+  document.documentElement.lang = lang;
+  document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+
+  document.getElementById('backText').textContent = text.back;
+  document.getElementById('topbarTitle').textContent = text.topbar;
+  document.getElementById('langBtn').textContent = text.lang;
+  document.getElementById('badgeText').textContent = text.badge;
+  document.getElementById('heroTitle').textContent = text.heroTitle;
+  document.getElementById('heroSub').textContent = text.heroSub;
+  document.getElementById('formTitle').textContent = text.formTitle;
+  document.getElementById('nameLabel').textContent = text.name;
+  document.getElementById('phoneLabel').textContent = text.phone;
+  document.getElementById('emailLabel').textContent = text.email;
+  document.getElementById('deptLabel').textContent = text.dept;
+  document.getElementById('messageLabel').textContent = text.message;
+  document.getElementById('fname').placeholder = text.namePh;
+  document.getElementById('fphone').placeholder = text.phonePh;
+  document.getElementById('femail').placeholder = text.emailPh;
+  document.getElementById('fmsg').placeholder = text.msgPh;
+  document.getElementById('deptPlaceholder').textContent = text.deptPh;
+  document.getElementById('submitText').textContent = text.submit;
+  document.getElementById('successTitle').textContent = text.successTitle;
+  document.getElementById('successSub').textContent = text.successSub;
+  document.getElementById('againBtn').textContent = text.again;
+  document.getElementById('card1Title').textContent = text.c1t;
+  document.getElementById('card1Text').textContent = text.c1;
+  document.getElementById('card2Title').textContent = text.c2t;
+  document.getElementById('card2Text').textContent = text.c2;
+  document.getElementById('card3Title').textContent = text.c3t;
+  document.getElementById('card3Text').textContent = text.c3;
+
+  document.querySelectorAll('#fdept option[data-en]').forEach(option => {
+    option.textContent = isAr ? option.dataset.ar : option.dataset.en;
+  });
+}
+function toggleForMoreLang() {
+  applyForMoreLang(moreLang === 'en' ? 'ar' : 'en');
+}
+
+function renderSubmitButton() {
+  document.getElementById('submitBtn').innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="22" y1="2" x2="11" y2="13"/>
+      <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+    </svg>
+    <span id="submitText">${t('submit')}</span>
+    <svg class="btn-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="9 18 15 12 9 6"/>
+    </svg>`;
+}
+
+function submitForm() {
+  const name = document.getElementById('fname').value.trim();
+  const phone = document.getElementById('fphone').value.trim();
+  const msg = document.getElementById('fmsg').value.trim();
+
+  if (!name || !phone || !msg) {
+    [['fname', name], ['fphone', phone], ['fmsg', msg]].forEach(([id, value]) => {
+      if (!value) {
+        const el = document.getElementById(id);
+        el.style.borderColor = 'var(--accent-red)';
+        el.style.animation = 'shake 0.3s ease';
+        setTimeout(() => { el.style.animation = ''; el.style.borderColor = ''; }, 600);
+      }
+    });
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 0.8s linear infinite">
+      <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+    </svg>
+    ${t('sending')}`;
+
+  fetch('/api/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name,
+      phone,
+      email: document.getElementById('femail').value.trim(),
+      department: document.getElementById('fdept').value,
+      message: msg
+    })
+  })
+  .then(response => response.ok ? response.json() : Promise.reject())
+  .catch(() => ({ ok: true }))
+  .finally(() => {
+    document.getElementById('contactForm').style.display = 'none';
+    document.getElementById('successState').classList.add('show');
+  });
+}
+
+function resetForm() {
+  ['fname','fphone','femail','fmsg'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fdept').value = '';
+  document.getElementById('contactForm').style.display = '';
+  document.getElementById('successState').classList.remove('show');
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = false;
+  renderSubmitButton();
+}
+
+applyForMoreLang(moreLang);

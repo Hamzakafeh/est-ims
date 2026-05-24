@@ -1,0 +1,75 @@
+(function() {
+  if (localStorage.getItem('est-theme') === 'light') document.documentElement.classList.add('light');
+})();
+function toggleTheme() {
+  const isLight = document.documentElement.classList.toggle('light');
+  localStorage.setItem('est-theme', isLight ? 'light' : 'dark');
+}
+
+const HELP_LANG = {
+  en: {
+    back: 'Back', topbar: 'Help & FAQ', lang: 'عربي', badge: 'EST-iMs Support Center',
+    heroTitle: 'HELP & FAQ', heroSub: 'Find quick answers for accounts, inventory, reports, and supported devices.',
+    search: 'Search for help topics...', tabAll: 'All Topics', tabAccount: 'Account', tabInventory: 'Inventory', tabReports: 'Reports', tabSystem: 'System',
+    emailSupport: 'Email Support', phoneSupport: 'Phone Support',
+    tip: '<strong>Pro Tip:</strong> Use the search bar above to quickly find answers. Support is available on weekdays from 9AM to 7PM.',
+    copy: 'Copyright 2026 | All Rights Reserved'
+  },
+  ar: {
+    back: 'رجوع', topbar: 'المساعدة والأسئلة', lang: 'English', badge: 'مركز دعم EST-iMs',
+    heroTitle: 'المساعدة', heroSub: 'اعثر بسرعة على إجابات تخص الحسابات والمخزون والتقارير والأجهزة المدعومة.',
+    search: 'ابحث في مواضيع المساعدة...', tabAll: 'الكل', tabAccount: 'الحساب', tabInventory: 'المخزون', tabReports: 'التقارير', tabSystem: 'النظام',
+    emailSupport: 'الدعم عبر البريد', phoneSupport: 'الدعم عبر الهاتف',
+    tip: '<strong>نصيحة:</strong> استخدم شريط البحث للوصول السريع للإجابات. الدعم متاح أيام الأسبوع من 9 صباحاً إلى 7 مساءً.',
+    copy: 'حقوق النشر 2026 | جميع الحقوق محفوظة'
+  }
+};
+let helpLang = localStorage.getItem('est-lang') || 'en';
+function ht(key) { return HELP_LANG[helpLang][key]; }
+function applyHelpLang(lang) {
+  helpLang = lang;
+  localStorage.setItem('est-lang', lang);
+  const isAr = lang === 'ar';
+  document.documentElement.lang = lang;
+  document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+  document.getElementById('backText').textContent = ht('back');
+  document.getElementById('topbarTitle').textContent = ht('topbar');
+  document.getElementById('langBtn').textContent = ht('lang');
+  document.getElementById('badgeText').textContent = ht('badge');
+  document.getElementById('heroTitle').textContent = ht('heroTitle');
+  document.getElementById('heroSub').textContent = ht('heroSub');
+  document.getElementById('searchInput').placeholder = ht('search');
+  document.querySelector('[data-i18n="tabAll"]').textContent = ht('tabAll');
+  document.querySelector('[data-i18n="tabAccount"]').textContent = ht('tabAccount');
+  document.querySelector('[data-i18n="tabInventory"]').textContent = ht('tabInventory');
+  document.querySelector('[data-i18n="tabReports"]').textContent = ht('tabReports');
+  document.querySelector('[data-i18n="tabSystem"]').textContent = ht('tabSystem');
+  document.getElementById('emailSupportLabel').textContent = ht('emailSupport');
+  document.getElementById('phoneSupportLabel').textContent = ht('phoneSupport');
+  document.getElementById('tipText').innerHTML = ht('tip');
+  document.getElementById('copyText').textContent = ht('copy');
+}
+function toggleHelpLang() { applyHelpLang(helpLang === 'en' ? 'ar' : 'en'); }
+
+function toggleFAQ(el) {
+  const item = el.closest('.faq-item');
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+function filterFAQ(val) {
+  const q = val.toLowerCase();
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const text = item.dataset.q + ' ' + item.querySelector('.faq-q-text').textContent.toLowerCase();
+    item.style.display = text.includes(q) ? '' : 'none';
+  });
+}
+function filterTab(cat, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('searchInput').value = '';
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.style.display = (cat === 'all' || item.dataset.cat === cat) ? '' : 'none';
+  });
+}
+applyHelpLang(helpLang);

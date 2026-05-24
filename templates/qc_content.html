@@ -1,0 +1,24 @@
+<!-- Placeholder: original qc content should be moved here for full split. For now include a simple header and the upload form -->
+<div class="hero">
+  <div class="title">
+    <h1>QC Workflow</h1>
+    <p>Real-time QC submissions and review</p>
+  </div>
+  <div>
+    <span class="badge">Role: {{ qc_role }}</span>
+  </div>
+</div>
+<div class="panel">
+  <div class="panel-head"><strong>Submit Photo</strong></div>
+  <div class="panel-body">
+    <form id="qc-form" method="post" enctype="multipart/form-data" action="/api/qc/submissions">
+      <input type="file" name="photo" accept="image/*" required>
+      <textarea name="note" placeholder="Note"></textarea>
+      <button class="btn green" type="submit">Submit</button>
+    </form>
+  </div>
+</div>
+<div class="panel">
+  <div class="panel-head"><strong>Submissions</strong></div>
+  <div class="panel-body" id="submissions-list">Loading…</div>
+</div>

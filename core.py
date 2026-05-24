@@ -1065,6 +1065,9 @@ def _send_push_notification(subscription_info, title, body, url='/qc-workflow', 
         return False
 
 
+_push_subs_lock = threading.Lock()
+
+
 def _read_push_subs():
     try:
         with open(os.path.join(DATA_STORE_DIR, 'push_subscriptions.json'), 'r', encoding='utf-8') as f:
@@ -1078,6 +1081,23 @@ def _write_push_subs(data):
     os.makedirs(os.path.dirname(os.path.join(DATA_STORE_DIR, 'push_subscriptions.json')) or '.', exist_ok=True)
     with open(os.path.join(DATA_STORE_DIR, 'push_subscriptions.json'), 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False)
+
+
+_COUNTER_FILE = os.path.join(APP_DIR, 'visit_counter.json')
+_counter_lock = threading.Lock()
+
+
+def _load_counter():
+    try:
+        with open(_COUNTER_FILE, 'r') as f:
+            return json.load(f)
+    except Exception:
+        return {'total': 0, 'today': 0, 'date': ''}
+
+
+def _save_counter(data):
+    with open(_COUNTER_FILE, 'w') as f:
+        json.dump(data, f)
 
 
 def create_app():

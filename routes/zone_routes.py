@@ -253,4 +253,4 @@ def logout_zone():
     session.pop('is_super', None)
     session.pop('active_view_zone', None)
     session.pop('active_view_zone_name', None)
-    return redirect(url_for('zones_page'))
+    return redirect(url_for('zones.zones_page'))
