@@ -8,39 +8,359 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
 :root{--bg:#0d1117;--panel:#151c2d;--card:#20283a;--hover:#2b354a;--border:#33415c;--blue:#3b82f6;--cyan:#06b6d4;--green:#10b981;--red:#ef4444;--amber:#f59e0b;--text:#e2e8f0;--muted:#8b9db8;--dim:#52627a}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:Inter,sans-serif}.grid{position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(59,130,246,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.04) 1px,transparent 1px);background-size:52px 52px}.topbar{position:sticky;top:0;z-index:5;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:rgba(13,17,23,.78);backdrop-filter:blur(18px);border-bottom:1px solid rgba(59,130,246,.18)}.brand{display:flex;align-items:center;gap:12px;font-weight:800}.brand img{width:34px;height:34px;border-radius:10px}.badge{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);border:1px solid rgba(6,182,212,.32);background:rgba(6,182,212,.08);border-radius:999px;padding:6px 10px}.btn{border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:10px;padding:10px 13px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:.16s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}.btn:hover{transform:scale(1.03);background:var(--hover)}.btn.green{border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.12);color:#86efac}.btn.red{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.12);color:#fca5a5}.btn.amber{border-color:rgba(245,158,11,.42);background:rgba(245,158,11,.12);color:#fcd34d}.main{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:28px 18px 60px}.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px}.title h1{margin:0;font-size:clamp(28px,5vw,46px);letter-spacing:.4px}.title p{margin:8px 0 0;color:var(--muted);line-height:1.6}.panel{border:1px solid rgba(96,165,250,.22);background:linear-gradient(180deg,rgba(32,40,58,.94),rgba(18,24,38,.96));border-radius:18px;box-shadow:0 22px 70px rgba(0,0,0,.32);overflow:hidden}.panel-head{padding:16px 18px;border-bottom:1px solid rgba(96,165,250,.15);display:flex;align-items:center;justify-content:space-between}.panel-body{padding:18px}.submit-grid{display:grid;grid-template-columns:1fr;gap:12px}.file{border:1px dashed rgba(6,182,212,.38);background:rgba(6,182,212,.06);border-radius:14px;padding:18px;text-align:center}.file input{width:100%;color:var(--muted)}textarea{width:100%;min-height:90px;resize:vertical;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);padding:12px;font:inherit}.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}.item{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden}.item img{width:100%;height:210px;object-fit:cover;background:#000;display:block}.item-body{padding:13px}.meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);display:flex;justify-content:space-between;gap:8px;margin-bottom:8px}.note{color:var(--muted);font-size:13px;line-height:1.5;min-height:20px}.status{display:inline-flex;border-radius:999px;padding:5px 9px;font-size:10px;font-weight:800;text-transform:uppercase}.status.pending{background:rgba(245,158,11,.14);color:#fcd34d}.status.approved{background:rgba(16,185,129,.14);color:#86efac}.status.rejected{background:rgba(239,68,68,.14);color:#fca5a5}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.review-note{margin-top:10px;color:var(--dim);font-size:12px}.empty{padding:34px;text-align:center;color:var(--dim)}@media(max-width:720px){.hero{align-items:flex-start;flex-direction:column}.topbar{height:auto;gap:10px;align-items:flex-start;flex-direction:column;padding:12px 14px}.main{padding:18px 12px 80px}.list{grid-template-columns:1fr}.item img{height:230px}}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:Inter,sans-serif}
+.grid{position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(59,130,246,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.04) 1px,transparent 1px);background-size:52px 52px}
+.topbar{position:sticky;top:0;z-index:5;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:rgba(13,17,23,.78);backdrop-filter:blur(18px);border-bottom:1px solid rgba(59,130,246,.18)}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800}
+.brand img{width:34px;height:34px;border-radius:10px}
+.badge{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);border:1px solid rgba(6,182,212,.32);background:rgba(6,182,212,.08);border-radius:999px;padding:6px 10px}
+.btn{border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:10px;padding:10px 13px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:.16s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{transform:scale(1.03);background:var(--hover)}
+.btn.green{border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.12);color:#86efac}
+.btn.red{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.12);color:#fca5a5}
+.btn.amber{border-color:rgba(245,158,11,.42);background:rgba(245,158,11,.12);color:#fcd34d}
+.btn.cyan{border-color:rgba(6,182,212,.42);background:rgba(6,182,212,.12);color:#67e8f9}
+.main{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:28px 18px 60px}
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px}
+.title h1{margin:0;font-size:clamp(28px,5vw,46px);letter-spacing:.4px}
+.title p{margin:8px 0 0;color:var(--muted);line-height:1.6}
+.panel{border:1px solid rgba(96,165,250,.22);background:linear-gradient(180deg,rgba(32,40,58,.94),rgba(18,24,38,.96));border-radius:18px;box-shadow:0 22px 70px rgba(0,0,0,.32);overflow:hidden}
+.panel-head{padding:16px 18px;border-bottom:1px solid rgba(96,165,250,.15);display:flex;align-items:center;justify-content:space-between}
+.panel-body{padding:18px}
+.submit-grid{display:grid;grid-template-columns:1fr;gap:12px}
+
+/* ── File + Camera upload area ── */
+.upload-area{border:1px dashed rgba(6,182,212,.38);background:rgba(6,182,212,.06);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px;align-items:center}
+.upload-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.upload-preview{display:none;width:100%;max-height:220px;object-fit:contain;border-radius:10px;border:1px solid var(--border);margin-top:6px}
+.upload-preview.show{display:block}
+.upload-label{font-size:12px;color:var(--muted)}
+/* hide the raw file inputs */
+#photoFile,#photoCamera{display:none}
+
+textarea{width:100%;min-height:90px;resize:vertical;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);padding:12px;font:inherit}
+.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.item{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden}
+.item img{width:100%;height:210px;object-fit:cover;background:#000;display:block}
+.item-body{padding:13px}
+.meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);display:flex;justify-content:space-between;gap:8px;margin-bottom:8px}
+.note{color:var(--muted);font-size:13px;line-height:1.5;min-height:20px}
+.status{display:inline-flex;border-radius:999px;padding:5px 9px;font-size:10px;font-weight:800;text-transform:uppercase}
+.status.pending{background:rgba(245,158,11,.14);color:#fcd34d}
+.status.approved{background:rgba(16,185,129,.14);color:#86efac}
+.status.rejected{background:rgba(239,68,68,.14);color:#fca5a5}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.review-note{margin-top:10px;color:var(--dim);font-size:12px}
+.empty{padding:34px;text-align:center;color:var(--dim)}
+
+/* ── Notification permission banner ── */
+#notifBanner{display:none;align-items:center;gap:12px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.35);border-radius:12px;padding:12px 16px;margin-bottom:18px;font-size:13px;color:var(--text)}
+#notifBanner.show{display:flex}
+#notifBanner button{margin-left:auto;flex-shrink:0}
+
+/* ── Toast ── */
+#qcToast{position:fixed;bottom:24px;right:24px;z-index:9999;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 20px;font-size:13px;color:var(--text);box-shadow:0 4px 24px rgba(0,0,0,.5);transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
+#qcToast.show{transform:translateY(0);opacity:1}
+#qcToast.ok{border-color:var(--green)}
+#qcToast.err{border-color:var(--red)}
+
+@media(max-width:720px){
+  .hero{align-items:flex-start;flex-direction:column}
+  .topbar{height:auto;gap:10px;align-items:flex-start;flex-direction:column;padding:12px 14px}
+  .main{padding:18px 12px 80px}
+  .list{grid-template-columns:1fr}
+  .item img{height:230px}
+}
 </style>
 </head>
 <body>
 <div class="grid"></div>
-<header class="topbar"><div class="brand"><img src="/static/low.ico" alt="EST"><div>QC Workflow</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><span class="badge">{{ username }} / {{ qc_role }}</span><a class="btn" href="/logout">Logout</a></div></header>
+
+<header class="topbar">
+  <div class="brand"><img src="/static/low.ico" alt="EST"><div>QC Workflow</div></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <span class="badge">{{ username }} / {{ qc_role }}</span>
+    <a class="btn" href="/logout">Logout</a>
+  </div>
+</header>
+
 <main class="main">
-  <section class="hero"><div class="title"><h1 id="pageTitle">Quality Control</h1><p id="pageSub">Labeling Assistant sends photos. QC reviews them as Approved, Rejected, or Pending.</p></div><button class="btn" onclick="loadItems()">Refresh</button></section>
+
+  <!-- Notification permission banner -->
+  <div id="notifBanner">
+    🔔 Enable notifications to receive alerts even when the browser is minimized.
+    <button class="btn cyan" onclick="askNotifPermission()">Enable</button>
+  </div>
+
+  <section class="hero">
+    <div class="title">
+      <h1 id="pageTitle">Quality Control</h1>
+      <p id="pageSub">Labeling Assistant sends photos. QC reviews them as Approved, Rejected, or Pending.</p>
+    </div>
+    <button class="btn" onclick="loadItems()">Refresh</button>
+  </section>
+
   {% if qc_role == 'labeling' %}
-  <section class="panel" style="margin-bottom:18px"><div class="panel-head"><strong>Send Work Photo</strong><span class="badge">Labeling Assistant</span></div><div class="panel-body"><form id="sendForm" class="submit-grid"><div class="file"><input id="photo" name="photo" type="file" accept="image/*" capture="environment"></div><textarea id="note" name="note" placeholder="Add a short note..."></textarea><button class="btn green" type="submit">Send to QC</button></form></div></section>
+  <section class="panel" style="margin-bottom:18px">
+    <div class="panel-head"><strong>Send Work Photo</strong><span class="badge">Labeling Assistant</span></div>
+    <div class="panel-body">
+      <form id="sendForm" class="submit-grid">
+
+        <!-- Upload area: file picker + camera button -->
+        <div class="upload-area">
+          <div class="upload-btns">
+            <!-- Gallery / file picker -->
+            <button type="button" class="btn" onclick="document.getElementById('photoFile').click()">
+              🖼 Choose from Gallery
+            </button>
+            <!-- Camera (opens camera directly on mobile) -->
+            <button type="button" class="btn cyan" onclick="document.getElementById('photoCamera').click()">
+              📷 Take Photo
+            </button>
+          </div>
+          <!-- hidden inputs -->
+          <input id="photoFile"   type="file" accept="image/*">
+          <input id="photoCamera" type="file" accept="image/*" capture="environment">
+          <!-- preview -->
+          <img id="photoPreview" class="upload-preview" alt="Preview">
+          <span class="upload-label" id="uploadLabel">No photo selected</span>
+        </div>
+
+        <textarea id="note" name="note" placeholder="Add a short note..."></textarea>
+        <button class="btn green" type="submit">Send to QC</button>
+      </form>
+    </div>
+  </section>
   {% endif %}
-  <section class="panel"><div class="panel-head"><strong>Submissions</strong><span class="badge" id="countBadge">0 items</span></div><div class="panel-body"><div id="items" class="list"><div class="empty">Loading...</div></div></div></section>
+
+  <section class="panel">
+    <div class="panel-head"><strong>Submissions</strong><span class="badge" id="countBadge">0 items</span></div>
+    <div class="panel-body"><div id="items" class="list"><div class="empty">Loading...</div></div></div>
+  </section>
+
 </main>
+
+<div id="qcToast"></div>
+
 <script>
+// ════════════════════════════════════════════════════
+// CONSTANTS
+// ════════════════════════════════════════════════════
 const role = '{{ qc_role }}';
-function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
-async function loadItems(){
-  const box=document.getElementById('items');
-  const res=await fetch('/api/qc/submissions',{cache:'no-store'});
-  const data=await res.json();
-  const items=data.items||[];
-  document.getElementById('countBadge').textContent=items.length+' items';
-  if(!items.length){box.innerHTML='<div class="empty">No submissions yet</div>';return;}
-  box.innerHTML=items.map(x=>`<article class="item"><img src="${esc(x.image_url)}" alt="QC photo"><div class="item-body"><div class="meta"><span>#${x.id} ${esc(x.created_by)}</span><span>${esc(x.created_at)}</span></div><span class="status ${esc(x.status)}">${esc(x.status)}</span><div class="note">${esc(x.note||'')}</div>${x.review_note?`<div class="review-note">Review: ${esc(x.review_note)}</div>`:''}${role==='qc'?`<div class="actions"><button class="btn green" onclick="review(${x.id},'approved')">Approve</button><button class="btn red" onclick="review(${x.id},'rejected')">Reject</button><button class="btn amber" onclick="review(${x.id},'pending')">Pending</button></div>`:''}</div></article>`).join('');
+
+// ════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════
+function esc(s){
+  return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
-async function review(id,status){
-  const review_note=prompt('Review note (optional):')||'';
-  await fetch(`/api/qc/submissions/${id}/status`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({status,review_note})});
+
+function toast(msg, ok=true){
+  const el = document.getElementById('qcToast');
+  el.textContent = msg;
+  el.className = 'show ' + (ok ? 'ok' : 'err');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.className = '', 3500);
+}
+
+// ════════════════════════════════════════════════════
+// SOUNDS
+// ════════════════════════════════════════════════════
+function playSound(file){
+  try{
+    const a = new Audio('/static/' + file);
+    a.volume = 0.9;
+    a.play().catch(()=>{});
+  }catch(e){}
+}
+
+// ════════════════════════════════════════════════════
+// BROWSER NOTIFICATIONS
+// ════════════════════════════════════════════════════
+function askNotifPermission(){
+  if(!('Notification' in window)) return;
+  Notification.requestPermission().then(p => {
+    document.getElementById('notifBanner').classList.remove('show');
+    if(p === 'granted') toast('✅ Notifications enabled!');
+  });
+}
+
+function showBrowserNotif(title, body){
+  if(!('Notification' in window)) return;
+  if(Notification.permission !== 'granted') return;
+  try{
+    new Notification(title, {
+      body,
+      icon: '/static/low.ico',
+      badge: '/static/low.ico',
+      tag: title,
+      requireInteraction: false
+    });
+  }catch(e){}
+}
+
+// Show banner if permission not yet decided
+(function(){
+  if(!('Notification' in window)) return;
+  if(Notification.permission === 'default'){
+    document.getElementById('notifBanner').classList.add('show');
+  }
+})();
+
+// ════════════════════════════════════════════════════
+// POLLING — track last known state
+// ════════════════════════════════════════════════════
+let _lastCount   = null;   // total submissions count
+let _lastStatuses = {};    // id -> status  (to detect review changes)
+
+async function loadItems(){
+  const box = document.getElementById('items');
+  try{
+    const res  = await fetch('/api/qc/submissions', {cache:'no-store'});
+    const data = await res.json();
+    const items = data.items || [];
+
+    document.getElementById('countBadge').textContent = items.length + ' items';
+
+    // ── Detect NEW submission (Labeling sent a photo) ──
+    // QC user gets alerted
+    if(role === 'qc' && _lastCount !== null && items.length > _lastCount){
+      const diff = items.length - _lastCount;
+      playSound('qcalert.wav');
+      showBrowserNotif(
+        '📸 New QC Submission',
+        `${diff} new photo${diff > 1 ? 's' : ''} waiting for review`
+      );
+      toast(`📸 ${diff} new photo${diff > 1 ? 's' : ''} received!`);
+    }
+    _lastCount = items.length;
+
+    // ── Detect STATUS CHANGE (QC reviewed a photo) ──
+    // Labeling user gets alerted
+    if(role === 'labeling' && Object.keys(_lastStatuses).length > 0){
+      for(const item of items){
+        const prev = _lastStatuses[item.id];
+        if(prev !== undefined && prev !== item.status){
+          playSound('lebelass.wav');
+          const emoji = item.status === 'Approved' ? '✅' : item.status === 'rejected' ? '❌' : '⏳';
+          showBrowserNotif(
+            `${emoji} Photo #${item.id} ${item.status.toUpperCase()}`,
+            item.review_note ? `Note: ${item.review_note}` : `Your photo was marked as ${item.status}`
+          );
+          toast(`${emoji} Photo #${item.id} marked as ${item.status}`);
+          break; // one alert per poll cycle is enough
+        }
+      }
+    }
+    // Update status map
+    for(const item of items) _lastStatuses[item.id] = item.status;
+
+    // ── Render items ──
+    if(!items.length){
+      box.innerHTML = '<div class="empty">No submissions yet</div>';
+      return;
+    }
+    box.innerHTML = items.map(x => `
+      <article class="item">
+        <img src="${esc(x.image_url)}" alt="QC photo" loading="lazy">
+        <div class="item-body">
+          <div class="meta">
+            <span>#${x.id} ${esc(x.created_by)}</span>
+            <span>${esc(x.created_at)}</span>
+          </div>
+          <span class="status ${esc(x.status)}">${esc(x.status)}</span>
+          <div class="note">${esc(x.note||'')}</div>
+          ${x.review_note ? `<div class="review-note">Review: ${esc(x.review_note)}</div>` : ''}
+          ${role === 'qc' ? `
+            <div class="actions">
+              <button class="btn green" onclick="review(${x.id},'approved')">Approve</button>
+              <button class="btn red"   onclick="review(${x.id},'rejected')">Reject</button>
+              <button class="btn amber" onclick="review(${x.id},'pending')">Pending</button>
+            </div>` : ''}
+        </div>
+      </article>`).join('');
+
+  }catch(e){
+    box.innerHTML = '<div class="empty">Failed to load. Retrying...</div>';
+  }
+}
+
+// ════════════════════════════════════════════════════
+// REVIEW ACTION
+// ════════════════════════════════════════════════════
+async function review(id, status){
+  const review_note = prompt('Review note (optional):') || '';
+  const res = await fetch(`/api/qc/submissions/${id}/status`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({status, review_note})
+  });
+  if(res.ok) toast('✅ Status updated');
   loadItems();
 }
-const form=document.getElementById('sendForm');
-if(form){form.addEventListener('submit',async e=>{e.preventDefault();const fd=new FormData();const f=document.getElementById('photo').files[0];if(!f){alert('Photo is required');return;}fd.append('photo',f);fd.append('note',document.getElementById('note').value);const res=await fetch('/api/qc/submissions',{method:'POST',body:fd});const data=await res.json();if(!res.ok||!data.success){alert(data.message||'Failed');return;}form.reset();loadItems();});}
-loadItems();setInterval(loadItems,15000);
+
+// ════════════════════════════════════════════════════
+// PHOTO SELECTION (file picker + camera)
+// ════════════════════════════════════════════════════
+let selectedFile = null;
+
+function handleFileSelect(file){
+  if(!file) return;
+  selectedFile = file;
+  const preview = document.getElementById('photoPreview');
+  const label   = document.getElementById('uploadLabel');
+  label.textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = e => {
+    preview.src = e.target.result;
+    preview.classList.add('show');
+  };
+  reader.readAsDataURL(file);
+}
+
+document.getElementById('photoFile')?.addEventListener('change', e => {
+  handleFileSelect(e.target.files[0]);
+});
+document.getElementById('photoCamera')?.addEventListener('change', e => {
+  handleFileSelect(e.target.files[0]);
+});
+
+// ════════════════════════════════════════════════════
+// SEND FORM SUBMIT
+// ════════════════════════════════════════════════════
+const form = document.getElementById('sendForm');
+if(form){
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    if(!selectedFile){ toast('Photo is required', false); return; }
+    const fd = new FormData();
+    fd.append('photo', selectedFile);
+    fd.append('note', document.getElementById('note').value);
+    const res  = await fetch('/api/qc/submissions', {method:'POST', body:fd});
+    const data = await res.json();
+    if(!res.ok || !data.success){ toast(data.message || 'Failed', false); return; }
+    // reset
+    form.reset();
+    selectedFile = null;
+    document.getElementById('photoPreview').classList.remove('show');
+    document.getElementById('uploadLabel').textContent = 'No photo selected';
+    toast('📤 Photo sent to QC!');
+    loadItems();
+  });
+}
+
+// ════════════════════════════════════════════════════
+// START POLLING
+// Poll every 8s — also re-poll when tab becomes visible / window focused
+// ════════════════════════════════════════════════════
+loadItems();
+setInterval(loadItems, 8000);
+
+document.addEventListener('visibilitychange', () => {
+  if(!document.hidden) loadItems();
+});
+window.addEventListener('focus', loadItems);
 </script>
 </body>
 </html>
