@@ -196,13 +196,25 @@
     display: inline-flex; align-items: center; justify-content: center; gap: 0;
   }
   .topbar-actions .btn-icon svg { width: 15px; height: 15px; }
-  .topbar-actions.buttons-hidden > :not(#buttonsToggleBtn) { display: none !important; }
-  #buttonsToggleBtn { background: rgba(148,163,184,.14); border-color: rgba(148,163,184,.45); color:#cbd5e1; }
+  .topbar-actions .hideable-btn { transition: opacity 0.2s, transform 0.2s, max-width 0.25s, margin 0.25s, padding 0.25s; }
+  .topbar-actions.buttons-hidden .hideable-btn {
+    display: none !important;
+  }
+  #buttonsToggleBtn {
+    background: rgba(148,163,184,.14);
+    border: 1.5px solid rgba(148,163,184,.45);
+    color:#cbd5e1;
+    width: 32px; height: 32px; padding: 0; border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.18s; flex-shrink: 0;
+  }
+  #buttonsToggleBtn:hover { background: rgba(148,163,184,.28); color:#fff; transform: scale(1.1); }
+  #buttonsToggleBtn.active { background: rgba(59,130,246,.18); border-color: rgba(59,130,246,.5); color: var(--accent-blue); }
   #homeBtn { background:#fff; color:#0d1117; border-color:#e2e8f0; box-shadow:0 2px 10px rgba(255,255,255,.18); }
   #homeBtn:hover { background:#f1f5f9; color:#0d1117; transform: scale(1.1); box-shadow: 0 6px 20px rgba(255,255,255,0.28); }
 
-  #reportsBtn { background: rgba(168,85,247,0.14); border-color: rgba(168,85,247,0.52); color: #c084fc; }
-  #reportsBtn:hover { background: #a855f7; border-color: #a855f7; color: #fff; transform: scale(1.1); box-shadow: 0 6px 20px rgba(168,85,247,0.38); }
+  #reportsBtn { background: rgba(20,184,166,0.14); border-color: rgba(20,184,166,0.52); color: #2dd4bf; }
+  #reportsBtn:hover { background: #14b8a6; border-color: #14b8a6; color: #fff; transform: scale(1.1); box-shadow: 0 6px 20px rgba(20,184,166,0.38); }
   .admin-stack { position: relative; display: inline-flex; }
   .admin-badge {
     position: absolute;
@@ -309,8 +321,8 @@
 
   /* light mode overrides for new buttons */
   html.light #refreshBtn { background: rgba(37,99,235,0.1); border-color: rgba(37,99,235,0.45); color: #2563eb; }
-  html.light #reportsBtn { background: rgba(147,51,234,0.1); border-color: rgba(147,51,234,0.42); color: #7c3aed; }
-  html.light #reportsBtn:hover { background: #7c3aed; color: #fff; box-shadow: 0 6px 20px rgba(147,51,234,0.28); }
+  html.light #reportsBtn { background: rgba(13,148,136,0.1); border-color: rgba(13,148,136,0.42); color: #0d9488; }
+  html.light #reportsBtn:hover { background: #0d9488; color: #fff; box-shadow: 0 6px 20px rgba(13,148,136,0.28); }
   html.light #refreshBtn:hover { background: #2563eb; color: #fff; box-shadow: 0 6px 20px rgba(37,99,235,0.3); }
   html.light #printBtn { background: rgba(217,119,6,0.1); border-color: rgba(217,119,6,0.45); color: #d97706; }
   html.light #printBtn:hover { background: #d97706; color: #fff; box-shadow: 0 6px 20px rgba(217,119,6,0.3); }
@@ -598,6 +610,10 @@
   /* Transitions */
   .fade-in { animation: fadeIn 0.25s ease; }
   @keyframes fadeIn { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
+  @keyframes dropIn {
+    from { opacity:0; transform: translateY(-6px) scale(0.97); }
+    to   { opacity:1; transform: translateY(0) scale(1); }
+  }
 
   /* Scrollbar */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -760,29 +776,52 @@
   /* ── CUSTOM LOGOUT MODAL ── */
   .logout-overlay {
     display: none; position: fixed; inset: 0; z-index: 99999;
-    background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
+    background: rgba(0,0,0,0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     align-items: center; justify-content: center;
+    animation: overlayIn 0.3s ease both;
   }
   .logout-overlay.open { display: flex; }
   .logout-box {
-    background: var(--bg-panel);
-    border: 1px solid var(--border-light);
-    border-radius: 18px;
-    padding: 36px 40px 28px;
+    background: rgba(13,17,23,0.52);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    border: 1px solid rgba(239,68,68,0.22);
+    border-radius: 20px;
     min-width: 320px; max-width: 400px;
-    box-shadow: 0 16px 56px rgba(0,0,0,0.7);
-    animation: modalIn 0.22s cubic-bezier(.34,1.56,.64,1);
-    text-align: center;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.06);
+    animation: cardPop 0.4s cubic-bezier(.34,1.56,.64,1) both;
+    text-align: center; overflow: hidden; position: relative;
+  }
+  .logout-box::before {
+    content: '';
+    position: absolute; top: 0; left: 10%; right: 10%; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(239,68,68,0.7), rgba(245,158,11,0.5), transparent);
+    border-radius: 2px;
+    animation: betaShine 2.5s ease-in-out infinite;
+    z-index: 10;
+  }
+  html.light .logout-box {
+    background: rgba(248,250,252,0.52);
+    border-color: rgba(220,38,38,0.18);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.8);
+  }
+  .logout-header {
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid rgba(239,68,68,0.1);
+    background: linear-gradient(135deg, rgba(239,68,68,0.07), rgba(245,158,11,0.04), transparent);
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
   }
   .logout-icon {
     width: 52px; height: 52px; border-radius: 50%;
     background: rgba(239,68,68,0.12);
     border: 1px solid rgba(239,68,68,0.3);
     display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 18px; font-size: 22px;
+    font-size: 22px;
   }
-  .logout-title { font-size: 17px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
-  .logout-msg   { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 28px; }
+  .logout-title { font-size: 17px; font-weight: 700; color: var(--text-main); }
+  .logout-body { padding: 18px 28px 24px; position: relative; z-index: 2; }
+  .logout-msg   { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 22px; }
   .logout-actions { display: flex; gap: 10px; justify-content: center; }
   .logout-actions .btn { min-width: 110px; justify-content: center; padding: 10px 20px; font-size: 13px; }
 
@@ -861,30 +900,70 @@
   /* ── CSV EXPORT MODAL ── */
   #csvModal {
     display: none; position: fixed; inset: 0; z-index: 9999;
-    background: rgba(0,0,0,0.65); backdrop-filter: blur(5px);
+    background: rgba(0,0,0,0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     align-items: center; justify-content: center;
+    animation: overlayIn 0.3s ease both;
   }
   #csvModal.open { display: flex; }
   .csv-modal-box {
-    background: var(--bg-panel); border: 1px solid var(--border-light);
-    border-radius: 18px; padding: 38px 44px; min-width: 340px; max-width: 480px;
-    box-shadow: 0 12px 48px rgba(0,0,0,0.7); text-align: center; position: relative;
-    animation: modalIn 0.22s cubic-bezier(.34,1.56,.64,1);
+    background: rgba(13,17,23,0.52);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    border: 1px solid rgba(16,185,129,0.25);
+    border-radius: 20px;
+    padding: 0;
+    min-width: 340px; max-width: 460px; width: 92vw;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.06);
+    animation: cardPop 0.4s cubic-bezier(.34,1.56,.64,1) both;
+    text-align: center; position: relative; overflow: hidden;
   }
+  .csv-modal-box::before {
+    content: '';
+    position: absolute; top: 0; left: 10%; right: 10%; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-green), rgba(6,182,212,0.7), transparent);
+    border-radius: 2px;
+    animation: betaShine 2.5s ease-in-out infinite;
+    z-index: 10;
+  }
+  html.light .csv-modal-box {
+    background: rgba(248,250,252,0.52);
+    border-color: rgba(5,150,105,0.2);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.8);
+  }
+  .csv-modal-header {
+    padding: 22px 28px 18px;
+    border-bottom: 1px solid rgba(16,185,129,0.12);
+    background: linear-gradient(135deg, rgba(16,185,129,0.07), rgba(6,182,212,0.04), transparent);
+    display: flex; align-items: center; justify-content: space-between;
+    position: relative; z-index: 2;
+  }
+  .csv-modal-header-left { display: flex; align-items: center; gap: 14px; }
   .csv-modal-icon {
-    width: 56px; height: 56px; border-radius: 14px;
-    background: linear-gradient(135deg, rgba(16,185,129,0.18), rgba(59,130,246,0.18));
-    border: 1px solid rgba(16,185,129,0.3);
+    width: 46px; height: 46px; border-radius: 14px;
+    background: linear-gradient(135deg, rgba(16,185,129,0.25), rgba(6,182,212,0.18));
+    border: 1px solid rgba(16,185,129,0.35);
     display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 20px; font-size: 24px;
+    font-size: 20px; flex-shrink: 0;
   }
-  .csv-modal-title { font-size: 17px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
-  .csv-modal-sub   { font-size: 12px; color: var(--text-muted); margin-bottom: 22px; line-height: 1.5; }
+  .csv-modal-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 3px; }
+  .csv-modal-sub   { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+  .csv-modal-close {
+    width: 32px; height: 32px; border-radius: 10px;
+    background: rgba(255,255,255,0.05); color: var(--text-muted);
+    border: 1px solid rgba(255,255,255,0.09);
+    cursor: pointer; font-size: 15px;
+    transition: all 0.2s; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .csv-modal-close:hover { background: rgba(239,68,68,0.14); color: #fca5a5; border-color: rgba(239,68,68,0.28); transform: rotate(90deg) scale(1.1); }
+  .csv-modal-body { padding: 18px 24px 24px; position: relative; z-index: 2; }
   .csv-modal-info  {
-    background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: 10px; padding: 14px 18px; margin-bottom: 24px; text-align: left;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; text-align: left;
   }
-  .csv-modal-info-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 4px 0; }
+  html.light .csv-modal-info { background: rgba(255,255,255,0.65); border-color: rgba(37,99,235,0.1); }
+  .csv-modal-info-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .csv-modal-info-row:last-child { border-bottom: none; }
   .csv-modal-info-row .cmi-label { color: var(--text-muted); }
   .csv-modal-info-row .cmi-val   { color: var(--text-main); font-weight: 500; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
   .csv-modal-actions { display: flex; gap: 10px; justify-content: center; }
@@ -1231,41 +1310,83 @@
   .reports-dropdown-menu {
     display: none;
     position: absolute;
-    top: calc(100% + 6px);
+    top: calc(100% + 8px);
     right: 0;
-    min-width: 220px;
-    max-height: 280px;
+    min-width: 240px;
+    max-height: 300px;
     overflow-y: auto;
-    background: var(--bg-panel);
-    border: 1px solid var(--border-light);
-    border-radius: 10px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    background: rgba(13,17,23,0.72);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid rgba(20,184,166,0.28);
+    border-radius: 14px;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.05);
     z-index: 500;
     padding: 6px;
-    animation: dropIn 0.15s cubic-bezier(.4,0,.2,1);
+    animation: dropIn 0.18s cubic-bezier(.34,1.56,.64,1);
   }
-  @keyframes dropIn {
-    from { opacity:0; transform: translateY(-4px); }
-    to   { opacity:1; transform: translateY(0); }
+  .reports-dropdown-menu::before {
+    content: '';
+    position: absolute; top: 0; left: 15%; right: 15%; height: 1.5px;
+    background: linear-gradient(90deg, transparent, rgba(20,184,166,0.6), rgba(6,182,212,0.4), transparent);
+    border-radius: 2px;
+    pointer-events: none;
   }
+  html.light .reports-dropdown-menu {
+    background: rgba(248,250,252,0.88);
+    border-color: rgba(13,148,136,0.22);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+  .reports-dropdown-menu.open { display: block; }
+  .reports-dropdown-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-radius: 9px;
+    cursor: pointer; font-size: 13px; color: var(--text-muted);
+    transition: all 0.14s; border: 1px solid transparent;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .reports-dropdown-item:hover {
+    background: rgba(20,184,166,0.12); color: #2dd4bf;
+    border-color: rgba(20,184,166,0.25); transform: translateX(-2px);
+  }
+  .reports-dropdown-empty {
+    padding: 18px 16px; text-align: center; color: var(--text-dim); font-size: 12px;
+  }
+  .ri-icon { flex-shrink: 0; font-size: 15px; }
 
   /* ── DASHBOARD MODAL ── */
   #dashModal {
     display: none; position: fixed; inset: 0; z-index: 9000;
-    background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
     align-items: center; justify-content: center;
+    animation: overlayIn 0.3s ease both;
   }
   #dashModal.open { display: flex; }
   .dash-box {
-    background: linear-gradient(180deg, rgba(17,24,39,.98), rgba(13,17,23,.98));
-    border: 1px solid rgba(96,165,250,.3);
-    border-radius: 20px;
+    background: rgba(13,17,23,0.50);
+    backdrop-filter: blur(32px) saturate(170%);
+    -webkit-backdrop-filter: blur(32px) saturate(170%);
+    border: 1px solid rgba(59,130,246,0.22);
+    border-radius: 22px;
     width: 92vw; height: 86vh;
     display: flex; overflow: hidden;
-    box-shadow: 0 24px 80px rgba(0,0,0,0.7);
-    animation: modalIn 0.24s cubic-bezier(.34,1.56,.64,1);
+    box-shadow: 0 32px 80px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.06);
+    animation: cardPop 0.4s cubic-bezier(.34,1.56,.64,1) both;
+    position: relative;
   }
-  html.light .dash-box { background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(240,244,248,.98)); }
+  .dash-box::before {
+    content: '';
+    position: absolute; top: 0; left: 10%; right: 10%; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-blue), var(--accent-cyan), transparent);
+    border-radius: 2px;
+    animation: betaShine 2.5s ease-in-out infinite;
+    z-index: 10; pointer-events: none;
+  }
+  html.light .dash-box {
+    background: rgba(248,250,252,0.50);
+    border-color: rgba(37,99,235,0.18);
+    box-shadow: 0 32px 80px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.8);
+  }
   /* LEFT SIDEBAR */
   .dash-sidebar {
     width: 220px; flex-shrink: 0;
@@ -1559,18 +1680,6 @@
     .dash-actions, .dash-zone-select, .dash-refresh-btn, .dash-countdown { width:100%; justify-content:center; }
   }
   .reports-dropdown-menu.open { display: block; }
-  .reports-dropdown-item {
-    display: flex; align-items: center; gap: 9px;
-    padding: 9px 12px; border-radius: 7px;
-    cursor: pointer; font-size: 12.5px; color: var(--text-main);
-    transition: background 0.12s;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .reports-dropdown-item:hover { background: var(--bg-hover); }
-  .reports-dropdown-item .ri-icon { font-size: 15px; flex-shrink: 0; }
-  .reports-dropdown-empty {
-    padding: 12px 14px; font-size: 12px; color: var(--text-dim); text-align: center;
-  }
 
   /* ── BETA POPUP ── */
   .beta-overlay {
@@ -1828,18 +1937,18 @@ EST-iMs © | 2026    </div>
       </span>
     </div>
     <div class="topbar-actions">
-      <button class="btn btn-lang" id="langBtn" onclick="toggleIndexLang()" title="Toggle Language">
+      <button class="btn btn-lang hideable-btn" id="langBtn" onclick="toggleIndexLang()" title="Toggle Language">
         <span id="langBtnText">EN</span>
       </button>
-      <button class="theme-btn" id="themeBtn" title="Toggle light/dark mode">
+      <button class="theme-btn hideable-btn" id="themeBtn" title="Toggle light/dark mode">
         <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
-      <button class="theme-btn" id="homeBtn" title="Go to Home" onclick="goHome()">
+      <button class="theme-btn hideable-btn" id="homeBtn" title="Go to Home" onclick="goHome()">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       </button>
       {% if is_super %}
-      <div style="position:relative;display:inline-flex;">
+      <div style="position:relative;display:inline-flex;" class="hideable-btn">
         <button class="theme-btn" onclick="openDashboard()" id="dashBtn" title="Dashboard">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
         </button>
@@ -1850,47 +1959,51 @@ EST-iMs © | 2026    </div>
           box-shadow:0 0 6px rgba(239,68,68,0.6);z-index:10;">0</span>
       </div>
       {% if is_dev %}
-      <button class="theme-btn login-history-btn" onclick="openUsersModal()" title="Login History">
+      <button class="theme-btn login-history-btn hideable-btn" onclick="openUsersModal()" title="Login History">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       </button>
-      <div class="admin-stack">
+      <div class="admin-stack hideable-btn">
         <button class="theme-btn" id="adminRequestsBtn" onclick="openAdminRequestsModal()" title="طلبات التسجيل">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
         </button>
         <span class="admin-badge" id="adminRequestsBadge">0</span>
       </div>
-      <div class="admin-stack">
+      <div class="admin-stack hideable-btn">
         <button class="theme-btn" id="forMoreMessagesBtn" onclick="openAdminMessagesModal()" title="For More Messages">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg>
         </button>
         <span class="admin-badge" id="forMoreMessagesBadge">0</span>
       </div>
-      <button class="theme-btn" id="adminUsersBtn" onclick="openAdminUsersModal()" title="المستخدمون المسجلون">
+      <button class="theme-btn hideable-btn" id="adminUsersBtn" onclick="openAdminUsersModal()" title="المستخدمون المسجلون">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M16 11l2 2 4-4"/></svg>
       </button>
       {% endif %}
       {% endif %}
-      <div class="reports-dropdown-wrap" id="reportsDropdownWrap">
+      <div class="reports-dropdown-wrap hideable-btn" id="reportsDropdownWrap">
         <button class="theme-btn" onclick="toggleReportsDropdown(event)" id="reportsBtn" title="Reports">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
         </button>
         <div class="reports-dropdown-menu" id="reportsDropdownMenu"></div>
       </div>
 
-      <button class="theme-btn" id="refreshBtn" onclick="refreshData()" title="Refresh">
+      <button class="theme-btn hideable-btn" id="refreshBtn" onclick="refreshData()" title="Refresh">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.3"/><path d="M3 12A9 9 0 0 1 18.5 5.7"/><path d="M18 2v4h4"/><path d="M6 22v-4H2"/></svg>
       </button>
-      <button class="theme-btn" id="printBtn" onclick="openPrintModal()" title="Print">
+      <button class="theme-btn hideable-btn" id="printBtn" onclick="openPrintModal()" title="Print">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
       </button>
-      <button class="theme-btn" id="csvBtn" onclick="exportCSV()" title="Export CSV">
+      <button class="theme-btn hideable-btn" id="csvBtn" onclick="exportCSV()" title="Export CSV">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       </button>
-      <button class="theme-btn" id="aboutBtn" onclick="showAbout()" title="About">
+      <button class="theme-btn hideable-btn" id="aboutBtn" onclick="showAbout()" title="About">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
       </button>
-      <button class="theme-btn" id="logoutBtn" onclick="confirmLogout()" title="Logout">
+      <button class="theme-btn hideable-btn" id="logoutBtn" onclick="confirmLogout()" title="Logout">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+      <!-- TOGGLE BUTTONS VISIBILITY -->
+      <button id="buttonsToggleBtn" title="Toggle buttons visibility" onclick="toggleButtonsVisibility()">
+        <svg id="toggleBtnIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
       </button>
     </div>
   </div>
@@ -1942,23 +2055,31 @@ EST-iMs © | 2026    </div>
 <!-- ══ CSV EXPORT MODAL ══ -->
 <div id="csvModal" onclick="if(event.target===this)closeCsvModal()">
   <div class="csv-modal-box">
-    <button onclick="closeCsvModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text-dim);font-size:17px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
-    <div class="csv-modal-icon">📊</div>
-    <div class="csv-modal-title">Export CSV</div>
-    <div class="csv-modal-sub" id="csvModalSub">Export the current sheet as a CSV file</div>
-    <div class="csv-modal-info">
-      <div class="csv-modal-info-row"><span class="cmi-label">File</span><span class="cmi-val" id="csvInfoFile">—</span></div>
-      <div class="csv-modal-info-row"><span class="cmi-label">Sheet</span><span class="cmi-val" id="csvInfoSheet">—</span></div>
-      <div class="csv-modal-info-row"><span class="cmi-label">Period</span><span class="cmi-val" id="csvInfoPeriod">—</span></div>
-      <div class="csv-modal-info-row"><span class="cmi-label">Records</span><span class="cmi-val" id="csvInfoRecords">—</span></div>
-      <div class="csv-modal-info-row"><span class="cmi-label">Filename</span><span class="cmi-val" id="csvInfoFilename" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</span></div>
+    <div class="csv-modal-header">
+      <div class="csv-modal-header-left">
+        <div class="csv-modal-icon">📊</div>
+        <div>
+          <div class="csv-modal-title">Export CSV</div>
+          <div class="csv-modal-sub" id="csvModalSub">Export the current sheet as a CSV file</div>
+        </div>
+      </div>
+      <button class="csv-modal-close" onclick="closeCsvModal()">✕</button>
     </div>
-    <div class="csv-modal-actions">
-      <button class="btn btn-success" onclick="doExportCSV()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Download CSV
-      </button>
-      <button class="btn btn-ghost" onclick="closeCsvModal()">Cancel</button>
+    <div class="csv-modal-body">
+      <div class="csv-modal-info">
+        <div class="csv-modal-info-row"><span class="cmi-label">File</span><span class="cmi-val" id="csvInfoFile">—</span></div>
+        <div class="csv-modal-info-row"><span class="cmi-label">Sheet</span><span class="cmi-val" id="csvInfoSheet">—</span></div>
+        <div class="csv-modal-info-row"><span class="cmi-label">Period</span><span class="cmi-val" id="csvInfoPeriod">—</span></div>
+        <div class="csv-modal-info-row"><span class="cmi-label">Records</span><span class="cmi-val" id="csvInfoRecords">—</span></div>
+        <div class="csv-modal-info-row"><span class="cmi-label">Filename</span><span class="cmi-val" id="csvInfoFilename" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</span></div>
+      </div>
+      <div class="csv-modal-actions">
+        <button class="btn btn-success" onclick="doExportCSV()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download CSV
+        </button>
+        <button class="btn btn-ghost" onclick="closeCsvModal()">Cancel</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1966,15 +2087,19 @@ EST-iMs © | 2026    </div>
 <!-- ══ LOGOUT CONFIRM MODAL ══ -->
 <div class="logout-overlay" id="logoutModal" onclick="if(event.target===this)closeLogout()">
   <div class="logout-box">
-    <div class="logout-icon">⚠️</div>
-    <div class="logout-title">Logout</div>
-    <div class="logout-msg">Are you sure you want to logout?</div>
-    <div class="logout-actions">
-      <button class="btn btn-danger" onclick="doLogout()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        Yes, Logout
-      </button>
-      <button class="btn btn-ghost" onclick="closeLogout()">Cancel</button>
+    <div class="logout-header">
+      <div class="logout-icon">⚠️</div>
+      <div class="logout-title">Logout</div>
+    </div>
+    <div class="logout-body">
+      <div class="logout-msg">Are you sure you want to logout?</div>
+      <div class="logout-actions">
+        <button class="btn btn-danger" onclick="doLogout()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Yes, Logout
+        </button>
+        <button class="btn btn-ghost" onclick="closeLogout()">Cancel</button>
+      </div>
     </div>
   </div>
 </div>
@@ -2645,6 +2770,17 @@ async function switchViewZone(zoneId) {
 }
 
 async function init() {
+  // Restore toggle buttons visibility state
+  try {
+    if (localStorage.getItem('topbarButtonsHidden') === '1') {
+      const actions = document.querySelector('.topbar-actions');
+      const btn = document.getElementById('buttonsToggleBtn');
+      const icon = document.getElementById('toggleBtnIcon');
+      if (actions) actions.classList.add('buttons-hidden');
+      if (btn) btn.classList.add('active');
+      if (icon) icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+    }
+  } catch(e){}
   state.structure = await loadStructure(currentViewZone);
   state.availableYears = Object.keys(state.structure).sort();
   if (!state.availableYears.length) return;
@@ -4516,6 +4652,23 @@ document.addEventListener('click', function(e) {
     document.getElementById('reportsDropdownMenu').classList.remove('open');
   }
 });
+
+// ── TOGGLE BUTTONS VISIBILITY ──
+function toggleButtonsVisibility() {
+  const actions = document.querySelector('.topbar-actions');
+  const btn = document.getElementById('buttonsToggleBtn');
+  const icon = document.getElementById('toggleBtnIcon');
+  const hidden = actions.classList.toggle('buttons-hidden');
+  btn.classList.toggle('active', hidden);
+  // Switch icon: eye-off when hidden, eye when visible
+  if (hidden) {
+    icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  } else {
+    icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
+  }
+  // Persist preference
+  try { localStorage.setItem('topbarButtonsHidden', hidden ? '1' : '0'); } catch(e){}
+}
 
 // ── START ──
 init();
