@@ -413,7 +413,7 @@ def add_security_headers(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['X-XSS-Protection']       = '1; mode=block'
     response.headers['Referrer-Policy']        = 'strict-origin-when-cross-origin'
-     if response.content_type and 'text/html' in response.content_type:
+    if response.content_type and 'text/html' in response.content_type:
         response.headers['Content-Type'] = 'text/html; charset=utf-8'
     return response
 
