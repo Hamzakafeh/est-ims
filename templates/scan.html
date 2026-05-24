@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>ÙØ³Ø­ QR â EST Inventory</title>
+<title>مسح QR — EST Inventory</title>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <style>
@@ -57,7 +57,7 @@
   .modal-err { font-size: 13px; color: #dc2626; margin: 8px 0 16px; display: none; }
   .modal-close { width: 100%; padding: 11px; background: #f1f5f9; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
 
-  /* ââ MOBILE ENHANCEMENTS ââ */
+  /* ── MOBILE ENHANCEMENTS ── */
   @media (max-width: 480px) {
     .content { padding: 12px; }
     .bc-num { font-size: 15px; }
@@ -71,38 +71,38 @@
 <body>
 
 <div class="topbar">
-  <a href="/" class="back" id="backBtn">&#8594; Ø±Ø¬ÙØ¹</a>
+  <a href="/" class="back" id="backBtn">&#8594; رجوع</a>
   <h1 id="pageTitle">QR Scanner</h1>
-  <button onclick="toggleScanLang()" style="background:none;border:1px solid rgba(160,196,232,0.4);border-radius:8px;color:#a0c4e8;font-size:12px;font-weight:600;padding:5px 10px;cursor:pointer;" id="langToggleBtn">Ø¹Ø±Ø¨Ù</button>
+  <button onclick="toggleScanLang()" style="background:none;border:1px solid rgba(160,196,232,0.4);border-radius:8px;color:#a0c4e8;font-size:12px;font-weight:600;padding:5px 10px;cursor:pointer;" id="langToggleBtn">عربي</button>
 </div>
 
 <div class="tabs">
-  <div class="tab active" onclick="switchTab('list')" id="tabList" data-en="Items" data-ar="Ø§ÙØ£ØµÙØ§Ù">Ø§ÙØ£ØµÙØ§Ù</div>
-  <div class="tab" onclick="switchTab('scan')" id="tabScan" data-en="Camera Scan" data-ar="ÙØ³Ø­ Ø§ÙÙØ§ÙÙØ±Ø§">ÙØ³Ø­ Ø§ÙÙØ§ÙÙØ±Ø§</div>
-  <div class="tab" onclick="switchTab('print')" id="tabPrint" data-en="Print QR" data-ar="Ø·Ø¨Ø§Ø¹Ø© QR">Ø·Ø¨Ø§Ø¹Ø© QR</div>
+  <div class="tab active" onclick="switchTab('list')" id="tabList" data-en="Items" data-ar="الأصناف">الأصناف</div>
+  <div class="tab" onclick="switchTab('scan')" id="tabScan" data-en="Camera Scan" data-ar="مسح الكاميرا">مسح الكاميرا</div>
+  <div class="tab" onclick="switchTab('print')" id="tabPrint" data-en="Print QR" data-ar="طباعة QR">طباعة QR</div>
 </div>
 
 <div class="content">
   <div class="section active" id="tab-list">
-    <p class="sec-header">Ø´ÙØ§ÙØ§Øª Ø§ÙØ¬Ø§Ø¬ â Ø§Ø¶ØºØ· ÙØ¹Ø±Ø¶ Ø§ÙØ±ØµÙØ¯</p>
+    <p class="sec-header">شوالات الجاج — اضغط لعرض الرصيد</p>
     <div id="cards-container"></div>
   </div>
 
   <div class="section" id="tab-scan">
     <div class="scanner-box">
-      <p class="scanner-hint">ÙØ¬ÙÙ ÙØ§ÙÙØ±Ø§ Ø§ÙØ¬ÙØ§Ù Ø¹ÙÙ QR Code Ø§ÙØµÙÙ</p>
+      <p class="scanner-hint">وجّه كاميرا الجوال على QR Code الصنف</p>
       <div id="reader"></div>
-      <p style="font-size:11px;color:#94a3b8;margin-top:8px;">* ÙØªØ·ÙØ¨ Ø¥Ø°Ù Ø§ÙÙØ§ÙÙØ±Ø§</p>
+      <p style="font-size:11px;color:#94a3b8;margin-top:8px;">* يتطلب إذن الكاميرا</p>
     </div>
-    <p class="manual-label">Ø£Ù Ø£Ø¯Ø®Ù Ø§ÙÙÙØ¯ ÙØ¯ÙÙØ§Ù</p>
+    <p class="manual-label">أو أدخل الكود يدوياً</p>
     <div class="manual-wrap">
       <input type="text" id="manualInput" placeholder="CHKN-YLW-001" dir="ltr">
-      <button onclick="lookupAndShow(document.getElementById('manualInput').value)">Ø¨Ø­Ø«</button>
+      <button onclick="lookupAndShow(document.getElementById('manualInput').value)">بحث</button>
     </div>
   </div>
 
   <div class="section" id="tab-print">
-    <p class="sec-header">Ø§Ø·Ø¨Ø¹ QR ÙØ£ÙØµÙÙ Ø¹ÙÙ Ø§ÙØ´ÙØ§Ù</p>
+    <p class="sec-header">اطبع QR وألصقه على الشوال</p>
     <div id="print-container"></div>
   </div>
 </div>
@@ -115,29 +115,29 @@
     <p class="modal-cat" id="modalCat"></p>
     <p class="modal-name" id="modalName"></p>
     <div class="modal-strip" id="modalStrip"></div>
-    <p class="modal-lbl">Ø§ÙØ±ØµÙØ¯ Ø§ÙØ­Ø§ÙÙ</p>
+    <p class="modal-lbl">الرصيد الحالي</p>
     <p class="modal-num" id="modalNum"></p>
-    <p class="modal-unit">Ø´ÙØ§Ù</p>
+    <p class="modal-unit">شوال</p>
     <p class="modal-date" id="modalDate"></p>
     <p class="modal-err" id="modalErr"></p>
-    <button class="modal-close" onclick="closeModal()">Ø¥ØºÙØ§Ù</button>
+    <button class="modal-close" onclick="closeModal()">إغلاق</button>
   </div>
 </div>
 
 <script>
 const ITEMS = [
-  { sku:'CHKN-BLU-001', nameAr:'Ø£Ø²Ø±Ù',         hex:'#3b82f6', balance:1564,  date:'2026-05-12' },
-  { sku:'CHKN-BRN-001', nameAr:'Ø¨ÙÙ',           hex:'#92400e', balance:30,    date:'2026-05-07' },
-  { sku:'CHKN-DBL-001', nameAr:'Ø£Ø²Ø±Ù ØºØ§ÙÙ',     hex:'#1e3a8a', balance:62412, date:'2026-05-13' },
-  { sku:'CHKN-DGR-001', nameAr:'Ø£Ø®Ø¶Ø± ØºØ§ÙÙ',     hex:'#14532d', balance:6061,  date:'2026-05-13' },
-  { sku:'CHKN-GRY-001', nameAr:'Ø±ÙØ§Ø¯Ù',         hex:'#6b7280', balance:7723,  date:'2026-05-07' },
-  { sku:'CHKN-GRN-001', nameAr:'Ø£Ø®Ø¶Ø±',          hex:'#16a34a', balance:57016, date:'2026-05-14' },
-  { sku:'CHKN-LBL-001', nameAr:'Ø£Ø²Ø±Ù ÙØ§ØªØ­',     hex:'#7dd3fc', balance:339,   date:'2026-05-12' },
-  { sku:'CHKN-ORG-001', nameAr:'Ø¨Ø±ØªÙØ§ÙÙ',       hex:'#f97316', balance:59,    date:'2026-05-01' },
-  { sku:'CHKN-ORG-002', nameAr:'Ø¨Ø±ØªÙØ§ÙÙ 70Ã45', hex:'#fb923c', balance:210,   date:'2026-05-01' },
-  { sku:'CHKN-PRP-001', nameAr:'Ø¨ÙÙØ³Ø¬Ù',        hex:'#7c3aed', balance:42457, date:'2026-05-14' },
-  { sku:'CHKN-RED-001', nameAr:'Ø£Ø­ÙØ±',          hex:'#dc2626', balance:7485,  date:'2026-05-13' },
-  { sku:'CHKN-YLW-001', nameAr:'Ø£ØµÙØ±',          hex:'#eab308', balance:7812,  date:'2026-05-13' },
+  { sku:'CHKN-BLU-001', nameAr:'أزرق',         hex:'#3b82f6', balance:1564,  date:'2026-05-12' },
+  { sku:'CHKN-BRN-001', nameAr:'بني',           hex:'#92400e', balance:30,    date:'2026-05-07' },
+  { sku:'CHKN-DBL-001', nameAr:'أزرق غامق',     hex:'#1e3a8a', balance:62412, date:'2026-05-13' },
+  { sku:'CHKN-DGR-001', nameAr:'أخضر غامق',     hex:'#14532d', balance:6061,  date:'2026-05-13' },
+  { sku:'CHKN-GRY-001', nameAr:'رمادي',         hex:'#6b7280', balance:7723,  date:'2026-05-07' },
+  { sku:'CHKN-GRN-001', nameAr:'أخضر',          hex:'#16a34a', balance:57016, date:'2026-05-14' },
+  { sku:'CHKN-LBL-001', nameAr:'أزرق فاتح',     hex:'#7dd3fc', balance:339,   date:'2026-05-12' },
+  { sku:'CHKN-ORG-001', nameAr:'برتقالي',       hex:'#f97316', balance:59,    date:'2026-05-01' },
+  { sku:'CHKN-ORG-002', nameAr:'برتقالي 70×45', hex:'#fb923c', balance:210,   date:'2026-05-01' },
+  { sku:'CHKN-PRP-001', nameAr:'بنفسجي',        hex:'#7c3aed', balance:42457, date:'2026-05-14' },
+  { sku:'CHKN-RED-001', nameAr:'أحمر',          hex:'#dc2626', balance:7485,  date:'2026-05-13' },
+  { sku:'CHKN-YLW-001', nameAr:'أصفر',          hex:'#eab308', balance:7812,  date:'2026-05-13' },
 ];
 
 // List
@@ -148,12 +148,12 @@ ITEMS.forEach(item => {
   d.innerHTML = `
     <div class="color-dot" style="background:${item.hex}"></div>
     <div class="bc-info">
-      <div class="bc-name">ØµÙÙ Ø§ÙØ¬Ø§Ø¬ â ${item.nameAr}</div>
+      <div class="bc-name">صفن الجاج — ${item.nameAr}</div>
       <div class="bc-sku">${item.sku}</div>
     </div>
     <div class="bc-balance">
       <div class="bc-num">${item.balance.toLocaleString()}</div>
-      <div class="bc-unit">Ø´ÙØ§Ù</div>
+      <div class="bc-unit">شوال</div>
     </div>`;
   d.onclick = () => showModal(item);
   cardsEl.appendChild(d);
@@ -165,10 +165,10 @@ ITEMS.forEach(item => {
   const wrap = document.createElement('div');
   wrap.className = 'qr-card';
   wrap.innerHTML = `
-    <div class="pname">ØµÙÙ Ø§ÙØ¬Ø§Ø¬ â ${item.nameAr}</div>
+    <div class="pname">صفن الجاج — ${item.nameAr}</div>
     <div class="qr-wrap" id="qr-${item.sku}"></div>
     <div class="qr-sku">${item.sku}</div>
-    <button class="print-btn" onclick="printQR('${item.sku}','${item.nameAr}')">Ø·Ø¨Ø§Ø¹Ø©</button>`;
+    <button class="print-btn" onclick="printQR('${item.sku}','${item.nameAr}')">طباعة</button>`;
   printEl.appendChild(wrap);
   setTimeout(() => {
     const qrUrl = window.location.origin + '/scan?sku=' + item.sku;
@@ -184,11 +184,11 @@ function showModal(item) {
   const icon = document.getElementById('modalIcon');
   icon.className = 'modal-icon ok';
   icon.innerHTML = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
-  document.getElementById('modalCat').textContent = 'Ø´ÙØ§ÙØ§Øª Ø§ÙØ¬Ø§Ø¬';
-  document.getElementById('modalName').textContent = 'ØµÙÙ Ø§ÙØ¬Ø§Ø¬ â ' + item.nameAr;
+  document.getElementById('modalCat').textContent = 'شوالات الجاج';
+  document.getElementById('modalName').textContent = 'صفن الجاج — ' + item.nameAr;
   document.getElementById('modalStrip').style.background = item.hex;
   document.getElementById('modalNum').textContent = item.balance.toLocaleString();
-  document.getElementById('modalDate').textContent = 'Ø¢Ø®Ø± ØªØ­Ø¯ÙØ«: ' + item.date;
+  document.getElementById('modalDate').textContent = 'آخر تحديث: ' + item.date;
   document.getElementById('modalErr').style.display = 'none';
   document.getElementById('overlay').classList.add('show');
 }
@@ -201,12 +201,12 @@ function lookupAndShow(raw) {
   icon.className = 'modal-icon err';
   icon.innerHTML = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
   document.getElementById('modalCat').textContent = '';
-  document.getElementById('modalName').textContent = 'ÙÙØ¯ ØºÙØ± ÙÙØ¬ÙØ¯';
+  document.getElementById('modalName').textContent = 'كود غير موجود';
   document.getElementById('modalStrip').style.background = '#fee2e2';
-  document.getElementById('modalNum').textContent = 'â';
+  document.getElementById('modalNum').textContent = '—';
   document.getElementById('modalDate').textContent = '';
   const e = document.getElementById('modalErr');
-  e.textContent = '"' + sku + '" ØºÙØ± ÙØ³Ø¬Ù ÙÙ Ø§ÙÙØ¸Ø§Ù';
+  e.textContent = '"' + sku + '" غير مسجل في النظام';
   e.style.display = 'block';
   document.getElementById('overlay').classList.add('show');
 }
@@ -241,7 +241,7 @@ function printQR(sku, nameAr) {
   const src = img.tagName === 'CANVAS' ? img.toDataURL() : img.src;
   const win = window.open('', '_blank', 'width=300,height=380');
   win.document.write('<html><head><title>QR ' + nameAr + '</title><style>body{font-family:Arial;text-align:center;padding:24px;}.n{font-size:14px;font-weight:bold;color:#1a3a5c;margin-bottom:12px;}.s{font-size:11px;font-family:monospace;color:#64748b;margin-top:8px;letter-spacing:1px;}img{width:200px;height:200px;}
-  /* ââ MOBILE ENHANCEMENTS ââ */
+  /* ── MOBILE ENHANCEMENTS ── */
   @media (max-width: 480px) {
     .content { padding: 12px; }
     .bc-num { font-size: 15px; }
@@ -250,16 +250,16 @@ function printQR(sku, nameAr) {
     .modal-num { font-size: 36px; }
     .tab { font-size: 11px; padding: 10px 2px; }
   }
-</style></head><body><div class="n">ØµÙÙ Ø§ÙØ¬Ø§Ø¬ â ' + nameAr + '</div><img src="' + src + '"><div class="s">' + sku + '</div><script>window.onload=function(){window.print();}<\/script></body></html>');
+</style></head><body><div class="n">صفن الجاج — ' + nameAr + '</div><img src="' + src + '"><div class="s">' + sku + '</div><script>window.onload=function(){window.print();}<\/script></body></html>');
   win.document.close();
 }
 
-// ââ LANGUAGE TOGGLE (Scan) ââ
+// ── LANGUAGE TOGGLE (Scan) ──
 const SCAN_LANG = {
   en: {
-    back: 'â Back', title: 'QR Scanner', langBtn: 'Ø¹Ø±Ø¨Ù',
+    back: '← Back', title: 'QR Scanner', langBtn: 'عربي',
     tabList: 'Items', tabScan: 'Camera Scan', tabPrint: 'Print QR',
-    secHdr: 'Chicken Sacks â tap to view balance',
+    secHdr: 'Chicken Sacks — tap to view balance',
     scanHint: 'Point your phone camera at the item QR Code',
     manualLabel: 'Or enter code manually',
     manualPh: 'CHKN-YLW-001', searchBtn: 'Search',
@@ -268,15 +268,15 @@ const SCAN_LANG = {
     modalCat: 'Chicken Sacks', modalUnit: 'Sack',
   },
   ar: {
-    back: 'â Ø±Ø¬ÙØ¹', title: 'ÙØ³Ø­ QR', langBtn: 'English',
-    tabList: 'Ø§ÙØ£ØµÙØ§Ù', tabScan: 'ÙØ³Ø­ Ø§ÙÙØ§ÙÙØ±Ø§', tabPrint: 'Ø·Ø¨Ø§Ø¹Ø© QR',
-    secHdr: 'Ø´ÙØ§ÙØ§Øª Ø§ÙØ¬Ø§Ø¬ â Ø§Ø¶ØºØ· ÙØ¹Ø±Ø¶ Ø§ÙØ±ØµÙØ¯',
-    scanHint: 'ÙØ¬ÙÙ ÙØ§ÙÙØ±Ø§ Ø§ÙØ¬ÙØ§Ù Ø¹ÙÙ QR Code Ø§ÙØµÙÙ',
-    manualLabel: 'Ø£Ù Ø£Ø¯Ø®Ù Ø§ÙÙÙØ¯ ÙØ¯ÙÙØ§Ù',
-    manualPh: 'CHKN-YLW-001', searchBtn: 'Ø¨Ø­Ø«',
-    printHdr: 'Ø§Ø·Ø¨Ø¹ QR ÙØ£ÙØµÙÙ Ø¹ÙÙ Ø§ÙØ´ÙØ§Ù',
-    modalClose: 'Ø¥ØºÙØ§Ù', modalLbl: 'Ø§ÙØ±ØµÙØ¯ Ø§ÙØ­Ø§ÙÙ',
-    modalCat: 'Ø´ÙØ§ÙØ§Øª Ø§ÙØ¬Ø§Ø¬', modalUnit: 'Ø´ÙØ§Ù',
+    back: '→ رجوع', title: 'مسح QR', langBtn: 'English',
+    tabList: 'الأصناف', tabScan: 'مسح الكاميرا', tabPrint: 'طباعة QR',
+    secHdr: 'شوالات الجاج — اضغط لعرض الرصيد',
+    scanHint: 'وجّه كاميرا الجوال على QR Code الصنف',
+    manualLabel: 'أو أدخل الكود يدوياً',
+    manualPh: 'CHKN-YLW-001', searchBtn: 'بحث',
+    printHdr: 'اطبع QR وألصقه على الشوال',
+    modalClose: 'إغلاق', modalLbl: 'الرصيد الحالي',
+    modalCat: 'شوالات الجاج', modalUnit: 'شوال',
   }
 };
 let scanLang = localStorage.getItem('est-lang') || 'ar';
@@ -315,7 +315,7 @@ function toggleScanLang() {
 }
 applyScanLang(scanLang);
 
-// ââ AUTO-LOOKUP from URL param (?sku=CHKN-YLW-001) ââ
+// ── AUTO-LOOKUP from URL param (?sku=CHKN-YLW-001) ──
 (function() {
   const params = new URLSearchParams(window.location.search);
   const sku = params.get('sku');
