@@ -266,7 +266,7 @@
     <span class="topbar-title" id="topbarTitle">QR Scan</span>
   </div>
   <div class="topbar-actions">
-    <button class="icon-btn lang-btn" onclick="toggleScanLang()" id="langBtn">عربي</button>
+    <button class="icon-btn lang-btn" onclick="toggleScanLang()" id="langBtn">Ø¹Ø±Ø¨Ù</button>
     <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle theme">
       <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
       <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -338,7 +338,7 @@ function toggleTheme() {
 
 const SCAN_LANG = {
   en: {
-    back: 'Back', topbar: 'QR Scan', lang: 'عربي', badge: 'Live Inventory Lookup',
+    back: 'Back', topbar: 'QR Scan', lang: 'Ø¹Ø±Ø¨Ù', badge: 'Live Inventory Lookup',
     heroTitle: 'QR SCAN',
     heroSub: 'Scan an inventory QR code to retrieve the latest stock balance directly from EST-iMs.',
     scan: 'Scan QR', hint: 'Tap to open the camera and scan a stock code.', cancel: 'Cancel',
@@ -349,15 +349,15 @@ const SCAN_LANG = {
     lastUpdate: 'Last update: '
   },
   ar: {
-    back: 'رجوع', topbar: 'مسح QR', lang: 'English', badge: 'بحث مباشر في المخزون',
-    heroTitle: 'مسح QR',
-    heroSub: 'افحص كود المخزون لعرض آخر رصيد مباشرة من نظام EST-iMs.',
-    scan: 'افحص QR', hint: 'اضغط لفتح الكاميرا وفحص كود الصنف.', cancel: 'إلغاء',
-    loading: 'جاري جلب البيانات...', balance: 'الرصيد الحالي', unit: 'وحدة',
-    again: 'فحص كود آخر', retry: 'حاول مرة أخرى',
-    cameraError: 'تعذر فتح الكاميرا. تأكد من السماح بصلاحية الكاميرا.',
-    notFound: 'الكود غير موجود في النظام.', serverError: 'تعذر الاتصال بالسيرفر.',
-    lastUpdate: 'آخر تحديث: '
+    back: 'Ø±Ø¬ÙØ¹', topbar: 'ÙØ³Ø­ QR', lang: 'English', badge: 'Ø¨Ø­Ø« ÙØ¨Ø§Ø´Ø± ÙÙ Ø§ÙÙØ®Ø²ÙÙ',
+    heroTitle: 'ÙØ³Ø­ QR',
+    heroSub: 'Ø§ÙØ­Øµ ÙÙØ¯ Ø§ÙÙØ®Ø²ÙÙ ÙØ¹Ø±Ø¶ Ø¢Ø®Ø± Ø±ØµÙØ¯ ÙØ¨Ø§Ø´Ø±Ø© ÙÙ ÙØ¸Ø§Ù EST-iMs.',
+    scan: 'Ø§ÙØ­Øµ QR', hint: 'Ø§Ø¶ØºØ· ÙÙØªØ­ Ø§ÙÙØ§ÙÙØ±Ø§ ÙÙØ­Øµ ÙÙØ¯ Ø§ÙØµÙÙ.', cancel: 'Ø¥ÙØºØ§Ø¡',
+    loading: 'Ø¬Ø§Ø±Ù Ø¬ÙØ¨ Ø§ÙØ¨ÙØ§ÙØ§Øª...', balance: 'Ø§ÙØ±ØµÙØ¯ Ø§ÙØ­Ø§ÙÙ', unit: 'ÙØ­Ø¯Ø©',
+    again: 'ÙØ­Øµ ÙÙØ¯ Ø¢Ø®Ø±', retry: 'Ø­Ø§ÙÙ ÙØ±Ø© Ø£Ø®Ø±Ù',
+    cameraError: 'ØªØ¹Ø°Ø± ÙØªØ­ Ø§ÙÙØ§ÙÙØ±Ø§. ØªØ£ÙØ¯ ÙÙ Ø§ÙØ³ÙØ§Ø­ Ø¨ØµÙØ§Ø­ÙØ© Ø§ÙÙØ§ÙÙØ±Ø§.',
+    notFound: 'Ø§ÙÙÙØ¯ ØºÙØ± ÙÙØ¬ÙØ¯ ÙÙ Ø§ÙÙØ¸Ø§Ù.', serverError: 'ØªØ¹Ø°Ø± Ø§ÙØ§ØªØµØ§Ù Ø¨Ø§ÙØ³ÙØ±ÙØ±.',
+    lastUpdate: 'Ø¢Ø®Ø± ØªØ­Ø¯ÙØ«: '
   }
 };
 let scanLang = localStorage.getItem('est-lang') || 'en';

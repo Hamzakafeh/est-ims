@@ -9,7 +9,7 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
-  /* ── DARK (default) ── */
+  /* ââ DARK (default) ââ */
   :root {
     --bg-deep:      #0d1117;
     --bg-main:      #161b22;
@@ -29,7 +29,7 @@
     --card-shadow:  0 12px 48px rgba(0,0,0,0.7);
   }
 
-  /* ── LIGHT ── */
+  /* ââ LIGHT ââ */
   html.light {
     --bg-deep:      #f0f4f8;
     --bg-main:      #ffffff;
@@ -65,7 +65,7 @@
     overflow-y: auto;
   }
 
-  /* ── AMBIENT BLOBS ── */
+  /* ââ AMBIENT BLOBS ââ */
   .blob {
     position: fixed; border-radius: 50%;
     filter: blur(90px); opacity: 0.06;
@@ -94,7 +94,7 @@
   @keyframes bd2 { 0%,100%{transform:translate(0,0)scale(1);} 50%{transform:translate(-60px,-40px)scale(1.08);} }
   @keyframes bd3 { 0%,100%{transform:translate(0,0)scale(1);} 50%{transform:translate(-50px,60px)scale(1.12);} }
 
-  /* ── GRID ── */
+  /* ââ GRID ââ */
   .grid-overlay {
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
     background-image:
@@ -109,7 +109,7 @@
       linear-gradient(90deg, rgba(37,99,235,0.05) 1px, transparent 1px);
   }
 
-  /* ── SIDE DOCK ── */
+  /* ââ SIDE DOCK ââ */
   .side-dock {
     position: fixed;
     left: 0; top: 50%;
@@ -187,7 +187,7 @@
     padding: 40px 20px;
   }
 
-  /* ── PARTICLES CANVAS ── */
+  /* ââ PARTICLES CANVAS ââ */
   #particleCanvas {
     position: fixed;
     inset: 0;
@@ -195,7 +195,7 @@
     pointer-events: none;
   }
 
-  /* ── PROGRESS BAR ── */
+  /* ââ PROGRESS BAR ââ */
   .progress-bar {
     position: fixed;
     top: 0; left: 0;
@@ -213,7 +213,7 @@
     100% { background-position: -200% 0; }
   }
 
-  /* ── FROSTED GLASS CARD ── */
+  /* ââ FROSTED GLASS CARD ââ */
   .login-card {
     background: rgba(28, 34, 48, 0.72);
     backdrop-filter: blur(24px) saturate(1.4);
@@ -247,7 +247,7 @@
     to   { opacity:1; transform: scale(1) translateY(0); filter: blur(0); }
   }
 
-  /* ── SHAKE ANIMATION ── */
+  /* ââ SHAKE ANIMATION ââ */
   @keyframes shake {
     0%,100% { transform: translateX(0); }
     15%      { transform: translateX(-8px) rotate(-0.5deg); }
@@ -261,7 +261,7 @@
     animation: shake 0.55s cubic-bezier(.36,.07,.19,.97) both;
   }
 
-  /* ── WELCOME MESSAGE ── */
+  /* ââ WELCOME MESSAGE ââ */
   .welcome-msg {
     text-align: center;
     font-size: 12px;
@@ -276,7 +276,7 @@
     to   { opacity:0.85; transform: translateY(0); }
   }
 
-  /* ── FIELD ICON FOCUS GLOW ── */
+  /* ââ FIELD ICON FOCUS GLOW ââ */
   .field-icon { transition: color 0.2s, transform 0.2s; }
   .field-wrap:focus-within .field-icon { color: var(--accent-blue); transform: translateY(-50%) scale(1.15); }
 
@@ -569,7 +569,7 @@
     </div>
 
     <div class="login-title">EST Inventory System</div>
-    <div class="welcome-msg" id="welcomeMsg">Good morning ☀️</div>
+    <div class="welcome-msg" id="welcomeMsg">Good morning âï¸</div>
     <div class="login-subtitle">Limited Access</div>
     <div class="divider"></div>
 
@@ -623,7 +623,7 @@
   </div>
 </div>
 <script>
-// ── THEME ──
+// ââ THEME ââ
 (function() {
   const saved = localStorage.getItem('est-theme');
   if (saved === 'light') document.documentElement.classList.add('light');
@@ -642,17 +642,17 @@ function toggleTheme() {
   updateDockTheme();
 }
 
-// ── WELCOME MESSAGE ──
+// ââ WELCOME MESSAGE ââ
 (function() {
   const h = new Date().getHours();
   const el = document.getElementById('welcomeMsg');
-  if (h >= 5 && h < 12)      el.textContent = 'Good morning ☀️';
-  else if (h >= 12 && h < 17) el.textContent = 'Good afternoon 🌤️';
-  else if (h >= 17 && h < 21) el.textContent = 'Good evening 🌆';
-  else                         el.textContent = 'Good night 🌙';
+  if (h >= 5 && h < 12)      el.textContent = 'Good morning âï¸';
+  else if (h >= 12 && h < 17) el.textContent = 'Good afternoon ð¤ï¸';
+  else if (h >= 17 && h < 21) el.textContent = 'Good evening ð';
+  else                         el.textContent = 'Good night ð';
 })();
 
-// ── PASSWORD TOGGLE ──
+// ââ PASSWORD TOGGLE ââ
 document.getElementById('pwToggle').addEventListener('click', function() {
   const inp = document.getElementById('password');
   const icon = document.getElementById('eyeIcon');
@@ -665,12 +665,12 @@ document.getElementById('pwToggle').addEventListener('click', function() {
   }
 });
 
-// ── ENTER KEY ──
+// ââ ENTER KEY ââ
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Enter') doLogin();
 });
 
-// ── PROGRESS BAR ──
+// ââ PROGRESS BAR ââ
 function startProgress() {
   const bar = document.getElementById('progressBar');
   bar.style.display = 'block';
@@ -698,7 +698,7 @@ function finishProgress(success) {
   }, 500);
 }
 
-// ── SHAKE CARD ──
+// ââ SHAKE CARD ââ
 function shakeCard() {
   const card = document.querySelector('.login-card');
   card.classList.remove('shake');
@@ -707,7 +707,7 @@ function shakeCard() {
   setTimeout(() => card.classList.remove('shake'), 600);
 }
 
-// ── LOCKOUT COUNTDOWN (persistent via localStorage) ──
+// ââ LOCKOUT COUNTDOWN (persistent via localStorage) ââ
 const LOCKOUT_KEY = 'est_lockout_until';
 
 function getLockoutUntil() {
@@ -750,11 +750,11 @@ function startLockoutCountdown(remaining) {
     }
     const m = Math.floor(secs / 60);
     const s = secs % 60;
-    // Keep button enabled — correct password still allows entry
+    // Keep button enabled â correct password still allows entry
     loginBtn.disabled = false;
     spinner.style.display = 'none';
     btnText.textContent = 'Sign In';
-    showError(`⚠️ ${MAX_WARN_ATTEMPTS} failed attempts — Enter correct password to login (${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')})`);
+    showError(`â ï¸ ${MAX_WARN_ATTEMPTS} failed attempts â Enter correct password to login (${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')})`);
   }
   tick();
   _lockoutTimer = setInterval(tick, 1000);
@@ -784,7 +784,7 @@ function showLoginAlert(title, text) {
 function closeLoginAlert() {
   document.getElementById('loginAlertModal')?.classList.remove('open');
 }
-// ── LOGIN ──
+// ââ LOGIN ââ
 async function doLogin() {
   const username = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value.trim();
@@ -824,7 +824,7 @@ async function doLogin() {
       clearLockout();
       _failedAttempts = 0;
       finishProgress(true);
-      btnText.textContent = '✓ Success';
+      btnText.textContent = 'â Success';
       spinner.style.display = 'none';
       loginBtn.classList.add('success');
       setTimeout(() => { window.location.href = data.redirect || '/zones'; }, 600);
@@ -834,7 +834,7 @@ async function doLogin() {
       shakeCard();
       resetBtn();
     } else if (data.locked) {
-      // Server says locked — show warning countdown but keep button enabled
+      // Server says locked â show warning countdown but keep button enabled
       finishProgress(false);
       _failedAttempts++;
       setLockoutUntil(data.remaining || 300);
@@ -874,7 +874,7 @@ function resetBtn() {
   document.getElementById('loginBtn').disabled = false;
 }
 
-// ── PARTICLES ──
+// ââ PARTICLES ââ
 (function() {
   const canvas = document.getElementById('particleCanvas');
   const ctx = canvas.getContext('2d');

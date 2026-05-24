@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For More — EST-iMs</title>
+<title>For More â EST-iMs</title>
 <link rel="icon" type="image/x-icon" href="/static/low1.ico">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Sora:wght@400;600;700&display=swap');
@@ -314,7 +314,7 @@
     <span class="topbar-title" id="topbarTitle">For More</span>
   </div>
   <div class="topbar-actions">
-    <button class="icon-btn lang-btn" onclick="toggleForMoreLang()" id="langBtn">عربي</button>
+    <button class="icon-btn lang-btn" onclick="toggleForMoreLang()" id="langBtn">Ø¹Ø±Ø¨Ù</button>
     <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle theme">
       <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
       <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -352,12 +352,12 @@
             <label class="form-label" id="deptLabel" for="fdept">Department</label>
             <div class="select-wrap">
               <select class="form-select" id="fdept">
-                <option value="" id="deptPlaceholder">— Select department —</option>
-                <option data-en="Warehouse / Inventory" data-ar="المستودع / المخزون">Warehouse / Inventory</option>
-                <option data-en="Administration" data-ar="الإدارة">Administration</option>
-                <option data-en="IT / Technical Support" data-ar="الدعم الفني / IT">IT / Technical Support</option>
-                <option data-en="Management" data-ar="الإدارة العليا">Management</option>
-                <option data-en="Other" data-ar="أخرى">Other</option>
+                <option value="" id="deptPlaceholder">â Select department â</option>
+                <option data-en="Warehouse / Inventory" data-ar="Ø§ÙÙØ³ØªÙØ¯Ø¹ / Ø§ÙÙØ®Ø²ÙÙ">Warehouse / Inventory</option>
+                <option data-en="Administration" data-ar="Ø§ÙØ¥Ø¯Ø§Ø±Ø©">Administration</option>
+                <option data-en="IT / Technical Support" data-ar="Ø§ÙØ¯Ø¹Ù Ø§ÙÙÙÙ / IT">IT / Technical Support</option>
+                <option data-en="Management" data-ar="Ø§ÙØ¥Ø¯Ø§Ø±Ø© Ø§ÙØ¹ÙÙØ§">Management</option>
+                <option data-en="Other" data-ar="Ø£Ø®Ø±Ù">Other</option>
               </select>
             </div>
           </div>
@@ -409,7 +409,7 @@
     </aside>
   </div>
 
-  <div class="version-strip">EST-iMs V3.1.1.0 &nbsp;|&nbsp; Alestesharia Animal Nutrition &nbsp;|&nbsp; © 2026</div>
+  <div class="version-strip">EST-iMs V3.1.1.0 &nbsp;|&nbsp; Alestesharia Animal Nutrition &nbsp;|&nbsp; Â© 2026</div>
 </main>
 
 <script>
@@ -423,30 +423,30 @@ function toggleTheme() {
 
 const MORE_LANG = {
   en: {
-    back: 'Back', topbar: 'For More', lang: 'عربي', badge: 'Contact & Support',
+    back: 'Back', topbar: 'For More', lang: 'Ø¹Ø±Ø¨Ù', badge: 'Contact & Support',
     heroTitle: 'FOR MORE',
     heroSub: 'Have a question, request, or support need? Send us the details and the EST-iMs team will follow up with you.',
     formTitle: 'Send a Message',
     name: 'Full Name', phone: 'Phone', email: 'Email (optional)', dept: 'Department', message: 'Message',
     namePh: 'Your name', phonePh: '+962 ...', emailPh: 'you@example.com', msgPh: 'Describe your question or request...',
-    deptPh: '— Select department —', submit: 'Send Message', sending: 'Sending...',
+    deptPh: 'â Select department â', submit: 'Send Message', sending: 'Sending...',
     successTitle: 'Message Sent!', successSub: "Thank you. We'll get back to you as soon as possible.", again: 'Send Another',
     c1t: 'Fast Support', c1: 'Share the issue clearly and include your department so the right person can respond.',
     c2t: 'System Requests', c2: 'Use this form for access, QR scan, reports, inventory, or technical questions.',
     c3t: 'EST-iMs', c3: 'Built for Alestesharia Animal Nutrition to keep warehouse operations clear, fast, and organized.'
   },
   ar: {
-    back: 'رجوع', topbar: 'للمزيد', lang: 'English', badge: 'تواصل ودعم',
-    heroTitle: 'للمزيد',
-    heroSub: 'عندك سؤال أو طلب أو تحتاج دعم؟ ارسل التفاصيل وفريق EST-iMs بتابع معك.',
-    formTitle: 'إرسال رسالة',
-    name: 'الاسم الكامل', phone: 'رقم الهاتف', email: 'البريد الإلكتروني (اختياري)', dept: 'القسم', message: 'الرسالة',
-    namePh: 'اسمك', phonePh: '+962 ...', emailPh: 'you@example.com', msgPh: 'اكتب سؤالك أو طلبك...',
-    deptPh: '— اختر القسم —', submit: 'إرسال الرسالة', sending: 'جاري الإرسال...',
-    successTitle: 'تم إرسال الرسالة!', successSub: 'شكراً لك. سيتم التواصل معك بأقرب وقت ممكن.', again: 'إرسال رسالة أخرى',
-    c1t: 'دعم سريع', c1: 'اكتب المشكلة بوضوح وحدد القسم حتى يتم توجيه الطلب للشخص المناسب.',
-    c2t: 'طلبات النظام', c2: 'استخدم النموذج لطلبات الدخول، فحص QR، التقارير، المخزون، أو الأسئلة التقنية.',
-    c3t: 'EST-iMs', c3: 'نظام مبني لشركة الاستشارية للتغذية الحيوانية لتنظيم وتسريع عمليات المستودعات.'
+    back: 'Ø±Ø¬ÙØ¹', topbar: 'ÙÙÙØ²ÙØ¯', lang: 'English', badge: 'ØªÙØ§ØµÙ ÙØ¯Ø¹Ù',
+    heroTitle: 'ÙÙÙØ²ÙØ¯',
+    heroSub: 'Ø¹ÙØ¯Ù Ø³Ø¤Ø§Ù Ø£Ù Ø·ÙØ¨ Ø£Ù ØªØ­ØªØ§Ø¬ Ø¯Ø¹ÙØ Ø§Ø±Ø³Ù Ø§ÙØªÙØ§ØµÙÙ ÙÙØ±ÙÙ EST-iMs Ø¨ØªØ§Ø¨Ø¹ ÙØ¹Ù.',
+    formTitle: 'Ø¥Ø±Ø³Ø§Ù Ø±Ø³Ø§ÙØ©',
+    name: 'Ø§ÙØ§Ø³Ù Ø§ÙÙØ§ÙÙ', phone: 'Ø±ÙÙ Ø§ÙÙØ§ØªÙ', email: 'Ø§ÙØ¨Ø±ÙØ¯ Ø§ÙØ¥ÙÙØªØ±ÙÙÙ (Ø§Ø®ØªÙØ§Ø±Ù)', dept: 'Ø§ÙÙØ³Ù', message: 'Ø§ÙØ±Ø³Ø§ÙØ©',
+    namePh: 'Ø§Ø³ÙÙ', phonePh: '+962 ...', emailPh: 'you@example.com', msgPh: 'Ø§ÙØªØ¨ Ø³Ø¤Ø§ÙÙ Ø£Ù Ø·ÙØ¨Ù...',
+    deptPh: 'â Ø§Ø®ØªØ± Ø§ÙÙØ³Ù â', submit: 'Ø¥Ø±Ø³Ø§Ù Ø§ÙØ±Ø³Ø§ÙØ©', sending: 'Ø¬Ø§Ø±Ù Ø§ÙØ¥Ø±Ø³Ø§Ù...',
+    successTitle: 'ØªÙ Ø¥Ø±Ø³Ø§Ù Ø§ÙØ±Ø³Ø§ÙØ©!', successSub: 'Ø´ÙØ±Ø§Ù ÙÙ. Ø³ÙØªÙ Ø§ÙØªÙØ§ØµÙ ÙØ¹Ù Ø¨Ø£ÙØ±Ø¨ ÙÙØª ÙÙÙÙ.', again: 'Ø¥Ø±Ø³Ø§Ù Ø±Ø³Ø§ÙØ© Ø£Ø®Ø±Ù',
+    c1t: 'Ø¯Ø¹Ù Ø³Ø±ÙØ¹', c1: 'Ø§ÙØªØ¨ Ø§ÙÙØ´ÙÙØ© Ø¨ÙØ¶ÙØ­ ÙØ­Ø¯Ø¯ Ø§ÙÙØ³Ù Ø­ØªÙ ÙØªÙ ØªÙØ¬ÙÙ Ø§ÙØ·ÙØ¨ ÙÙØ´Ø®Øµ Ø§ÙÙÙØ§Ø³Ø¨.',
+    c2t: 'Ø·ÙØ¨Ø§Øª Ø§ÙÙØ¸Ø§Ù', c2: 'Ø§Ø³ØªØ®Ø¯Ù Ø§ÙÙÙÙØ°Ø¬ ÙØ·ÙØ¨Ø§Øª Ø§ÙØ¯Ø®ÙÙØ ÙØ­Øµ QRØ Ø§ÙØªÙØ§Ø±ÙØ±Ø Ø§ÙÙØ®Ø²ÙÙØ Ø£Ù Ø§ÙØ£Ø³Ø¦ÙØ© Ø§ÙØªÙÙÙØ©.',
+    c3t: 'EST-iMs', c3: 'ÙØ¸Ø§Ù ÙØ¨ÙÙ ÙØ´Ø±ÙØ© Ø§ÙØ§Ø³ØªØ´Ø§Ø±ÙØ© ÙÙØªØºØ°ÙØ© Ø§ÙØ­ÙÙØ§ÙÙØ© ÙØªÙØ¸ÙÙ ÙØªØ³Ø±ÙØ¹ Ø¹ÙÙÙØ§Øª Ø§ÙÙØ³ØªÙØ¯Ø¹Ø§Øª.'
   }
 };
 let moreLang = localStorage.getItem('est-lang') || 'en';

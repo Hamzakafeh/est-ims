@@ -35,7 +35,7 @@
     --shadow: 0 4px 24px rgba(0,0,0,0.4);
   }
 
-  /* â”€â”€ LIGHT MODE â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ LIGHT MODE Ã¢ââ¬Ã¢ââ¬ */
   html.light {
     --bg-deep:      #f0f4f8;
     --bg-main:      #ffffff;
@@ -70,7 +70,7 @@
     overflow: hidden;
   }
 
-  /* â”€â”€ GLOBAL BACKGROUND LAYERS (blobs + grid) â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ GLOBAL BACKGROUND LAYERS (blobs + grid) Ã¢ââ¬Ã¢ââ¬ */
   .bg-blob { position:fixed; border-radius:50%; filter:blur(90px); opacity:0.06; pointer-events:none; z-index:0; }
   html.light .bg-blob { opacity:0.08; }
   .bg-blob-1 { width:700px;height:700px;background:radial-gradient(circle,#3b82f6,transparent 70%);top:-200px;left:-200px;animation:gbd1 20s ease-in-out infinite; }
@@ -87,7 +87,7 @@
   }
   html.light .bg-grid { background-image: linear-gradient(rgba(37,99,235,0.045) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,0.045) 1px,transparent 1px); }
 
-  /* â”€â”€ TOP BAR â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ TOP BAR Ã¢ââ¬Ã¢ââ¬ */
   .topbar {
     background: rgba(13,17,23,0.55);
     backdrop-filter: blur(20px);
@@ -236,7 +236,7 @@
   #langBtn { min-width:58px; height:32px; padding:0 9px; justify-content:center; }
   #langBtn svg { display:none; }
 
-  /* â”€â”€ Refresh â€” Blue (sync/update) â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ Refresh Ã¢â¬â Blue (sync/update) Ã¢ââ¬Ã¢ââ¬ */
   #refreshBtn {
     background: rgba(59,130,246,0.14);
     border-color: rgba(59,130,246,0.5);
@@ -251,7 +251,7 @@
     box-shadow: 0 6px 20px rgba(59,130,246,0.38);
   }
 
-  /* â”€â”€ Print â€” Amber (document/paper) â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ Print Ã¢â¬â Amber (document/paper) Ã¢ââ¬Ã¢ââ¬ */
   #printBtn {
     background: rgba(245,158,11,0.14);
     border-color: rgba(245,158,11,0.5);
@@ -265,7 +265,7 @@
     box-shadow: 0 6px 20px rgba(245,158,11,0.38);
   }
 
-  /* â”€â”€ CSV Export â€” Green (download/data) â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ CSV Export Ã¢â¬â Green (download/data) Ã¢ââ¬Ã¢ââ¬ */
   #csvBtn {
     background: rgba(16,185,129,0.14);
     border-color: rgba(16,185,129,0.5);
@@ -279,7 +279,7 @@
     box-shadow: 0 6px 20px rgba(16,185,129,0.38);
   }
 
-  /* â”€â”€ About â€” Cyan (info) â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ About Ã¢â¬â Cyan (info) Ã¢ââ¬Ã¢ââ¬ */
   #aboutBtn {
     background: rgba(6,182,212,0.14);
     border-color: rgba(6,182,212,0.5);
@@ -293,7 +293,7 @@
     box-shadow: 0 6px 20px rgba(6,182,212,0.38);
   }
 
-  /* â”€â”€ Logout â€” Red (danger/exit) â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ Logout Ã¢â¬â Red (danger/exit) Ã¢ââ¬Ã¢ââ¬ */
   #logoutBtn {
     background: rgba(239,68,68,0.14);
     border-color: rgba(239,68,68,0.55);
@@ -323,10 +323,10 @@
   html.light #logoutThemeBtn { background: rgba(220,38,38,0.1); border-color: rgba(220,38,38,0.45); color: #dc2626; }
   html.light #logoutThemeBtn:hover { background: #dc2626; color: #fff; }
 
-  /* â”€â”€ LAYOUT â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ LAYOUT Ã¢ââ¬Ã¢ââ¬ */
   .layout { display: flex; flex: 1; overflow: hidden; min-height: 0; }
 
-  /* â”€â”€ SIDEBAR â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ SIDEBAR Ã¢ââ¬Ã¢ââ¬ */
   .sidebar-wrapper {
     position: relative;
     display: flex;
@@ -418,7 +418,7 @@
   .sheet-tab .st-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-blue); flex-shrink: 0; }
   .sheet-tab.active .st-dot { background: var(--accent-cyan); }
 
-  /* â”€â”€ MAIN CONTENT â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ MAIN CONTENT Ã¢ââ¬Ã¢ââ¬ */
   .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; background: var(--bg-deep); }
 
   .content-header {
@@ -441,7 +441,7 @@
   .badge-green { background: rgba(16,185,129,0.15);  color: var(--accent-green); border: 1px solid rgba(16,185,129,0.3); }
   .badge-edit  { background: rgba(245,158,11,0.15);  color: var(--accent-amber); border: 1px solid rgba(245,158,11,0.3); }
 
-  /* â”€â”€ USER / ZONE BADGES IN TOPBAR â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ USER / ZONE BADGES IN TOPBAR Ã¢ââ¬Ã¢ââ¬ */
   .user-badge {
     font-family: 'JetBrains Mono', monospace; font-size: 11px;
     color: var(--accent-blue);
@@ -455,7 +455,7 @@
     background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.25);
     border-radius: 20px; padding: 3px 12px;
   }
-  /* Super zone badge â€” amber pulsing */
+  /* Super zone badge Ã¢â¬â amber pulsing */
   .zone-badge.super {
     color: #fbbf24;
     background: rgba(251,191,36,0.12); border-color: rgba(251,191,36,0.3);
@@ -539,7 +539,7 @@
   /* Editable cell */
   td.editable { cursor: pointer; position: relative; }
   td.editable:hover::after {
-    content: 'âœŽ';
+    content: 'Ã¢ÅÅ½';
     position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
     font-size: 11px; color: var(--accent-amber); opacity: 0.7;
   }
@@ -578,7 +578,7 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .no-data-row td { text-align: center; color: var(--text-dim); padding: 30px; font-style: italic; }
 
-  /* â”€â”€ LOG SHEET ROW COLORS â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ LOG SHEET ROW COLORS Ã¢ââ¬Ã¢ââ¬ */
   .row-in  { background: rgba(16,185,129,0.08) !important; }
   .row-out { background: rgba(239,68,68,0.08)  !important; }
   .row-in:hover  { background: rgba(16,185,129,0.16) !important; }
@@ -605,7 +605,7 @@
   ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
 
-  /* â”€â”€ MODALS â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ MODALS Ã¢ââ¬Ã¢ââ¬ */
   .modal-overlay {
     display: none; position: fixed; inset: 0; z-index: 9999;
     background: rgba(0,0,0,0.65); backdrop-filter: blur(5px);
@@ -678,7 +678,7 @@
     white-space: nowrap; pointer-events: none;
   }
 
-  /* â”€â”€ THEME TOGGLE â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ THEME TOGGLE Ã¢ââ¬Ã¢ââ¬ */
   body { transition: background 0.25s, color 0.25s; }
   .topbar, .sidebar, .content-header, .toolbar, .statusbar, .modal-box, .login-card {
     transition: background 0.25s, border-color 0.25s;
@@ -748,7 +748,7 @@
   html.light .statusbar { background: #f8fafc; border-top-color: #e2e8f0; }
   html.light .content-header { background: #f1f5f9; border-bottom-color: #e2e8f0; }
   html.light .toolbar { background: #f8fafc; border-bottom-color: #e2e8f0; }
-  /* ØªØ­Ø³ÙŠÙ† Ø§Ù„Ø¥Ø¶Ø§Ø¡Ø© Ø§Ù„Ø¹Ø§Ù…Ø© ÙÙŠ Ø§Ù„Ù†Ù‡Ø§Ø±ÙŠ */
+  /* ÃÂªÃÂ­ÃÂ³ÃÅ Ãâ  ÃÂ§ÃâÃÂ¥ÃÂ¶ÃÂ§ÃÂ¡ÃÂ© ÃÂ§ÃâÃÂ¹ÃÂ§Ãâ¦ÃÂ© ÃÂÃÅ  ÃÂ§ÃâÃâ Ãâ¡ÃÂ§ÃÂ±ÃÅ  */
   html.light body { background: linear-gradient(135deg, #f0f4f8 0%, #e8edf5 100%); }
   html.light .main { background: #f8fafc; }
   html.light .data-table thead th { background: linear-gradient(180deg, #f1f5f9, #e8edf5); }
@@ -757,7 +757,7 @@
   html.light .user-badge { background: rgba(37,99,235,0.08); box-shadow: 0 1px 4px rgba(37,99,235,0.1); }
   html.light .zone-badge { background: rgba(8,145,178,0.08); }
 
-  /* â”€â”€ CUSTOM LOGOUT MODAL â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ CUSTOM LOGOUT MODAL Ã¢ââ¬Ã¢ââ¬ */
   .logout-overlay {
     display: none; position: fixed; inset: 0; z-index: 99999;
     background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
@@ -786,7 +786,7 @@
   .logout-actions { display: flex; gap: 10px; justify-content: center; }
   .logout-actions .btn { min-width: 110px; justify-content: center; padding: 10px 20px; font-size: 13px; }
 
-  /* â”€â”€ PASSWORD MODAL â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ PASSWORD MODAL Ã¢ââ¬Ã¢ââ¬ */
   .pwd-overlay {
     display: none; position: fixed; inset: 0; z-index: 99999;
     background: rgba(0,0,0,0.65); backdrop-filter: blur(6px);
@@ -821,7 +821,7 @@
   .pwd-actions { display: flex; gap: 10px; justify-content: center; }
   .pwd-actions .btn { min-width: 110px; justify-content: center; padding: 10px 20px; font-size: 13px; }
 
-  /* â”€â”€ PRINT MODAL â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ PRINT MODAL Ã¢ââ¬Ã¢ââ¬ */
   #printModal {
     display: none; position: fixed; inset: 0; z-index: 9999;
     background: rgba(0,0,0,0.65); backdrop-filter: blur(5px);
@@ -858,7 +858,7 @@
   }
   .name-pulse { animation: namePulse 2.4s ease-in-out infinite; }
 
-  /* â”€â”€ CSV EXPORT MODAL â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ CSV EXPORT MODAL Ã¢ââ¬Ã¢ââ¬ */
   #csvModal {
     display: none; position: fixed; inset: 0; z-index: 9999;
     background: rgba(0,0,0,0.65); backdrop-filter: blur(5px);
@@ -890,7 +890,7 @@
   .csv-modal-actions { display: flex; gap: 10px; justify-content: center; }
   .csv-modal-actions .btn { min-width: 120px; justify-content: center; padding: 10px 20px; font-size: 13px; }
 
-  /* â”€â”€ SESSION TIMER â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ SESSION TIMER Ã¢ââ¬Ã¢ââ¬ */
   .session-timer {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px; color: var(--text-dim);
@@ -899,7 +899,7 @@
     display: flex; align-items: center; gap: 4px;
   }
 
-  /* â”€â”€ USERS MODAL â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ USERS MODAL Ã¢ââ¬Ã¢ââ¬ */
   #usersModal {
     display: none; position: fixed; inset: 0; z-index: 9500;
     background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
@@ -974,7 +974,7 @@
     .admin-danger-zone input, .admin-danger-zone .btn { flex: 1 1 140px; }
   }
 
-  /* â”€â”€ PROFILE MODAL â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ PROFILE MODAL Ã¢ââ¬Ã¢ââ¬ */
   #profileModal {
     display: none; position: fixed; inset: 0; z-index: 9600;
     background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
@@ -1117,7 +1117,7 @@
     padding: 36px; text-align: center; color: var(--text-muted); font-size: 13px;
   }
 
-  /* â”€â”€ WELCOME TOAST â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ WELCOME TOAST Ã¢ââ¬Ã¢ââ¬ */
   .welcome-toast {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
     background: var(--bg-panel); border: 1px solid var(--border-light);
@@ -1133,7 +1133,7 @@
   .welcome-toast .wt-text strong { display: block; font-weight: 600; margin-bottom: 2px; }
   .welcome-toast .wt-text span { font-size: 11px; color: var(--text-muted); }
 
-  /* â”€â”€ REPORTS DROPDOWN â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ REPORTS DROPDOWN Ã¢ââ¬Ã¢ââ¬ */
   .reports-dropdown-wrap {
     position: relative;
     display: inline-flex;
@@ -1159,7 +1159,7 @@
     to   { opacity:1; transform: translateY(0); }
   }
 
-  /* â”€â”€ DASHBOARD MODAL â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ DASHBOARD MODAL Ã¢ââ¬Ã¢ââ¬ */
   #dashModal {
     display: none; position: fixed; inset: 0; z-index: 9000;
     background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
@@ -1482,7 +1482,7 @@
     padding: 12px 14px; font-size: 12px; color: var(--text-dim); text-align: center;
   }
 
-  /* â”€â”€ BETA POPUP â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ BETA POPUP Ã¢ââ¬Ã¢ââ¬ */
   .beta-overlay {
     position: fixed;
     inset: 0;
@@ -1603,7 +1603,7 @@
   .beta-btn:active { transform: translateY(0); }
 
 
-  /* â”€â”€ COMING SOON MODAL â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ COMING SOON MODAL Ã¢ââ¬Ã¢ââ¬ */
   #soonModal {
     display: none; position: fixed; inset: 0; z-index: 99999;
     background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
@@ -1641,7 +1641,7 @@
   }
   .soon-close:hover { background: #1d4ed8; transform: translateY(-2px); }
 
-  /* â”€â”€ MOBILE RESPONSIVE â”€â”€ */
+  /* Ã¢ââ¬Ã¢ââ¬ MOBILE RESPONSIVE Ã¢ââ¬Ã¢ââ¬ */
   @media (max-width: 768px) {
     .topbar { padding: 0 10px; height: 54px; }
     .brand-text h1 { font-size: 12px; }
@@ -1687,7 +1687,7 @@
   <div class="beta-card">
     <div class="beta-badge">
       <span class="beta-dot"></span>
-EST-iMs Â© | 2026    </div>
+EST-iMs ÃÂ© | 2026    </div>
     <div class="beta-title">This Version Is Under Testing. </div>
     <div class="beta-credit">Developed By Hamza K. Ghareb
 </div>
@@ -1764,7 +1764,7 @@ EST-iMs Â© | 2026    </div>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       </button>
       <div class="admin-stack">
-        <button class="theme-btn" id="adminRequestsBtn" onclick="openAdminRequestsModal()" title="Ø·Ù„Ø¨Ø§Øª Ø§Ù„ØªØ³Ø¬ÙŠÙ„">
+        <button class="theme-btn" id="adminRequestsBtn" onclick="openAdminRequestsModal()" title="ÃÂ·ÃâÃÂ¨ÃÂ§ÃÂª ÃÂ§ÃâÃÂªÃÂ³ÃÂ¬ÃÅ Ãâ">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
         </button>
         <span class="admin-badge" id="adminRequestsBadge">0</span>
@@ -1775,7 +1775,7 @@ EST-iMs Â© | 2026    </div>
         </button>
         <span class="admin-badge" id="forMoreMessagesBadge">0</span>
       </div>
-      <button class="theme-btn" id="adminUsersBtn" onclick="openAdminUsersModal()" title="Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙˆÙ† Ø§Ù„Ù…Ø³Ø¬Ù„ÙˆÙ†">
+      <button class="theme-btn" id="adminUsersBtn" onclick="openAdminUsersModal()" title="ÃÂ§ÃâÃâ¦ÃÂ³ÃÂªÃÂ®ÃÂ¯Ãâ¦ÃËÃâ  ÃÂ§ÃâÃâ¦ÃÂ³ÃÂ¬ÃâÃËÃâ ">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M16 11l2 2 4-4"/></svg>
       </button>
       {% endif %}
@@ -1809,10 +1809,10 @@ EST-iMs Â© | 2026    </div>
 <!-- ABOUT MODAL -->
 <div id="aboutModal" onclick="if(event.target===this)closeAbout()" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);align-items:center;justify-content:center;">
   <div class="beta-card" style="max-width:380px;">
-    <button onclick="closeAbout()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text-dim);font-size:17px;cursor:pointer;line-height:1;transition:color 0.15s;">âœ•</button>
+    <button onclick="closeAbout()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text-dim);font-size:17px;cursor:pointer;line-height:1;transition:color 0.15s;">Ã¢Åâ¢</button>
     <div class="beta-badge">
       <span class="beta-dot"></span>
-      EST-iMs Â© | 2026
+      EST-iMs ÃÂ© | 2026
     </div>
     <div style="width:58px;height:58px;margin:0 auto 16px;border-radius:15px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(59,130,246,0.4);">
       <img src="/static/low.ico" style="width:100%;height:100%;object-fit:contain;border-radius:15px;">
@@ -1826,18 +1826,18 @@ EST-iMs Â© | 2026    </div>
   </div>
 </div>
 
-<!-- â•â• PRINT MODAL â•â• -->
+<!-- Ã¢â¢ÂÃ¢â¢Â PRINT MODAL Ã¢â¢ÂÃ¢â¢Â -->
 <div id="printModal" onclick="if(event.target===this)closePrintModal()">
   <div class="print-modal-box">
-    <button onclick="closePrintModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text-dim);font-size:17px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">âœ•</button>
-    <div class="print-modal-icon">ðŸ–¨ï¸</div>
+    <button onclick="closePrintModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text-dim);font-size:17px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">Ã¢Åâ¢</button>
+    <div class="print-modal-icon">Ã°Å¸âÂ¨Ã¯Â¸Â</div>
     <div class="print-modal-title">Print Data</div>
     <div class="print-modal-sub" id="printModalSub">Ready to print the current sheet</div>
     <div class="print-modal-info">
-      <div class="print-modal-info-row"><span class="pmi-label">File</span><span class="pmi-val" id="printInfoFile">â€”</span></div>
-      <div class="print-modal-info-row"><span class="pmi-label">Sheet</span><span class="pmi-val" id="printInfoSheet">â€”</span></div>
-      <div class="print-modal-info-row"><span class="pmi-label">Period</span><span class="pmi-val" id="printInfoPeriod">â€”</span></div>
-      <div class="print-modal-info-row"><span class="pmi-label">Records</span><span class="pmi-val" id="printInfoRecords">â€”</span></div>
+      <div class="print-modal-info-row"><span class="pmi-label">File</span><span class="pmi-val" id="printInfoFile">Ã¢â¬â</span></div>
+      <div class="print-modal-info-row"><span class="pmi-label">Sheet</span><span class="pmi-val" id="printInfoSheet">Ã¢â¬â</span></div>
+      <div class="print-modal-info-row"><span class="pmi-label">Period</span><span class="pmi-val" id="printInfoPeriod">Ã¢â¬â</span></div>
+      <div class="print-modal-info-row"><span class="pmi-label">Records</span><span class="pmi-val" id="printInfoRecords">Ã¢â¬â</span></div>
     </div>
     <div class="print-modal-actions">
       <button class="btn btn-warning" onclick="doPrint()">
@@ -1849,19 +1849,19 @@ EST-iMs Â© | 2026    </div>
   </div>
 </div>
 
-<!-- â•â• CSV EXPORT MODAL â•â• -->
+<!-- Ã¢â¢ÂÃ¢â¢Â CSV EXPORT MODAL Ã¢â¢ÂÃ¢â¢Â -->
 <div id="csvModal" onclick="if(event.target===this)closeCsvModal()">
   <div class="csv-modal-box">
-    <button onclick="closeCsvModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text-dim);font-size:17px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">âœ•</button>
-    <div class="csv-modal-icon">ðŸ“Š</div>
+    <button onclick="closeCsvModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text-dim);font-size:17px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">Ã¢Åâ¢</button>
+    <div class="csv-modal-icon">Ã°Å¸âÅ </div>
     <div class="csv-modal-title">Export CSV</div>
     <div class="csv-modal-sub" id="csvModalSub">Export the current sheet as a CSV file</div>
     <div class="csv-modal-info">
-      <div class="csv-modal-info-row"><span class="cmi-label">File</span><span class="cmi-val" id="csvInfoFile">â€”</span></div>
-      <div class="csv-modal-info-row"><span class="cmi-label">Sheet</span><span class="cmi-val" id="csvInfoSheet">â€”</span></div>
-      <div class="csv-modal-info-row"><span class="cmi-label">Period</span><span class="cmi-val" id="csvInfoPeriod">â€”</span></div>
-      <div class="csv-modal-info-row"><span class="cmi-label">Records</span><span class="cmi-val" id="csvInfoRecords">â€”</span></div>
-      <div class="csv-modal-info-row"><span class="cmi-label">Filename</span><span class="cmi-val" id="csvInfoFilename" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">â€”</span></div>
+      <div class="csv-modal-info-row"><span class="cmi-label">File</span><span class="cmi-val" id="csvInfoFile">Ã¢â¬â</span></div>
+      <div class="csv-modal-info-row"><span class="cmi-label">Sheet</span><span class="cmi-val" id="csvInfoSheet">Ã¢â¬â</span></div>
+      <div class="csv-modal-info-row"><span class="cmi-label">Period</span><span class="cmi-val" id="csvInfoPeriod">Ã¢â¬â</span></div>
+      <div class="csv-modal-info-row"><span class="cmi-label">Records</span><span class="cmi-val" id="csvInfoRecords">Ã¢â¬â</span></div>
+      <div class="csv-modal-info-row"><span class="cmi-label">Filename</span><span class="cmi-val" id="csvInfoFilename" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Ã¢â¬â</span></div>
     </div>
     <div class="csv-modal-actions">
       <button class="btn btn-success" onclick="doExportCSV()">
@@ -1873,10 +1873,10 @@ EST-iMs Â© | 2026    </div>
   </div>
 </div>
 
-<!-- â•â• LOGOUT CONFIRM MODAL â•â• -->
+<!-- Ã¢â¢ÂÃ¢â¢Â LOGOUT CONFIRM MODAL Ã¢â¢ÂÃ¢â¢Â -->
 <div class="logout-overlay" id="logoutModal" onclick="if(event.target===this)closeLogout()">
   <div class="logout-box">
-    <div class="logout-icon">âš ï¸</div>
+    <div class="logout-icon">Ã¢Å¡Â Ã¯Â¸Â</div>
     <div class="logout-title">Logout</div>
     <div class="logout-msg">Are you sure you want to logout?</div>
     <div class="logout-actions">
@@ -1889,10 +1889,10 @@ EST-iMs Â© | 2026    </div>
   </div>
 </div>
 
-<!-- â•â• TRANSACTION MODAL (IN / OUT) â•â• -->
+<!-- Ã¢â¢ÂÃ¢â¢Â TRANSACTION MODAL (IN / OUT) Ã¢â¢ÂÃ¢â¢Â -->
 <div class="modal-overlay" id="txModal" onclick="if(event.target===this)closeTxModal()">
   <div class="modal-box">
-    <button class="modal-close" onclick="closeTxModal()">âœ•</button>
+    <button class="modal-close" onclick="closeTxModal()">Ã¢Åâ¢</button>
     <div class="modal-title" id="txTitle">Transaction</div>
     <div class="modal-subtitle" id="txSubtitle">Enter quantity</div>
     <div class="modal-info-grid" id="txInfoGrid"></div>
@@ -1923,12 +1923,12 @@ EST-iMs Â© | 2026    </div>
                  padding:8px 12px;color:var(--text-main);font-family:inherit;font-size:13px;font-weight:600;
                  outline:none;cursor:pointer;transition:border-color 0.15s;"
           onchange="switchViewZone(this.value)">
-          <option value="zone1">ðŸ­ Zone 1 â€” Ø²ÙˆÙ† 1</option>
-          <option value="zone2">ðŸ­ Zone 2 â€” Ø²ÙˆÙ† 2</option>
-          <option value="zone3">ðŸ­ Zone 3 â€” Packaging</option>
-          <option value="zone4">ðŸ­ Zone 4 â€” Ø²ÙˆÙ† 4</option>
-          <option value="zone5">ðŸ­ Zone 5 â€” Ø²ÙˆÙ† 5</option>
-          <option value="qc">ðŸ”¬ QC â€” Quality Control</option>
+          <option value="zone1">Ã°Å¸ÂÂ­ Zone 1 Ã¢â¬â ÃÂ²ÃËÃâ  1</option>
+          <option value="zone2">Ã°Å¸ÂÂ­ Zone 2 Ã¢â¬â ÃÂ²ÃËÃâ  2</option>
+          <option value="zone3">Ã°Å¸ÂÂ­ Zone 3 Ã¢â¬â Packaging</option>
+          <option value="zone4">Ã°Å¸ÂÂ­ Zone 4 Ã¢â¬â ÃÂ²ÃËÃâ  4</option>
+          <option value="zone5">Ã°Å¸ÂÂ­ Zone 5 Ã¢â¬â ÃÂ²ÃËÃâ  5</option>
+          <option value="qc">Ã°Å¸âÂ¬ QC Ã¢â¬â Quality Control</option>
         </select>
       </div>
     </div>
@@ -1957,22 +1957,22 @@ EST-iMs Â© | 2026    </div>
       <div class="sheet-tabs-list" id="sheetList"></div>
     </div>
   </div>
-  <button class="sidebar-toggle-btn" id="sidebarToggleBtn" title="Toggle sidebar" onclick="toggleSidebar()">â—€</button>
+  <button class="sidebar-toggle-btn" id="sidebarToggleBtn" title="Toggle sidebar" onclick="toggleSidebar()">Ã¢ââ¬</button>
   </div>
 
   <!-- MAIN -->
   <div class="main">
     <div class="content-header">
       <div class="content-title">
-        <div class="ct-icon">ðŸ“‹</div>
+        <div class="ct-icon">Ã°Å¸ââ¹</div>
         <div>
           <h2 id="contentTitle">Select a month to begin</h2>
-          <div class="breadcrumb" id="breadcrumb">Select a year â†’ ...</div>
+          <div class="breadcrumb" id="breadcrumb">Select a year Ã¢â â ...</div>
         </div>
       </div>
       <div class="content-meta" id="contentMeta">
         <span class="badge badge-blue"  id="recordCount">0 Records</span>
-        <span class="badge badge-edit"  id="editBadge" style="display:none">âœŽ Edit Mode</span>
+        <span class="badge badge-edit"  id="editBadge" style="display:none">Ã¢ÅÅ½ Edit Mode</span>
         {% if can_edit %}
         <label class="edit-toggle" id="editToggleWrap" style="display:none">
           <span>Edit Mode</span>
@@ -1987,7 +1987,7 @@ EST-iMs Â© | 2026    </div>
 
     <div class="toolbar">
       <div class="search-wrap">
-        <span class="s-icon">ðŸ”</span>
+        <span class="s-icon">Ã°Å¸âÂ</span>
         <input type="text" class="search-input" id="searchInput"
                placeholder="Search data..." oninput="filterTable(this.value)">
       </div>
@@ -1996,7 +1996,7 @@ EST-iMs Â© | 2026    </div>
 
     <div class="table-wrap" id="tableWrap">
       <div class="empty-state">
-        <div class="es-icon">ðŸ“‚</div>
+        <div class="es-icon">Ã°Å¸ââ</div>
         <h3>No data to display</h3>
         <p>Select a month from the sidebar, then choose a file and sheet to view data</p>
       </div>
@@ -2008,27 +2008,27 @@ EST-iMs Â© | 2026    </div>
         <span id="statusMsg">Ready</span>
       </div>
       <div class="statusbar-right">
-        <span id="pathInfo" style="direction:ltr">â€”</span>
+        <span id="pathInfo" style="direction:ltr">Ã¢â¬â</span>
         <span>Inventory Management System V3.1.1.0</span>
-        <span style="color:var(--text-dim);font-size:11px;border-left:1px solid var(--border);padding-left:14px;margin-left:2px;">EST-IMSÂ®</span>
+        <span style="color:var(--text-dim);font-size:11px;border-left:1px solid var(--border);padding-left:14px;margin-left:2px;">EST-IMSÃÂ®</span>
       </div>
     </div>
   </div>
 </div>
 
-<!-- â•â• PASSWORD MODAL â•â• -->
+<!-- Ã¢â¢ÂÃ¢â¢Â PASSWORD MODAL Ã¢â¢ÂÃ¢â¢Â -->
 <div class="pwd-overlay" id="pwdModal" onclick="if(event.target===this)cancelPwdModal()">
   <div class="pwd-box">
-    <div class="pwd-icon">ðŸ”’</div>
+    <div class="pwd-icon">Ã°Å¸ââ</div>
     <div class="pwd-title">Edit Mode</div>
     <div class="pwd-sub">Enter the password to enable edit mode</div>
     <div class="pwd-field">
-      <input type="password" id="pwdInput" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+      <input type="password" id="pwdInput" placeholder="Ã¢â¬Â¢Ã¢â¬Â¢Ã¢â¬Â¢Ã¢â¬Â¢Ã¢â¬Â¢Ã¢â¬Â¢Ã¢â¬Â¢Ã¢â¬Â¢Ã¢â¬Â¢Ã¢â¬Â¢"
              onkeydown="if(event.key==='Enter')confirmPwd(); if(event.key==='Escape')cancelPwdModal();">
     </div>
     <div class="pwd-error" id="pwdError"></div>
     <div class="pwd-actions">
-      <button class="btn btn-warning" onclick="confirmPwd()">ðŸ”“ Unlock</button>
+      <button class="btn btn-warning" onclick="confirmPwd()">Ã°Å¸ââ Unlock</button>
       <button class="btn btn-ghost"   onclick="cancelPwdModal()">Cancel</button>
     </div>
   </div>
@@ -2037,13 +2037,13 @@ EST-iMs Â© | 2026    </div>
 <!-- TOAST -->
 <div id="toast"></div>
 
-<!-- â•â• USERS / LOGIN LOG MODAL â•â• -->
+<!-- Ã¢â¢ÂÃ¢â¢Â USERS / LOGIN LOG MODAL Ã¢â¢ÂÃ¢â¢Â -->
 {% if is_dev %}
 <div id="usersModal" onclick="if(event.target===this)closeUsersModal()">
   <div class="users-box">
     <div class="users-header">
-      <h3>ðŸ‘¥ Login History</h3>
-      <button onclick="closeUsersModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">âœ•</button>
+      <h3>Ã°Å¸âÂ¥ Login History</h3>
+      <button onclick="closeUsersModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">Ã¢Åâ¢</button>
     </div>
     <div class="users-body" id="usersBody">
       <div class="users-empty">Loading...</div>
@@ -2056,10 +2056,10 @@ EST-iMs Â© | 2026    </div>
 <div id="adminRequestsModal" onclick="if(event.target===this)closeAdminRequestsModal()">
   <div class="users-box" style="max-width:980px;">
     <div class="users-header">
-      <h3>ðŸŸ£ Ø·Ù„Ø¨Ø§Øª Ø§Ù„ØªØ³Ø¬ÙŠÙ„</h3>
+      <h3>Ã°Å¸Å¸Â£ ÃÂ·ÃâÃÂ¨ÃÂ§ÃÂª ÃÂ§ÃâÃÂªÃÂ³ÃÂ¬ÃÅ Ãâ</h3>
       <div style="display:flex;align-items:center;gap:8px;">
-        <button class="dash-refresh-btn" onclick="loadAdminRequests()" style="padding:6px 10px;font-size:11px;">ØªØ­Ø¯ÙŠØ«</button>
-        <button onclick="closeAdminRequestsModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">âœ•</button>
+        <button class="dash-refresh-btn" onclick="loadAdminRequests()" style="padding:6px 10px;font-size:11px;">ÃÂªÃÂ­ÃÂ¯ÃÅ ÃÂ«</button>
+        <button onclick="closeAdminRequestsModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">Ã¢Åâ¢</button>
       </div>
     </div>
     <div class="users-body" id="adminRequestsBody">
@@ -2083,11 +2083,11 @@ EST-iMs Â© | 2026    </div>
 <div id="adminUsersModal" onclick="if(event.target===this)closeAdminUsersModal()">
   <div class="users-box" style="max-width:980px;">
     <div class="users-header">
-      <h3>ðŸ‘¤ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙˆÙ† Ø§Ù„Ù…Ø³Ø¬Ù„ÙˆÙ†</h3>
+      <h3>Ã°Å¸âÂ¤ ÃÂ§ÃâÃâ¦ÃÂ³ÃÂªÃÂ®ÃÂ¯Ãâ¦ÃËÃâ  ÃÂ§ÃâÃâ¦ÃÂ³ÃÂ¬ÃâÃËÃâ </h3>
       <div style="display:flex;align-items:center;gap:8px;">
-        <button class="dash-refresh-btn" onclick="exportAdminUsers()" style="padding:6px 10px;font-size:11px;">ØªØµØ¯ÙŠØ± Excel</button>
-        <button class="dash-refresh-btn" onclick="loadAdminUsers()" style="padding:6px 10px;font-size:11px;">ØªØ­Ø¯ÙŠØ«</button>
-        <button onclick="closeAdminUsersModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">âœ•</button>
+        <button class="dash-refresh-btn" onclick="exportAdminUsers()" style="padding:6px 10px;font-size:11px;">ÃÂªÃÂµÃÂ¯ÃÅ ÃÂ± Excel</button>
+        <button class="dash-refresh-btn" onclick="loadAdminUsers()" style="padding:6px 10px;font-size:11px;">ÃÂªÃÂ­ÃÂ¯ÃÅ ÃÂ«</button>
+        <button onclick="closeAdminUsersModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">Ã¢Åâ¢</button>
       </div>
     </div>
     <div class="users-body" id="adminUsersBody">
@@ -2098,14 +2098,14 @@ EST-iMs Â© | 2026    </div>
 <div id="adminUserDetailModal" onclick="if(event.target===this)closeAdminUserDetailModal()">
   <div class="users-box" style="max-width:720px;">
     <div class="users-header">
-      <h3>Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…</h3>
-      <button onclick="closeAdminUserDetailModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">âœ•</button>
+      <h3>ÃÂ¨ÃÅ ÃÂ§Ãâ ÃÂ§ÃÂª ÃÂ§ÃâÃâ¦ÃÂ³ÃÂªÃÂ®ÃÂ¯Ãâ¦</h3>
+      <button onclick="closeAdminUserDetailModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">Ã¢Åâ¢</button>
     </div>
     <div class="users-body" id="adminUserDetailBody"></div>
   </div>
 </div>{% endif %}
 
-<!-- â•â• PROFILE MODAL â•â• -->
+<!-- Ã¢â¢ÂÃ¢â¢Â PROFILE MODAL Ã¢â¢ÂÃ¢â¢Â -->
 <div id="profileModal" onclick="if(event.target===this)closeProfileModal()">
   <div class="profile-box">
     <div class="profile-header">
@@ -2125,7 +2125,7 @@ EST-iMs Â© | 2026    </div>
           </div>
         </div>
       </div>
-      <button class="profile-close" onclick="closeProfileModal()">âœ•</button>
+      <button class="profile-close" onclick="closeProfileModal()">Ã¢Åâ¢</button>
     </div>
     <div class="profile-body" id="profileBody">
       <div class="profile-loading">Loading profile...</div>
@@ -2133,16 +2133,16 @@ EST-iMs Â© | 2026    </div>
   </div>
 </div>
 
-<!-- â•â• WELCOME TOAST â•â• -->
+<!-- Ã¢â¢ÂÃ¢â¢Â WELCOME TOAST Ã¢â¢ÂÃ¢â¢Â -->
 <div class="welcome-toast" id="welcomeToast">
-  <div class="wt-icon">ðŸ‘‹</div>
+  <div class="wt-icon">Ã°Å¸ââ¹</div>
   <div class="wt-text">
     <strong>Welcome, {{ username }}!</strong>
-    <span>{{ zone_label }} â€” {{ login_time }}</span>
+    <span>{{ zone_label }} Ã¢â¬â {{ login_time }}</span>
   </div>
 </div>
 
-<!-- â•â• DASHBOARD MODAL â•â• -->
+<!-- Ã¢â¢ÂÃ¢â¢Â DASHBOARD MODAL Ã¢â¢ÂÃ¢â¢Â -->
 <div id="dashModal" onclick="if(event.target===this)closeDashboard()">
   <div class="dash-box">
     <!-- LEFT NAV -->
@@ -2150,20 +2150,20 @@ EST-iMs Â© | 2026    </div>
       <div class="dash-sidebar-title">Dashboard</div>
 
       <div class="dash-nav-item active" onclick="dashShow('overview')" id="dnav-overview">
-        <span class="dn-icon">ðŸ“Š</span> Overview
+        <span class="dn-icon">Ã°Å¸âÅ </span> Overview
       </div>
       <div class="dash-nav-item" onclick="dashShow('movement')" id="dnav-movement">
-        <span class="dn-icon">ðŸ“ˆ</span> IN / OUT Movement
+        <span class="dn-icon">Ã°Å¸âË</span> IN / OUT Movement
       </div>
       <div class="dash-nav-item" onclick="dashShow('summary')" id="dnav-summary">
         <span class="dn-icon">S</span> Consumption Summary
       </div>
       <div class="dash-nav-sep"></div>
       <div class="dash-nav-item" onclick="dashShow('alerts')" id="dnav-alerts">
-        <span class="dn-icon">âš ï¸</span> Stock Alerts
+        <span class="dn-icon">Ã¢Å¡Â Ã¯Â¸Â</span> Stock Alerts
       </div>
       <div class="dash-nav-item" onclick="dashShow('top')" id="dnav-top">
-        <span class="dn-icon">ðŸ†</span> Top Items
+        <span class="dn-icon">Ã°Å¸Ââ </span> Top Items
       </div>
       <div class="dash-nav-sep"></div>
       <div class="dash-nav-item" onclick="dashShow('stocktaking')" id="dnav-stocktaking">
@@ -2175,23 +2175,23 @@ EST-iMs Â© | 2026    </div>
 
       <div class="dash-nav-sep"></div>
       <div class="dash-nav-item" onclick="dashShow('zones')" id="dnav-zones">
-        <span class="dn-icon">ðŸ­</span> Zones Summary
+        <span class="dn-icon">Ã°Å¸ÂÂ­</span> Zones Summary
       </div>
     </div>
 
     <!-- RIGHT CONTENT -->
     <div class="dash-content" id="dashContent" style="position:relative;">
-      <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
+      <button class="dash-close-btn" onclick="closeDashboard()">Ã¢Åâ¢</button>
       <div class="dash-loading"><div class="spinner"></div><span>Loading dashboard...</span></div>
     </div>
   </div>
 </div>
 
 
-<!-- â•â• COMING SOON MODAL â•â• -->
+<!-- Ã¢â¢ÂÃ¢â¢Â COMING SOON MODAL Ã¢â¢ÂÃ¢â¢Â -->
 <div id="soonModal" onclick="if(event.target===this)closeSoonModal()">
   <div class="soon-box">
-    <span class="soon-icon">ðŸš€</span>
+    <span class="soon-icon">Ã°Å¸Å¡â¬</span>
     <div class="soon-badge">Coming Soon</div>
     <div class="soon-title" id="soonTitle">Feature Under Development</div>
     <div class="soon-sub" id="soonSub">This feature is currently being built and will be available soon. Stay tuned!</div>
@@ -2200,7 +2200,7 @@ EST-iMs Â© | 2026    </div>
 </div>
 
 <script>
-// â”€â”€ BETA POPUP (show only once per session) â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ BETA POPUP (show only once per session) Ã¢ââ¬Ã¢ââ¬
 function closeBetaOverlay() {
   const overlay = document.getElementById('betaOverlay');
   if (!overlay) return;
@@ -2218,7 +2218,7 @@ function closeBetaOverlay() {
 })();
 
 
-// â”€â”€ COMING SOON MODAL â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ COMING SOON MODAL Ã¢ââ¬Ã¢ââ¬
 function openSoonModal(feature) {
   const titles = {
     dashboard: 'Dashboard',
@@ -2236,7 +2236,7 @@ function closeSoonModal() {
   document.getElementById('soonModal').classList.remove('open');
 }
 
-// â”€â”€ USER PROFILE MODAL â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ USER PROFILE MODAL Ã¢ââ¬Ã¢ââ¬
 let _profileLoaded = false;
 let _profileData = null;
 
@@ -2252,7 +2252,7 @@ function profileInitials(username) {
 }
 
 function formatDuration(seconds) {
-  if (!Number.isFinite(seconds)) return 'â€”';
+  if (!Number.isFinite(seconds)) return 'Ã¢â¬â';
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
   const s = seconds % 60;
@@ -2280,7 +2280,7 @@ async function loadProfile() {
     _profileLoaded = true;
     renderProfile(_profileData);
   } catch (e) {
-    body.innerHTML = '<div class="profile-error">âš ï¸ Failed to load profile data</div>';
+    body.innerHTML = '<div class="profile-error">Ã¢Å¡Â Ã¯Â¸Â Failed to load profile data</div>';
   }
 }
 
@@ -2311,16 +2311,16 @@ function renderProfile(data) {
 
   const zones = (data.allowed_zones || []).map(z => `
     <span class="profile-zone-pill">${escHtml(z.label || z.name || z.id)}</span>
-  `).join('') || '<span class="profile-zone-pill">â€”</span>';
+  `).join('') || '<span class="profile-zone-pill">Ã¢â¬â</span>';
 
   const logins = (data.recent_logins || []).length
     ? data.recent_logins.map(entry => `
         <div class="profile-log-item">
           <div>
             <div class="profile-log-main">${escHtml(entry.zone_label || entry.zone_id || 'Zone')}</div>
-            <div class="profile-log-sub">IP: ${escHtml(entry.ip || 'â€”')}</div>
+            <div class="profile-log-sub">IP: ${escHtml(entry.ip || 'Ã¢â¬â')}</div>
           </div>
-          <div class="profile-log-time">${escHtml(entry.time || 'â€”')}</div>
+          <div class="profile-log-time">${escHtml(entry.time || 'Ã¢â¬â')}</div>
         </div>
       `).join('')
     : '<div class="users-empty" style="padding:18px;">No login history yet</div>';
@@ -2329,17 +2329,17 @@ function renderProfile(data) {
     <div class="profile-grid">
       <div class="profile-card">
         <div class="profile-card-label">Current Zone</div>
-        <div class="profile-card-value">${escHtml(data.zone_label || data.zone_name || data.zone || 'â€”')}</div>
+        <div class="profile-card-value">${escHtml(data.zone_label || data.zone_name || data.zone || 'Ã¢â¬â')}</div>
         <div class="profile-card-sub">${escHtml(data.zone_name || data.zone || '')}</div>
       </div>
       <div class="profile-card">
         <div class="profile-card-label">Active View</div>
-        <div class="profile-card-value">${escHtml(data.active_view_zone_label || data.active_view_zone || 'â€”')}</div>
+        <div class="profile-card-value">${escHtml(data.active_view_zone_label || data.active_view_zone || 'Ã¢â¬â')}</div>
         <div class="profile-card-sub">${data.is_super ? 'Super-zone view access' : 'Assigned zone access'}</div>
       </div>
       <div class="profile-card">
         <div class="profile-card-label">Login Time</div>
-        <div class="profile-card-value">${escHtml(data.login_time || 'â€”')}</div>
+        <div class="profile-card-value">${escHtml(data.login_time || 'Ã¢â¬â')}</div>
         <div class="profile-card-sub">Session: ${escHtml(formatDuration(Number(data.login_duration_seconds)))}</div>
       </div>
     </div>
@@ -2366,7 +2366,7 @@ function renderProfile(data) {
   `;
 }
 
-// â”€â”€ LANGUAGE TOGGLE (index) â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ LANGUAGE TOGGLE (index) Ã¢ââ¬Ã¢ââ¬
 const INDEX_LANG = {
   en: {
     refresh: 'Refresh', print: 'Print', exportCSV: 'Export CSV',
@@ -2377,12 +2377,12 @@ const INDEX_LANG = {
     editMode: 'Edit Mode', zoneView: 'Zone View',
   },
   ar: {
-    refresh: 'ØªØ­Ø¯ÙŠØ«', print: 'Ø·Ø¨Ø§Ø¹Ø©', exportCSV: 'ØªØµØ¯ÙŠØ± CSV',
-    about: 'Ø¹Ù† Ø§Ù„Ù†Ø¸Ø§Ù…', logout: 'Ø®Ø±ÙˆØ¬', lang: 'Ar-En',
-    selectMonth: 'Ø§Ø®ØªØ± Ø´Ù‡Ø±Ø§Ù‹ Ù„Ù„Ø¨Ø¯Ø¡',
-    searchPh: 'Ø¨Ø­Ø« ÙÙŠ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª...',
-    yearLabel: 'Ø§Ù„Ø³Ù†Ø©', monthsLabel: 'Ø§Ù„Ø£Ø´Ù‡Ø±', filesLabel: 'Ø§Ù„Ù…Ù„ÙØ§Øª', sheetsLabel: 'Ø§Ù„Ø£ÙˆØ±Ø§Ù‚',
-    editMode: 'ÙˆØ¶Ø¹ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„', zoneView: 'Ø¹Ø±Ø¶ Ø§Ù„Ø²ÙˆÙ†',
+    refresh: 'ÃÂªÃÂ­ÃÂ¯ÃÅ ÃÂ«', print: 'ÃÂ·ÃÂ¨ÃÂ§ÃÂ¹ÃÂ©', exportCSV: 'ÃÂªÃÂµÃÂ¯ÃÅ ÃÂ± CSV',
+    about: 'ÃÂ¹Ãâ  ÃÂ§ÃâÃâ ÃÂ¸ÃÂ§Ãâ¦', logout: 'ÃÂ®ÃÂ±ÃËÃÂ¬', lang: 'Ar-En',
+    selectMonth: 'ÃÂ§ÃÂ®ÃÂªÃÂ± ÃÂ´Ãâ¡ÃÂ±ÃÂ§Ãâ¹ ÃâÃâÃÂ¨ÃÂ¯ÃÂ¡',
+    searchPh: 'ÃÂ¨ÃÂ­ÃÂ« ÃÂÃÅ  ÃÂ§ÃâÃÂ¨ÃÅ ÃÂ§Ãâ ÃÂ§ÃÂª...',
+    yearLabel: 'ÃÂ§ÃâÃÂ³Ãâ ÃÂ©', monthsLabel: 'ÃÂ§ÃâÃÂ£ÃÂ´Ãâ¡ÃÂ±', filesLabel: 'ÃÂ§ÃâÃâ¦ÃâÃÂÃÂ§ÃÂª', sheetsLabel: 'ÃÂ§ÃâÃÂ£ÃËÃÂ±ÃÂ§Ãâ',
+    editMode: 'ÃËÃÂ¶ÃÂ¹ ÃÂ§ÃâÃÂªÃÂ¹ÃÂ¯ÃÅ Ãâ', zoneView: 'ÃÂ¹ÃÂ±ÃÂ¶ ÃÂ§ÃâÃÂ²ÃËÃâ ',
   }
 };
 let indexLang = localStorage.getItem('est-lang') || 'en';
@@ -2418,10 +2418,10 @@ function applyIndexLang(lang) {
 function toggleIndexLang() {
   applyIndexLang(indexLang === 'en' ? 'ar' : 'en');
 }
-// ØªØ·Ø¨ÙŠÙ‚ Ø§Ù„Ù„ØºØ© Ø¹Ù†Ø¯ Ø§Ù„ØªØ­Ù…ÙŠÙ„
+// ÃÂªÃÂ·ÃÂ¨ÃÅ Ãâ ÃÂ§ÃâÃâÃÂºÃÂ© ÃÂ¹Ãâ ÃÂ¯ ÃÂ§ÃâÃÂªÃÂ­Ãâ¦ÃÅ Ãâ
 applyIndexLang(indexLang);
 
-// â”€â”€ LOGIN SOUND â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ LOGIN SOUND Ã¢ââ¬Ã¢ââ¬
 (function() {
   try {
     const audio = new Audio('/static/id.mp3');
@@ -2430,23 +2430,23 @@ applyIndexLang(indexLang);
   } catch(e) {}
 })();
 
-// â”€â”€ SIDEBAR TOGGLE â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ SIDEBAR TOGGLE Ã¢ââ¬Ã¢ââ¬
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
   const btn = document.getElementById('sidebarToggleBtn');
   const collapsed = sidebar.classList.toggle('collapsed');
-  btn.textContent = collapsed ? 'â–¶' : 'â—€';
+  btn.textContent = collapsed ? 'Ã¢âÂ¶' : 'Ã¢ââ¬';
   btn.title = collapsed ? 'Show sidebar' : 'Hide sidebar';
 }
 
-// â”€â”€ PRINT MODAL â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ PRINT MODAL Ã¢ââ¬Ã¢ââ¬
 function openPrintModal() {
   const table = document.querySelector('.data-table');
-  if (!table) { toast('âš ï¸ No data to print', false); return; }
-  document.getElementById('printInfoFile').textContent = state.selectedFile || 'â€”';
-  document.getElementById('printInfoSheet').textContent = state.selectedSheet || 'â€”';
-  document.getElementById('printInfoPeriod').textContent = (state.selectedMonth && state.selectedYear) ? `${state.selectedMonth} ${state.selectedYear}` : 'â€”';
-  document.getElementById('printInfoRecords').textContent = state.allRows.length ? `${state.allRows.length} rows` : 'â€”';
+  if (!table) { toast('Ã¢Å¡Â Ã¯Â¸Â No data to print', false); return; }
+  document.getElementById('printInfoFile').textContent = state.selectedFile || 'Ã¢â¬â';
+  document.getElementById('printInfoSheet').textContent = state.selectedSheet || 'Ã¢â¬â';
+  document.getElementById('printInfoPeriod').textContent = (state.selectedMonth && state.selectedYear) ? `${state.selectedMonth} ${state.selectedYear}` : 'Ã¢â¬â';
+  document.getElementById('printInfoRecords').textContent = state.allRows.length ? `${state.allRows.length} rows` : 'Ã¢â¬â';
   document.getElementById('printModalSub').textContent = `Printing: ${state.selectedFile || ''} / ${state.selectedSheet || ''}`;
   document.getElementById('printModal').classList.add('open');
 }
@@ -2458,7 +2458,7 @@ function doPrint() {
   printTable();
 }
 
-// â”€â”€ STATE â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ STATE Ã¢ââ¬Ã¢ââ¬
 const state = {
   structure: {},
   availableYears: [],
@@ -2471,7 +2471,7 @@ const state = {
   filePath: null,
   editMode: false,
   isInventorySheet: false,
-  sheetOptions: { colors: [], types: [], sizes: [], categories: [] },   // â† dropdown options from Excel
+  sheetOptions: { colors: [], types: [], sizes: [], categories: [] },   // Ã¢â Â dropdown options from Excel
 };
 
 const MONTH_NUMS = { January:1,February:2,March:3,April:4,May:5,June:6,July:7,August:8,September:9,October:10,November:11,December:12 };
@@ -2483,7 +2483,7 @@ const READ_ONLY_COLS = ['Current Balance', 'IN', 'OUT', '__row__'];
 // Columns that identify it as an inventory sheet
 const NON_INVENTORY_SHEETS = ['Stocktaking'];
 
-// â”€â”€ THEME â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ THEME Ã¢ââ¬Ã¢ââ¬
 (function() {
   const saved = localStorage.getItem('est-theme');
   if (saved === 'light') document.documentElement.classList.add('light');
@@ -2493,10 +2493,10 @@ document.getElementById('themeBtn').addEventListener('click', function() {
   localStorage.setItem('est-theme', isLight ? 'light' : 'dark');
 });
 
-// â”€â”€ CLOCK (disabled per update) â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ CLOCK (disabled per update) Ã¢ââ¬Ã¢ââ¬
 // function updateClock() { ... }
 
-// â”€â”€ TOAST â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ TOAST Ã¢ââ¬Ã¢ââ¬
 let _toastTimer;
 function toast(msg, ok=true) {
   const el = document.getElementById('toast');
@@ -2506,7 +2506,7 @@ function toast(msg, ok=true) {
   _toastTimer = setTimeout(() => { el.className = ''; }, 3000);
 }
 
-// â”€â”€ GO HOME (reset to initial state) â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ GO HOME (reset to initial state) Ã¢ââ¬Ã¢ââ¬
 function goHome() {
   state.selectedMonth = null;
   state.selectedFile  = null;
@@ -2516,12 +2516,12 @@ function goHome() {
   // deactivate month pills
   document.querySelectorAll('.month-pill').forEach(p => p.classList.remove('active'));
   showEmptyState('Select a month to begin');
-  updateHeader('Select a month to begin', `${state.selectedYear} â†’ ...`);
-  document.getElementById('pathInfo').textContent = 'â€”';
+  updateHeader('Select a month to begin', `${state.selectedYear} Ã¢â â ...`);
+  document.getElementById('pathInfo').textContent = 'Ã¢â¬â';
   setStatus('Ready');
 }
 
-// â”€â”€ INIT â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ INIT Ã¢ââ¬Ã¢ââ¬
 const IS_SUPER = {{ 'true' if is_super else 'false' }};
 let currentViewZone = '{{ zone }}';
 
@@ -2564,7 +2564,7 @@ async function init() {
   buildMonthGrid();
 }
 
-// â”€â”€ BUILD YEAR SELECT â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ BUILD YEAR SELECT Ã¢ââ¬Ã¢ââ¬
 function buildYearSelect() {
   const sel = document.getElementById('yearSelect');
   sel.innerHTML = '';
@@ -2576,7 +2576,7 @@ function buildYearSelect() {
   });
 }
 
-// â”€â”€ SELECT YEAR â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ SELECT YEAR Ã¢ââ¬Ã¢ââ¬
 function selectYear(year) {
   state.selectedYear = year;
   state.selectedMonth = null;
@@ -2585,12 +2585,12 @@ function selectYear(year) {
   document.getElementById('fileSection').style.display = 'none';
   document.getElementById('sheetSection').style.display = 'none';
   showEmptyState('Select a month to begin');
-  updateHeader('Select a month to begin', `${year} â†’ ...`);
-  document.getElementById('pathInfo').textContent = 'â€”';
+  updateHeader('Select a month to begin', `${year} Ã¢â â ...`);
+  document.getElementById('pathInfo').textContent = 'Ã¢â¬â';
   buildMonthGrid();
 }
 
-// â”€â”€ BUILD MONTH GRID â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ BUILD MONTH GRID Ã¢ââ¬Ã¢ââ¬
 function buildMonthGrid() {
   const grid = document.getElementById('monthGrid');
   grid.innerHTML = '';
@@ -2606,7 +2606,7 @@ function buildMonthGrid() {
   });
 }
 
-// â”€â”€ SELECT MONTH â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ SELECT MONTH Ã¢ââ¬Ã¢ââ¬
 function selectMonth(month) {
   state.selectedMonth = month;
   state.selectedFile = null;
@@ -2617,11 +2617,11 @@ function selectMonth(month) {
   document.getElementById('fileSection').style.display = '';
   document.getElementById('sheetSection').style.display = 'none';
   showEmptyState(`Select a file from ${month} files`);
-  updateHeader('Select a file', `${state.selectedYear} â†’ ${month}`);
+  updateHeader('Select a file', `${state.selectedYear} Ã¢â â ${month}`);
   document.getElementById('pathInfo').textContent = `${state.selectedYear} / ${month}`;
 }
 
-// â”€â”€ BUILD FILE LIST â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ BUILD FILE LIST Ã¢ââ¬Ã¢ââ¬
 function buildFileList(files) {
   const list = document.getElementById('fileList');
   list.innerHTML = '';
@@ -2630,13 +2630,13 @@ function buildFileList(files) {
     item.className = 'file-item';
     item.dataset.name = fname;
     item.dataset.path = fpath;
-    item.innerHTML = `<span class="fi-icon">${FILE_ICONS[fname] || 'ðŸ“„'}</span>${FILE_LABELS[fname] || fname}`;
+    item.innerHTML = `<span class="fi-icon">${FILE_ICONS[fname] || 'Ã°Å¸ââ'}</span>${FILE_LABELS[fname] || fname}`;
     item.onclick = () => selectFile(fname, fpath);
     list.appendChild(item);
   });
 }
 
-// â”€â”€ SELECT FILE â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ SELECT FILE Ã¢ââ¬Ã¢ââ¬
 async function selectFile(fname, fpath) {
   state.selectedFile = fname;
   state.selectedSheet = null;
@@ -2649,10 +2649,10 @@ async function selectFile(fname, fpath) {
   buildSheetList(data.sheets);
   document.getElementById('sheetSection').style.display = '';
   if (data.sheets.length > 0) selectSheet(data.sheets[0]);
-  updateHeader(fname, `${state.selectedYear} â†’ ${state.selectedMonth} â†’ ${fname}`);
+  updateHeader(fname, `${state.selectedYear} Ã¢â â ${state.selectedMonth} Ã¢â â ${fname}`);
 }
 
-// â”€â”€ BUILD SHEET LIST â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ BUILD SHEET LIST Ã¢ââ¬Ã¢ââ¬
 function buildSheetList(sheets) {
   const list = document.getElementById('sheetList');
   list.innerHTML = '';
@@ -2666,7 +2666,7 @@ function buildSheetList(sheets) {
   });
 }
 
-// â”€â”€ SELECT SHEET â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ SELECT SHEET Ã¢ââ¬Ã¢ââ¬
 async function selectSheet(sheet) {
   const switchingSheet = state.selectedSheet !== sheet;
   // Only reset edit mode when actively switching to a different sheet
@@ -2701,7 +2701,7 @@ async function selectSheet(sheet) {
   }
 
   renderTable(state.headers, state.allRows);
-  updateHeader(sheet, `${state.selectedYear} â†’ ${state.selectedMonth} â†’ ${state.selectedFile} â†’ ${sheet}`);
+  updateHeader(sheet, `${state.selectedYear} Ã¢â â ${state.selectedMonth} Ã¢â â ${state.selectedFile} Ã¢â â ${sheet}`);
   document.getElementById('recordCount').textContent = `${data.count} Records`;
   setStatus(`Loaded ${state.selectedFile} / ${sheet}`);
   document.getElementById('pathInfo').textContent = `${state.selectedYear} / ${state.selectedMonth} / ${state.selectedFile}.xlsm / ${sheet}`;
@@ -2716,25 +2716,25 @@ async function selectSheet(sheet) {
   document.getElementById('editBadge').style.display = state.editMode ? '' : 'none';
 }
 
-// â”€â”€ TOGGLE EDIT MODE â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ TOGGLE EDIT MODE Ã¢ââ¬Ã¢ââ¬
 function toggleEditMode() {
   const toggle = document.getElementById('editToggle');
   if (toggle.checked) {
-    // Turning ON â€” require password
+    // Turning ON Ã¢â¬â require password
     toggle.checked = false; // revert visually until password confirmed
     document.getElementById('pwdInput').value = '';
     document.getElementById('pwdError').textContent = '';
     document.getElementById('pwdModal').classList.add('open');
     setTimeout(() => document.getElementById('pwdInput').focus(), 120);
   } else {
-    // Turning OFF â€” no password needed
+    // Turning OFF Ã¢â¬â no password needed
     state.editMode = false;
     document.getElementById('editBadge').style.display = 'none';
     renderTable(state.headers, state.allRows);
   }
 }
 
-// â”€â”€ PASSWORD MODAL â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ PASSWORD MODAL Ã¢ââ¬Ã¢ââ¬
 async function confirmPwd() {
   const val = document.getElementById('pwdInput').value;
   try {
@@ -2750,14 +2750,14 @@ async function confirmPwd() {
       document.getElementById('editToggle').checked = true;
       document.getElementById('editBadge').style.display = '';
       renderTable(state.headers, state.allRows);
-      toast('âœŽ Edit mode ON â€” click any cell or use IN/OUT buttons', true);
+      toast('Ã¢ÅÅ½ Edit mode ON Ã¢â¬â click any cell or use IN/OUT buttons', true);
     } else {
-      document.getElementById('pwdError').textContent = 'âœ— Incorrect password';
+      document.getElementById('pwdError').textContent = 'Ã¢Åâ Incorrect password';
       document.getElementById('pwdInput').value = '';
       document.getElementById('pwdInput').focus();
     }
   } catch (e) {
-    document.getElementById('pwdError').textContent = 'âœ— Connection error';
+    document.getElementById('pwdError').textContent = 'Ã¢Åâ Connection error';
   }
 }
 function cancelPwdModal() {
@@ -2766,7 +2766,7 @@ function cancelPwdModal() {
   document.getElementById('pwdError').textContent = '';
 }
 
-// â”€â”€ RENDER TABLE â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ RENDER TABLE Ã¢ââ¬Ã¢ââ¬
 function renderTable(headers, rows) {
   const wrap = document.getElementById('tableWrap');
   if (!headers.length) { showEmptyState('No data in this sheet'); return; }
@@ -2794,13 +2794,13 @@ function renderTable(headers, rows) {
         const val = row[h];
         const hLower = h.toLowerCase();
         let cls = '';
-        if (hLower === 'date' || hLower === 'Ø§Ù„ØªØ§Ø±ÙŠØ®') cls = 'cell-date';
+        if (hLower === 'date' || hLower === 'ÃÂ§ÃâÃÂªÃÂ§ÃÂ±ÃÅ ÃÂ®') cls = 'cell-date';
         else if (hLower === 'in') cls = 'cell-in';
         else if (hLower === 'out') cls = 'cell-out';
         else if (hLower.includes('balance')) cls = 'cell-balance';
 
         const display = (val === null || val === undefined || val === '') ?
-          `<span class="cell-null">â€”</span>` : escHtml(String(val));
+          `<span class="cell-null">Ã¢â¬â</span>` : escHtml(String(val));
 
         const isReadOnly = READ_ONLY_COLS.some(ro => hLower.includes(ro.toLowerCase()));
         const editable   = state.editMode && !isReadOnly;
@@ -2816,7 +2816,7 @@ function renderTable(headers, rows) {
         html += `<td class="action-cell">
           <button class="btn-in"  onclick="openTxModal(${excelRow}, 'IN')">+IN</button>
           <button class="btn-out" onclick="openTxModal(${excelRow}, 'OUT')">-OUT</button>
-          <button class="btn-del" onclick="confirmClearRow(${excelRow})" title="Clear row data">ðŸ—‘</button>
+          <button class="btn-del" onclick="confirmClearRow(${excelRow})" title="Clear row data">Ã°Å¸ââ</button>
         </td>`;
       }
       html += `</tr>`;
@@ -2826,9 +2826,9 @@ function renderTable(headers, rows) {
   wrap.innerHTML = html;
 }
 
-// â”€â”€ INLINE CELL EDIT â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ INLINE CELL EDIT Ã¢ââ¬Ã¢ââ¬
 function _buildDropdown(options, currentText, excelRow, colName) {
-  let optHtml = `<option value="">â€” Ø§Ø®ØªØ± â€”</option>`;
+  let optHtml = `<option value="">Ã¢â¬â ÃÂ§ÃÂ®ÃÂªÃÂ± Ã¢â¬â</option>`;
   let found = false;
   options.forEach(o => {
     const sel = o === currentText ? ' selected' : '';
@@ -2838,7 +2838,7 @@ function _buildDropdown(options, currentText, excelRow, colName) {
   if (currentText && !found) {
     optHtml += `<option value="${escAttr(currentText)}" selected>${escHtml(currentText)}</option>`;
   }
-  optHtml += `<option value="__new__">âœï¸ Ø¥Ø¶Ø§ÙØ© Ù‚ÙŠÙ…Ø© Ø¬Ø¯ÙŠØ¯Ø©â€¦</option>`;
+  optHtml += `<option value="__new__">Ã¢ÅÂÃ¯Â¸Â ÃÂ¥ÃÂ¶ÃÂ§ÃÂÃÂ© ÃâÃÅ Ãâ¦ÃÂ© ÃÂ¬ÃÂ¯ÃÅ ÃÂ¯ÃÂ©Ã¢â¬Â¦</option>`;
   return `<select
     onchange="handleDDChange(this,${excelRow},'${escAttr(colName)}')"
     onblur="handleDDBlur(this,${excelRow},'${escAttr(colName)}')"
@@ -2848,7 +2848,7 @@ function _buildDropdown(options, currentText, excelRow, colName) {
 
 function startEdit(td, excelRow, colName) {
   if (td.querySelector('input') || td.querySelector('select')) return;
-  const currentText = td.innerText.trim() === 'â€”' ? '' : td.innerText.trim();
+  const currentText = td.innerText.trim() === 'Ã¢â¬â' ? '' : td.innerText.trim();
   const colLower = colName.toLowerCase();
 
   const ddMap = {
@@ -2880,7 +2880,7 @@ function handleDDChange(select, excelRow, colName) {
   if (select.value !== '__new__') return;
   // Prevent blur from firing during prompt
   select._prompting = true;
-  const newVal = prompt(`Ø£Ø¶Ù Ù‚ÙŠÙ…Ø© Ø¬Ø¯ÙŠØ¯Ø© Ù„Ù€ ${colName}:`);
+  const newVal = prompt(`ÃÂ£ÃÂ¶ÃÂ ÃâÃÅ Ãâ¦ÃÂ© ÃÂ¬ÃÂ¯ÃÅ ÃÂ¯ÃÂ© ÃâÃâ¬ ${colName}:`);
   select._prompting = false;
   if (newVal && newVal.trim()) {
     const v = newVal.trim();
@@ -2943,13 +2943,13 @@ async function _applyAutoBalance(excelRow, colorValue) {
           if (basicKey)   rowObj[basicKey]   = data.balance;
           if (currentKey) rowObj[currentKey] = data.balance;
         }
-        toast(`âœ“ Color: ${colorValue} â€” Ø±ØµÙŠØ¯ Ø§ÙØªØªØ§Ø­ÙŠ: ${data.balance}`, true);
+        toast(`Ã¢Åâ Color: ${colorValue} Ã¢â¬â ÃÂ±ÃÂµÃÅ ÃÂ¯ ÃÂ§ÃÂÃÂªÃÂªÃÂ§ÃÂ­ÃÅ : ${data.balance}`, true);
         renderTable(state.headers, state.allRows);
         return;
       }
     }
-    // No previous balance found â€” just toast color saved, leave Basic/Current empty
-    toast(`âœ“ Color: ${colorValue} â€” Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ø±ØµÙŠØ¯ Ø³Ø§Ø¨Ù‚ Ù„Ù‡Ø°Ø§ Ø§Ù„ØµÙ†Ù`, true);
+    // No previous balance found Ã¢â¬â just toast color saved, leave Basic/Current empty
+    toast(`Ã¢Åâ Color: ${colorValue} Ã¢â¬â ÃâÃÂ§ ÃÅ ÃËÃÂ¬ÃÂ¯ ÃÂ±ÃÂµÃÅ ÃÂ¯ ÃÂ³ÃÂ§ÃÂ¨Ãâ ÃâÃâ¡ÃÂ°ÃÂ§ ÃÂ§ÃâÃÂµÃâ ÃÂ`, true);
   } catch(e) {
     // silently ignore
   }
@@ -2977,14 +2977,14 @@ async function commitEditSelect(select, excelRow, colName) {
     const rowObj = state.allRows.find(r => r['__row__'] === excelRow);
     if (rowObj) rowObj[colName] = newValue;
 
-    // If Color was just set â†’ auto-fill Basic + Current from last balance
+    // If Color was just set Ã¢â â auto-fill Basic + Current from last balance
     if (colName.toLowerCase() === 'color') {
       await _applyAutoBalance(excelRow, newValue);
     } else {
-      toast(`âœ“ Saved: ${colName} = ${newValue}`);
+      toast(`Ã¢Åâ Saved: ${colName} = ${newValue}`);
     }
   } else {
-    toast(`âœ— Error: ${d.error}`, false);
+    toast(`Ã¢Åâ Error: ${d.error}`, false);
     renderTable(state.headers, state.allRows);
   }
 }
@@ -2994,7 +2994,7 @@ async function commitEdit(input, excelRow, colName) {
   const td = input.parentElement;
 
   // Optimistic UI
-  td.textContent = newValue || 'â€”';
+  td.textContent = newValue || 'Ã¢â¬â';
 
   const res = await fetch('/api/update_cell', {
     method: 'POST',
@@ -3009,22 +3009,22 @@ async function commitEdit(input, excelRow, colName) {
   });
   const data = await res.json();
   if (data.success) {
-    toast(`âœ“ Saved: ${colName} = ${newValue}`);
+    toast(`Ã¢Åâ Saved: ${colName} = ${newValue}`);
     // Update local state so re-render is correct
     const rowObj = state.allRows.find(r => r['__row__'] === excelRow);
     if (rowObj) rowObj[colName] = newValue;
   } else {
-    toast(`âœ— Error: ${data.error}`, false);
+    toast(`Ã¢Åâ Error: ${data.error}`, false);
     renderTable(state.headers, state.allRows); // revert
   }
 }
 
-// â”€â”€ CLEAR ROW â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ CLEAR ROW Ã¢ââ¬Ã¢ââ¬
 async function confirmClearRow(excelRow) {
   const rowObj = state.allRows.find(r => r['__row__'] === excelRow) || {};
   const colorVal = Object.entries(rowObj).find(([k]) => k.toLowerCase() === 'color')?.[1];
   const label = colorVal ? `(Color: ${colorVal})` : `(Row ${excelRow})`;
-  if (!confirm(`Ø­Ø°Ù Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„ØµÙ ${label}ØŸ\nÙ‡Ø°Ø§ Ø³ÙŠÙ…Ø³Ø­ Ø¬Ù…ÙŠØ¹ Ø§Ù„Ù‚ÙŠÙ… â€” Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ØŸ`)) return;
+  if (!confirm(`ÃÂ­ÃÂ°ÃÂ ÃÂ¨ÃÅ ÃÂ§Ãâ ÃÂ§ÃÂª ÃÂ§ÃâÃÂµÃÂ ${label}ÃÅ¸\nÃâ¡ÃÂ°ÃÂ§ ÃÂ³ÃÅ Ãâ¦ÃÂ³ÃÂ­ ÃÂ¬Ãâ¦ÃÅ ÃÂ¹ ÃÂ§ÃâÃâÃÅ Ãâ¦ Ã¢â¬â Ãâ¡Ãâ ÃÂ£Ãâ ÃÂª Ãâ¦ÃÂªÃÂ£ÃÆÃÂ¯ÃÅ¸`)) return;
 
   const res = await fetch('/api/clear_row', {
     method: 'POST',
@@ -3033,14 +3033,14 @@ async function confirmClearRow(excelRow) {
   });
   const d = await res.json();
   if (d.success) {
-    toast('âœ“ ØªÙ… Ù…Ø³Ø­ Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„ØµÙ');
+    toast('Ã¢Åâ ÃÂªÃâ¦ Ãâ¦ÃÂ³ÃÂ­ ÃÂ¨ÃÅ ÃÂ§Ãâ ÃÂ§ÃÂª ÃÂ§ÃâÃÂµÃÂ');
     await selectSheet(state.selectedSheet);
   } else {
-    toast(`âœ— ${d.error}`, false);
+    toast(`Ã¢Åâ ${d.error}`, false);
   }
 }
 
-// â”€â”€ TRANSACTION MODAL â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ TRANSACTION MODAL Ã¢ââ¬Ã¢ââ¬
 let _txRow = null, _txOp = null;
 
 function openTxModal(excelRow, operation) {
@@ -3054,12 +3054,12 @@ function openTxModal(excelRow, operation) {
   const colorKey = Object.keys(rowObj).find(k => k.toLowerCase() === 'color');
   const colorVal = colorKey ? rowObj[colorKey] : null;
   if (!colorVal || String(colorVal).trim() === '' || String(colorVal).trim().toLowerCase() === 'null') {
-    toast('âš ï¸ ÙŠØ¬Ø¨ ØªØ­Ø¯ÙŠØ¯ Ø§Ù„Ù„ÙˆÙ† (Color) Ø£ÙˆÙ„Ø§Ù‹ Ù‚Ø¨Ù„ Ø¥Ø¬Ø±Ø§Ø¡ Ø£ÙŠ Ø¹Ù…Ù„ÙŠØ©', false);
+    toast('Ã¢Å¡Â Ã¯Â¸Â ÃÅ ÃÂ¬ÃÂ¨ ÃÂªÃÂ­ÃÂ¯ÃÅ ÃÂ¯ ÃÂ§ÃâÃâÃËÃâ  (Color) ÃÂ£ÃËÃâÃÂ§Ãâ¹ ÃâÃÂ¨Ãâ ÃÂ¥ÃÂ¬ÃÂ±ÃÂ§ÃÂ¡ ÃÂ£ÃÅ  ÃÂ¹Ãâ¦ÃâÃÅ ÃÂ©', false);
     return;
   }
 
-  document.getElementById('txTitle').textContent    = operation === 'IN' ? 'âž• IN â€” Add Stock' : 'âž– OUT â€” Remove Stock';
-  document.getElementById('txSubtitle').textContent = `${state.selectedFile} / ${state.selectedSheet} â€” Row ${excelRow}`;
+  document.getElementById('txTitle').textContent    = operation === 'IN' ? 'Ã¢Å¾â¢ IN Ã¢â¬â Add Stock' : 'Ã¢Å¾â OUT Ã¢â¬â Remove Stock';
+  document.getElementById('txSubtitle').textContent = `${state.selectedFile} / ${state.selectedSheet} Ã¢â¬â Row ${excelRow}`;
 
   // Info grid
   const infoFields = ['Color', 'Size', 'Type', 'Category', 'Current Balance', 'Basic'];
@@ -3077,7 +3077,7 @@ function openTxModal(excelRow, operation) {
 
   const btn = document.getElementById('txConfirmBtn');
   btn.className = `btn ${operation === 'IN' ? 'btn-in-modal' : 'btn-out-modal'}`;
-  btn.textContent = operation === 'IN' ? 'âœ“ Add Stock' : 'âœ“ Remove Stock';
+  btn.textContent = operation === 'IN' ? 'Ã¢Åâ Add Stock' : 'Ã¢Åâ Remove Stock';
 
   document.getElementById('txQty').value = '';
   document.getElementById('txModal').classList.add('open');
@@ -3091,7 +3091,7 @@ function closeTxModal() {
 
 async function submitTx() {
   const qty = parseFloat(document.getElementById('txQty').value);
-  if (isNaN(qty) || qty < 0) { toast('Ø£Ø¯Ø®Ù„ ÙƒÙ…ÙŠØ© ØµØ­ÙŠØ­Ø© (0 Ø£Ùˆ Ø£ÙƒØ«Ø±)', false); return; }
+  if (isNaN(qty) || qty < 0) { toast('ÃÂ£ÃÂ¯ÃÂ®Ãâ ÃÆÃâ¦ÃÅ ÃÂ© ÃÂµÃÂ­ÃÅ ÃÂ­ÃÂ© (0 ÃÂ£ÃË ÃÂ£ÃÆÃÂ«ÃÂ±)', false); return; }
   if (!_txRow || !_txOp) return;
 
   const btn = document.getElementById('txConfirmBtn');
@@ -3112,19 +3112,19 @@ async function submitTx() {
   const data = await res.json();
 
   btn.disabled = false;
-  btn.textContent = _txOp === 'IN' ? 'âœ“ Add Stock' : 'âœ“ Remove Stock';
+  btn.textContent = _txOp === 'IN' ? 'Ã¢Åâ Add Stock' : 'Ã¢Åâ Remove Stock';
 
   if (data.success) {
-    toast(`âœ“ ${_txOp} ${qty} â€” New balance: ${data.new_balance}`);
+    toast(`Ã¢Åâ ${_txOp} ${qty} Ã¢â¬â New balance: ${data.new_balance}`);
     closeTxModal();
     // Refresh to show updated Current Balance across all rows with same Color
     await selectSheet(state.selectedSheet);
   } else {
-    toast(`âœ— ${data.error}`, false);
+    toast(`Ã¢Åâ ${data.error}`, false);
   }
 }
 
-// â”€â”€ FILTER â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ FILTER Ã¢ââ¬Ã¢ââ¬
 function filterTable(query) {
   const q = query.trim().toLowerCase();
   const rows = document.querySelectorAll('.data-table tbody tr[data-row]');
@@ -3138,11 +3138,11 @@ function filterTable(query) {
   info.textContent = q ? `${visible} of ${state.allRows.length} results` : '';
 }
 
-// â”€â”€ HELPERS â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ HELPERS Ã¢ââ¬Ã¢ââ¬
 function showEmptyState(msg) {
   document.getElementById('tableWrap').innerHTML = `
     <div class="empty-state">
-      <div class="es-icon">ðŸ“‚</div>
+      <div class="es-icon">Ã°Å¸ââ</div>
       <h3>${msg}</h3>
       <p>Select a month, file and sheet from the sidebar</p>
     </div>`;
@@ -3163,7 +3163,7 @@ function escAttr(s) {
   return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;');
 }
 
-// â”€â”€ ACTIONS â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ ACTIONS Ã¢ââ¬Ã¢ââ¬
 function refreshData() { if (state.selectedSheet) selectSheet(state.selectedSheet); }
 
 function printTable() {
@@ -3180,7 +3180,7 @@ function printTable() {
       tr:nth-child(even) { background: #f5f5f5; }
       .action-cell { display: none; }
     </style></head><body>`);
-  win.document.write(`<h2>${state.selectedFile} / ${state.selectedSheet} â€” ${state.selectedMonth} ${state.selectedYear}</h2>`);
+  win.document.write(`<h2>${state.selectedFile} / ${state.selectedSheet} Ã¢â¬â ${state.selectedMonth} ${state.selectedYear}</h2>`);
   win.document.write(table.outerHTML);
   win.document.write('</body></html>');
   win.document.close();
@@ -3189,7 +3189,7 @@ function printTable() {
 
 function exportCSV() {
   if (!state.headers.length || !state.allRows.length) {
-    toast('âš ï¸ No data to export', false);
+    toast('Ã¢Å¡Â Ã¯Â¸Â No data to export', false);
     return;
   }
   openCsvModal();
@@ -3198,15 +3198,15 @@ function exportCSV() {
 function openCsvModal() {
   const filename = state.headers.length
     ? `${state.selectedFile || 'data'}_${state.selectedSheet || 'sheet'}_${state.selectedMonth || ''}_${state.selectedYear || ''}.csv`
-    : 'â€”';
-  document.getElementById('csvInfoFile').textContent    = state.selectedFile  || 'â€”';
-  document.getElementById('csvInfoSheet').textContent   = state.selectedSheet || 'â€”';
-  document.getElementById('csvInfoPeriod').textContent  = (state.selectedMonth && state.selectedYear) ? `${state.selectedMonth} ${state.selectedYear}` : 'â€”';
-  document.getElementById('csvInfoRecords').textContent = state.allRows.length ? `${state.allRows.length} rows` : 'â€”';
+    : 'Ã¢â¬â';
+  document.getElementById('csvInfoFile').textContent    = state.selectedFile  || 'Ã¢â¬â';
+  document.getElementById('csvInfoSheet').textContent   = state.selectedSheet || 'Ã¢â¬â';
+  document.getElementById('csvInfoPeriod').textContent  = (state.selectedMonth && state.selectedYear) ? `${state.selectedMonth} ${state.selectedYear}` : 'Ã¢â¬â';
+  document.getElementById('csvInfoRecords').textContent = state.allRows.length ? `${state.allRows.length} rows` : 'Ã¢â¬â';
   document.getElementById('csvInfoFilename').textContent = filename;
   document.getElementById('csvModalSub').textContent = state.headers.length
     ? `Export: ${state.selectedFile || ''} / ${state.selectedSheet || ''}`
-    : 'No data loaded â€” please select a file and sheet first.';
+    : 'No data loaded Ã¢â¬â please select a file and sheet first.';
   document.getElementById('csvModal').classList.add('open');
 }
 
@@ -3238,13 +3238,13 @@ function doExportCSV() {
   closeCsvModal();
 }
 
-// â”€â”€ KEYBOARD â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ KEYBOARD Ã¢ââ¬Ã¢ââ¬
 document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.key === 'f') { e.preventDefault(); document.getElementById('searchInput').focus(); }
   if (e.key === 'Escape') { closeTxModal(); closeAbout(); cancelPwdModal(); closePrintModal(); closeCsvModal(); closeLogout(); closeDashboard(); closeProfileModal(); closeUsersModal(); closeAdminRequestsModal(); closeAdminUsersModal(); closeAdminUserDetailModal(); document.getElementById('reportsDropdownMenu')?.classList.remove('open'); }
 });
 
-// â”€â”€ ABOUT â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ ABOUT Ã¢ââ¬Ã¢ââ¬
 function showAbout()  { document.getElementById('aboutModal').style.display = 'flex'; }
 function closeAbout() { document.getElementById('aboutModal').style.display = 'none'; }
 
@@ -3257,9 +3257,9 @@ function closeLogout() {
 function doLogout() {
 window.location.href = '/logout';}
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Ã¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢Â
 // DASHBOARD
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Ã¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢Â
 let _dashData   = null;
 let _dashView   = 'overview';
 let _dashCharts = [];
@@ -3283,13 +3283,13 @@ async function loadDashData() {
     if (!res.ok || _dashData.error) throw new Error(_dashData.error || 'Dashboard request failed');
     dashShow(_dashView);
   } catch(e) {
-    setDashContent('<div class="dash-loading">âš ï¸ Failed to load dashboard data</div>');
+    setDashContent('<div class="dash-loading">Ã¢Å¡Â Ã¯Â¸Â Failed to load dashboard data</div>');
   }
 }
 
 function setDashContent(html) {
   const c = document.getElementById('dashContent');
-  c.innerHTML = `<button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>` + html;
+  c.innerHTML = `<button class="dash-close-btn" onclick="closeDashboard()">Ã¢Åâ¢</button>` + html;
 }
 
 function setDashContentSafe(html) {
@@ -3356,14 +3356,14 @@ async function dashExcelStatus() {
     setDashContent(`<div class="dash-content-title">Excel Link Status</div><div class="dash-empty">Failed to read Excel status.</div>`);
   }
 }
-/* â”€â”€ OVERVIEW â”€â”€ */
+/* Ã¢ââ¬Ã¢ââ¬ OVERVIEW Ã¢ââ¬Ã¢ââ¬ */
 function dashOverview(d) {
   const kpis = [
-    { label:'Total Items',     value: d.total_items   ?? 'â€”', sub:'across all sheets',   cls:'blue'  },
-    { label:'Total IN',        value: d.total_in      ?? 'â€”', sub:'all time',             cls:'green' },
-    { label:'Total OUT',       value: d.total_out     ?? 'â€”', sub:'all time',             cls:'red'   },
-    { label:'Low Stock Items', value: d.low_stock     ?? 'â€”', sub:'below threshold',      cls:'amber' },
-    { label:'Zero Stock',      value: d.zero_stock    ?? 'â€”', sub:'need restocking',      cls:'red'   },
+    { label:'Total Items',     value: d.total_items   ?? 'Ã¢â¬â', sub:'across all sheets',   cls:'blue'  },
+    { label:'Total IN',        value: d.total_in      ?? 'Ã¢â¬â', sub:'all time',             cls:'green' },
+    { label:'Total OUT',       value: d.total_out     ?? 'Ã¢â¬â', sub:'all time',             cls:'red'   },
+    { label:'Low Stock Items', value: d.low_stock     ?? 'Ã¢â¬â', sub:'below threshold',      cls:'amber' },
+    { label:'Zero Stock',      value: d.zero_stock    ?? 'Ã¢â¬â', sub:'need restocking',      cls:'red'   },
   ];
   const kpiHtml = kpis.map(k => `
     <div class="dash-kpi-card ${k.cls}">
@@ -3373,12 +3373,12 @@ function dashOverview(d) {
     </div>`).join('');
 
   setDashContent(`
-    <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
-    <div class="dash-content-title">ðŸ“Š Overview</div>
+    <button class="dash-close-btn" onclick="closeDashboard()">Ã¢Åâ¢</button>
+    <div class="dash-content-title">Ã°Å¸âÅ  Overview</div>
     <div class="dash-content-sub">Summary of current inventory status</div>
     <div class="dash-kpi-grid">${kpiHtml}</div>
     <div class="dash-chart-wrap">
-      <div class="dash-chart-title">IN vs OUT â€” Current Data</div>
+      <div class="dash-chart-title">IN vs OUT Ã¢â¬â Current Data</div>
       <canvas id="dashChartCanvas"></canvas>
     </div>`);
 
@@ -3392,11 +3392,11 @@ function dashOverview(d) {
   ]);
 }
 
-/* â”€â”€ MOVEMENT â”€â”€ */
+/* Ã¢ââ¬Ã¢ââ¬ MOVEMENT Ã¢ââ¬Ã¢ââ¬ */
 function dashMovement(d) {
   setDashContent(`
-    <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
-    <div class="dash-content-title">ðŸ“ˆ IN / OUT Movement</div>
+    <button class="dash-close-btn" onclick="closeDashboard()">Ã¢Åâ¢</button>
+    <div class="dash-content-title">Ã°Å¸âË IN / OUT Movement</div>
     <div class="dash-content-sub">Stock movement breakdown by zone</div>
     <div class="dash-chart-wrap">
       <div class="dash-chart-title">IN per Zone</div>
@@ -3423,38 +3423,38 @@ function dashMovement(d) {
   });
 }
 
-/* â”€â”€ ALERTS â”€â”€ */
+/* Ã¢ââ¬Ã¢ââ¬ ALERTS Ã¢ââ¬Ã¢ââ¬ */
 function dashAlerts(d) {
   const items = d.alerts || [];
   const rows = items.length
     ? items.map(a => `
         <div class="dash-alert-item ${a.level}">
-          <div class="dash-alert-icon">${a.level==='danger'?'ðŸ”´':'ðŸŸ¡'}</div>
+          <div class="dash-alert-icon">${a.level==='danger'?'Ã°Å¸âÂ´':'Ã°Å¸Å¸Â¡'}</div>
           <div class="dash-alert-text">
             <div class="dash-alert-name">${escHtml(a.name)}</div>
-            <div class="dash-alert-desc">${escHtml(a.sheet||'')} â€” Balance: ${a.balance}</div>
+            <div class="dash-alert-desc">${escHtml(a.sheet||'')} Ã¢â¬â Balance: ${a.balance}</div>
           </div>
           <div class="dash-alert-badge ${a.level==='danger'?'red':'amber'}">${a.level==='danger'?'ZERO':'LOW'}</div>
         </div>`)
       .join('')
-    : '<div class="dash-loading">âœ… All items have sufficient stock</div>';
+    : '<div class="dash-loading">Ã¢Åâ¦ All items have sufficient stock</div>';
 
   setDashContent(`
-    <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
-    <div class="dash-content-title">âš ï¸ Stock Alerts</div>
+    <button class="dash-close-btn" onclick="closeDashboard()">Ã¢Åâ¢</button>
+    <div class="dash-content-title">Ã¢Å¡Â Ã¯Â¸Â Stock Alerts</div>
     <div class="dash-content-sub">${items.length} item(s) need attention</div>
     <div class="dash-alert-list">${rows}</div>`);
 }
 
-/* â”€â”€ TOP ITEMS â”€â”€ */
+/* Ã¢ââ¬Ã¢ââ¬ TOP ITEMS Ã¢ââ¬Ã¢ââ¬ */
 function dashTop(d) {
   const items  = (d.top_items || []).slice(0, 10);
   const labels = items.map(i => i.name);
   const vals   = items.map(i => i.out);
 
   setDashContent(`
-    <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
-    <div class="dash-content-title">ðŸ† Top Items by Consumption</div>
+    <button class="dash-close-btn" onclick="closeDashboard()">Ã¢Åâ¢</button>
+    <div class="dash-content-title">Ã°Å¸Ââ  Top Items by Consumption</div>
     <div class="dash-content-sub">Items with highest OUT quantity</div>
     <div class="dash-chart-wrap">
       <div class="dash-chart-title">Top 10 Most Consumed Items</div>
@@ -3466,20 +3466,20 @@ function dashTop(d) {
   ], { indexAxis: 'y' });
 }
 
-/* â”€â”€ ZONES â”€â”€ */
+/* Ã¢ââ¬Ã¢ââ¬ ZONES Ã¢ââ¬Ã¢ââ¬ */
 function dashZones(d) {
   const zones  = Object.keys(d.zone_in || {});
   const rows   = zones.map(z => `
     <tr>
-      <td>ðŸ­ ${escHtml(z)}</td>
+      <td>Ã°Å¸ÂÂ­ ${escHtml(z)}</td>
       <td style="color:var(--accent-green);font-weight:600;">${d.zone_in[z]  || 0}</td>
       <td style="color:var(--accent-red);font-weight:600;">${d.zone_out[z] || 0}</td>
       <td style="color:var(--accent-cyan);font-weight:600;">${(d.zone_in[z]||0) - (d.zone_out[z]||0)}</td>
     </tr>`).join('');
 
   setDashContent(`
-    <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
-    <div class="dash-content-title">ðŸ­ Zones Summary</div>
+    <button class="dash-close-btn" onclick="closeDashboard()">Ã¢Åâ¢</button>
+    <div class="dash-content-title">Ã°Å¸ÂÂ­ Zones Summary</div>
     <div class="dash-content-sub">IN / OUT breakdown per zone</div>
     <div class="dash-chart-wrap" style="padding:0;overflow:hidden;">
       <table class="dash-zone-table">
@@ -3500,7 +3500,7 @@ function dashZones(d) {
   ]);
 }
 
-/* â”€â”€ CHART HELPERS â”€â”€ */
+/* Ã¢ââ¬Ã¢ââ¬ CHART HELPERS Ã¢ââ¬Ã¢ââ¬ */
 function chartOpts(yLabel='') {
   return {
     responsive:true, maintainAspectRatio:true,
@@ -3529,7 +3529,7 @@ function drawChart(type, labels, datasets, extra={}) {
   });
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Ã¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢Â
 function fmtDashNum(v) {
   const n = Number(v || 0);
   return Number.isInteger(n) ? n.toLocaleString() : n.toLocaleString(undefined, { maximumFractionDigits: 2 });
@@ -3798,7 +3798,7 @@ async function loadDashData(silent=false, isAuto=false) {
   }
 }
 
-// View switch does NOT reset the countdown â€” timer continues
+// View switch does NOT reset the countdown Ã¢â¬â timer continues
 const _origDashShow_wrapped = dashShow;
 
 function onDashZoneChange(value) {
@@ -3913,7 +3913,7 @@ function dashZones(d) {
 }
 
 // WELCOME TOAST
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Ã¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢Â
 (function() {
   const t = document.getElementById('welcomeToast');
   if (!t) return;
@@ -3921,9 +3921,9 @@ function dashZones(d) {
   setTimeout(() => t.classList.remove('show'), 4500);
 })();
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Ã¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢Â
 // SESSION TIMER
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Ã¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢Â
 (function() {
   const el = document.getElementById('sessionTimer');
   if (!el) return;
@@ -3934,16 +3934,16 @@ function dashZones(d) {
     const m = Math.floor((s % 3600) / 60);
     const sec = s % 60;
     el.textContent = h > 0
-      ? `â± ${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
-      : `â± ${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+      ? `Ã¢ÂÂ± ${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
+      : `Ã¢ÂÂ± ${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
   }
   tick();
   setInterval(tick, 1000);
 })();
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Ã¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢Â
 // ALERT BADGE (zero stock count)
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Ã¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢Â
 (function() {
   const badge = document.getElementById('alertBadge');
   if (!badge) return;
@@ -4019,9 +4019,9 @@ document.addEventListener('visibilitychange', () => {
 window.addEventListener('focus', refreshAdminRequestBadge);
 {% endif %}
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Ã¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢Â
 // USERS / LOGIN LOG MODAL
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Ã¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢ÂÃ¢â¢Â
 function openUsersModal() {
   document.getElementById('usersModal')?.classList.add('open');
   loadLoginLog();
@@ -4039,7 +4039,7 @@ async function loadLoginLogLegacy() {
     const data = await res.json();
     const entries = data.entries || [];
     if (!entries.length) {
-      body.innerHTML = '<div class="users-empty">ðŸ“­ No login records yet</div>';
+      body.innerHTML = '<div class="users-empty">Ã°Å¸âÂ­ No login records yet</div>';
       return;
     }
     const rows = entries.map((e, i) => `
@@ -4048,12 +4048,12 @@ async function loadLoginLogLegacy() {
         <td>
           <span style="display:inline-flex;align-items:center;gap:6px;">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <strong>${escHtml(e.username || 'â€”')}</strong>
+            <strong>${escHtml(e.username || 'Ã¢â¬â')}</strong>
           </span>
         </td>
-        <td><span class="zone-badge" style="font-size:11px;padding:2px 10px;">${escHtml(e.zone_label || e.zone_id || 'â€”')}</span></td>
-        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);">${escHtml(e.time || 'â€”')}</td>
-        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);">${escHtml(e.ip || 'â€”')}</td>
+        <td><span class="zone-badge" style="font-size:11px;padding:2px 10px;">${escHtml(e.zone_label || e.zone_id || 'Ã¢â¬â')}</span></td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);">${escHtml(e.time || 'Ã¢â¬â')}</td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);">${escHtml(e.ip || 'Ã¢â¬â')}</td>
       </tr>`).join('');
 
     body.innerHTML = `
@@ -4070,11 +4070,11 @@ async function loadLoginLogLegacy() {
         <tbody>${rows}</tbody>
       </table>`;
   } catch(e) {
-    body.innerHTML = '<div class="users-empty">âš ï¸ Failed to load log</div>';
+    body.innerHTML = '<div class="users-empty">Ã¢Å¡Â Ã¯Â¸Â Failed to load log</div>';
   }
 }
 
-// â”€â”€ REPORTS DROPDOWN â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ REPORTS DROPDOWN Ã¢ââ¬Ã¢ââ¬
 async function loadLoginLog() {
   const body = document.getElementById('usersBody');
   if (!body) return;
@@ -4154,7 +4154,7 @@ function closeAdminUsersModal() {
 
 function exportAdminUsers() {
   if (!adminUsersCache.length) {
-    toast('âš ï¸ No registered users to export', false);
+    toast('Ã¢Å¡Â Ã¯Â¸Â No registered users to export', false);
     return;
   }
   window.location.href = '/api/admin/registered_users/export.xlsx';
@@ -4171,28 +4171,28 @@ async function loadAdminRequests() {
     setAdminRequestBadge(data.count || 0);
     const items = data.requests || [];
     if (!items.length) {
-      body.innerHTML = '<div class="users-empty">Ù„Ø§ ØªÙˆØ¬Ø¯ Ø·Ù„Ø¨Ø§Øª ØªØ³Ø¬ÙŠÙ„ Ø­Ø§Ù„ÙŠØ§Ù‹</div>';
+      body.innerHTML = '<div class="users-empty">ÃâÃÂ§ ÃÂªÃËÃÂ¬ÃÂ¯ ÃÂ·ÃâÃÂ¨ÃÂ§ÃÂª ÃÂªÃÂ³ÃÂ¬ÃÅ Ãâ ÃÂ­ÃÂ§ÃâÃÅ ÃÂ§Ãâ¹</div>';
       return;
     }
     body.innerHTML = items.map((r) => `
       <div style="border:1px solid var(--border);background:var(--bg-card);border-radius:12px;padding:14px 16px;margin-bottom:10px;">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
           <div style="min-width:240px;">
-            <div style="font-size:15px;font-weight:700;color:var(--text-main);">${escHtml(r.full_name || 'â€”')}</div>
-            <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">@${escHtml(r.username || 'â€”')} â€¢ ${escHtml(r.job_title || 'â€”')}</div>
-            <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">${escHtml(r.email || 'â€”')} â€¢ ${escHtml(r.phone || 'â€”')}</div>
-            <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">Ø§Ù„Ø³Ø¤Ø§Ù„ Ø§Ù„Ø£Ù…Ù†ÙŠ: ${escHtml(r.security_question || 'â€”')}</div>
-            <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">${escHtml(r.created_at || 'â€”')}</div>
+            <div style="font-size:15px;font-weight:700;color:var(--text-main);">${escHtml(r.full_name || 'Ã¢â¬â')}</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">@${escHtml(r.username || 'Ã¢â¬â')} Ã¢â¬Â¢ ${escHtml(r.job_title || 'Ã¢â¬â')}</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">${escHtml(r.email || 'Ã¢â¬â')} Ã¢â¬Â¢ ${escHtml(r.phone || 'Ã¢â¬â')}</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">ÃÂ§ÃâÃÂ³ÃÂ¤ÃÂ§Ãâ ÃÂ§ÃâÃÂ£Ãâ¦Ãâ ÃÅ : ${escHtml(r.security_question || 'Ã¢â¬â')}</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">${escHtml(r.created_at || 'Ã¢â¬â')}</div>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button class="btn btn-purple" style="padding:8px 12px;font-size:12px;" onclick="approveRegistration(${Number(r.id)})">Ù…ÙˆØ§ÙÙ‚Ø©</button>
-            <button class="btn btn-ghost" style="padding:8px 12px;font-size:12px;" onclick="rejectRegistration(${Number(r.id)})">Ø±ÙØ¶</button>
+            <button class="btn btn-purple" style="padding:8px 12px;font-size:12px;" onclick="approveRegistration(${Number(r.id)})">Ãâ¦ÃËÃÂ§ÃÂÃâÃÂ©</button>
+            <button class="btn btn-ghost" style="padding:8px 12px;font-size:12px;" onclick="rejectRegistration(${Number(r.id)})">ÃÂ±ÃÂÃÂ¶</button>
           </div>
         </div>
       </div>
     `).join('');
   } catch (e) {
-    body.innerHTML = `<div class="users-empty">ÙØ´Ù„ ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ø·Ù„Ø¨Ø§Øª<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
+    body.innerHTML = `<div class="users-empty">ÃÂÃÂ´Ãâ ÃÂªÃÂ­Ãâ¦ÃÅ Ãâ ÃÂ§ÃâÃÂ·ÃâÃÂ¨ÃÂ§ÃÂª<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
   }
 }
 
@@ -4204,7 +4204,7 @@ async function approveRegistration(id) {
     await loadAdminRequests();
     await loadAdminUsers();
   } catch (e) {
-    alert(e.message || 'ØªØ¹Ø°Ø± Ø§Ù„Ù…ÙˆØ§ÙÙ‚Ø© Ø¹Ù„Ù‰ Ø§Ù„Ø·Ù„Ø¨');
+    alert(e.message || 'ÃÂªÃÂ¹ÃÂ°ÃÂ± ÃÂ§ÃâÃâ¦ÃËÃÂ§ÃÂÃâÃÂ© ÃÂ¹ÃâÃâ° ÃÂ§ÃâÃÂ·ÃâÃÂ¨');
   }
 }
 
@@ -4215,7 +4215,7 @@ async function rejectRegistration(id) {
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
     await loadAdminRequests();
   } catch (e) {
-    alert(e.message || 'ØªØ¹Ø°Ø± Ø±ÙØ¶ Ø§Ù„Ø·Ù„Ø¨');
+    alert(e.message || 'ÃÂªÃÂ¹ÃÂ°ÃÂ± ÃÂ±ÃÂÃÂ¶ ÃÂ§ÃâÃÂ·ÃâÃÂ¨');
   }
 }
 
@@ -4225,11 +4225,11 @@ const ADMIN_SECURITY_QUESTIONS = [
   'What city were you born in?',
   'What is the name of your favorite teacher?',
   'What was your first phone number?',
-  'Ù…Ø§ Ø§Ø³Ù… Ø£ÙˆÙ„ Ù…Ø¯Ø±Ø³Ø© Ø§Ù„ØªØ­Ù‚Øª Ø¨Ù‡Ø§ØŸ',
-  'Ù…Ø§ Ø§Ø³Ù… Ø¹Ø§Ø¦Ù„Ø© ÙˆØ§Ù„Ø¯ØªÙƒ Ù‚Ø¨Ù„ Ø§Ù„Ø²ÙˆØ§Ø¬ØŸ',
-  'ÙÙŠ Ø£ÙŠ Ù…Ø¯ÙŠÙ†Ø© ÙˆÙ„Ø¯ØªØŸ',
-  'Ù…Ø§ Ø§Ø³Ù… Ù…Ø¹Ù„Ù…Ùƒ Ø§Ù„Ù…ÙØ¶Ù„ØŸ',
-  'Ù…Ø§ Ù‡Ùˆ Ø£ÙˆÙ„ Ø±Ù‚Ù… Ù‡Ø§ØªÙ Ø§Ø³ØªØ®Ø¯Ù…ØªÙ‡ØŸ'
+  'Ãâ¦ÃÂ§ ÃÂ§ÃÂ³Ãâ¦ ÃÂ£ÃËÃâ Ãâ¦ÃÂ¯ÃÂ±ÃÂ³ÃÂ© ÃÂ§ÃâÃÂªÃÂ­ÃâÃÂª ÃÂ¨Ãâ¡ÃÂ§ÃÅ¸',
+  'Ãâ¦ÃÂ§ ÃÂ§ÃÂ³Ãâ¦ ÃÂ¹ÃÂ§ÃÂ¦ÃâÃÂ© ÃËÃÂ§ÃâÃÂ¯ÃÂªÃÆ ÃâÃÂ¨Ãâ ÃÂ§ÃâÃÂ²ÃËÃÂ§ÃÂ¬ÃÅ¸',
+  'ÃÂÃÅ  ÃÂ£ÃÅ  Ãâ¦ÃÂ¯ÃÅ Ãâ ÃÂ© ÃËÃâÃÂ¯ÃÂªÃÅ¸',
+  'Ãâ¦ÃÂ§ ÃÂ§ÃÂ³Ãâ¦ Ãâ¦ÃÂ¹ÃâÃâ¦ÃÆ ÃÂ§ÃâÃâ¦ÃÂÃÂ¶ÃâÃÅ¸',
+  'Ãâ¦ÃÂ§ Ãâ¡ÃË ÃÂ£ÃËÃâ ÃÂ±ÃâÃâ¦ Ãâ¡ÃÂ§ÃÂªÃÂ ÃÂ§ÃÂ³ÃÂªÃÂ®ÃÂ¯Ãâ¦ÃÂªÃâ¡ÃÅ¸'
 ];
 function adminSecurityOptions(current) {
   const value = String(current || '');
@@ -4248,7 +4248,7 @@ async function loadAdminUsers() {
     if (!res.ok || data.error) throw new Error(data.error || 'Failed');
     adminUsersCache = data.users || [];
     if (!adminUsersCache.length) {
-      body.innerHTML = '<div class="users-empty">Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ù…Ø³ØªØ®Ø¯Ù…ÙˆÙ† Ù…Ø³Ø¬Ù„ÙˆÙ† Ø¨Ø¹Ø¯</div>';
+      body.innerHTML = '<div class="users-empty">ÃâÃÂ§ ÃÅ ÃËÃÂ¬ÃÂ¯ Ãâ¦ÃÂ³ÃÂªÃÂ®ÃÂ¯Ãâ¦ÃËÃâ  Ãâ¦ÃÂ³ÃÂ¬ÃâÃËÃâ  ÃÂ¨ÃÂ¹ÃÂ¯</div>';
       return;
     }
     body.innerHTML = `
@@ -4256,13 +4256,13 @@ async function loadAdminUsers() {
       <div class="admin-user-list">
         ${adminUsersCache.map((u, i) => `
           <button class="admin-user-row" type="button" onclick="openAdminUserDetail(${Number(u.id)})">
-            <strong>${i + 1}. ${escHtml(u.username || 'â€”')}</strong>
-            <span>${u.suspended_until ? 'Ù…ÙˆÙ‚ÙˆÙ Ø­ØªÙ‰ ' + escHtml(u.suspended_until) : 'Ø¹Ø±Ø¶ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª'}</span>
+            <strong>${i + 1}. ${escHtml(u.username || 'Ã¢â¬â')}</strong>
+            <span>${u.suspended_until ? 'Ãâ¦ÃËÃâÃËÃÂ ÃÂ­ÃÂªÃâ° ' + escHtml(u.suspended_until) : 'ÃÂ¹ÃÂ±ÃÂ¶ ÃÂ§ÃâÃÂ¨ÃÅ ÃÂ§Ãâ ÃÂ§ÃÂª'}</span>
           </button>
         `).join('')}
       </div>`;
   } catch (e) {
-    body.innerHTML = `<div class="users-empty">ÙØ´Ù„ ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙŠÙ†<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
+    body.innerHTML = `<div class="users-empty">ÃÂÃÂ´Ãâ ÃÂªÃÂ­Ãâ¦ÃÅ Ãâ ÃÂ§ÃâÃâ¦ÃÂ³ÃÂªÃÂ®ÃÂ¯Ãâ¦ÃÅ Ãâ <br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
   }
 }
 
@@ -4273,29 +4273,29 @@ function openAdminUserDetail(id) {
   if (!body) return;
   const rows = [
     ['Full name', u.full_name], ['Username', u.username], ['Job title', u.job_title], ['Gender', u.gender], ['Birth date', u.birth_date], ['Privacy accepted', u.privacy_accepted ? 'Yes' : 'No'], ['Email', u.email],
-    ['Phone', u.phone], ['Security question', u.security_question], ['Password', u.password_stored_as ? 'Hidden (one-way hash)' : 'â€”'],
-    ['Security answer', u.security_answer_stored_as ? 'Hidden (one-way hash)' : 'â€”'],
-    ['Approved at', u.approved_at || u.created_at], ['Suspended until', u.suspended_until || 'â€”'], ['Suspended by', u.suspended_by || 'â€”']
+    ['Phone', u.phone], ['Security question', u.security_question], ['Password', u.password_stored_as ? 'Hidden (one-way hash)' : 'Ã¢â¬â'],
+    ['Security answer', u.security_answer_stored_as ? 'Hidden (one-way hash)' : 'Ã¢â¬â'],
+    ['Approved at', u.approved_at || u.created_at], ['Suspended until', u.suspended_until || 'Ã¢â¬â'], ['Suspended by', u.suspended_by || 'Ã¢â¬â']
   ];
   body.innerHTML = `
     <div class="admin-detail-grid">
-      ${rows.map(([label, value]) => `<div class="admin-detail-item"><div class="admin-detail-label">${escHtml(label)}</div><div class="admin-detail-value">${escHtml(value || 'â€”')}</div></div>`).join('')}
+      ${rows.map(([label, value]) => `<div class="admin-detail-item"><div class="admin-detail-label">${escHtml(label)}</div><div class="admin-detail-value">${escHtml(value || 'Ã¢â¬â')}</div></div>`).join('')}
     </div>
     <div class="admin-danger-zone">
-      <input id="suspendMinutes" type="number" min="1" max="43200" value="60" title="Ù…Ø¯Ø© Ø§Ù„Ø¥ÙŠÙ‚Ø§Ù Ø¨Ø§Ù„Ø¯Ù‚Ø§Ø¦Ù‚">
-      <button class="btn btn-purple" onclick="suspendAdminUser(${Number(u.id)})">Ø¥ÙŠÙ‚Ø§Ù Ù…Ø¤Ù‚Øª</button>
-      <button class="btn btn-ghost" onclick="unsuspendAdminUser(${Number(u.id)})">Ø¥Ù„ØºØ§Ø¡ Ø§Ù„Ø¥ÙŠÙ‚Ø§Ù</button>
-      <button class="btn btn-logout" onclick="deleteAdminUser(${Number(u.id)}, '${escAttr(u.username || '')}')">Ø­Ø°Ù Ø§Ù„Ø­Ø³Ø§Ø¨</button>
+      <input id="suspendMinutes" type="number" min="1" max="43200" value="60" title="Ãâ¦ÃÂ¯ÃÂ© ÃÂ§ÃâÃÂ¥ÃÅ ÃâÃÂ§ÃÂ ÃÂ¨ÃÂ§ÃâÃÂ¯ÃâÃÂ§ÃÂ¦Ãâ">
+      <button class="btn btn-purple" onclick="suspendAdminUser(${Number(u.id)})">ÃÂ¥ÃÅ ÃâÃÂ§ÃÂ Ãâ¦ÃÂ¤ÃâÃÂª</button>
+      <button class="btn btn-ghost" onclick="unsuspendAdminUser(${Number(u.id)})">ÃÂ¥ÃâÃÂºÃÂ§ÃÂ¡ ÃÂ§ÃâÃÂ¥ÃÅ ÃâÃÂ§ÃÂ</button>
+      <button class="btn btn-logout" onclick="deleteAdminUser(${Number(u.id)}, '${escAttr(u.username || '')}')">ÃÂ­ÃÂ°ÃÂ ÃÂ§ÃâÃÂ­ÃÂ³ÃÂ§ÃÂ¨</button>
     </div>
     <div class="admin-danger-zone">
       <input id="adminNewPassword" type="password" placeholder="New password">
       <input id="adminConfirmPassword" type="password" placeholder="Confirm password">
-      <button class="btn btn-purple" onclick="resetAdminUserPassword(${Number(u.id)})">ØªØºÙŠÙŠØ± ÙƒÙ„Ù…Ø© Ø§Ù„Ø³Ø±</button>
+      <button class="btn btn-purple" onclick="resetAdminUserPassword(${Number(u.id)})">ÃÂªÃÂºÃÅ ÃÅ ÃÂ± ÃÆÃâÃâ¦ÃÂ© ÃÂ§ÃâÃÂ³ÃÂ±</button>
     </div>
     <div class="admin-danger-zone">
       <select id="adminSecurityQuestion" style="flex:2 1 260px;">${adminSecurityOptions(u.security_question)}</select>
       <input id="adminSecurityAnswer" type="text" placeholder="New security answer" style="flex:1.4 1 180px;">
-      <button class="btn btn-purple" onclick="resetAdminUserSecurity(${Number(u.id)})">ØªØºÙŠÙŠØ± Ø§Ù„Ø³Ø¤Ø§Ù„ Ø§Ù„Ø£Ù…Ù†ÙŠ</button>
+      <button class="btn btn-purple" onclick="resetAdminUserSecurity(${Number(u.id)})">ÃÂªÃÂºÃÅ ÃÅ ÃÂ± ÃÂ§ÃâÃÂ³ÃÂ¤ÃÂ§Ãâ ÃÂ§ÃâÃÂ£Ãâ¦Ãâ ÃÅ </button>
     </div>`;
   document.getElementById('adminUserDetailModal')?.classList.add('open');
 }
@@ -4310,10 +4310,10 @@ async function suspendAdminUser(id) {
     const res = await fetch(`/api/admin/registered_users/${id}/suspend`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ minutes }) });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
-    toast(data.message || 'ØªÙ… Ø§Ù„Ø¥ÙŠÙ‚Ø§Ù', true);
+    toast(data.message || 'ÃÂªÃâ¦ ÃÂ§ÃâÃÂ¥ÃÅ ÃâÃÂ§ÃÂ', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'ØªØ¹Ø°Ø± Ø¥ÙŠÙ‚Ø§Ù Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…'); }
+  } catch(e) { alert(e.message || 'ÃÂªÃÂ¹ÃÂ°ÃÂ± ÃÂ¥ÃÅ ÃâÃÂ§ÃÂ ÃÂ§ÃâÃâ¦ÃÂ³ÃÂªÃÂ®ÃÂ¯Ãâ¦'); }
 }
 
 async function unsuspendAdminUser(id) {
@@ -4321,10 +4321,10 @@ async function unsuspendAdminUser(id) {
     const res = await fetch(`/api/admin/registered_users/${id}/unsuspend`, { method:'POST' });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
-    toast(data.message || 'ØªÙ… Ø¥Ù„ØºØ§Ø¡ Ø§Ù„Ø¥ÙŠÙ‚Ø§Ù', true);
+    toast(data.message || 'ÃÂªÃâ¦ ÃÂ¥ÃâÃÂºÃÂ§ÃÂ¡ ÃÂ§ÃâÃÂ¥ÃÅ ÃâÃÂ§ÃÂ', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'ØªØ¹Ø°Ø± Ø¥Ù„ØºØ§Ø¡ Ø§Ù„Ø¥ÙŠÙ‚Ø§Ù'); }
+  } catch(e) { alert(e.message || 'ÃÂªÃÂ¹ÃÂ°ÃÂ± ÃÂ¥ÃâÃÂºÃÂ§ÃÂ¡ ÃÂ§ÃâÃÂ¥ÃÅ ÃâÃÂ§ÃÂ'); }
 }
 
 async function resetAdminUserPassword(id) {
@@ -4334,10 +4334,10 @@ async function resetAdminUserPassword(id) {
     const res = await fetch(`/api/admin/registered_users/${id}/password`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ new_password, confirm_password }) });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
-    toast(data.message || 'ØªÙ… ØªØºÙŠÙŠØ± ÙƒÙ„Ù…Ø© Ø§Ù„Ø³Ø±', true);
+    toast(data.message || 'ÃÂªÃâ¦ ÃÂªÃÂºÃÅ ÃÅ ÃÂ± ÃÆÃâÃâ¦ÃÂ© ÃÂ§ÃâÃÂ³ÃÂ±', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'ØªØ¹Ø°Ø± ØªØºÙŠÙŠØ± ÙƒÙ„Ù…Ø© Ø§Ù„Ø³Ø±'); }
+  } catch(e) { alert(e.message || 'ÃÂªÃÂ¹ÃÂ°ÃÂ± ÃÂªÃÂºÃÅ ÃÅ ÃÂ± ÃÆÃâÃâ¦ÃÂ© ÃÂ§ÃâÃÂ³ÃÂ±'); }
 }
 
 async function resetAdminUserSecurity(id) {
@@ -4347,22 +4347,22 @@ async function resetAdminUserSecurity(id) {
     const res = await fetch(`/api/admin/registered_users/${id}/security`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ security_question, security_answer }) });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
-    toast(data.message || 'ØªÙ… ØªØºÙŠÙŠØ± Ø§Ù„Ø³Ø¤Ø§Ù„ Ø§Ù„Ø£Ù…Ù†ÙŠ', true);
+    toast(data.message || 'ÃÂªÃâ¦ ÃÂªÃÂºÃÅ ÃÅ ÃÂ± ÃÂ§ÃâÃÂ³ÃÂ¤ÃÂ§Ãâ ÃÂ§ÃâÃÂ£Ãâ¦Ãâ ÃÅ ', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'ØªØ¹Ø°Ø± ØªØºÙŠÙŠØ± Ø§Ù„Ø³Ø¤Ø§Ù„ Ø§Ù„Ø£Ù…Ù†ÙŠ'); }
+  } catch(e) { alert(e.message || 'ÃÂªÃÂ¹ÃÂ°ÃÂ± ÃÂªÃÂºÃÅ ÃÅ ÃÂ± ÃÂ§ÃâÃÂ³ÃÂ¤ÃÂ§Ãâ ÃÂ§ÃâÃÂ£Ãâ¦Ãâ ÃÅ '); }
 }
 
 async function deleteAdminUser(id, username) {
-  if (!confirm(`Ø­Ø°Ù Ø­Ø³Ø§Ø¨ ${username} Ø¨Ø§Ù„ÙƒØ§Ù…Ù„ØŸ`)) return;
+  if (!confirm(`ÃÂ­ÃÂ°ÃÂ ÃÂ­ÃÂ³ÃÂ§ÃÂ¨ ${username} ÃÂ¨ÃÂ§ÃâÃÆÃÂ§Ãâ¦ÃâÃÅ¸`)) return;
   try {
     const res = await fetch(`/api/admin/registered_users/${id}`, { method:'DELETE' });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
-    toast(data.message || 'ØªÙ… Ø§Ù„Ø­Ø°Ù', true);
+    toast(data.message || 'ÃÂªÃâ¦ ÃÂ§ÃâÃÂ­ÃÂ°ÃÂ', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'ØªØ¹Ø°Ø± Ø­Ø°Ù Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…'); }
+  } catch(e) { alert(e.message || 'ÃÂªÃÂ¹ÃÂ°ÃÂ± ÃÂ­ÃÂ°ÃÂ ÃÂ§ÃâÃâ¦ÃÂ³ÃÂªÃÂ®ÃÂ¯Ãâ¦'); }
 }
 
 let _reportsLoaded = false;
@@ -4384,17 +4384,17 @@ async function toggleReportsDropdown(e) {
       const data = await res.json();
       _reportsLoaded = true;
       if (!data.files || !data.files.length) {
-        menu.innerHTML = '<div class="reports-dropdown-empty">ðŸ“‚ No reports found</div>';
+        menu.innerHTML = '<div class="reports-dropdown-empty">Ã°Å¸ââ No reports found</div>';
       } else {
         menu.innerHTML = data.files.map(f =>
           `<div class="reports-dropdown-item" onclick="printReport('${escAttr(f)}')">
-             <span class="ri-icon">ðŸ“Š</span>
+             <span class="ri-icon">Ã°Å¸âÅ </span>
              <span style="overflow:hidden;text-overflow:ellipsis;">${escHtml(f)}</span>
            </div>`
         ).join('');
       }
     } catch {
-      menu.innerHTML = '<div class="reports-dropdown-empty">âš ï¸ Failed to load</div>';
+      menu.innerHTML = '<div class="reports-dropdown-empty">Ã¢Å¡Â Ã¯Â¸Â Failed to load</div>';
     }
   } else {
     menu.classList.add('open');
@@ -4403,7 +4403,7 @@ async function toggleReportsDropdown(e) {
 
 function printReport(filename) {
   document.getElementById('reportsDropdownMenu').classList.remove('open');
-  // Open the server-rendered HTML print page directly â€” no download, no iframe tricks
+  // Open the server-rendered HTML print page directly Ã¢â¬â no download, no iframe tricks
   window.open('/reports/print/' + encodeURIComponent(filename), '_blank');
 }
 
@@ -4415,7 +4415,7 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// â”€â”€ START â”€â”€
+// Ã¢ââ¬Ã¢ââ¬ START Ã¢ââ¬Ã¢ââ¬
 init();
 </script>
 </body>
