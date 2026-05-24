@@ -572,8 +572,41 @@ function requestNotifPermission(){
 async function registerServiceWorker(){
   if(!('serviceWorker' in navigator)) return;
   try {
-    await navigator.serviceWorker.register('/static/qc-sw.js');
+    const reg = await navigator.serviceWorker.register('/static/qc-sw.js');
+    await subscribeToPush(reg);
   } catch(e){ console.warn('SW register failed', e); }
+}
+
+async function subscribeToPush(reg){
+  try {
+    const keyRes = await fetch('/api/push/vapid_public_key');
+    if(!keyRes.ok) return;
+    const { publicKey } = await keyRes.json();
+    if(!publicKey) return;
+
+    let sub = await reg.pushManager.getSubscription();
+    if(!sub){
+      sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: _urlBase64ToUint8Array(publicKey)
+      });
+    }
+
+    await fetch('/api/push/subscribe', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ subscription: sub.toJSON() })
+    });
+  } catch(e){
+    console.warn('Push subscribe failed:', e);
+  }
+}
+
+function _urlBase64ToUint8Array(base64String){
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64  = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = atob(base64);
+  return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
 }
 
 function showBrowserNotif(title, body){
@@ -925,6 +958,15 @@ function startPolling(){
 loadItems();
 // Connect SSE for instant updates
 connectSSE();
+
+// استقبال رسائل من الـ Service Worker (مثلاً نقرة على إشعار)
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.addEventListener('message', e => {
+    if(e.data?.type === 'QC_NOTIFICATION_CLICK'){
+      loadItems();
+    }
+  });
+}
 
 document.addEventListener('visibilitychange', () => { if(!document.hidden && !_sseConnected) loadItems(); });
 window.addEventListener('focus', () => { if(!_sseConnected) loadItems(); });
