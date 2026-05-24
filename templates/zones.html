@@ -60,7 +60,7 @@
     overflow-y: auto;
   }
 
-  /* â”€â”€ BLOBS â”€â”€ */
+  /* ── BLOBS ── */
   .blob { position:fixed; border-radius:50%; filter:blur(90px); opacity:0.06; pointer-events:none; z-index:0; }
   html.light .blob { opacity:0.08; }
   .blob-1 { width:700px;height:700px;background:radial-gradient(circle,#3b82f6,transparent 70%);top:-200px;left:-200px;animation:bd1 20s ease-in-out infinite; }
@@ -70,7 +70,7 @@
   @keyframes bd2 { 0%,100%{transform:translate(0,0)scale(1);} 50%{transform:translate(-60px,-40px)scale(1.08);} }
   @keyframes bd3 { 0%,100%{transform:translate(0,0)scale(1);} 50%{transform:translate(-50px,60px)scale(1.12);} }
 
-  /* â”€â”€ GRID â”€â”€ */
+  /* ── GRID ── */
   .grid-overlay {
     position:fixed;inset:0;z-index:0;pointer-events:none;
     background-image: linear-gradient(rgba(59,130,246,0.035) 1px,transparent 1px), linear-gradient(90deg,rgba(59,130,246,0.035) 1px,transparent 1px);
@@ -81,7 +81,7 @@
 
   canvas#particleCanvas { position:fixed;inset:0;z-index:0;pointer-events:none; }
 
-  /* â”€â”€ SIDE DOCK â”€â”€ */
+  /* ── SIDE DOCK ── */
   .side-dock { position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:6px;padding:10px 0; }
   .dock-item { position:relative;display:flex;align-items:center;cursor:pointer;height:44px; }
   .dock-icon { width:44px;height:44px;border-radius:0 12px 12px 0;background:rgba(28,34,48,0.75);backdrop-filter:blur(14px);border:1px solid var(--border-light);border-left:none;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:background 0.2s,color 0.2s;flex-shrink:0;position:relative;z-index:2;text-decoration:none; }
@@ -95,7 +95,7 @@
   html.light .dock-icon .icon-sun  { display:none; }
   html.light .dock-icon .icon-moon { display:block; }
 
-  /* â”€â”€ MAIN WRAPPER â”€â”€ */
+  /* ── MAIN WRAPPER ── */
   .zones-wrapper {
     position:relative;z-index:10;
     width:100%;max-width:min(960px,92vw);
@@ -106,7 +106,7 @@
   }
   @keyframes wrapIn { from{opacity:0;transform:translateY(20px)scale(0.97);} to{opacity:1;transform:translateY(0)scale(1);} }
 
-  /* â”€â”€ TOP-LEFT USER CHIP â”€â”€ */
+  /* ── TOP-LEFT USER CHIP ── */
   .user-corner {
     position: fixed;
     top: 18px;
@@ -153,7 +153,7 @@
   }
   @keyframes cornerDotPulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(0.65);} }
 
-  /* â”€â”€ HEADER â”€â”€ */
+  /* ── HEADER ── */
   .zones-header {
     text-align:center;margin-bottom:36px;
   }
@@ -164,7 +164,7 @@
     font-size:12px;color:var(--text-muted);
   }
 
-  /* â”€â”€ ZONE GRID â”€â”€ */
+  /* ── ZONE GRID ── */
   .zone-grid {
     display:grid;
     grid-template-columns:repeat(3,1fr);
@@ -221,7 +221,7 @@
   }
   html.light .zone-card.active { background:rgba(37,99,235,0.08); }
 
-  /* Lock icon â€” only for super cards */
+  /* Lock icon — only for super cards */
   .zone-card .lock-icon {
     display:none;
     position:absolute;top:12px;right:12px;
@@ -245,7 +245,7 @@
     letter-spacing:1.5px;text-transform:uppercase;
   }
 
-  /* â”€â”€ DIVIDER â”€â”€ */
+  /* ── DIVIDER ── */
   .zones-divider {
     width:100%;max-width:900px;
     display:flex;align-items:center;gap:14px;
@@ -274,7 +274,7 @@
   .zone-card.super-card { opacity:0.92; }
   .zone-card.super-card:hover { opacity:1; }
 
-  /* Admin card â€” green tint */
+  /* Admin card — green tint */
   .zone-card.admin-card {
     border-color:rgba(16,185,129,0.25);
     background:rgba(16,185,129,0.05);
@@ -292,7 +292,7 @@
     color:#10b981;
   }
 
-  /* Dev card â€” amber/yellow tint */
+  /* Dev card — amber/yellow tint */
   .zone-card.dev-card {
     border-color:rgba(251,191,36,0.25);
     background:rgba(251,191,36,0.04);
@@ -304,7 +304,7 @@
   }
   .zone-card.dev-card .zone-label { color:rgba(251,191,36,0.7); }
 
-  /* Dev name â€” shimmer effect */
+  /* Dev name — shimmer effect */
   .zone-name.shimmer {
     background: linear-gradient(
       90deg,
@@ -347,7 +347,7 @@
     color:#10b981;
   }
 
-  /* â”€â”€ PASSWORD MODAL OVERLAY â”€â”€ */
+  /* ── PASSWORD MODAL OVERLAY ── */
   .pw-overlay {
     position:fixed;inset:0;z-index:1000;
     display:none;
@@ -428,7 +428,7 @@
   @keyframes shake { 0%,100%{transform:translateX(0);} 20%{transform:translateX(-8px);} 40%{transform:translateX(7px);} 60%{transform:translateX(-5px);} 80%{transform:translateX(3px);} }
   .pw-panel.shake { animation:shake 0.45s ease both; }
 
-  /* â”€â”€ MOBILE RESPONSIVE â”€â”€ */
+  /* ── MOBILE RESPONSIVE ── */
   @media (max-width: 600px) {
     body {
       align-items: flex-start;
@@ -513,7 +513,7 @@
       font-size: 11px;
     }
 
-    /* side dock â†’ compact bottom dock on mobile */
+    /* side dock → compact bottom dock on mobile */
     .side-dock {
       position: fixed;
       left: 50%;
@@ -579,7 +579,7 @@
     }
   }
 
-  /* â”€â”€ ACCESS DENIED MODAL â”€â”€ */
+  /* ── ACCESS DENIED MODAL ── */
   .denied-overlay {
     position:fixed;inset:0;z-index:2000;
     display:none;align-items:center;justify-content:center;
@@ -662,7 +662,7 @@
     <div class="dock-icon" id="dockLangIcon">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
     </div>
-    <div class="dock-label" id="dockLangLabel">Ø¹Ø±Ø¨ÙŠ</div>
+    <div class="dock-label" id="dockLangLabel">عربي</div>
   </div>
   <div class="dock-item" onclick="window.location.href='/logout'">
     <div class="dock-icon">
@@ -693,11 +693,11 @@
   <div class="zone-grid" id="zoneGrid">
     <div class="zone-card" onclick="selectZone('zone1')" id="card-zone1">
       <div class="zone-name">Zone 1</div>
-      <div class="zone-label">Ø²ÙˆÙ† 1</div>
+      <div class="zone-label">زون 1</div>
     </div>
     <div class="zone-card" onclick="selectZone('zone2')" id="card-zone2">
       <div class="zone-name">Zone 2</div>
-      <div class="zone-label">Ø²ÙˆÙ† 2</div>
+      <div class="zone-label">زون 2</div>
     </div>
     <div class="zone-card" onclick="selectZone('zone3')" id="card-zone3">
       <div class="zone-name">Zone 3</div>
@@ -705,11 +705,11 @@
     </div>
     <div class="zone-card" onclick="selectZone('zone4')" id="card-zone4">
       <div class="zone-name">Zone 4</div>
-      <div class="zone-label">Ø²ÙˆÙ† 4</div>
+      <div class="zone-label">زون 4</div>
     </div>
     <div class="zone-card" onclick="selectZone('zone5')" id="card-zone5">
       <div class="zone-name">Zone 5</div>
-      <div class="zone-label">Ø²ÙˆÙ† 5</div>
+      <div class="zone-label">زون 5</div>
     </div>
     <div class="zone-card qc-card" onclick="selectZone('qc')" id="card-qc">
       <div class="zone-name">QC</div>
@@ -732,7 +732,7 @@
       <div class="lock-icon">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
       </div>
-      <div class="dev-star">â­</div>
+      <div class="dev-star">⭐</div>
       <div class="zone-name shimmer">Dev</div>
       <div class="zone-label">Developer</div>
     </div>
@@ -773,7 +773,7 @@
 </div><!-- end pw-overlay -->
 
 <script>
-// â”€â”€ THEME â”€â”€
+// ── THEME ──
 (function() {
   if (localStorage.getItem('est-theme') === 'light') document.documentElement.classList.add('light');
   updateDockTheme();
@@ -789,7 +789,7 @@ function toggleTheme() {
   updateDockTheme();
 }
 
-// â”€â”€ ZONE SELECTION â”€â”€
+// ── ZONE SELECTION ──
 let selectedZone = null;
 let selectedQcRole = 'qc';
 
@@ -821,7 +821,7 @@ async function selectZone(zoneId) {
         return;
       }
     } catch(e) {
-      // Network error â€” fallback to showing the password modal
+      // Network error — fallback to showing the password modal
     }
   }
 
@@ -834,12 +834,12 @@ async function selectZone(zoneId) {
     zone4:'Zone 4', zone5:'Zone 5', qc:'QC', admin:'Admin', dev:'Dev'
   };
   const labels = {
-    zone1:'Ø²ÙˆÙ† 1', zone2:'Ø²ÙˆÙ† 2', zone3:'Packaging',
-    zone4:'Ø²ÙˆÙ† 4', zone5:'Ø²ÙˆÙ† 5', qc:'Quality Control', admin:'Administration', dev:''
+    zone1:'زون 1', zone2:'زون 2', zone3:'Packaging',
+    zone4:'زون 4', zone5:'زون 5', qc:'Quality Control', admin:'Administration', dev:''
   };
 
   document.getElementById('pwTitle').textContent = names[zoneId] || zoneId;
-  document.getElementById('pwSub').textContent = `Enter password for ${names[zoneId] || zoneId} â€” ${labels[zoneId] || ''}`;
+  document.getElementById('pwSub').textContent = `Enter password for ${names[zoneId] || zoneId} — ${labels[zoneId] || ''}`;
   const qcRoleWrap = document.getElementById('qcRoleWrap');
   if (qcRoleWrap) qcRoleWrap.style.display = zoneId === 'qc' ? 'block' : 'none';
   const qcRoleSelect = document.getElementById('qcRoleSelect');
@@ -880,7 +880,7 @@ async function submitZone() {
 
     if (data.success) {
       spinner.style.display = 'none';
-      btnText.textContent   = 'âœ“ Access Granted';
+      btnText.textContent   = '✓ Access Granted';
       enterBtn.classList.add('success');
       setTimeout(() => { window.location.href = data.redirect || '/index'; }, 600);
     } else if (data.not_allowed) {
@@ -944,7 +944,7 @@ document.getElementById('pwOverlay').addEventListener('click', function(e) {
   if (e.target === this) closeModal();
 });
 
-// â”€â”€ PARTICLES â”€â”€
+// ── PARTICLES ──
 (function() {
   const canvas = document.getElementById('particleCanvas');
   const ctx = canvas.getContext('2d');
@@ -979,7 +979,7 @@ document.getElementById('pwOverlay').addEventListener('click', function(e) {
   init(); draw();
 })();
 
-// â”€â”€ LANGUAGE TOGGLE â”€â”€
+// ── LANGUAGE TOGGLE ──
 const ZONES_LANG = {
   en: {
     title: 'Select Your Zone',
@@ -987,33 +987,33 @@ const ZONES_LANG = {
     mgmt: 'Management',
     welcome: 'Welcome',
     logout: 'Logout',
-    lang: 'Ø¹Ø±Ø¨ÙŠ',
+    lang: 'عربي',
     enterZone: 'Enter Zone',
     verifying: 'Verifying...',
-    accessGranted: 'âœ“ Access Granted',
+    accessGranted: '✓ Access Granted',
     incorrectPwd: 'Incorrect password',
     connErr: 'Connection error. Try again.',
     enterPwd: 'Enter Zone Password',
     enterPwdSub: 'Enter the password for this zone',
     zoneNames: { zone1:'Zone 1', zone2:'Zone 2', zone3:'Zone 3', zone4:'Zone 4', zone5:'Zone 5', qc:'QC', admin:'EST', dev:'Dev' },
-    zoneLabels: { zone1:'Ø²ÙˆÙ† 1', zone2:'Ø²ÙˆÙ† 2', zone3:'Packaging', zone4:'Ø²ÙˆÙ† 4', zone5:'Ø²ÙˆÙ† 5', qc:'Quality Control', admin:'Administration', dev:'' },
+    zoneLabels: { zone1:'زون 1', zone2:'زون 2', zone3:'Packaging', zone4:'زون 4', zone5:'زون 5', qc:'Quality Control', admin:'Administration', dev:'' },
   },
   ar: {
-    title: 'Ø§Ø®ØªØ± Ø§Ù„Ø²ÙˆÙ†',
-    sub: 'Ø§Ø®ØªØ± Ø²ÙˆÙ† Ø§Ù„Ù…Ø³ØªÙˆØ¯Ø¹ Ø§Ù„Ø°ÙŠ ØªØ±ÙŠØ¯ Ø§Ù„Ø¯Ø®ÙˆÙ„ Ø¥Ù„ÙŠÙ‡',
-    mgmt: 'Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©',
-    welcome: 'Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ©',
-    logout: 'ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø®Ø±ÙˆØ¬',
+    title: 'اختر الزون',
+    sub: 'اختر زون المستودع الذي تريد الدخول إليه',
+    mgmt: 'الإدارة',
+    welcome: 'الرئيسية',
+    logout: 'تسجيل الخروج',
     lang: 'English',
-    enterZone: 'Ø¯Ø®ÙˆÙ„',
-    verifying: 'Ø¬Ø§Ø±Ù Ø§Ù„ØªØ­Ù‚Ù‚...',
-    accessGranted: 'âœ“ ØªÙ… Ø§Ù„Ø¯Ø®ÙˆÙ„',
-    incorrectPwd: 'ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± ØºÙŠØ± ØµØ­ÙŠØ­Ø©',
-    connErr: 'Ø®Ø·Ø£ ÙÙŠ Ø§Ù„Ø§ØªØµØ§Ù„. Ø­Ø§ÙˆÙ„ Ù…Ø±Ø© Ø£Ø®Ø±Ù‰.',
-    enterPwd: 'Ø£Ø¯Ø®Ù„ ÙƒÙ„Ù…Ø© Ù…Ø±ÙˆØ± Ø§Ù„Ø²ÙˆÙ†',
-    enterPwdSub: 'Ø£Ø¯Ø®Ù„ ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± Ù„Ù„Ø¯Ø®ÙˆÙ„ Ø¥Ù„Ù‰ Ù‡Ø°Ø§ Ø§Ù„Ø²ÙˆÙ†',
-    zoneNames: { zone1:'Ø²ÙˆÙ† 1', zone2:'Ø²ÙˆÙ† 2', zone3:'Ø²ÙˆÙ† 3', zone4:'Ø²ÙˆÙ† 4', zone5:'Ø²ÙˆÙ† 5', qc:'Ø¬ÙˆØ¯Ø©', admin:'EST', dev:'Dev' },
-    zoneLabels: { zone1:'', zone2:'', zone3:'Ø§Ù„ØªØ¹Ø¨Ø¦Ø©', zone4:'', zone5:'', qc:'Ù…Ø±Ø§Ù‚Ø¨Ø© Ø§Ù„Ø¬ÙˆØ¯Ø©', admin:'Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©', dev:'' },
+    enterZone: 'دخول',
+    verifying: 'جارٍ التحقق...',
+    accessGranted: '✓ تم الدخول',
+    incorrectPwd: 'كلمة المرور غير صحيحة',
+    connErr: 'خطأ في الاتصال. حاول مرة أخرى.',
+    enterPwd: 'أدخل كلمة مرور الزون',
+    enterPwdSub: 'أدخل كلمة المرور للدخول إلى هذا الزون',
+    zoneNames: { zone1:'زون 1', zone2:'زون 2', zone3:'زون 3', zone4:'زون 4', zone5:'زون 5', qc:'جودة', admin:'EST', dev:'Dev' },
+    zoneLabels: { zone1:'', zone2:'', zone3:'التعبئة', zone4:'', zone5:'', qc:'مراقبة الجودة', admin:'الإدارة', dev:'' },
   }
 };
 let currentLang = localStorage.getItem('est-lang') || 'en';
@@ -1041,7 +1041,7 @@ function applyLang(lang) {
 function toggleLang() {
   applyLang(currentLang === 'en' ? 'ar' : 'en');
 }
-// ØªØ·Ø¨ÙŠÙ‚ Ø§Ù„Ù„ØºØ© Ø¹Ù†Ø¯ Ø§Ù„ØªØ­Ù…ÙŠÙ„
+// تطبيق اللغة عند التحميل
 applyLang(currentLang);
 </script>
 
