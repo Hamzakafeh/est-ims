@@ -35,7 +35,7 @@
     --shadow: 0 4px 24px rgba(0,0,0,0.4);
   }
 
-  /* ── LIGHT MODE ── */
+  /* â”€â”€ LIGHT MODE â”€â”€ */
   html.light {
     --bg-deep:      #f0f4f8;
     --bg-main:      #ffffff;
@@ -59,7 +59,7 @@
   }
 
   * { margin:0; padding:0; box-sizing:border-box; }
-  
+
   body {
     font-family: 'Inter', sans-serif;
     background: var(--bg-deep);
@@ -70,7 +70,7 @@
     overflow: hidden;
   }
 
-  /* ── GLOBAL BACKGROUND LAYERS (blobs + grid) ── */
+  /* â”€â”€ GLOBAL BACKGROUND LAYERS (blobs + grid) â”€â”€ */
   .bg-blob { position:fixed; border-radius:50%; filter:blur(90px); opacity:0.06; pointer-events:none; z-index:0; }
   html.light .bg-blob { opacity:0.08; }
   .bg-blob-1 { width:700px;height:700px;background:radial-gradient(circle,#3b82f6,transparent 70%);top:-200px;left:-200px;animation:gbd1 20s ease-in-out infinite; }
@@ -87,7 +87,7 @@
   }
   html.light .bg-grid { background-image: linear-gradient(rgba(37,99,235,0.045) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,0.045) 1px,transparent 1px); }
 
-  /* ── TOP BAR ── */
+  /* â”€â”€ TOP BAR â”€â”€ */
   .topbar {
     background: rgba(13,17,23,0.55);
     backdrop-filter: blur(20px);
@@ -196,6 +196,8 @@
     display: inline-flex; align-items: center; justify-content: center; gap: 0;
   }
   .topbar-actions .btn-icon svg { width: 15px; height: 15px; }
+  .topbar-actions.buttons-hidden > :not(#buttonsToggleBtn) { display: none !important; }
+  #buttonsToggleBtn { background: rgba(148,163,184,.14); border-color: rgba(148,163,184,.45); color:#cbd5e1; }
   #homeBtn { background:#fff; color:#0d1117; border-color:#e2e8f0; box-shadow:0 2px 10px rgba(255,255,255,.18); }
   #homeBtn:hover { background:#f1f5f9; color:#0d1117; transform: scale(1.1); box-shadow: 0 6px 20px rgba(255,255,255,0.28); }
 
@@ -222,6 +224,8 @@
   }
   #adminRequestsBtn { background: linear-gradient(135deg, rgba(139,92,246,.22), rgba(124,58,237,.14)); border-color: rgba(139,92,246,.58); color: #c4b5fd; }
   #adminRequestsBtn:hover { background: rgba(139,92,246,.34); color: #fff; transform: scale(1.1); box-shadow: 0 6px 20px rgba(139,92,246,0.25); }
+  #forMoreMessagesBtn { background: rgba(14,165,233,0.14); border-color: rgba(14,165,233,0.5); color:#7dd3fc; }
+  #forMoreMessagesBtn:hover { background:#0ea5e9; border-color:#0ea5e9; color:#fff; transform:scale(1.1); box-shadow:0 6px 20px rgba(14,165,233,.3); }
   #adminUsersBtn { background: rgba(132,204,22,0.14); border-color: rgba(132,204,22,0.5); color: #a3e635; }
   #adminUsersBtn:hover { background: #84cc16; border-color: #84cc16; color: #10220a; transform: scale(1.1); box-shadow: 0 6px 20px rgba(132,204,22,0.3); }
   html.light #adminRequestsBtn { background: rgba(124,58,237,0.12); border-color: rgba(124,58,237,0.42); color: #7c3aed; }
@@ -232,7 +236,7 @@
   #langBtn { min-width:58px; height:32px; padding:0 9px; justify-content:center; }
   #langBtn svg { display:none; }
 
-  /* ── Refresh — Blue (sync/update) ── */
+  /* â”€â”€ Refresh â€” Blue (sync/update) â”€â”€ */
   #refreshBtn {
     background: rgba(59,130,246,0.14);
     border-color: rgba(59,130,246,0.5);
@@ -247,7 +251,7 @@
     box-shadow: 0 6px 20px rgba(59,130,246,0.38);
   }
 
-  /* ── Print — Amber (document/paper) ── */
+  /* â”€â”€ Print â€” Amber (document/paper) â”€â”€ */
   #printBtn {
     background: rgba(245,158,11,0.14);
     border-color: rgba(245,158,11,0.5);
@@ -261,7 +265,7 @@
     box-shadow: 0 6px 20px rgba(245,158,11,0.38);
   }
 
-  /* ── CSV Export — Green (download/data) ── */
+  /* â”€â”€ CSV Export â€” Green (download/data) â”€â”€ */
   #csvBtn {
     background: rgba(16,185,129,0.14);
     border-color: rgba(16,185,129,0.5);
@@ -275,7 +279,7 @@
     box-shadow: 0 6px 20px rgba(16,185,129,0.38);
   }
 
-  /* ── About — Cyan (info) ── */
+  /* â”€â”€ About â€” Cyan (info) â”€â”€ */
   #aboutBtn {
     background: rgba(6,182,212,0.14);
     border-color: rgba(6,182,212,0.5);
@@ -289,7 +293,7 @@
     box-shadow: 0 6px 20px rgba(6,182,212,0.38);
   }
 
-  /* ── Logout — Red (danger/exit) ── */
+  /* â”€â”€ Logout â€” Red (danger/exit) â”€â”€ */
   #logoutBtn {
     background: rgba(239,68,68,0.14);
     border-color: rgba(239,68,68,0.55);
@@ -319,10 +323,10 @@
   html.light #logoutThemeBtn { background: rgba(220,38,38,0.1); border-color: rgba(220,38,38,0.45); color: #dc2626; }
   html.light #logoutThemeBtn:hover { background: #dc2626; color: #fff; }
 
-  /* ── LAYOUT ── */
+  /* â”€â”€ LAYOUT â”€â”€ */
   .layout { display: flex; flex: 1; overflow: hidden; min-height: 0; }
 
-  /* ── SIDEBAR ── */
+  /* â”€â”€ SIDEBAR â”€â”€ */
   .sidebar-wrapper {
     position: relative;
     display: flex;
@@ -414,7 +418,7 @@
   .sheet-tab .st-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-blue); flex-shrink: 0; }
   .sheet-tab.active .st-dot { background: var(--accent-cyan); }
 
-  /* ── MAIN CONTENT ── */
+  /* â”€â”€ MAIN CONTENT â”€â”€ */
   .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; background: var(--bg-deep); }
 
   .content-header {
@@ -437,7 +441,7 @@
   .badge-green { background: rgba(16,185,129,0.15);  color: var(--accent-green); border: 1px solid rgba(16,185,129,0.3); }
   .badge-edit  { background: rgba(245,158,11,0.15);  color: var(--accent-amber); border: 1px solid rgba(245,158,11,0.3); }
 
-  /* ── USER / ZONE BADGES IN TOPBAR ── */
+  /* â”€â”€ USER / ZONE BADGES IN TOPBAR â”€â”€ */
   .user-badge {
     font-family: 'JetBrains Mono', monospace; font-size: 11px;
     color: var(--accent-blue);
@@ -451,7 +455,7 @@
     background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.25);
     border-radius: 20px; padding: 3px 12px;
   }
-  /* Super zone badge — amber pulsing */
+  /* Super zone badge â€” amber pulsing */
   .zone-badge.super {
     color: #fbbf24;
     background: rgba(251,191,36,0.12); border-color: rgba(251,191,36,0.3);
@@ -535,7 +539,7 @@
   /* Editable cell */
   td.editable { cursor: pointer; position: relative; }
   td.editable:hover::after {
-    content: '✎';
+    content: 'âœŽ';
     position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
     font-size: 11px; color: var(--accent-amber); opacity: 0.7;
   }
@@ -574,7 +578,7 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .no-data-row td { text-align: center; color: var(--text-dim); padding: 30px; font-style: italic; }
 
-  /* ── LOG SHEET ROW COLORS ── */
+  /* â”€â”€ LOG SHEET ROW COLORS â”€â”€ */
   .row-in  { background: rgba(16,185,129,0.08) !important; }
   .row-out { background: rgba(239,68,68,0.08)  !important; }
   .row-in:hover  { background: rgba(16,185,129,0.16) !important; }
@@ -601,7 +605,7 @@
   ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
 
-  /* ── MODALS ── */
+  /* â”€â”€ MODALS â”€â”€ */
   .modal-overlay {
     display: none; position: fixed; inset: 0; z-index: 9999;
     background: rgba(0,0,0,0.65); backdrop-filter: blur(5px);
@@ -674,7 +678,7 @@
     white-space: nowrap; pointer-events: none;
   }
 
-  /* ── THEME TOGGLE ── */
+  /* â”€â”€ THEME TOGGLE â”€â”€ */
   body { transition: background 0.25s, color 0.25s; }
   .topbar, .sidebar, .content-header, .toolbar, .statusbar, .modal-box, .login-card {
     transition: background 0.25s, border-color 0.25s;
@@ -744,7 +748,7 @@
   html.light .statusbar { background: #f8fafc; border-top-color: #e2e8f0; }
   html.light .content-header { background: #f1f5f9; border-bottom-color: #e2e8f0; }
   html.light .toolbar { background: #f8fafc; border-bottom-color: #e2e8f0; }
-  /* تحسين الإضاءة العامة في النهاري */
+  /* ØªØ­Ø³ÙŠÙ† Ø§Ù„Ø¥Ø¶Ø§Ø¡Ø© Ø§Ù„Ø¹Ø§Ù…Ø© ÙÙŠ Ø§Ù„Ù†Ù‡Ø§Ø±ÙŠ */
   html.light body { background: linear-gradient(135deg, #f0f4f8 0%, #e8edf5 100%); }
   html.light .main { background: #f8fafc; }
   html.light .data-table thead th { background: linear-gradient(180deg, #f1f5f9, #e8edf5); }
@@ -753,7 +757,7 @@
   html.light .user-badge { background: rgba(37,99,235,0.08); box-shadow: 0 1px 4px rgba(37,99,235,0.1); }
   html.light .zone-badge { background: rgba(8,145,178,0.08); }
 
-  /* ── CUSTOM LOGOUT MODAL ── */
+  /* â”€â”€ CUSTOM LOGOUT MODAL â”€â”€ */
   .logout-overlay {
     display: none; position: fixed; inset: 0; z-index: 99999;
     background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
@@ -782,7 +786,7 @@
   .logout-actions { display: flex; gap: 10px; justify-content: center; }
   .logout-actions .btn { min-width: 110px; justify-content: center; padding: 10px 20px; font-size: 13px; }
 
-  /* ── PASSWORD MODAL ── */
+  /* â”€â”€ PASSWORD MODAL â”€â”€ */
   .pwd-overlay {
     display: none; position: fixed; inset: 0; z-index: 99999;
     background: rgba(0,0,0,0.65); backdrop-filter: blur(6px);
@@ -817,7 +821,7 @@
   .pwd-actions { display: flex; gap: 10px; justify-content: center; }
   .pwd-actions .btn { min-width: 110px; justify-content: center; padding: 10px 20px; font-size: 13px; }
 
-  /* ── PRINT MODAL ── */
+  /* â”€â”€ PRINT MODAL â”€â”€ */
   #printModal {
     display: none; position: fixed; inset: 0; z-index: 9999;
     background: rgba(0,0,0,0.65); backdrop-filter: blur(5px);
@@ -854,7 +858,7 @@
   }
   .name-pulse { animation: namePulse 2.4s ease-in-out infinite; }
 
-  /* ── CSV EXPORT MODAL ── */
+  /* â”€â”€ CSV EXPORT MODAL â”€â”€ */
   #csvModal {
     display: none; position: fixed; inset: 0; z-index: 9999;
     background: rgba(0,0,0,0.65); backdrop-filter: blur(5px);
@@ -886,7 +890,7 @@
   .csv-modal-actions { display: flex; gap: 10px; justify-content: center; }
   .csv-modal-actions .btn { min-width: 120px; justify-content: center; padding: 10px 20px; font-size: 13px; }
 
-  /* ── SESSION TIMER ── */
+  /* â”€â”€ SESSION TIMER â”€â”€ */
   .session-timer {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px; color: var(--text-dim);
@@ -895,7 +899,7 @@
     display: flex; align-items: center; gap: 4px;
   }
 
-  /* ── USERS MODAL ── */
+  /* â”€â”€ USERS MODAL â”€â”€ */
   #usersModal {
     display: none; position: fixed; inset: 0; z-index: 9500;
     background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
@@ -941,12 +945,12 @@
     0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.0); transform: translateZ(0); }
     45% { box-shadow: 0 0 0 7px rgba(59,130,246,0.13); }
   }
-  #adminRequestsModal, #adminUsersModal, #adminUserDetailModal {
+  #adminRequestsModal, #adminMessagesModal, #adminUsersModal, #adminUserDetailModal {
     display: none; position: fixed; inset: 0; z-index: 9550;
     background: rgba(0,0,0,0.72); backdrop-filter: blur(7px);
     align-items: center; justify-content: center; padding: 16px;
   }
-  #adminRequestsModal.open, #adminUsersModal.open, #adminUserDetailModal.open { display: flex; }
+  #adminRequestsModal.open, #adminMessagesModal.open, #adminUsersModal.open, #adminUserDetailModal.open { display: flex; }
   .admin-user-list { display: grid; gap: 8px; padding: 14px; }
   .admin-user-row {
     width: 100%; border: 1px solid var(--border); background: var(--bg-card);
@@ -970,7 +974,7 @@
     .admin-danger-zone input, .admin-danger-zone .btn { flex: 1 1 140px; }
   }
 
-  /* ── PROFILE MODAL ── */
+  /* â”€â”€ PROFILE MODAL â”€â”€ */
   #profileModal {
     display: none; position: fixed; inset: 0; z-index: 9600;
     background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
@@ -1113,7 +1117,7 @@
     padding: 36px; text-align: center; color: var(--text-muted); font-size: 13px;
   }
 
-  /* ── WELCOME TOAST ── */
+  /* â”€â”€ WELCOME TOAST â”€â”€ */
   .welcome-toast {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
     background: var(--bg-panel); border: 1px solid var(--border-light);
@@ -1129,7 +1133,7 @@
   .welcome-toast .wt-text strong { display: block; font-weight: 600; margin-bottom: 2px; }
   .welcome-toast .wt-text span { font-size: 11px; color: var(--text-muted); }
 
-  /* ── REPORTS DROPDOWN ── */
+  /* â”€â”€ REPORTS DROPDOWN â”€â”€ */
   .reports-dropdown-wrap {
     position: relative;
     display: inline-flex;
@@ -1155,7 +1159,7 @@
     to   { opacity:1; transform: translateY(0); }
   }
 
-  /* ── DASHBOARD MODAL ── */
+  /* â”€â”€ DASHBOARD MODAL â”€â”€ */
   #dashModal {
     display: none; position: fixed; inset: 0; z-index: 9000;
     background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
@@ -1478,7 +1482,7 @@
     padding: 12px 14px; font-size: 12px; color: var(--text-dim); text-align: center;
   }
 
-  /* ── BETA POPUP ── */
+  /* â”€â”€ BETA POPUP â”€â”€ */
   .beta-overlay {
     position: fixed;
     inset: 0;
@@ -1599,7 +1603,7 @@
   .beta-btn:active { transform: translateY(0); }
 
 
-  /* ── COMING SOON MODAL ── */
+  /* â”€â”€ COMING SOON MODAL â”€â”€ */
   #soonModal {
     display: none; position: fixed; inset: 0; z-index: 99999;
     background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
@@ -1637,7 +1641,7 @@
   }
   .soon-close:hover { background: #1d4ed8; transform: translateY(-2px); }
 
-  /* ── MOBILE RESPONSIVE ── */
+  /* â”€â”€ MOBILE RESPONSIVE â”€â”€ */
   @media (max-width: 768px) {
     .topbar { padding: 0 10px; height: 54px; }
     .brand-text h1 { font-size: 12px; }
@@ -1683,7 +1687,7 @@
   <div class="beta-card">
     <div class="beta-badge">
       <span class="beta-dot"></span>
-EST-iMs © | 2026    </div>
+EST-iMs Â© | 2026    </div>
     <div class="beta-title">This Version Is Under Testing. </div>
     <div class="beta-credit">Developed By Hamza K. Ghareb
 </div>
@@ -1760,12 +1764,18 @@ EST-iMs © | 2026    </div>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       </button>
       <div class="admin-stack">
-        <button class="theme-btn" id="adminRequestsBtn" onclick="openAdminRequestsModal()" title="طلبات التسجيل">
+        <button class="theme-btn" id="adminRequestsBtn" onclick="openAdminRequestsModal()" title="Ø·Ù„Ø¨Ø§Øª Ø§Ù„ØªØ³Ø¬ÙŠÙ„">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
         </button>
         <span class="admin-badge" id="adminRequestsBadge">0</span>
       </div>
-      <button class="theme-btn" id="adminUsersBtn" onclick="openAdminUsersModal()" title="المستخدمون المسجلون">
+      <div class="admin-stack">
+        <button class="theme-btn" id="forMoreMessagesBtn" onclick="openAdminMessagesModal()" title="For More Messages">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg>
+        </button>
+        <span class="admin-badge" id="forMoreMessagesBadge">0</span>
+      </div>
+      <button class="theme-btn" id="adminUsersBtn" onclick="openAdminUsersModal()" title="Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙˆÙ† Ø§Ù„Ù…Ø³Ø¬Ù„ÙˆÙ†">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M16 11l2 2 4-4"/></svg>
       </button>
       {% endif %}
@@ -1799,10 +1809,10 @@ EST-iMs © | 2026    </div>
 <!-- ABOUT MODAL -->
 <div id="aboutModal" onclick="if(event.target===this)closeAbout()" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);align-items:center;justify-content:center;">
   <div class="beta-card" style="max-width:380px;">
-    <button onclick="closeAbout()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text-dim);font-size:17px;cursor:pointer;line-height:1;transition:color 0.15s;">✕</button>
+    <button onclick="closeAbout()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text-dim);font-size:17px;cursor:pointer;line-height:1;transition:color 0.15s;">âœ•</button>
     <div class="beta-badge">
       <span class="beta-dot"></span>
-      EST-iMs © | 2026
+      EST-iMs Â© | 2026
     </div>
     <div style="width:58px;height:58px;margin:0 auto 16px;border-radius:15px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(59,130,246,0.4);">
       <img src="/static/low.ico" style="width:100%;height:100%;object-fit:contain;border-radius:15px;">
@@ -1816,18 +1826,18 @@ EST-iMs © | 2026    </div>
   </div>
 </div>
 
-<!-- ══ PRINT MODAL ══ -->
+<!-- â•â• PRINT MODAL â•â• -->
 <div id="printModal" onclick="if(event.target===this)closePrintModal()">
   <div class="print-modal-box">
-    <button onclick="closePrintModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text-dim);font-size:17px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
-    <div class="print-modal-icon">🖨️</div>
+    <button onclick="closePrintModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text-dim);font-size:17px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">âœ•</button>
+    <div class="print-modal-icon">ðŸ–¨ï¸</div>
     <div class="print-modal-title">Print Data</div>
     <div class="print-modal-sub" id="printModalSub">Ready to print the current sheet</div>
     <div class="print-modal-info">
-      <div class="print-modal-info-row"><span class="pmi-label">File</span><span class="pmi-val" id="printInfoFile">—</span></div>
-      <div class="print-modal-info-row"><span class="pmi-label">Sheet</span><span class="pmi-val" id="printInfoSheet">—</span></div>
-      <div class="print-modal-info-row"><span class="pmi-label">Period</span><span class="pmi-val" id="printInfoPeriod">—</span></div>
-      <div class="print-modal-info-row"><span class="pmi-label">Records</span><span class="pmi-val" id="printInfoRecords">—</span></div>
+      <div class="print-modal-info-row"><span class="pmi-label">File</span><span class="pmi-val" id="printInfoFile">â€”</span></div>
+      <div class="print-modal-info-row"><span class="pmi-label">Sheet</span><span class="pmi-val" id="printInfoSheet">â€”</span></div>
+      <div class="print-modal-info-row"><span class="pmi-label">Period</span><span class="pmi-val" id="printInfoPeriod">â€”</span></div>
+      <div class="print-modal-info-row"><span class="pmi-label">Records</span><span class="pmi-val" id="printInfoRecords">â€”</span></div>
     </div>
     <div class="print-modal-actions">
       <button class="btn btn-warning" onclick="doPrint()">
@@ -1839,19 +1849,19 @@ EST-iMs © | 2026    </div>
   </div>
 </div>
 
-<!-- ══ CSV EXPORT MODAL ══ -->
+<!-- â•â• CSV EXPORT MODAL â•â• -->
 <div id="csvModal" onclick="if(event.target===this)closeCsvModal()">
   <div class="csv-modal-box">
-    <button onclick="closeCsvModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text-dim);font-size:17px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
-    <div class="csv-modal-icon">📊</div>
+    <button onclick="closeCsvModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text-dim);font-size:17px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">âœ•</button>
+    <div class="csv-modal-icon">ðŸ“Š</div>
     <div class="csv-modal-title">Export CSV</div>
     <div class="csv-modal-sub" id="csvModalSub">Export the current sheet as a CSV file</div>
     <div class="csv-modal-info">
-      <div class="csv-modal-info-row"><span class="cmi-label">File</span><span class="cmi-val" id="csvInfoFile">—</span></div>
-      <div class="csv-modal-info-row"><span class="cmi-label">Sheet</span><span class="cmi-val" id="csvInfoSheet">—</span></div>
-      <div class="csv-modal-info-row"><span class="cmi-label">Period</span><span class="cmi-val" id="csvInfoPeriod">—</span></div>
-      <div class="csv-modal-info-row"><span class="cmi-label">Records</span><span class="cmi-val" id="csvInfoRecords">—</span></div>
-      <div class="csv-modal-info-row"><span class="cmi-label">Filename</span><span class="cmi-val" id="csvInfoFilename" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</span></div>
+      <div class="csv-modal-info-row"><span class="cmi-label">File</span><span class="cmi-val" id="csvInfoFile">â€”</span></div>
+      <div class="csv-modal-info-row"><span class="cmi-label">Sheet</span><span class="cmi-val" id="csvInfoSheet">â€”</span></div>
+      <div class="csv-modal-info-row"><span class="cmi-label">Period</span><span class="cmi-val" id="csvInfoPeriod">â€”</span></div>
+      <div class="csv-modal-info-row"><span class="cmi-label">Records</span><span class="cmi-val" id="csvInfoRecords">â€”</span></div>
+      <div class="csv-modal-info-row"><span class="cmi-label">Filename</span><span class="cmi-val" id="csvInfoFilename" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">â€”</span></div>
     </div>
     <div class="csv-modal-actions">
       <button class="btn btn-success" onclick="doExportCSV()">
@@ -1863,10 +1873,10 @@ EST-iMs © | 2026    </div>
   </div>
 </div>
 
-<!-- ══ LOGOUT CONFIRM MODAL ══ -->
+<!-- â•â• LOGOUT CONFIRM MODAL â•â• -->
 <div class="logout-overlay" id="logoutModal" onclick="if(event.target===this)closeLogout()">
   <div class="logout-box">
-    <div class="logout-icon">⚠️</div>
+    <div class="logout-icon">âš ï¸</div>
     <div class="logout-title">Logout</div>
     <div class="logout-msg">Are you sure you want to logout?</div>
     <div class="logout-actions">
@@ -1879,10 +1889,10 @@ EST-iMs © | 2026    </div>
   </div>
 </div>
 
-<!-- ══ TRANSACTION MODAL (IN / OUT) ══ -->
+<!-- â•â• TRANSACTION MODAL (IN / OUT) â•â• -->
 <div class="modal-overlay" id="txModal" onclick="if(event.target===this)closeTxModal()">
   <div class="modal-box">
-    <button class="modal-close" onclick="closeTxModal()">✕</button>
+    <button class="modal-close" onclick="closeTxModal()">âœ•</button>
     <div class="modal-title" id="txTitle">Transaction</div>
     <div class="modal-subtitle" id="txSubtitle">Enter quantity</div>
     <div class="modal-info-grid" id="txInfoGrid"></div>
@@ -1913,12 +1923,12 @@ EST-iMs © | 2026    </div>
                  padding:8px 12px;color:var(--text-main);font-family:inherit;font-size:13px;font-weight:600;
                  outline:none;cursor:pointer;transition:border-color 0.15s;"
           onchange="switchViewZone(this.value)">
-          <option value="zone1">🏭 Zone 1 — زون 1</option>
-          <option value="zone2">🏭 Zone 2 — زون 2</option>
-          <option value="zone3">🏭 Zone 3 — Packaging</option>
-          <option value="zone4">🏭 Zone 4 — زون 4</option>
-          <option value="zone5">🏭 Zone 5 — زون 5</option>
-          <option value="qc">🔬 QC — Quality Control</option>
+          <option value="zone1">ðŸ­ Zone 1 â€” Ø²ÙˆÙ† 1</option>
+          <option value="zone2">ðŸ­ Zone 2 â€” Ø²ÙˆÙ† 2</option>
+          <option value="zone3">ðŸ­ Zone 3 â€” Packaging</option>
+          <option value="zone4">ðŸ­ Zone 4 â€” Ø²ÙˆÙ† 4</option>
+          <option value="zone5">ðŸ­ Zone 5 â€” Ø²ÙˆÙ† 5</option>
+          <option value="qc">ðŸ”¬ QC â€” Quality Control</option>
         </select>
       </div>
     </div>
@@ -1947,22 +1957,22 @@ EST-iMs © | 2026    </div>
       <div class="sheet-tabs-list" id="sheetList"></div>
     </div>
   </div>
-  <button class="sidebar-toggle-btn" id="sidebarToggleBtn" title="Toggle sidebar" onclick="toggleSidebar()">◀</button>
+  <button class="sidebar-toggle-btn" id="sidebarToggleBtn" title="Toggle sidebar" onclick="toggleSidebar()">â—€</button>
   </div>
 
   <!-- MAIN -->
   <div class="main">
     <div class="content-header">
       <div class="content-title">
-        <div class="ct-icon">📋</div>
+        <div class="ct-icon">ðŸ“‹</div>
         <div>
           <h2 id="contentTitle">Select a month to begin</h2>
-          <div class="breadcrumb" id="breadcrumb">Select a year → ...</div>
+          <div class="breadcrumb" id="breadcrumb">Select a year â†’ ...</div>
         </div>
       </div>
       <div class="content-meta" id="contentMeta">
         <span class="badge badge-blue"  id="recordCount">0 Records</span>
-        <span class="badge badge-edit"  id="editBadge" style="display:none">✎ Edit Mode</span>
+        <span class="badge badge-edit"  id="editBadge" style="display:none">âœŽ Edit Mode</span>
         {% if can_edit %}
         <label class="edit-toggle" id="editToggleWrap" style="display:none">
           <span>Edit Mode</span>
@@ -1977,7 +1987,7 @@ EST-iMs © | 2026    </div>
 
     <div class="toolbar">
       <div class="search-wrap">
-        <span class="s-icon">🔍</span>
+        <span class="s-icon">ðŸ”</span>
         <input type="text" class="search-input" id="searchInput"
                placeholder="Search data..." oninput="filterTable(this.value)">
       </div>
@@ -1986,7 +1996,7 @@ EST-iMs © | 2026    </div>
 
     <div class="table-wrap" id="tableWrap">
       <div class="empty-state">
-        <div class="es-icon">📂</div>
+        <div class="es-icon">ðŸ“‚</div>
         <h3>No data to display</h3>
         <p>Select a month from the sidebar, then choose a file and sheet to view data</p>
       </div>
@@ -1998,27 +2008,27 @@ EST-iMs © | 2026    </div>
         <span id="statusMsg">Ready</span>
       </div>
       <div class="statusbar-right">
-        <span id="pathInfo" style="direction:ltr">—</span>
+        <span id="pathInfo" style="direction:ltr">â€”</span>
         <span>Inventory Management System V3.1.1.0</span>
-        <span style="color:var(--text-dim);font-size:11px;border-left:1px solid var(--border);padding-left:14px;margin-left:2px;">EST-IMS®</span>
+        <span style="color:var(--text-dim);font-size:11px;border-left:1px solid var(--border);padding-left:14px;margin-left:2px;">EST-IMSÂ®</span>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ══ PASSWORD MODAL ══ -->
+<!-- â•â• PASSWORD MODAL â•â• -->
 <div class="pwd-overlay" id="pwdModal" onclick="if(event.target===this)cancelPwdModal()">
   <div class="pwd-box">
-    <div class="pwd-icon">🔒</div>
+    <div class="pwd-icon">ðŸ”’</div>
     <div class="pwd-title">Edit Mode</div>
     <div class="pwd-sub">Enter the password to enable edit mode</div>
     <div class="pwd-field">
-      <input type="password" id="pwdInput" placeholder="••••••••••"
+      <input type="password" id="pwdInput" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
              onkeydown="if(event.key==='Enter')confirmPwd(); if(event.key==='Escape')cancelPwdModal();">
     </div>
     <div class="pwd-error" id="pwdError"></div>
     <div class="pwd-actions">
-      <button class="btn btn-warning" onclick="confirmPwd()">🔓 Unlock</button>
+      <button class="btn btn-warning" onclick="confirmPwd()">ðŸ”“ Unlock</button>
       <button class="btn btn-ghost"   onclick="cancelPwdModal()">Cancel</button>
     </div>
   </div>
@@ -2027,13 +2037,13 @@ EST-iMs © | 2026    </div>
 <!-- TOAST -->
 <div id="toast"></div>
 
-<!-- ══ USERS / LOGIN LOG MODAL ══ -->
+<!-- â•â• USERS / LOGIN LOG MODAL â•â• -->
 {% if is_dev %}
 <div id="usersModal" onclick="if(event.target===this)closeUsersModal()">
   <div class="users-box">
     <div class="users-header">
-      <h3>👥 Login History</h3>
-      <button onclick="closeUsersModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
+      <h3>ðŸ‘¥ Login History</h3>
+      <button onclick="closeUsersModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">âœ•</button>
     </div>
     <div class="users-body" id="usersBody">
       <div class="users-empty">Loading...</div>
@@ -2046,10 +2056,10 @@ EST-iMs © | 2026    </div>
 <div id="adminRequestsModal" onclick="if(event.target===this)closeAdminRequestsModal()">
   <div class="users-box" style="max-width:980px;">
     <div class="users-header">
-      <h3>🟣 طلبات التسجيل</h3>
+      <h3>ðŸŸ£ Ø·Ù„Ø¨Ø§Øª Ø§Ù„ØªØ³Ø¬ÙŠÙ„</h3>
       <div style="display:flex;align-items:center;gap:8px;">
-        <button class="dash-refresh-btn" onclick="loadAdminRequests()" style="padding:6px 10px;font-size:11px;">تحديث</button>
-        <button onclick="closeAdminRequestsModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
+        <button class="dash-refresh-btn" onclick="loadAdminRequests()" style="padding:6px 10px;font-size:11px;">ØªØ­Ø¯ÙŠØ«</button>
+        <button onclick="closeAdminRequestsModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">âœ•</button>
       </div>
     </div>
     <div class="users-body" id="adminRequestsBody">
@@ -2058,14 +2068,26 @@ EST-iMs © | 2026    </div>
   </div>
 </div>
 
+<div id="adminMessagesModal" onclick="if(event.target===this)closeAdminMessagesModal()">
+  <div class="users-box" style="max-width:980px;">
+    <div class="users-header">
+      <h3>For More Messages</h3>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="dash-refresh-btn" onclick="loadAdminMessages()" style="padding:6px 10px;font-size:11px;">Refresh</button>
+        <button onclick="closeAdminMessagesModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;">x</button>
+      </div>
+    </div>
+    <div class="users-body" id="adminMessagesBody"><div class="users-empty">Loading...</div></div>
+  </div>
+</div>
 <div id="adminUsersModal" onclick="if(event.target===this)closeAdminUsersModal()">
   <div class="users-box" style="max-width:980px;">
     <div class="users-header">
-      <h3>👤 المستخدمون المسجلون</h3>
+      <h3>ðŸ‘¤ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙˆÙ† Ø§Ù„Ù…Ø³Ø¬Ù„ÙˆÙ†</h3>
       <div style="display:flex;align-items:center;gap:8px;">
-        <button class="dash-refresh-btn" onclick="exportAdminUsers()" style="padding:6px 10px;font-size:11px;">تصدير Excel</button>
-        <button class="dash-refresh-btn" onclick="loadAdminUsers()" style="padding:6px 10px;font-size:11px;">تحديث</button>
-        <button onclick="closeAdminUsersModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
+        <button class="dash-refresh-btn" onclick="exportAdminUsers()" style="padding:6px 10px;font-size:11px;">ØªØµØ¯ÙŠØ± Excel</button>
+        <button class="dash-refresh-btn" onclick="loadAdminUsers()" style="padding:6px 10px;font-size:11px;">ØªØ­Ø¯ÙŠØ«</button>
+        <button onclick="closeAdminUsersModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">âœ•</button>
       </div>
     </div>
     <div class="users-body" id="adminUsersBody">
@@ -2076,14 +2098,14 @@ EST-iMs © | 2026    </div>
 <div id="adminUserDetailModal" onclick="if(event.target===this)closeAdminUserDetailModal()">
   <div class="users-box" style="max-width:720px;">
     <div class="users-header">
-      <h3>بيانات المستخدم</h3>
-      <button onclick="closeAdminUserDetailModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
+      <h3>Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…</h3>
+      <button onclick="closeAdminUserDetailModal()" style="background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">âœ•</button>
     </div>
     <div class="users-body" id="adminUserDetailBody"></div>
   </div>
 </div>{% endif %}
 
-<!-- ══ PROFILE MODAL ══ -->
+<!-- â•â• PROFILE MODAL â•â• -->
 <div id="profileModal" onclick="if(event.target===this)closeProfileModal()">
   <div class="profile-box">
     <div class="profile-header">
@@ -2103,7 +2125,7 @@ EST-iMs © | 2026    </div>
           </div>
         </div>
       </div>
-      <button class="profile-close" onclick="closeProfileModal()">✕</button>
+      <button class="profile-close" onclick="closeProfileModal()">âœ•</button>
     </div>
     <div class="profile-body" id="profileBody">
       <div class="profile-loading">Loading profile...</div>
@@ -2111,16 +2133,16 @@ EST-iMs © | 2026    </div>
   </div>
 </div>
 
-<!-- ══ WELCOME TOAST ══ -->
+<!-- â•â• WELCOME TOAST â•â• -->
 <div class="welcome-toast" id="welcomeToast">
-  <div class="wt-icon">👋</div>
+  <div class="wt-icon">ðŸ‘‹</div>
   <div class="wt-text">
     <strong>Welcome, {{ username }}!</strong>
-    <span>{{ zone_label }} — {{ login_time }}</span>
+    <span>{{ zone_label }} â€” {{ login_time }}</span>
   </div>
 </div>
 
-<!-- ══ DASHBOARD MODAL ══ -->
+<!-- â•â• DASHBOARD MODAL â•â• -->
 <div id="dashModal" onclick="if(event.target===this)closeDashboard()">
   <div class="dash-box">
     <!-- LEFT NAV -->
@@ -2128,40 +2150,48 @@ EST-iMs © | 2026    </div>
       <div class="dash-sidebar-title">Dashboard</div>
 
       <div class="dash-nav-item active" onclick="dashShow('overview')" id="dnav-overview">
-        <span class="dn-icon">📊</span> Overview
+        <span class="dn-icon">ðŸ“Š</span> Overview
       </div>
       <div class="dash-nav-item" onclick="dashShow('movement')" id="dnav-movement">
-        <span class="dn-icon">📈</span> IN / OUT Movement
+        <span class="dn-icon">ðŸ“ˆ</span> IN / OUT Movement
       </div>
       <div class="dash-nav-item" onclick="dashShow('summary')" id="dnav-summary">
         <span class="dn-icon">S</span> Consumption Summary
       </div>
       <div class="dash-nav-sep"></div>
       <div class="dash-nav-item" onclick="dashShow('alerts')" id="dnav-alerts">
-        <span class="dn-icon">⚠️</span> Stock Alerts
+        <span class="dn-icon">âš ï¸</span> Stock Alerts
       </div>
       <div class="dash-nav-item" onclick="dashShow('top')" id="dnav-top">
-        <span class="dn-icon">🏆</span> Top Items
+        <span class="dn-icon">ðŸ†</span> Top Items
       </div>
       <div class="dash-nav-sep"></div>
+      <div class="dash-nav-item" onclick="dashShow('stocktaking')" id="dnav-stocktaking">
+        <span class="dn-icon">INV</span> Inventory Count
+      </div>
+      <div class="dash-nav-item" onclick="dashShow('excelstatus')" id="dnav-excelstatus">
+        <span class="dn-icon">XL</span> Excel Link Status
+      </div>
+
+      <div class="dash-nav-sep"></div>
       <div class="dash-nav-item" onclick="dashShow('zones')" id="dnav-zones">
-        <span class="dn-icon">🏭</span> Zones Summary
+        <span class="dn-icon">ðŸ­</span> Zones Summary
       </div>
     </div>
 
     <!-- RIGHT CONTENT -->
     <div class="dash-content" id="dashContent" style="position:relative;">
-      <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
+      <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
       <div class="dash-loading"><div class="spinner"></div><span>Loading dashboard...</span></div>
     </div>
   </div>
 </div>
 
 
-<!-- ══ COMING SOON MODAL ══ -->
+<!-- â•â• COMING SOON MODAL â•â• -->
 <div id="soonModal" onclick="if(event.target===this)closeSoonModal()">
   <div class="soon-box">
-    <span class="soon-icon">🚀</span>
+    <span class="soon-icon">ðŸš€</span>
     <div class="soon-badge">Coming Soon</div>
     <div class="soon-title" id="soonTitle">Feature Under Development</div>
     <div class="soon-sub" id="soonSub">This feature is currently being built and will be available soon. Stay tuned!</div>
@@ -2170,7 +2200,7 @@ EST-iMs © | 2026    </div>
 </div>
 
 <script>
-// ── BETA POPUP (show only once per session) ──
+// â”€â”€ BETA POPUP (show only once per session) â”€â”€
 function closeBetaOverlay() {
   const overlay = document.getElementById('betaOverlay');
   if (!overlay) return;
@@ -2188,7 +2218,7 @@ function closeBetaOverlay() {
 })();
 
 
-// ── COMING SOON MODAL ──
+// â”€â”€ COMING SOON MODAL â”€â”€
 function openSoonModal(feature) {
   const titles = {
     dashboard: 'Dashboard',
@@ -2206,7 +2236,7 @@ function closeSoonModal() {
   document.getElementById('soonModal').classList.remove('open');
 }
 
-// ── USER PROFILE MODAL ──
+// â”€â”€ USER PROFILE MODAL â”€â”€
 let _profileLoaded = false;
 let _profileData = null;
 
@@ -2222,7 +2252,7 @@ function profileInitials(username) {
 }
 
 function formatDuration(seconds) {
-  if (!Number.isFinite(seconds)) return '—';
+  if (!Number.isFinite(seconds)) return 'â€”';
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
   const s = seconds % 60;
@@ -2250,7 +2280,7 @@ async function loadProfile() {
     _profileLoaded = true;
     renderProfile(_profileData);
   } catch (e) {
-    body.innerHTML = '<div class="profile-error">⚠️ Failed to load profile data</div>';
+    body.innerHTML = '<div class="profile-error">âš ï¸ Failed to load profile data</div>';
   }
 }
 
@@ -2281,16 +2311,16 @@ function renderProfile(data) {
 
   const zones = (data.allowed_zones || []).map(z => `
     <span class="profile-zone-pill">${escHtml(z.label || z.name || z.id)}</span>
-  `).join('') || '<span class="profile-zone-pill">—</span>';
+  `).join('') || '<span class="profile-zone-pill">â€”</span>';
 
   const logins = (data.recent_logins || []).length
     ? data.recent_logins.map(entry => `
         <div class="profile-log-item">
           <div>
             <div class="profile-log-main">${escHtml(entry.zone_label || entry.zone_id || 'Zone')}</div>
-            <div class="profile-log-sub">IP: ${escHtml(entry.ip || '—')}</div>
+            <div class="profile-log-sub">IP: ${escHtml(entry.ip || 'â€”')}</div>
           </div>
-          <div class="profile-log-time">${escHtml(entry.time || '—')}</div>
+          <div class="profile-log-time">${escHtml(entry.time || 'â€”')}</div>
         </div>
       `).join('')
     : '<div class="users-empty" style="padding:18px;">No login history yet</div>';
@@ -2299,17 +2329,17 @@ function renderProfile(data) {
     <div class="profile-grid">
       <div class="profile-card">
         <div class="profile-card-label">Current Zone</div>
-        <div class="profile-card-value">${escHtml(data.zone_label || data.zone_name || data.zone || '—')}</div>
+        <div class="profile-card-value">${escHtml(data.zone_label || data.zone_name || data.zone || 'â€”')}</div>
         <div class="profile-card-sub">${escHtml(data.zone_name || data.zone || '')}</div>
       </div>
       <div class="profile-card">
         <div class="profile-card-label">Active View</div>
-        <div class="profile-card-value">${escHtml(data.active_view_zone_label || data.active_view_zone || '—')}</div>
+        <div class="profile-card-value">${escHtml(data.active_view_zone_label || data.active_view_zone || 'â€”')}</div>
         <div class="profile-card-sub">${data.is_super ? 'Super-zone view access' : 'Assigned zone access'}</div>
       </div>
       <div class="profile-card">
         <div class="profile-card-label">Login Time</div>
-        <div class="profile-card-value">${escHtml(data.login_time || '—')}</div>
+        <div class="profile-card-value">${escHtml(data.login_time || 'â€”')}</div>
         <div class="profile-card-sub">Session: ${escHtml(formatDuration(Number(data.login_duration_seconds)))}</div>
       </div>
     </div>
@@ -2336,7 +2366,7 @@ function renderProfile(data) {
   `;
 }
 
-// ── LANGUAGE TOGGLE (index) ──
+// â”€â”€ LANGUAGE TOGGLE (index) â”€â”€
 const INDEX_LANG = {
   en: {
     refresh: 'Refresh', print: 'Print', exportCSV: 'Export CSV',
@@ -2347,12 +2377,12 @@ const INDEX_LANG = {
     editMode: 'Edit Mode', zoneView: 'Zone View',
   },
   ar: {
-    refresh: 'تحديث', print: 'طباعة', exportCSV: 'تصدير CSV',
-    about: 'عن النظام', logout: 'خروج', lang: 'Ar-En',
-    selectMonth: 'اختر شهراً للبدء',
-    searchPh: 'بحث في البيانات...',
-    yearLabel: 'السنة', monthsLabel: 'الأشهر', filesLabel: 'الملفات', sheetsLabel: 'الأوراق',
-    editMode: 'وضع التعديل', zoneView: 'عرض الزون',
+    refresh: 'ØªØ­Ø¯ÙŠØ«', print: 'Ø·Ø¨Ø§Ø¹Ø©', exportCSV: 'ØªØµØ¯ÙŠØ± CSV',
+    about: 'Ø¹Ù† Ø§Ù„Ù†Ø¸Ø§Ù…', logout: 'Ø®Ø±ÙˆØ¬', lang: 'Ar-En',
+    selectMonth: 'Ø§Ø®ØªØ± Ø´Ù‡Ø±Ø§Ù‹ Ù„Ù„Ø¨Ø¯Ø¡',
+    searchPh: 'Ø¨Ø­Ø« ÙÙŠ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª...',
+    yearLabel: 'Ø§Ù„Ø³Ù†Ø©', monthsLabel: 'Ø§Ù„Ø£Ø´Ù‡Ø±', filesLabel: 'Ø§Ù„Ù…Ù„ÙØ§Øª', sheetsLabel: 'Ø§Ù„Ø£ÙˆØ±Ø§Ù‚',
+    editMode: 'ÙˆØ¶Ø¹ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„', zoneView: 'Ø¹Ø±Ø¶ Ø§Ù„Ø²ÙˆÙ†',
   }
 };
 let indexLang = localStorage.getItem('est-lang') || 'en';
@@ -2388,10 +2418,10 @@ function applyIndexLang(lang) {
 function toggleIndexLang() {
   applyIndexLang(indexLang === 'en' ? 'ar' : 'en');
 }
-// تطبيق اللغة عند التحميل
+// ØªØ·Ø¨ÙŠÙ‚ Ø§Ù„Ù„ØºØ© Ø¹Ù†Ø¯ Ø§Ù„ØªØ­Ù…ÙŠÙ„
 applyIndexLang(indexLang);
 
-// ── LOGIN SOUND ──
+// â”€â”€ LOGIN SOUND â”€â”€
 (function() {
   try {
     const audio = new Audio('/static/id.mp3');
@@ -2400,23 +2430,23 @@ applyIndexLang(indexLang);
   } catch(e) {}
 })();
 
-// ── SIDEBAR TOGGLE ──
+// â”€â”€ SIDEBAR TOGGLE â”€â”€
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
   const btn = document.getElementById('sidebarToggleBtn');
   const collapsed = sidebar.classList.toggle('collapsed');
-  btn.textContent = collapsed ? '▶' : '◀';
+  btn.textContent = collapsed ? 'â–¶' : 'â—€';
   btn.title = collapsed ? 'Show sidebar' : 'Hide sidebar';
 }
 
-// ── PRINT MODAL ──
+// â”€â”€ PRINT MODAL â”€â”€
 function openPrintModal() {
   const table = document.querySelector('.data-table');
-  if (!table) { toast('⚠️ No data to print', false); return; }
-  document.getElementById('printInfoFile').textContent = state.selectedFile || '—';
-  document.getElementById('printInfoSheet').textContent = state.selectedSheet || '—';
-  document.getElementById('printInfoPeriod').textContent = (state.selectedMonth && state.selectedYear) ? `${state.selectedMonth} ${state.selectedYear}` : '—';
-  document.getElementById('printInfoRecords').textContent = state.allRows.length ? `${state.allRows.length} rows` : '—';
+  if (!table) { toast('âš ï¸ No data to print', false); return; }
+  document.getElementById('printInfoFile').textContent = state.selectedFile || 'â€”';
+  document.getElementById('printInfoSheet').textContent = state.selectedSheet || 'â€”';
+  document.getElementById('printInfoPeriod').textContent = (state.selectedMonth && state.selectedYear) ? `${state.selectedMonth} ${state.selectedYear}` : 'â€”';
+  document.getElementById('printInfoRecords').textContent = state.allRows.length ? `${state.allRows.length} rows` : 'â€”';
   document.getElementById('printModalSub').textContent = `Printing: ${state.selectedFile || ''} / ${state.selectedSheet || ''}`;
   document.getElementById('printModal').classList.add('open');
 }
@@ -2428,7 +2458,7 @@ function doPrint() {
   printTable();
 }
 
-// ── STATE ──
+// â”€â”€ STATE â”€â”€
 const state = {
   structure: {},
   availableYears: [],
@@ -2441,7 +2471,7 @@ const state = {
   filePath: null,
   editMode: false,
   isInventorySheet: false,
-  sheetOptions: { colors: [], types: [], sizes: [], categories: [] },   // ← dropdown options from Excel
+  sheetOptions: { colors: [], types: [], sizes: [], categories: [] },   // â† dropdown options from Excel
 };
 
 const MONTH_NUMS = { January:1,February:2,March:3,April:4,May:5,June:6,July:7,August:8,September:9,October:10,November:11,December:12 };
@@ -2453,7 +2483,7 @@ const READ_ONLY_COLS = ['Current Balance', 'IN', 'OUT', '__row__'];
 // Columns that identify it as an inventory sheet
 const NON_INVENTORY_SHEETS = ['Stocktaking'];
 
-// ── THEME ──
+// â”€â”€ THEME â”€â”€
 (function() {
   const saved = localStorage.getItem('est-theme');
   if (saved === 'light') document.documentElement.classList.add('light');
@@ -2463,10 +2493,10 @@ document.getElementById('themeBtn').addEventListener('click', function() {
   localStorage.setItem('est-theme', isLight ? 'light' : 'dark');
 });
 
-// ── CLOCK (disabled per update) ──
+// â”€â”€ CLOCK (disabled per update) â”€â”€
 // function updateClock() { ... }
 
-// ── TOAST ──
+// â”€â”€ TOAST â”€â”€
 let _toastTimer;
 function toast(msg, ok=true) {
   const el = document.getElementById('toast');
@@ -2476,7 +2506,7 @@ function toast(msg, ok=true) {
   _toastTimer = setTimeout(() => { el.className = ''; }, 3000);
 }
 
-// ── GO HOME (reset to initial state) ──
+// â”€â”€ GO HOME (reset to initial state) â”€â”€
 function goHome() {
   state.selectedMonth = null;
   state.selectedFile  = null;
@@ -2486,12 +2516,12 @@ function goHome() {
   // deactivate month pills
   document.querySelectorAll('.month-pill').forEach(p => p.classList.remove('active'));
   showEmptyState('Select a month to begin');
-  updateHeader('Select a month to begin', `${state.selectedYear} → ...`);
-  document.getElementById('pathInfo').textContent = '—';
+  updateHeader('Select a month to begin', `${state.selectedYear} â†’ ...`);
+  document.getElementById('pathInfo').textContent = 'â€”';
   setStatus('Ready');
 }
 
-// ── INIT ──
+// â”€â”€ INIT â”€â”€
 const IS_SUPER = {{ 'true' if is_super else 'false' }};
 let currentViewZone = '{{ zone }}';
 
@@ -2534,7 +2564,7 @@ async function init() {
   buildMonthGrid();
 }
 
-// ── BUILD YEAR SELECT ──
+// â”€â”€ BUILD YEAR SELECT â”€â”€
 function buildYearSelect() {
   const sel = document.getElementById('yearSelect');
   sel.innerHTML = '';
@@ -2546,7 +2576,7 @@ function buildYearSelect() {
   });
 }
 
-// ── SELECT YEAR ──
+// â”€â”€ SELECT YEAR â”€â”€
 function selectYear(year) {
   state.selectedYear = year;
   state.selectedMonth = null;
@@ -2555,12 +2585,12 @@ function selectYear(year) {
   document.getElementById('fileSection').style.display = 'none';
   document.getElementById('sheetSection').style.display = 'none';
   showEmptyState('Select a month to begin');
-  updateHeader('Select a month to begin', `${year} → ...`);
-  document.getElementById('pathInfo').textContent = '—';
+  updateHeader('Select a month to begin', `${year} â†’ ...`);
+  document.getElementById('pathInfo').textContent = 'â€”';
   buildMonthGrid();
 }
 
-// ── BUILD MONTH GRID ──
+// â”€â”€ BUILD MONTH GRID â”€â”€
 function buildMonthGrid() {
   const grid = document.getElementById('monthGrid');
   grid.innerHTML = '';
@@ -2576,7 +2606,7 @@ function buildMonthGrid() {
   });
 }
 
-// ── SELECT MONTH ──
+// â”€â”€ SELECT MONTH â”€â”€
 function selectMonth(month) {
   state.selectedMonth = month;
   state.selectedFile = null;
@@ -2587,11 +2617,11 @@ function selectMonth(month) {
   document.getElementById('fileSection').style.display = '';
   document.getElementById('sheetSection').style.display = 'none';
   showEmptyState(`Select a file from ${month} files`);
-  updateHeader('Select a file', `${state.selectedYear} → ${month}`);
+  updateHeader('Select a file', `${state.selectedYear} â†’ ${month}`);
   document.getElementById('pathInfo').textContent = `${state.selectedYear} / ${month}`;
 }
 
-// ── BUILD FILE LIST ──
+// â”€â”€ BUILD FILE LIST â”€â”€
 function buildFileList(files) {
   const list = document.getElementById('fileList');
   list.innerHTML = '';
@@ -2600,13 +2630,13 @@ function buildFileList(files) {
     item.className = 'file-item';
     item.dataset.name = fname;
     item.dataset.path = fpath;
-    item.innerHTML = `<span class="fi-icon">${FILE_ICONS[fname] || '📄'}</span>${FILE_LABELS[fname] || fname}`;
+    item.innerHTML = `<span class="fi-icon">${FILE_ICONS[fname] || 'ðŸ“„'}</span>${FILE_LABELS[fname] || fname}`;
     item.onclick = () => selectFile(fname, fpath);
     list.appendChild(item);
   });
 }
 
-// ── SELECT FILE ──
+// â”€â”€ SELECT FILE â”€â”€
 async function selectFile(fname, fpath) {
   state.selectedFile = fname;
   state.selectedSheet = null;
@@ -2619,10 +2649,10 @@ async function selectFile(fname, fpath) {
   buildSheetList(data.sheets);
   document.getElementById('sheetSection').style.display = '';
   if (data.sheets.length > 0) selectSheet(data.sheets[0]);
-  updateHeader(fname, `${state.selectedYear} → ${state.selectedMonth} → ${fname}`);
+  updateHeader(fname, `${state.selectedYear} â†’ ${state.selectedMonth} â†’ ${fname}`);
 }
 
-// ── BUILD SHEET LIST ──
+// â”€â”€ BUILD SHEET LIST â”€â”€
 function buildSheetList(sheets) {
   const list = document.getElementById('sheetList');
   list.innerHTML = '';
@@ -2636,7 +2666,7 @@ function buildSheetList(sheets) {
   });
 }
 
-// ── SELECT SHEET ──
+// â”€â”€ SELECT SHEET â”€â”€
 async function selectSheet(sheet) {
   const switchingSheet = state.selectedSheet !== sheet;
   // Only reset edit mode when actively switching to a different sheet
@@ -2671,7 +2701,7 @@ async function selectSheet(sheet) {
   }
 
   renderTable(state.headers, state.allRows);
-  updateHeader(sheet, `${state.selectedYear} → ${state.selectedMonth} → ${state.selectedFile} → ${sheet}`);
+  updateHeader(sheet, `${state.selectedYear} â†’ ${state.selectedMonth} â†’ ${state.selectedFile} â†’ ${sheet}`);
   document.getElementById('recordCount').textContent = `${data.count} Records`;
   setStatus(`Loaded ${state.selectedFile} / ${sheet}`);
   document.getElementById('pathInfo').textContent = `${state.selectedYear} / ${state.selectedMonth} / ${state.selectedFile}.xlsm / ${sheet}`;
@@ -2686,25 +2716,25 @@ async function selectSheet(sheet) {
   document.getElementById('editBadge').style.display = state.editMode ? '' : 'none';
 }
 
-// ── TOGGLE EDIT MODE ──
+// â”€â”€ TOGGLE EDIT MODE â”€â”€
 function toggleEditMode() {
   const toggle = document.getElementById('editToggle');
   if (toggle.checked) {
-    // Turning ON — require password
+    // Turning ON â€” require password
     toggle.checked = false; // revert visually until password confirmed
     document.getElementById('pwdInput').value = '';
     document.getElementById('pwdError').textContent = '';
     document.getElementById('pwdModal').classList.add('open');
     setTimeout(() => document.getElementById('pwdInput').focus(), 120);
   } else {
-    // Turning OFF — no password needed
+    // Turning OFF â€” no password needed
     state.editMode = false;
     document.getElementById('editBadge').style.display = 'none';
     renderTable(state.headers, state.allRows);
   }
 }
 
-// ── PASSWORD MODAL ──
+// â”€â”€ PASSWORD MODAL â”€â”€
 async function confirmPwd() {
   const val = document.getElementById('pwdInput').value;
   try {
@@ -2720,14 +2750,14 @@ async function confirmPwd() {
       document.getElementById('editToggle').checked = true;
       document.getElementById('editBadge').style.display = '';
       renderTable(state.headers, state.allRows);
-      toast('✎ Edit mode ON — click any cell or use IN/OUT buttons', true);
+      toast('âœŽ Edit mode ON â€” click any cell or use IN/OUT buttons', true);
     } else {
-      document.getElementById('pwdError').textContent = '✗ Incorrect password';
+      document.getElementById('pwdError').textContent = 'âœ— Incorrect password';
       document.getElementById('pwdInput').value = '';
       document.getElementById('pwdInput').focus();
     }
   } catch (e) {
-    document.getElementById('pwdError').textContent = '✗ Connection error';
+    document.getElementById('pwdError').textContent = 'âœ— Connection error';
   }
 }
 function cancelPwdModal() {
@@ -2736,7 +2766,7 @@ function cancelPwdModal() {
   document.getElementById('pwdError').textContent = '';
 }
 
-// ── RENDER TABLE ──
+// â”€â”€ RENDER TABLE â”€â”€
 function renderTable(headers, rows) {
   const wrap = document.getElementById('tableWrap');
   if (!headers.length) { showEmptyState('No data in this sheet'); return; }
@@ -2764,13 +2794,13 @@ function renderTable(headers, rows) {
         const val = row[h];
         const hLower = h.toLowerCase();
         let cls = '';
-        if (hLower === 'date' || hLower === 'التاريخ') cls = 'cell-date';
+        if (hLower === 'date' || hLower === 'Ø§Ù„ØªØ§Ø±ÙŠØ®') cls = 'cell-date';
         else if (hLower === 'in') cls = 'cell-in';
         else if (hLower === 'out') cls = 'cell-out';
         else if (hLower.includes('balance')) cls = 'cell-balance';
 
         const display = (val === null || val === undefined || val === '') ?
-          `<span class="cell-null">—</span>` : escHtml(String(val));
+          `<span class="cell-null">â€”</span>` : escHtml(String(val));
 
         const isReadOnly = READ_ONLY_COLS.some(ro => hLower.includes(ro.toLowerCase()));
         const editable   = state.editMode && !isReadOnly;
@@ -2786,7 +2816,7 @@ function renderTable(headers, rows) {
         html += `<td class="action-cell">
           <button class="btn-in"  onclick="openTxModal(${excelRow}, 'IN')">+IN</button>
           <button class="btn-out" onclick="openTxModal(${excelRow}, 'OUT')">-OUT</button>
-          <button class="btn-del" onclick="confirmClearRow(${excelRow})" title="Clear row data">🗑</button>
+          <button class="btn-del" onclick="confirmClearRow(${excelRow})" title="Clear row data">ðŸ—‘</button>
         </td>`;
       }
       html += `</tr>`;
@@ -2796,9 +2826,9 @@ function renderTable(headers, rows) {
   wrap.innerHTML = html;
 }
 
-// ── INLINE CELL EDIT ──
+// â”€â”€ INLINE CELL EDIT â”€â”€
 function _buildDropdown(options, currentText, excelRow, colName) {
-  let optHtml = `<option value="">— اختر —</option>`;
+  let optHtml = `<option value="">â€” Ø§Ø®ØªØ± â€”</option>`;
   let found = false;
   options.forEach(o => {
     const sel = o === currentText ? ' selected' : '';
@@ -2808,7 +2838,7 @@ function _buildDropdown(options, currentText, excelRow, colName) {
   if (currentText && !found) {
     optHtml += `<option value="${escAttr(currentText)}" selected>${escHtml(currentText)}</option>`;
   }
-  optHtml += `<option value="__new__">✏️ إضافة قيمة جديدة…</option>`;
+  optHtml += `<option value="__new__">âœï¸ Ø¥Ø¶Ø§ÙØ© Ù‚ÙŠÙ…Ø© Ø¬Ø¯ÙŠØ¯Ø©â€¦</option>`;
   return `<select
     onchange="handleDDChange(this,${excelRow},'${escAttr(colName)}')"
     onblur="handleDDBlur(this,${excelRow},'${escAttr(colName)}')"
@@ -2818,7 +2848,7 @@ function _buildDropdown(options, currentText, excelRow, colName) {
 
 function startEdit(td, excelRow, colName) {
   if (td.querySelector('input') || td.querySelector('select')) return;
-  const currentText = td.innerText.trim() === '—' ? '' : td.innerText.trim();
+  const currentText = td.innerText.trim() === 'â€”' ? '' : td.innerText.trim();
   const colLower = colName.toLowerCase();
 
   const ddMap = {
@@ -2850,7 +2880,7 @@ function handleDDChange(select, excelRow, colName) {
   if (select.value !== '__new__') return;
   // Prevent blur from firing during prompt
   select._prompting = true;
-  const newVal = prompt(`أضف قيمة جديدة لـ ${colName}:`);
+  const newVal = prompt(`Ø£Ø¶Ù Ù‚ÙŠÙ…Ø© Ø¬Ø¯ÙŠØ¯Ø© Ù„Ù€ ${colName}:`);
   select._prompting = false;
   if (newVal && newVal.trim()) {
     const v = newVal.trim();
@@ -2913,13 +2943,13 @@ async function _applyAutoBalance(excelRow, colorValue) {
           if (basicKey)   rowObj[basicKey]   = data.balance;
           if (currentKey) rowObj[currentKey] = data.balance;
         }
-        toast(`✓ Color: ${colorValue} — رصيد افتتاحي: ${data.balance}`, true);
+        toast(`âœ“ Color: ${colorValue} â€” Ø±ØµÙŠØ¯ Ø§ÙØªØªØ§Ø­ÙŠ: ${data.balance}`, true);
         renderTable(state.headers, state.allRows);
         return;
       }
     }
-    // No previous balance found — just toast color saved, leave Basic/Current empty
-    toast(`✓ Color: ${colorValue} — لا يوجد رصيد سابق لهذا الصنف`, true);
+    // No previous balance found â€” just toast color saved, leave Basic/Current empty
+    toast(`âœ“ Color: ${colorValue} â€” Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ø±ØµÙŠØ¯ Ø³Ø§Ø¨Ù‚ Ù„Ù‡Ø°Ø§ Ø§Ù„ØµÙ†Ù`, true);
   } catch(e) {
     // silently ignore
   }
@@ -2947,14 +2977,14 @@ async function commitEditSelect(select, excelRow, colName) {
     const rowObj = state.allRows.find(r => r['__row__'] === excelRow);
     if (rowObj) rowObj[colName] = newValue;
 
-    // If Color was just set → auto-fill Basic + Current from last balance
+    // If Color was just set â†’ auto-fill Basic + Current from last balance
     if (colName.toLowerCase() === 'color') {
       await _applyAutoBalance(excelRow, newValue);
     } else {
-      toast(`✓ Saved: ${colName} = ${newValue}`);
+      toast(`âœ“ Saved: ${colName} = ${newValue}`);
     }
   } else {
-    toast(`✗ Error: ${d.error}`, false);
+    toast(`âœ— Error: ${d.error}`, false);
     renderTable(state.headers, state.allRows);
   }
 }
@@ -2964,7 +2994,7 @@ async function commitEdit(input, excelRow, colName) {
   const td = input.parentElement;
 
   // Optimistic UI
-  td.textContent = newValue || '—';
+  td.textContent = newValue || 'â€”';
 
   const res = await fetch('/api/update_cell', {
     method: 'POST',
@@ -2979,22 +3009,22 @@ async function commitEdit(input, excelRow, colName) {
   });
   const data = await res.json();
   if (data.success) {
-    toast(`✓ Saved: ${colName} = ${newValue}`);
+    toast(`âœ“ Saved: ${colName} = ${newValue}`);
     // Update local state so re-render is correct
     const rowObj = state.allRows.find(r => r['__row__'] === excelRow);
     if (rowObj) rowObj[colName] = newValue;
   } else {
-    toast(`✗ Error: ${data.error}`, false);
+    toast(`âœ— Error: ${data.error}`, false);
     renderTable(state.headers, state.allRows); // revert
   }
 }
 
-// ── CLEAR ROW ──
+// â”€â”€ CLEAR ROW â”€â”€
 async function confirmClearRow(excelRow) {
   const rowObj = state.allRows.find(r => r['__row__'] === excelRow) || {};
   const colorVal = Object.entries(rowObj).find(([k]) => k.toLowerCase() === 'color')?.[1];
   const label = colorVal ? `(Color: ${colorVal})` : `(Row ${excelRow})`;
-  if (!confirm(`حذف بيانات الصف ${label}؟\nهذا سيمسح جميع القيم — هل أنت متأكد؟`)) return;
+  if (!confirm(`Ø­Ø°Ù Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„ØµÙ ${label}ØŸ\nÙ‡Ø°Ø§ Ø³ÙŠÙ…Ø³Ø­ Ø¬Ù…ÙŠØ¹ Ø§Ù„Ù‚ÙŠÙ… â€” Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ØŸ`)) return;
 
   const res = await fetch('/api/clear_row', {
     method: 'POST',
@@ -3003,14 +3033,14 @@ async function confirmClearRow(excelRow) {
   });
   const d = await res.json();
   if (d.success) {
-    toast('✓ تم مسح بيانات الصف');
+    toast('âœ“ ØªÙ… Ù…Ø³Ø­ Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„ØµÙ');
     await selectSheet(state.selectedSheet);
   } else {
-    toast(`✗ ${d.error}`, false);
+    toast(`âœ— ${d.error}`, false);
   }
 }
 
-// ── TRANSACTION MODAL ──
+// â”€â”€ TRANSACTION MODAL â”€â”€
 let _txRow = null, _txOp = null;
 
 function openTxModal(excelRow, operation) {
@@ -3024,12 +3054,12 @@ function openTxModal(excelRow, operation) {
   const colorKey = Object.keys(rowObj).find(k => k.toLowerCase() === 'color');
   const colorVal = colorKey ? rowObj[colorKey] : null;
   if (!colorVal || String(colorVal).trim() === '' || String(colorVal).trim().toLowerCase() === 'null') {
-    toast('⚠️ يجب تحديد اللون (Color) أولاً قبل إجراء أي عملية', false);
+    toast('âš ï¸ ÙŠØ¬Ø¨ ØªØ­Ø¯ÙŠØ¯ Ø§Ù„Ù„ÙˆÙ† (Color) Ø£ÙˆÙ„Ø§Ù‹ Ù‚Ø¨Ù„ Ø¥Ø¬Ø±Ø§Ø¡ Ø£ÙŠ Ø¹Ù…Ù„ÙŠØ©', false);
     return;
   }
 
-  document.getElementById('txTitle').textContent    = operation === 'IN' ? '➕ IN — Add Stock' : '➖ OUT — Remove Stock';
-  document.getElementById('txSubtitle').textContent = `${state.selectedFile} / ${state.selectedSheet} — Row ${excelRow}`;
+  document.getElementById('txTitle').textContent    = operation === 'IN' ? 'âž• IN â€” Add Stock' : 'âž– OUT â€” Remove Stock';
+  document.getElementById('txSubtitle').textContent = `${state.selectedFile} / ${state.selectedSheet} â€” Row ${excelRow}`;
 
   // Info grid
   const infoFields = ['Color', 'Size', 'Type', 'Category', 'Current Balance', 'Basic'];
@@ -3047,7 +3077,7 @@ function openTxModal(excelRow, operation) {
 
   const btn = document.getElementById('txConfirmBtn');
   btn.className = `btn ${operation === 'IN' ? 'btn-in-modal' : 'btn-out-modal'}`;
-  btn.textContent = operation === 'IN' ? '✓ Add Stock' : '✓ Remove Stock';
+  btn.textContent = operation === 'IN' ? 'âœ“ Add Stock' : 'âœ“ Remove Stock';
 
   document.getElementById('txQty').value = '';
   document.getElementById('txModal').classList.add('open');
@@ -3061,7 +3091,7 @@ function closeTxModal() {
 
 async function submitTx() {
   const qty = parseFloat(document.getElementById('txQty').value);
-  if (isNaN(qty) || qty < 0) { toast('أدخل كمية صحيحة (0 أو أكثر)', false); return; }
+  if (isNaN(qty) || qty < 0) { toast('Ø£Ø¯Ø®Ù„ ÙƒÙ…ÙŠØ© ØµØ­ÙŠØ­Ø© (0 Ø£Ùˆ Ø£ÙƒØ«Ø±)', false); return; }
   if (!_txRow || !_txOp) return;
 
   const btn = document.getElementById('txConfirmBtn');
@@ -3082,19 +3112,19 @@ async function submitTx() {
   const data = await res.json();
 
   btn.disabled = false;
-  btn.textContent = _txOp === 'IN' ? '✓ Add Stock' : '✓ Remove Stock';
+  btn.textContent = _txOp === 'IN' ? 'âœ“ Add Stock' : 'âœ“ Remove Stock';
 
   if (data.success) {
-    toast(`✓ ${_txOp} ${qty} — New balance: ${data.new_balance}`);
+    toast(`âœ“ ${_txOp} ${qty} â€” New balance: ${data.new_balance}`);
     closeTxModal();
     // Refresh to show updated Current Balance across all rows with same Color
     await selectSheet(state.selectedSheet);
   } else {
-    toast(`✗ ${data.error}`, false);
+    toast(`âœ— ${data.error}`, false);
   }
 }
 
-// ── FILTER ──
+// â”€â”€ FILTER â”€â”€
 function filterTable(query) {
   const q = query.trim().toLowerCase();
   const rows = document.querySelectorAll('.data-table tbody tr[data-row]');
@@ -3108,11 +3138,11 @@ function filterTable(query) {
   info.textContent = q ? `${visible} of ${state.allRows.length} results` : '';
 }
 
-// ── HELPERS ──
+// â”€â”€ HELPERS â”€â”€
 function showEmptyState(msg) {
   document.getElementById('tableWrap').innerHTML = `
     <div class="empty-state">
-      <div class="es-icon">📂</div>
+      <div class="es-icon">ðŸ“‚</div>
       <h3>${msg}</h3>
       <p>Select a month, file and sheet from the sidebar</p>
     </div>`;
@@ -3133,7 +3163,7 @@ function escAttr(s) {
   return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;');
 }
 
-// ── ACTIONS ──
+// â”€â”€ ACTIONS â”€â”€
 function refreshData() { if (state.selectedSheet) selectSheet(state.selectedSheet); }
 
 function printTable() {
@@ -3150,7 +3180,7 @@ function printTable() {
       tr:nth-child(even) { background: #f5f5f5; }
       .action-cell { display: none; }
     </style></head><body>`);
-  win.document.write(`<h2>${state.selectedFile} / ${state.selectedSheet} — ${state.selectedMonth} ${state.selectedYear}</h2>`);
+  win.document.write(`<h2>${state.selectedFile} / ${state.selectedSheet} â€” ${state.selectedMonth} ${state.selectedYear}</h2>`);
   win.document.write(table.outerHTML);
   win.document.write('</body></html>');
   win.document.close();
@@ -3159,7 +3189,7 @@ function printTable() {
 
 function exportCSV() {
   if (!state.headers.length || !state.allRows.length) {
-    toast('⚠️ No data to export', false);
+    toast('âš ï¸ No data to export', false);
     return;
   }
   openCsvModal();
@@ -3168,15 +3198,15 @@ function exportCSV() {
 function openCsvModal() {
   const filename = state.headers.length
     ? `${state.selectedFile || 'data'}_${state.selectedSheet || 'sheet'}_${state.selectedMonth || ''}_${state.selectedYear || ''}.csv`
-    : '—';
-  document.getElementById('csvInfoFile').textContent    = state.selectedFile  || '—';
-  document.getElementById('csvInfoSheet').textContent   = state.selectedSheet || '—';
-  document.getElementById('csvInfoPeriod').textContent  = (state.selectedMonth && state.selectedYear) ? `${state.selectedMonth} ${state.selectedYear}` : '—';
-  document.getElementById('csvInfoRecords').textContent = state.allRows.length ? `${state.allRows.length} rows` : '—';
+    : 'â€”';
+  document.getElementById('csvInfoFile').textContent    = state.selectedFile  || 'â€”';
+  document.getElementById('csvInfoSheet').textContent   = state.selectedSheet || 'â€”';
+  document.getElementById('csvInfoPeriod').textContent  = (state.selectedMonth && state.selectedYear) ? `${state.selectedMonth} ${state.selectedYear}` : 'â€”';
+  document.getElementById('csvInfoRecords').textContent = state.allRows.length ? `${state.allRows.length} rows` : 'â€”';
   document.getElementById('csvInfoFilename').textContent = filename;
   document.getElementById('csvModalSub').textContent = state.headers.length
     ? `Export: ${state.selectedFile || ''} / ${state.selectedSheet || ''}`
-    : 'No data loaded — please select a file and sheet first.';
+    : 'No data loaded â€” please select a file and sheet first.';
   document.getElementById('csvModal').classList.add('open');
 }
 
@@ -3208,13 +3238,13 @@ function doExportCSV() {
   closeCsvModal();
 }
 
-// ── KEYBOARD ──
+// â”€â”€ KEYBOARD â”€â”€
 document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.key === 'f') { e.preventDefault(); document.getElementById('searchInput').focus(); }
   if (e.key === 'Escape') { closeTxModal(); closeAbout(); cancelPwdModal(); closePrintModal(); closeCsvModal(); closeLogout(); closeDashboard(); closeProfileModal(); closeUsersModal(); closeAdminRequestsModal(); closeAdminUsersModal(); closeAdminUserDetailModal(); document.getElementById('reportsDropdownMenu')?.classList.remove('open'); }
 });
 
-// ── ABOUT ──
+// â”€â”€ ABOUT â”€â”€
 function showAbout()  { document.getElementById('aboutModal').style.display = 'flex'; }
 function closeAbout() { document.getElementById('aboutModal').style.display = 'none'; }
 
@@ -3227,9 +3257,9 @@ function closeLogout() {
 function doLogout() {
 window.location.href = '/logout';}
 
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // DASHBOARD
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let _dashData   = null;
 let _dashView   = 'overview';
 let _dashCharts = [];
@@ -3253,13 +3283,13 @@ async function loadDashData() {
     if (!res.ok || _dashData.error) throw new Error(_dashData.error || 'Dashboard request failed');
     dashShow(_dashView);
   } catch(e) {
-    setDashContent('<div class="dash-loading">⚠️ Failed to load dashboard data</div>');
+    setDashContent('<div class="dash-loading">âš ï¸ Failed to load dashboard data</div>');
   }
 }
 
 function setDashContent(html) {
   const c = document.getElementById('dashContent');
-  c.innerHTML = `<button class="dash-close-btn" onclick="closeDashboard()">✕</button>` + html;
+  c.innerHTML = `<button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>` + html;
 }
 
 function setDashContentSafe(html) {
@@ -3293,19 +3323,47 @@ function dashShow(view) {
   if (view === 'top')       dashTop(d);
   if (view === 'summary')   dashConsumptionSummary(d);
   if (view === 'zones')     dashZones(d);
+  if (view === 'stocktaking') dashStocktaking();
+  if (view === 'excelstatus') dashExcelStatus();
 
   // After rendering, update countdown in the newly created element (preserves ongoing timer)
   updateDashCountdown();
 }
 
-/* ── OVERVIEW ── */
+function dashStocktaking() {
+  setDashContent(`<div class="dash-content-title">Inventory Count</div>
+    <div class="dash-content-sub">Latest Stocktaking snapshot from the Excel source. Use print for a clean copy.</div>
+    <div class="dash-chart-wrap" id="stocktakingPrintArea">
+      <div class="dash-chart-title">Stocktaking Print View</div>
+      <div class="dash-empty">This view is ready for the next step: mapping the exact Stocktaking sheet columns from Sacks/Other files.</div>
+      <button class="dash-refresh-btn" onclick="window.print()" style="margin-top:14px;">Print</button>
+    </div>`);
+}
+async function dashExcelStatus() {
+  setDashContent(`<div class="dash-content-title">Excel Link Status</div><div class="dash-loading"><div class="spinner"></div><span>Checking Excel connection...</span></div>`);
+  try {
+    const res = await fetch('/api/dashboard/excel_status', { cache:'no-store' });
+    const data = await res.json();
+    const ok = !!data.connected;
+    setDashContent(`<div class="dash-content-title">Excel Link Status</div>
+      <div class="dash-content-sub">Live file availability check.</div>
+      <div class="dash-kpi-grid">
+        <div class="dash-kpi-card ${ok ? 'green' : 'red'}"><div class="dash-kpi-label">Connection</div><div class="dash-kpi-value">${ok ? 'Connected' : 'Failed'}</div><div class="dash-kpi-sub">${escHtml(data.message || '')}</div></div>
+        <div class="dash-kpi-card blue"><div class="dash-kpi-label">Last Update</div><div class="dash-kpi-value">${ok ? escHtml(String(data.minutes_ago)) + 'm' : '-'}</div><div class="dash-kpi-sub">${escHtml(data.last_update || '')}</div></div>
+      </div>
+      <div class="dash-chart-wrap"><div class="dash-chart-title">Source file</div><div class="dash-empty">${escHtml(data.file || 'No Excel file found')}</div></div>`);
+  } catch(e) {
+    setDashContent(`<div class="dash-content-title">Excel Link Status</div><div class="dash-empty">Failed to read Excel status.</div>`);
+  }
+}
+/* â”€â”€ OVERVIEW â”€â”€ */
 function dashOverview(d) {
   const kpis = [
-    { label:'Total Items',     value: d.total_items   ?? '—', sub:'across all sheets',   cls:'blue'  },
-    { label:'Total IN',        value: d.total_in      ?? '—', sub:'all time',             cls:'green' },
-    { label:'Total OUT',       value: d.total_out     ?? '—', sub:'all time',             cls:'red'   },
-    { label:'Low Stock Items', value: d.low_stock     ?? '—', sub:'below threshold',      cls:'amber' },
-    { label:'Zero Stock',      value: d.zero_stock    ?? '—', sub:'need restocking',      cls:'red'   },
+    { label:'Total Items',     value: d.total_items   ?? 'â€”', sub:'across all sheets',   cls:'blue'  },
+    { label:'Total IN',        value: d.total_in      ?? 'â€”', sub:'all time',             cls:'green' },
+    { label:'Total OUT',       value: d.total_out     ?? 'â€”', sub:'all time',             cls:'red'   },
+    { label:'Low Stock Items', value: d.low_stock     ?? 'â€”', sub:'below threshold',      cls:'amber' },
+    { label:'Zero Stock',      value: d.zero_stock    ?? 'â€”', sub:'need restocking',      cls:'red'   },
   ];
   const kpiHtml = kpis.map(k => `
     <div class="dash-kpi-card ${k.cls}">
@@ -3315,12 +3373,12 @@ function dashOverview(d) {
     </div>`).join('');
 
   setDashContent(`
-    <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
-    <div class="dash-content-title">📊 Overview</div>
+    <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
+    <div class="dash-content-title">ðŸ“Š Overview</div>
     <div class="dash-content-sub">Summary of current inventory status</div>
     <div class="dash-kpi-grid">${kpiHtml}</div>
     <div class="dash-chart-wrap">
-      <div class="dash-chart-title">IN vs OUT — Current Data</div>
+      <div class="dash-chart-title">IN vs OUT â€” Current Data</div>
       <canvas id="dashChartCanvas"></canvas>
     </div>`);
 
@@ -3334,11 +3392,11 @@ function dashOverview(d) {
   ]);
 }
 
-/* ── MOVEMENT ── */
+/* â”€â”€ MOVEMENT â”€â”€ */
 function dashMovement(d) {
   setDashContent(`
-    <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
-    <div class="dash-content-title">📈 IN / OUT Movement</div>
+    <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
+    <div class="dash-content-title">ðŸ“ˆ IN / OUT Movement</div>
     <div class="dash-content-sub">Stock movement breakdown by zone</div>
     <div class="dash-chart-wrap">
       <div class="dash-chart-title">IN per Zone</div>
@@ -3365,38 +3423,38 @@ function dashMovement(d) {
   });
 }
 
-/* ── ALERTS ── */
+/* â”€â”€ ALERTS â”€â”€ */
 function dashAlerts(d) {
   const items = d.alerts || [];
   const rows = items.length
     ? items.map(a => `
         <div class="dash-alert-item ${a.level}">
-          <div class="dash-alert-icon">${a.level==='danger'?'🔴':'🟡'}</div>
+          <div class="dash-alert-icon">${a.level==='danger'?'ðŸ”´':'ðŸŸ¡'}</div>
           <div class="dash-alert-text">
             <div class="dash-alert-name">${escHtml(a.name)}</div>
-            <div class="dash-alert-desc">${escHtml(a.sheet||'')} — Balance: ${a.balance}</div>
+            <div class="dash-alert-desc">${escHtml(a.sheet||'')} â€” Balance: ${a.balance}</div>
           </div>
           <div class="dash-alert-badge ${a.level==='danger'?'red':'amber'}">${a.level==='danger'?'ZERO':'LOW'}</div>
         </div>`)
       .join('')
-    : '<div class="dash-loading">✅ All items have sufficient stock</div>';
+    : '<div class="dash-loading">âœ… All items have sufficient stock</div>';
 
   setDashContent(`
-    <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
-    <div class="dash-content-title">⚠️ Stock Alerts</div>
+    <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
+    <div class="dash-content-title">âš ï¸ Stock Alerts</div>
     <div class="dash-content-sub">${items.length} item(s) need attention</div>
     <div class="dash-alert-list">${rows}</div>`);
 }
 
-/* ── TOP ITEMS ── */
+/* â”€â”€ TOP ITEMS â”€â”€ */
 function dashTop(d) {
   const items  = (d.top_items || []).slice(0, 10);
   const labels = items.map(i => i.name);
   const vals   = items.map(i => i.out);
 
   setDashContent(`
-    <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
-    <div class="dash-content-title">🏆 Top Items by Consumption</div>
+    <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
+    <div class="dash-content-title">ðŸ† Top Items by Consumption</div>
     <div class="dash-content-sub">Items with highest OUT quantity</div>
     <div class="dash-chart-wrap">
       <div class="dash-chart-title">Top 10 Most Consumed Items</div>
@@ -3408,20 +3466,20 @@ function dashTop(d) {
   ], { indexAxis: 'y' });
 }
 
-/* ── ZONES ── */
+/* â”€â”€ ZONES â”€â”€ */
 function dashZones(d) {
   const zones  = Object.keys(d.zone_in || {});
   const rows   = zones.map(z => `
     <tr>
-      <td>🏭 ${escHtml(z)}</td>
+      <td>ðŸ­ ${escHtml(z)}</td>
       <td style="color:var(--accent-green);font-weight:600;">${d.zone_in[z]  || 0}</td>
       <td style="color:var(--accent-red);font-weight:600;">${d.zone_out[z] || 0}</td>
       <td style="color:var(--accent-cyan);font-weight:600;">${(d.zone_in[z]||0) - (d.zone_out[z]||0)}</td>
     </tr>`).join('');
 
   setDashContent(`
-    <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
-    <div class="dash-content-title">🏭 Zones Summary</div>
+    <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
+    <div class="dash-content-title">ðŸ­ Zones Summary</div>
     <div class="dash-content-sub">IN / OUT breakdown per zone</div>
     <div class="dash-chart-wrap" style="padding:0;overflow:hidden;">
       <table class="dash-zone-table">
@@ -3442,7 +3500,7 @@ function dashZones(d) {
   ]);
 }
 
-/* ── CHART HELPERS ── */
+/* â”€â”€ CHART HELPERS â”€â”€ */
 function chartOpts(yLabel='') {
   return {
     responsive:true, maintainAspectRatio:true,
@@ -3471,7 +3529,7 @@ function drawChart(type, labels, datasets, extra={}) {
   });
 }
 
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function fmtDashNum(v) {
   const n = Number(v || 0);
   return Number.isInteger(n) ? n.toLocaleString() : n.toLocaleString(undefined, { maximumFractionDigits: 2 });
@@ -3740,7 +3798,7 @@ async function loadDashData(silent=false, isAuto=false) {
   }
 }
 
-// View switch does NOT reset the countdown — timer continues
+// View switch does NOT reset the countdown â€” timer continues
 const _origDashShow_wrapped = dashShow;
 
 function onDashZoneChange(value) {
@@ -3855,7 +3913,7 @@ function dashZones(d) {
 }
 
 // WELCOME TOAST
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 (function() {
   const t = document.getElementById('welcomeToast');
   if (!t) return;
@@ -3863,9 +3921,9 @@ function dashZones(d) {
   setTimeout(() => t.classList.remove('show'), 4500);
 })();
 
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // SESSION TIMER
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 (function() {
   const el = document.getElementById('sessionTimer');
   if (!el) return;
@@ -3876,16 +3934,16 @@ function dashZones(d) {
     const m = Math.floor((s % 3600) / 60);
     const sec = s % 60;
     el.textContent = h > 0
-      ? `⏱ ${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
-      : `⏱ ${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+      ? `â± ${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
+      : `â± ${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
   }
   tick();
   setInterval(tick, 1000);
 })();
 
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // ALERT BADGE (zero stock count)
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 (function() {
   const badge = document.getElementById('alertBadge');
   if (!badge) return;
@@ -3899,6 +3957,39 @@ function dashZones(d) {
     }).catch(() => {});
 })();
 
+function toggleTopbarButtons() {
+  const box = document.querySelector('.topbar-actions');
+  if (!box) return;
+  const hidden = box.classList.toggle('buttons-hidden');
+  localStorage.setItem('est-buttons-hidden', hidden ? '1' : '0');
+}
+(function(){ if (localStorage.getItem('est-buttons-hidden') === '1') document.querySelector('.topbar-actions')?.classList.add('buttons-hidden'); })();
+let adminMessagesCache = [];
+function setForMoreMessagesBadge(count) {
+  const badge = document.getElementById('forMoreMessagesBadge');
+  if (!badge) return;
+  const n = Number(count || 0);
+  badge.textContent = String(n);
+  badge.style.display = n > 0 ? 'inline-flex' : 'none';
+}
+function openAdminMessagesModal() { document.getElementById('adminMessagesModal')?.classList.add('open'); loadAdminMessages(); }
+function closeAdminMessagesModal() { document.getElementById('adminMessagesModal')?.classList.remove('open'); }
+async function loadAdminMessages() {
+  const body = document.getElementById('adminMessagesBody');
+  if (!body) return;
+  body.innerHTML = '<div class="users-empty">Loading...</div>';
+  try {
+    const res = await fetch('/api/admin/contact_messages', { cache:'no-store' });
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || 'Failed');
+    adminMessagesCache = data.messages || [];
+    setForMoreMessagesBadge(data.count || 0);
+    if (!adminMessagesCache.length) { body.innerHTML = '<div class="users-empty">No messages yet</div>'; return; }
+    body.innerHTML = adminMessagesCache.map(m => `<div style="border:1px solid var(--border);background:var(--bg-card);border-radius:12px;padding:14px 16px;margin:12px;"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;"><strong>${escHtml(m.name || '-')}</strong><span style="color:var(--text-dim);font-size:11px;">${escHtml(m.created_at || '')}</span></div><div style="color:var(--text-muted);font-size:12px;margin-top:5px;">${escHtml(m.phone || '')}${m.email ? ' | ' + escHtml(m.email) : ''}${m.department ? ' | ' + escHtml(m.department) : ''}</div><div style="color:var(--text-main);font-size:13px;line-height:1.6;margin-top:10px;white-space:pre-wrap;">${escHtml(m.message || '')}</div>${m.status === 'new' ? `<button class="btn btn-ghost" style="margin-top:10px;" onclick="markAdminMessageRead(${Number(m.id)})">Mark read</button>` : `<div style="margin-top:10px;color:var(--text-dim);font-size:11px;">Read</div>`}</div>`).join('');
+  } catch(e) { body.innerHTML = `<div class="users-empty">Failed to load messages<br>${escHtml(String(e.message || e))}</div>`; }
+}
+async function markAdminMessageRead(id) { await fetch(`/api/admin/contact_messages/${id}/read`, { method:'POST' }); loadAdminMessages(); }
+setInterval(() => { if (document.getElementById('forMoreMessagesBadge')) fetch('/api/admin/contact_messages',{cache:'no-store'}).then(r=>r.json()).then(d=>setForMoreMessagesBadge(d.count||0)).catch(()=>{}); }, 30000);
 {% if is_dev %}
 let _adminRequestsPollTimer = null;
 let _adminRequestsPollInFlight = false;
@@ -3928,9 +4019,9 @@ document.addEventListener('visibilitychange', () => {
 window.addEventListener('focus', refreshAdminRequestBadge);
 {% endif %}
 
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // USERS / LOGIN LOG MODAL
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function openUsersModal() {
   document.getElementById('usersModal')?.classList.add('open');
   loadLoginLog();
@@ -3948,7 +4039,7 @@ async function loadLoginLogLegacy() {
     const data = await res.json();
     const entries = data.entries || [];
     if (!entries.length) {
-      body.innerHTML = '<div class="users-empty">📭 No login records yet</div>';
+      body.innerHTML = '<div class="users-empty">ðŸ“­ No login records yet</div>';
       return;
     }
     const rows = entries.map((e, i) => `
@@ -3957,12 +4048,12 @@ async function loadLoginLogLegacy() {
         <td>
           <span style="display:inline-flex;align-items:center;gap:6px;">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <strong>${escHtml(e.username || '—')}</strong>
+            <strong>${escHtml(e.username || 'â€”')}</strong>
           </span>
         </td>
-        <td><span class="zone-badge" style="font-size:11px;padding:2px 10px;">${escHtml(e.zone_label || e.zone_id || '—')}</span></td>
-        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);">${escHtml(e.time || '—')}</td>
-        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);">${escHtml(e.ip || '—')}</td>
+        <td><span class="zone-badge" style="font-size:11px;padding:2px 10px;">${escHtml(e.zone_label || e.zone_id || 'â€”')}</span></td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);">${escHtml(e.time || 'â€”')}</td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);">${escHtml(e.ip || 'â€”')}</td>
       </tr>`).join('');
 
     body.innerHTML = `
@@ -3979,11 +4070,11 @@ async function loadLoginLogLegacy() {
         <tbody>${rows}</tbody>
       </table>`;
   } catch(e) {
-    body.innerHTML = '<div class="users-empty">⚠️ Failed to load log</div>';
+    body.innerHTML = '<div class="users-empty">âš ï¸ Failed to load log</div>';
   }
 }
 
-// ── REPORTS DROPDOWN ──
+// â”€â”€ REPORTS DROPDOWN â”€â”€
 async function loadLoginLog() {
   const body = document.getElementById('usersBody');
   if (!body) return;
@@ -4063,7 +4154,7 @@ function closeAdminUsersModal() {
 
 function exportAdminUsers() {
   if (!adminUsersCache.length) {
-    toast('⚠️ No registered users to export', false);
+    toast('âš ï¸ No registered users to export', false);
     return;
   }
   window.location.href = '/api/admin/registered_users/export.xlsx';
@@ -4080,28 +4171,28 @@ async function loadAdminRequests() {
     setAdminRequestBadge(data.count || 0);
     const items = data.requests || [];
     if (!items.length) {
-      body.innerHTML = '<div class="users-empty">لا توجد طلبات تسجيل حالياً</div>';
+      body.innerHTML = '<div class="users-empty">Ù„Ø§ ØªÙˆØ¬Ø¯ Ø·Ù„Ø¨Ø§Øª ØªØ³Ø¬ÙŠÙ„ Ø­Ø§Ù„ÙŠØ§Ù‹</div>';
       return;
     }
     body.innerHTML = items.map((r) => `
       <div style="border:1px solid var(--border);background:var(--bg-card);border-radius:12px;padding:14px 16px;margin-bottom:10px;">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
           <div style="min-width:240px;">
-            <div style="font-size:15px;font-weight:700;color:var(--text-main);">${escHtml(r.full_name || '—')}</div>
-            <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">@${escHtml(r.username || '—')} • ${escHtml(r.job_title || '—')}</div>
-            <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">${escHtml(r.email || '—')} • ${escHtml(r.phone || '—')}</div>
-            <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">السؤال الأمني: ${escHtml(r.security_question || '—')}</div>
-            <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">${escHtml(r.created_at || '—')}</div>
+            <div style="font-size:15px;font-weight:700;color:var(--text-main);">${escHtml(r.full_name || 'â€”')}</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">@${escHtml(r.username || 'â€”')} â€¢ ${escHtml(r.job_title || 'â€”')}</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">${escHtml(r.email || 'â€”')} â€¢ ${escHtml(r.phone || 'â€”')}</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">Ø§Ù„Ø³Ø¤Ø§Ù„ Ø§Ù„Ø£Ù…Ù†ÙŠ: ${escHtml(r.security_question || 'â€”')}</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">${escHtml(r.created_at || 'â€”')}</div>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button class="btn btn-purple" style="padding:8px 12px;font-size:12px;" onclick="approveRegistration(${Number(r.id)})">موافقة</button>
-            <button class="btn btn-ghost" style="padding:8px 12px;font-size:12px;" onclick="rejectRegistration(${Number(r.id)})">رفض</button>
+            <button class="btn btn-purple" style="padding:8px 12px;font-size:12px;" onclick="approveRegistration(${Number(r.id)})">Ù…ÙˆØ§ÙÙ‚Ø©</button>
+            <button class="btn btn-ghost" style="padding:8px 12px;font-size:12px;" onclick="rejectRegistration(${Number(r.id)})">Ø±ÙØ¶</button>
           </div>
         </div>
       </div>
     `).join('');
   } catch (e) {
-    body.innerHTML = `<div class="users-empty">فشل تحميل الطلبات<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
+    body.innerHTML = `<div class="users-empty">ÙØ´Ù„ ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ø·Ù„Ø¨Ø§Øª<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
   }
 }
 
@@ -4113,7 +4204,7 @@ async function approveRegistration(id) {
     await loadAdminRequests();
     await loadAdminUsers();
   } catch (e) {
-    alert(e.message || 'تعذر الموافقة على الطلب');
+    alert(e.message || 'ØªØ¹Ø°Ø± Ø§Ù„Ù…ÙˆØ§ÙÙ‚Ø© Ø¹Ù„Ù‰ Ø§Ù„Ø·Ù„Ø¨');
   }
 }
 
@@ -4124,7 +4215,7 @@ async function rejectRegistration(id) {
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
     await loadAdminRequests();
   } catch (e) {
-    alert(e.message || 'تعذر رفض الطلب');
+    alert(e.message || 'ØªØ¹Ø°Ø± Ø±ÙØ¶ Ø§Ù„Ø·Ù„Ø¨');
   }
 }
 
@@ -4134,11 +4225,11 @@ const ADMIN_SECURITY_QUESTIONS = [
   'What city were you born in?',
   'What is the name of your favorite teacher?',
   'What was your first phone number?',
-  'ما اسم أول مدرسة التحقت بها؟',
-  'ما اسم عائلة والدتك قبل الزواج؟',
-  'في أي مدينة ولدت؟',
-  'ما اسم معلمك المفضل؟',
-  'ما هو أول رقم هاتف استخدمته؟'
+  'Ù…Ø§ Ø§Ø³Ù… Ø£ÙˆÙ„ Ù…Ø¯Ø±Ø³Ø© Ø§Ù„ØªØ­Ù‚Øª Ø¨Ù‡Ø§ØŸ',
+  'Ù…Ø§ Ø§Ø³Ù… Ø¹Ø§Ø¦Ù„Ø© ÙˆØ§Ù„Ø¯ØªÙƒ Ù‚Ø¨Ù„ Ø§Ù„Ø²ÙˆØ§Ø¬ØŸ',
+  'ÙÙŠ Ø£ÙŠ Ù…Ø¯ÙŠÙ†Ø© ÙˆÙ„Ø¯ØªØŸ',
+  'Ù…Ø§ Ø§Ø³Ù… Ù…Ø¹Ù„Ù…Ùƒ Ø§Ù„Ù…ÙØ¶Ù„ØŸ',
+  'Ù…Ø§ Ù‡Ùˆ Ø£ÙˆÙ„ Ø±Ù‚Ù… Ù‡Ø§ØªÙ Ø§Ø³ØªØ®Ø¯Ù…ØªÙ‡ØŸ'
 ];
 function adminSecurityOptions(current) {
   const value = String(current || '');
@@ -4157,7 +4248,7 @@ async function loadAdminUsers() {
     if (!res.ok || data.error) throw new Error(data.error || 'Failed');
     adminUsersCache = data.users || [];
     if (!adminUsersCache.length) {
-      body.innerHTML = '<div class="users-empty">لا يوجد مستخدمون مسجلون بعد</div>';
+      body.innerHTML = '<div class="users-empty">Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ù…Ø³ØªØ®Ø¯Ù…ÙˆÙ† Ù…Ø³Ø¬Ù„ÙˆÙ† Ø¨Ø¹Ø¯</div>';
       return;
     }
     body.innerHTML = `
@@ -4165,13 +4256,13 @@ async function loadAdminUsers() {
       <div class="admin-user-list">
         ${adminUsersCache.map((u, i) => `
           <button class="admin-user-row" type="button" onclick="openAdminUserDetail(${Number(u.id)})">
-            <strong>${i + 1}. ${escHtml(u.username || '—')}</strong>
-            <span>${u.suspended_until ? 'موقوف حتى ' + escHtml(u.suspended_until) : 'عرض البيانات'}</span>
+            <strong>${i + 1}. ${escHtml(u.username || 'â€”')}</strong>
+            <span>${u.suspended_until ? 'Ù…ÙˆÙ‚ÙˆÙ Ø­ØªÙ‰ ' + escHtml(u.suspended_until) : 'Ø¹Ø±Ø¶ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª'}</span>
           </button>
         `).join('')}
       </div>`;
   } catch (e) {
-    body.innerHTML = `<div class="users-empty">فشل تحميل المستخدمين<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
+    body.innerHTML = `<div class="users-empty">ÙØ´Ù„ ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙŠÙ†<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
   }
 }
 
@@ -4182,29 +4273,29 @@ function openAdminUserDetail(id) {
   if (!body) return;
   const rows = [
     ['Full name', u.full_name], ['Username', u.username], ['Job title', u.job_title], ['Gender', u.gender], ['Birth date', u.birth_date], ['Privacy accepted', u.privacy_accepted ? 'Yes' : 'No'], ['Email', u.email],
-    ['Phone', u.phone], ['Security question', u.security_question], ['Password', u.password_stored_as ? 'Hidden (one-way hash)' : '—'],
-    ['Security answer', u.security_answer_stored_as ? 'Hidden (one-way hash)' : '—'],
-    ['Approved at', u.approved_at || u.created_at], ['Suspended until', u.suspended_until || '—'], ['Suspended by', u.suspended_by || '—']
+    ['Phone', u.phone], ['Security question', u.security_question], ['Password', u.password_stored_as ? 'Hidden (one-way hash)' : 'â€”'],
+    ['Security answer', u.security_answer_stored_as ? 'Hidden (one-way hash)' : 'â€”'],
+    ['Approved at', u.approved_at || u.created_at], ['Suspended until', u.suspended_until || 'â€”'], ['Suspended by', u.suspended_by || 'â€”']
   ];
   body.innerHTML = `
     <div class="admin-detail-grid">
-      ${rows.map(([label, value]) => `<div class="admin-detail-item"><div class="admin-detail-label">${escHtml(label)}</div><div class="admin-detail-value">${escHtml(value || '—')}</div></div>`).join('')}
+      ${rows.map(([label, value]) => `<div class="admin-detail-item"><div class="admin-detail-label">${escHtml(label)}</div><div class="admin-detail-value">${escHtml(value || 'â€”')}</div></div>`).join('')}
     </div>
     <div class="admin-danger-zone">
-      <input id="suspendMinutes" type="number" min="1" max="43200" value="60" title="مدة الإيقاف بالدقائق">
-      <button class="btn btn-purple" onclick="suspendAdminUser(${Number(u.id)})">إيقاف مؤقت</button>
-      <button class="btn btn-ghost" onclick="unsuspendAdminUser(${Number(u.id)})">إلغاء الإيقاف</button>
-      <button class="btn btn-logout" onclick="deleteAdminUser(${Number(u.id)}, '${escAttr(u.username || '')}')">حذف الحساب</button>
+      <input id="suspendMinutes" type="number" min="1" max="43200" value="60" title="Ù…Ø¯Ø© Ø§Ù„Ø¥ÙŠÙ‚Ø§Ù Ø¨Ø§Ù„Ø¯Ù‚Ø§Ø¦Ù‚">
+      <button class="btn btn-purple" onclick="suspendAdminUser(${Number(u.id)})">Ø¥ÙŠÙ‚Ø§Ù Ù…Ø¤Ù‚Øª</button>
+      <button class="btn btn-ghost" onclick="unsuspendAdminUser(${Number(u.id)})">Ø¥Ù„ØºØ§Ø¡ Ø§Ù„Ø¥ÙŠÙ‚Ø§Ù</button>
+      <button class="btn btn-logout" onclick="deleteAdminUser(${Number(u.id)}, '${escAttr(u.username || '')}')">Ø­Ø°Ù Ø§Ù„Ø­Ø³Ø§Ø¨</button>
     </div>
     <div class="admin-danger-zone">
       <input id="adminNewPassword" type="password" placeholder="New password">
       <input id="adminConfirmPassword" type="password" placeholder="Confirm password">
-      <button class="btn btn-purple" onclick="resetAdminUserPassword(${Number(u.id)})">تغيير كلمة السر</button>
+      <button class="btn btn-purple" onclick="resetAdminUserPassword(${Number(u.id)})">ØªØºÙŠÙŠØ± ÙƒÙ„Ù…Ø© Ø§Ù„Ø³Ø±</button>
     </div>
     <div class="admin-danger-zone">
       <select id="adminSecurityQuestion" style="flex:2 1 260px;">${adminSecurityOptions(u.security_question)}</select>
       <input id="adminSecurityAnswer" type="text" placeholder="New security answer" style="flex:1.4 1 180px;">
-      <button class="btn btn-purple" onclick="resetAdminUserSecurity(${Number(u.id)})">تغيير السؤال الأمني</button>
+      <button class="btn btn-purple" onclick="resetAdminUserSecurity(${Number(u.id)})">ØªØºÙŠÙŠØ± Ø§Ù„Ø³Ø¤Ø§Ù„ Ø§Ù„Ø£Ù…Ù†ÙŠ</button>
     </div>`;
   document.getElementById('adminUserDetailModal')?.classList.add('open');
 }
@@ -4219,10 +4310,10 @@ async function suspendAdminUser(id) {
     const res = await fetch(`/api/admin/registered_users/${id}/suspend`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ minutes }) });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
-    toast(data.message || 'تم الإيقاف', true);
+    toast(data.message || 'ØªÙ… Ø§Ù„Ø¥ÙŠÙ‚Ø§Ù', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'تعذر إيقاف المستخدم'); }
+  } catch(e) { alert(e.message || 'ØªØ¹Ø°Ø± Ø¥ÙŠÙ‚Ø§Ù Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…'); }
 }
 
 async function unsuspendAdminUser(id) {
@@ -4230,10 +4321,10 @@ async function unsuspendAdminUser(id) {
     const res = await fetch(`/api/admin/registered_users/${id}/unsuspend`, { method:'POST' });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
-    toast(data.message || 'تم إلغاء الإيقاف', true);
+    toast(data.message || 'ØªÙ… Ø¥Ù„ØºØ§Ø¡ Ø§Ù„Ø¥ÙŠÙ‚Ø§Ù', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'تعذر إلغاء الإيقاف'); }
+  } catch(e) { alert(e.message || 'ØªØ¹Ø°Ø± Ø¥Ù„ØºØ§Ø¡ Ø§Ù„Ø¥ÙŠÙ‚Ø§Ù'); }
 }
 
 async function resetAdminUserPassword(id) {
@@ -4243,10 +4334,10 @@ async function resetAdminUserPassword(id) {
     const res = await fetch(`/api/admin/registered_users/${id}/password`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ new_password, confirm_password }) });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
-    toast(data.message || 'تم تغيير كلمة السر', true);
+    toast(data.message || 'ØªÙ… ØªØºÙŠÙŠØ± ÙƒÙ„Ù…Ø© Ø§Ù„Ø³Ø±', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'تعذر تغيير كلمة السر'); }
+  } catch(e) { alert(e.message || 'ØªØ¹Ø°Ø± ØªØºÙŠÙŠØ± ÙƒÙ„Ù…Ø© Ø§Ù„Ø³Ø±'); }
 }
 
 async function resetAdminUserSecurity(id) {
@@ -4256,22 +4347,22 @@ async function resetAdminUserSecurity(id) {
     const res = await fetch(`/api/admin/registered_users/${id}/security`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ security_question, security_answer }) });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
-    toast(data.message || 'تم تغيير السؤال الأمني', true);
+    toast(data.message || 'ØªÙ… ØªØºÙŠÙŠØ± Ø§Ù„Ø³Ø¤Ø§Ù„ Ø§Ù„Ø£Ù…Ù†ÙŠ', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'تعذر تغيير السؤال الأمني'); }
+  } catch(e) { alert(e.message || 'ØªØ¹Ø°Ø± ØªØºÙŠÙŠØ± Ø§Ù„Ø³Ø¤Ø§Ù„ Ø§Ù„Ø£Ù…Ù†ÙŠ'); }
 }
 
 async function deleteAdminUser(id, username) {
-  if (!confirm(`حذف حساب ${username} بالكامل؟`)) return;
+  if (!confirm(`Ø­Ø°Ù Ø­Ø³Ø§Ø¨ ${username} Ø¨Ø§Ù„ÙƒØ§Ù…Ù„ØŸ`)) return;
   try {
     const res = await fetch(`/api/admin/registered_users/${id}`, { method:'DELETE' });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
-    toast(data.message || 'تم الحذف', true);
+    toast(data.message || 'ØªÙ… Ø§Ù„Ø­Ø°Ù', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'تعذر حذف المستخدم'); }
+  } catch(e) { alert(e.message || 'ØªØ¹Ø°Ø± Ø­Ø°Ù Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…'); }
 }
 
 let _reportsLoaded = false;
@@ -4293,17 +4384,17 @@ async function toggleReportsDropdown(e) {
       const data = await res.json();
       _reportsLoaded = true;
       if (!data.files || !data.files.length) {
-        menu.innerHTML = '<div class="reports-dropdown-empty">📂 No reports found</div>';
+        menu.innerHTML = '<div class="reports-dropdown-empty">ðŸ“‚ No reports found</div>';
       } else {
         menu.innerHTML = data.files.map(f =>
           `<div class="reports-dropdown-item" onclick="printReport('${escAttr(f)}')">
-             <span class="ri-icon">📊</span>
+             <span class="ri-icon">ðŸ“Š</span>
              <span style="overflow:hidden;text-overflow:ellipsis;">${escHtml(f)}</span>
            </div>`
         ).join('');
       }
     } catch {
-      menu.innerHTML = '<div class="reports-dropdown-empty">⚠️ Failed to load</div>';
+      menu.innerHTML = '<div class="reports-dropdown-empty">âš ï¸ Failed to load</div>';
     }
   } else {
     menu.classList.add('open');
@@ -4312,7 +4403,7 @@ async function toggleReportsDropdown(e) {
 
 function printReport(filename) {
   document.getElementById('reportsDropdownMenu').classList.remove('open');
-  // Open the server-rendered HTML print page directly — no download, no iframe tricks
+  // Open the server-rendered HTML print page directly â€” no download, no iframe tricks
   window.open('/reports/print/' + encodeURIComponent(filename), '_blank');
 }
 
@@ -4324,7 +4415,7 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// ── START ──
+// â”€â”€ START â”€â”€
 init();
 </script>
 </body>

@@ -1,4 +1,4 @@
-﻿"""
+"""
 EST Inventory System - Full Read/Write
 Alestesharia Animal Nutrition
 """
@@ -169,6 +169,31 @@ AUTH_DB_FILE = os.getenv(
     'AUTH_DB_FILE',
     os.path.join(os.getenv('RENDER_DISK_PATH', APP_DIR), 'auth.sqlite3')
 )
+
+DATA_STORE_DIR = os.getenv('RENDER_DISK_PATH', APP_DIR)
+CONTACT_MESSAGES_FILE = os.path.join(DATA_STORE_DIR, 'contact_messages.json')
+QC_SUBMISSIONS_FILE = os.path.join(DATA_STORE_DIR, 'qc_submissions.json')
+QC_UPLOAD_DIR = os.path.join(APP_DIR, 'static', 'qc_uploads')
+_data_lock = threading.Lock()
+
+
+def _read_json_list(path):
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        return data if isinstance(data, list) else []
+    except Exception:
+        return []
+
+
+def _write_json_list(path, items):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump(items, f, ensure_ascii=False, indent=2)
+
+
+def _next_json_id(items):
+    return (max([int(x.get('id', 0) or 0) for x in items] or [0]) + 1)
 
 
 def _prepare_auth_db_file():
@@ -756,7 +781,14 @@ def api_zone_login():
 
     restricted_username = ZONE_USER_RESTRICTIONS.get(zone_id)
     current_username = str(session.get('username', '')).strip().lower()
-    if restricted_username and current_username != restricted_username.lower():
+    allowed_usernames = []
+    if restricted_username:
+        allowed_usernames.append(restricted_username.lower())
+        if zone_id == 'admin':
+            dev_user = ZONE_USER_RESTRICTIONS.get('dev')
+            if dev_user:
+                allowed_usernames.append(dev_user.lower())
+    if restricted_username and current_username not in allowed_usernames:
         _record_failed_attempt(ip)
         return jsonify({'success': False, 'not_allowed': True, 'message': 'Access Denied'}), 403
 
@@ -767,9 +799,14 @@ def api_zone_login():
     session['can_edit']    = zone_id in EDIT_ZONES
     session['is_super']    = zone_id in SUPER_ZONES
     session['login_time']  = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    if zone_id == 'qc':
+        role = str(data.get('qc_role', '')).strip()
+        session['qc_role'] = role if role in {'qc', 'labeling'} else 'qc'
     _record_login(session.get('username',''), zone_id, zone['label'], ip)
     # إذا في صفحة مطلوبة بعد اللوغن (مثل /scan)، حوّل عليها
     next_url = session.pop('next_after_zone', '/index')
+    if zone_id == 'qc':
+        next_url = '/qc-workflow'
     return jsonify({'success': True, 'redirect': next_url})
 
 @app.route('/api/zone_access_check', methods=['POST'])
@@ -780,7 +817,14 @@ def api_zone_access_check():
     zone_id = data.get('zone_id', '').strip()
     restricted_username = ZONE_USER_RESTRICTIONS.get(zone_id)
     current_username = str(session.get('username', '')).strip().lower()
-    if restricted_username and current_username != restricted_username.lower():
+    allowed_usernames = []
+    if restricted_username:
+        allowed_usernames.append(restricted_username.lower())
+        if zone_id == 'admin':
+            dev_user = ZONE_USER_RESTRICTIONS.get('dev')
+            if dev_user:
+                allowed_usernames.append(dev_user.lower())
+    if restricted_username and current_username not in allowed_usernames:
         return jsonify({'allowed': False}), 200
     return jsonify({'allowed': True}), 200
 
@@ -2832,6 +2876,149 @@ def for_more_page():
     return render_template('formore.html')
 
 
+
+@app.route('/api/contact', methods=['POST'])
+def api_contact():
+    data = request.get_json(silent=True) or {}
+    name = str(data.get('name', '')).strip()
+    phone = str(data.get('phone', '')).strip()
+    message = str(data.get('message', '')).strip()
+    if not name or not phone or not message:
+        return jsonify({'success': False, 'message': 'Missing required fields'}), 400
+    with _data_lock:
+        items = _read_json_list(CONTACT_MESSAGES_FILE)
+        item = {
+            'id': _next_json_id(items),
+            'name': name,
+            'phone': phone,
+            'email': str(data.get('email', '')).strip(),
+            'department': str(data.get('department', '')).strip(),
+            'message': message,
+            'status': 'new',
+            'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'ip': _get_ip(),
+        }
+        items.append(item)
+        _write_json_list(CONTACT_MESSAGES_FILE, items)
+    return jsonify({'success': True, 'id': item['id']})
+
+@app.route('/api/admin/contact_messages')
+@zone_required
+def api_contact_messages():
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    items = sorted(_read_json_list(CONTACT_MESSAGES_FILE), key=lambda x: x.get('id', 0), reverse=True)
+    return jsonify({'count': len([x for x in items if x.get('status') == 'new']), 'messages': items})
+
+@app.route('/api/admin/contact_messages/<int:message_id>/read', methods=['POST'])
+@zone_required
+def api_contact_message_read(message_id):
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    with _data_lock:
+        items = _read_json_list(CONTACT_MESSAGES_FILE)
+        for item in items:
+            if int(item.get('id', 0)) == message_id:
+                item['status'] = 'read'
+                item['read_at'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                break
+        _write_json_list(CONTACT_MESSAGES_FILE, items)
+    return jsonify({'success': True})
+
+@app.route('/qc-workflow')
+@zone_required
+def qc_workflow_page():
+    if session.get('zone') != 'qc':
+        return redirect(url_for('index'))
+    return render_template('qc.html', qc_role=session.get('qc_role', 'qc'), username=session.get('username', ''))
+
+@app.route('/api/qc/submissions', methods=['GET', 'POST'])
+@zone_required
+def api_qc_submissions():
+    if session.get('zone') != 'qc':
+        return jsonify({'error': 'غير مصرح'}), 403
+    if request.method == 'GET':
+        items = sorted(_read_json_list(QC_SUBMISSIONS_FILE), key=lambda x: x.get('id', 0), reverse=True)
+        return jsonify({'items': items, 'role': session.get('qc_role', 'qc')})
+    if session.get('qc_role') != 'labeling':
+        return jsonify({'success': False, 'message': 'Only Labeling Assistant can submit photos'}), 403
+    photo = request.files.get('photo')
+    note = request.form.get('note', '').strip()
+    if not photo:
+        return jsonify({'success': False, 'message': 'Photo is required'}), 400
+    os.makedirs(QC_UPLOAD_DIR, exist_ok=True)
+    ext = os.path.splitext(photo.filename or '')[1].lower()
+    if ext not in {'.jpg', '.jpeg', '.png', '.webp'}:
+        ext = '.jpg'
+    filename = f"qc_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{secrets.token_hex(4)}{ext}"
+    photo.save(os.path.join(QC_UPLOAD_DIR, filename))
+    with _data_lock:
+        items = _read_json_list(QC_SUBMISSIONS_FILE)
+        item = {
+            'id': _next_json_id(items),
+            'image_url': '/static/qc_uploads/' + filename,
+            'note': note,
+            'status': 'pending',
+            'created_by': session.get('username', ''),
+            'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'reviewed_by': '',
+            'reviewed_at': '',
+            'review_note': '',
+        }
+        items.append(item)
+        _write_json_list(QC_SUBMISSIONS_FILE, items)
+    return jsonify({'success': True, 'item': item})
+
+@app.route('/api/qc/submissions/<int:item_id>/status', methods=['POST'])
+@zone_required
+def api_qc_submission_status(item_id):
+    if session.get('zone') != 'qc' or session.get('qc_role') != 'qc':
+        return jsonify({'success': False, 'message': 'Only QC can review submissions'}), 403
+    data = request.get_json(silent=True) or {}
+    status = str(data.get('status', '')).strip().lower()
+    if status not in {'approved', 'rejected', 'pending'}:
+        return jsonify({'success': False, 'message': 'Invalid status'}), 400
+    with _data_lock:
+        items = _read_json_list(QC_SUBMISSIONS_FILE)
+        found = False
+        for item in items:
+            if int(item.get('id', 0)) == item_id:
+                item['status'] = status
+                item['reviewed_by'] = session.get('username', '')
+                item['reviewed_at'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                item['review_note'] = str(data.get('review_note', '')).strip()
+                found = True
+                break
+        if not found:
+            return jsonify({'success': False, 'message': 'Not found'}), 404
+        _write_json_list(QC_SUBMISSIONS_FILE, items)
+    return jsonify({'success': True})
+
+@app.route('/api/dashboard/excel_status')
+@zone_required
+def api_dashboard_excel_status():
+    root = get_years_root()
+    if not root:
+        return jsonify({'connected': False, 'message': 'فشل قراءة الملف', 'last_update': None})
+    latest_path = None
+    latest_mtime = 0
+    for rdir, dirs, files in os.walk(root):
+        for f in files:
+            if f.lower().endswith(('.xlsx', '.xlsm', '.xls')):
+                p = os.path.join(rdir, f)
+                try:
+                    m = os.path.getmtime(p)
+                    if m > latest_mtime:
+                        latest_mtime = m
+                        latest_path = p
+                except Exception:
+                    pass
+    if not latest_path:
+        return jsonify({'connected': False, 'message': 'فشل قراءة الملف', 'last_update': None})
+    minutes = max(0, int((datetime.now() - datetime.fromtimestamp(latest_mtime)).total_seconds() // 60))
+    return jsonify({'connected': True, 'message': 'متصل', 'file': os.path.basename(latest_path), 'minutes_ago': minutes, 'last_update': datetime.fromtimestamp(latest_mtime).strftime('%Y-%m-%d %H:%M:%S')})
+
+
 @app.route('/api/scan/<sku>')
 @zone_required
 def api_scan(sku):
@@ -3085,4 +3272,3 @@ if __name__ == '__main__':
             webbrowser.open('http://127.0.0.1:3049')
         threading.Thread(target=_open, daemon=True).start()
         app.run(host='127.0.0.1', port=3049, debug=False)
-
