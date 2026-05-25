@@ -158,7 +158,7 @@ def serve_qc_sw():
 # ── Entry point ────────────────────────────────────────────────────
 if __name__ == '__main__':
     try:
-        from flaskwebgui import FlaskUI
+        from flaskwebgui import FlaskUI  # type: ignore[import-untyped]
         FlaskUI(app=app, server='flask', width=1280, height=800, port=3049, fullscreen=False).run()
     except ImportError:
         import webbrowser
