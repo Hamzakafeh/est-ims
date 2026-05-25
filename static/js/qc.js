@@ -42,7 +42,7 @@ document.addEventListener('click', _unlockAudio, {once:true});
 
 function playSound(file){
   try{
-    const a = new Audio('/static/' + file);
+    const a = new Audio('/static/audio/' + file);
     a.volume = 0.9;
     const p = a.play();
     if(p && typeof p.catch === 'function') p.catch(()=>{});
@@ -113,18 +113,18 @@ function showBrowserNotif(title, body){
     navigator.serviceWorker.ready.then(reg => {
       reg.showNotification(title, {
         body,
-        icon: '/static/low.ico',
-        badge: '/static/low.ico',
+        icon: '/static/icons/low.ico',
+        badge: '/static/icons/low.ico',
         tag: title,
         requireInteraction: true,
         vibrate: [200, 100, 200]
       });
     }).catch(() => {
       // Fallback: direct Notification
-      try { new Notification(title, { body, icon: '/static/low.ico', tag: title }); } catch(e){}
+      try { new Notification(title, { body, icon: '/static/icons/low.ico', tag: title }); } catch(e){}
     });
   } else {
-    try { new Notification(title, { body, icon: '/static/low.ico', tag: title }); } catch(e){}
+    try { new Notification(title, { body, icon: '/static/icons/low.ico', tag: title }); } catch(e){}
   }
 }
 

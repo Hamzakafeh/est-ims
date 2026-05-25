@@ -229,7 +229,7 @@ applyIndexLang(indexLang);
 // ── LOGIN SOUND ──
 (function() {
   try {
-    const audio = new Audio('/static/id.mp3');
+    const audio = new Audio('/static/audio/id.mp3');
     audio.volume = 0.7;
     audio.play().catch(() => {});
   } catch(e) {}
@@ -1569,7 +1569,7 @@ async function playDashboardAlertSound(d) {
   const hasRisk = (d.zero_stock || 0) > 0 || (d.low_stock || 0) > 0 || (d.high_usage_items || []).length > 0;
   if (!hasRisk || !_dashSoundArmed) return;
   try {
-    const audio = new Audio('/static/alert.mp3');
+    const audio = new Audio('/static/audio/alert.mp3');
     audio.volume = 0.65;
     await audio.play();
   } catch(e) {}
@@ -1793,7 +1793,7 @@ function setForMoreMessagesBadge(count) {
   sessionStorage.setItem(key, String(n));
   if (n > prev) {
     try {
-      const audio = new Audio('/static/newapp.mp3');
+      const audio = new Audio('/static/audio/newapp.mp3');
       audio.volume = 0.8;
       audio.play().catch(() => {});
     } catch(e) {}
@@ -1840,8 +1840,8 @@ setInterval(() => { if (document.getElementById('forMoreMessagesBadge')) fetch('
     try {
       new Notification(title, {
         body: body,
-        icon: icon || '/static/low.ico',
-        badge: '/static/low.ico',
+        icon: icon || '/static/icons/low.ico',
+        badge: '/static/icons/low.ico',
         tag: title, // prevent duplicate stacking
         requireInteraction: false,
         silent: false
@@ -1854,7 +1854,7 @@ setInterval(() => { if (document.getElementById('forMoreMessagesBadge')) fetch('
     if (newCount <= prevCount) return;
     // Always play sound
     try {
-      const audio = new Audio('/static/newapp.mp3');
+      const audio = new Audio('/static/audio/newapp.mp3');
       audio.volume = 0.85;
       audio.play().catch(() => {});
     } catch(e) {}
@@ -1863,7 +1863,7 @@ setInterval(() => { if (document.getElementById('forMoreMessagesBadge')) fetch('
       showBrowserNotif(
         '💬 رسائل جديدة - For More Messages',
         `وصل ${newCount - prevCount} رسالة جديدة`,
-        '/static/low.ico'
+        '/static/icons/low.ico'
       );
     }
   }
@@ -1871,7 +1871,7 @@ setInterval(() => { if (document.getElementById('forMoreMessagesBadge')) fetch('
   function notifyNewRequests(prevCount, newCount) {
     if (newCount <= prevCount) return;
     try {
-      const audio = new Audio('/static/newapp.mp3');
+      const audio = new Audio('/static/audio/newapp.mp3');
       audio.volume = 0.85;
       audio.play().catch(() => {});
     } catch(e) {}
@@ -1879,7 +1879,7 @@ setInterval(() => { if (document.getElementById('forMoreMessagesBadge')) fetch('
       showBrowserNotif(
         '🟣 طلب تسجيل جديد',
         `وصل ${newCount - prevCount} طلب جديد`,
-        '/static/low.ico'
+        '/static/icons/low.ico'
       );
     }
   }
@@ -2033,7 +2033,7 @@ function playNewRequestSound(count) {
   const prev = prevRaw === null ? n : Number(prevRaw || 0);
   sessionStorage.setItem(key, String(n));
   if (n > prev) {
-    const audio = new Audio('/static/newapp.mp3');
+    const audio = new Audio('/static/audio/newapp.mp3');
     audio.volume = 0.8;
     audio.play().catch(() => {});
   }

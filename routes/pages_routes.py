@@ -13,7 +13,7 @@ pages_bp = Blueprint('pages', __name__)
 
 @pages_bp.route('/favicon.ico')
 def favicon():
-    return send_from_directory('static', 'est.ico')
+    return send_from_directory('static/icons', 'est.ico')
 
 
 @pages_bp.route('/ping')
