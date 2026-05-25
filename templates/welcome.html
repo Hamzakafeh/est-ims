@@ -112,10 +112,7 @@
 
   <div class="dock-item" onclick="toggleWelcomeLang()">
     <div class="dock-icon">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
-        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-      </svg>
+      <span class="lang-switch-text" id="langDockText">AR</span>
     </div>
     <div class="dock-label" id="welcomeLangLabel">عربي</div>
   </div>
@@ -175,8 +172,8 @@
 
   <div class="brand-suffix">Animal Nutrition</div>
 
-  <div class="tagline">
-    Streamlined inventory tracking, real‑time stock management,<br>
+  <div class="tagline" id="taglineEl">
+    Streamlined inventory tracking, real-time stock management,<br>
     and precise reporting — all in one place.
   </div>
 
@@ -194,16 +191,6 @@
       </svg>
     </a>
     <a class="cta-btn cta-secondary" href="/for-more" id="welcomeMoreBtn"><span id="welcomeMoreText">For More</span></a>
-  </div>
-
-  <div class="version-tag">
-    <span class="v-dot"></span>
-    Copyright 2026 &nbsp;|&nbsp; All Rights Reserved &copy;
-  </div>
-
-  <div class="dev-credit">
-    <span class="dev-dot"></span>
-    <span>Developed By <span class="dev-name" onclick="openDevModal()">Hamza K. Ghareb</span></span>
   </div>
 
   <!-- SCROLL INDICATOR -->
@@ -226,9 +213,9 @@
   <!-- HOW IT WORKS -->
   <section class="sec" id="secHowTo">
     <div class="sec-inner">
-      <div class="sec-badge">Guide</div>
-      <h2 class="sec-title">How It Works</h2>
-      <p class="sec-sub">From first access to daily inventory management — five simple steps.</p>
+      <div class="sec-badge" data-en="Guide" data-ar="دليل">Guide</div>
+      <h2 class="sec-title" data-en="How It Works" data-ar="كيف يعمل النظام">How It Works</h2>
+      <p class="sec-sub" data-en="From first access to daily inventory management — five simple steps." data-ar="من أول دخول حتى إدارة المخزون اليومية — خمس خطوات بسيطة.">From first access to daily inventory management — five simple steps.</p>
 
       <div class="steps-flow">
 
@@ -241,8 +228,8 @@
             </svg>
           </div>
           <div class="step-num">01</div>
-          <div class="step-name">Create Account</div>
-          <p class="step-desc">Register from the welcome page with your employee details and submit an access request.</p>
+          <div class="step-name" data-en="Create Account" data-ar="إنشاء حساب">Create Account</div>
+          <p class="step-desc" id="step1Desc">Register from the welcome page with your employee details and submit an access request.</p>
         </div>
 
         <div class="step-connector"><div class="step-line"></div></div>
@@ -255,8 +242,8 @@
             </svg>
           </div>
           <div class="step-num">02</div>
-          <div class="step-name">Get Approved</div>
-          <p class="step-desc">An admin reviews your request and activates your account with the appropriate zone access.</p>
+          <div class="step-name" data-en="Get Approved" data-ar="انتظار الموافقة">Get Approved</div>
+          <p class="step-desc" id="step2Desc">An admin reviews your request and activates your account with the appropriate zone access.</p>
         </div>
 
         <div class="step-connector"><div class="step-line"></div></div>
@@ -269,8 +256,8 @@
             </svg>
           </div>
           <div class="step-num">03</div>
-          <div class="step-name">Log In</div>
-          <p class="step-desc">Sign in with your credentials to enter the system and access your assigned workspace.</p>
+          <div class="step-name" data-en="Log In" data-ar="تسجيل الدخول">Log In</div>
+          <p class="step-desc" id="step3Desc">Sign in with your credentials to enter the system and access your assigned workspace.</p>
         </div>
 
         <div class="step-connector"><div class="step-line"></div></div>
@@ -283,8 +270,8 @@
             </svg>
           </div>
           <div class="step-num">04</div>
-          <div class="step-name">Choose Zone</div>
-          <p class="step-desc">Select your warehouse zone — each zone holds its own inventory categorized by year and month.</p>
+          <div class="step-name" data-en="Choose Zone" data-ar="اختر المنطقة">Choose Zone</div>
+          <p class="step-desc" id="step4Desc">Select your warehouse zone — each zone holds its own inventory categorized by year and month.</p>
         </div>
 
         <div class="step-connector"><div class="step-line"></div></div>
@@ -293,13 +280,12 @@
           <div class="step-icon-wrap">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-              <line x1="12" y1="22.08" x2="12" y2="12"/>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
             </svg>
           </div>
           <div class="step-num">05</div>
-          <div class="step-name">Manage Inventory</div>
-          <p class="step-desc">Track items, scan QR codes for quick lookups, edit stock, and export reports to Excel.</p>
+          <div class="step-name" data-en="Manage Inventory" data-ar="إدارة المخزون">Manage Inventory</div>
+          <p class="step-desc" id="step5Desc">Track items, scan QR codes for quick lookups, edit stock, and export reports to Excel.</p>
         </div>
 
       </div>
@@ -310,59 +296,53 @@
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
           </svg>
-          System Navigation Map
+          <span data-en="System Navigation Map" data-ar="خريطة التنقل في النظام">System Navigation Map</span>
         </div>
         <div class="sitemap-flow">
           <div class="smap-node smap-root">
             <div class="smap-dot"></div>
-            <span>Welcome</span>
+            <span data-en="Welcome" data-ar="الترحيب">Welcome</span>
           </div>
           <div class="smap-arrow">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6"/>
-            </svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
           <div class="smap-node">
             <div class="smap-dot blue"></div>
-            <span>Login</span>
+            <span data-en="Login" data-ar="تسجيل الدخول">Login</span>
           </div>
           <div class="smap-arrow">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6"/>
-            </svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
           <div class="smap-node">
             <div class="smap-dot cyan"></div>
-            <span>Dashboard</span>
+            <span data-en="Dashboard" data-ar="لوحة التحكم">Dashboard</span>
           </div>
           <div class="smap-arrow">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6"/>
-            </svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
           <div class="smap-branches">
             <div class="smap-branch">
               <div class="smap-node smap-small">
                 <div class="smap-dot green"></div>
-                <span>Zone 1–5 Inventory</span>
+                <span data-en="Zone 1–5 Inventory" data-ar="مخزون المنطقة 1–5">Zone 1–5 Inventory</span>
               </div>
             </div>
             <div class="smap-branch">
               <div class="smap-node smap-small">
                 <div class="smap-dot purple"></div>
-                <span>QC Workflow</span>
+                <span data-en="QC Workflow" data-ar="ضبط الجودة">QC Workflow</span>
               </div>
             </div>
             <div class="smap-branch">
               <div class="smap-node smap-small">
                 <div class="smap-dot orange"></div>
-                <span>Reports &amp; Export</span>
+                <span data-en="Reports &amp; Export" data-ar="التقارير والتصدير">Reports &amp; Export</span>
               </div>
             </div>
             <div class="smap-branch">
               <div class="smap-node smap-small">
                 <div class="smap-dot red"></div>
-                <span>Admin Panel</span>
+                <span data-en="Admin Panel" data-ar="لوحة الإدارة">Admin Panel</span>
               </div>
             </div>
           </div>
@@ -377,9 +357,9 @@
   <!-- ABOUT COMPANY -->
   <section class="sec" id="secCompany">
     <div class="sec-inner">
-      <div class="sec-badge">Company</div>
-      <h2 class="sec-title">Alestesharia Animal Nutrition</h2>
-      <p class="sec-sub">Leading the animal feed industry with quality, variety, and precision.</p>
+      <div class="sec-badge" data-en="Company" data-ar="الشركة">Company</div>
+      <h2 class="sec-title" data-en="Alestesharia Animal Nutrition" data-ar="الاستشارية للتغذية الحيوانية">Alestesharia Animal Nutrition</h2>
+      <p class="sec-sub" data-en="Leading the animal feed industry with quality, variety, and precision." data-ar="رائدة في صناعة الأعلاف الحيوانية بالجودة والتنوع والدقة.">Leading the animal feed industry with quality, variety, and precision.</p>
 
       <div class="about-cards">
 
@@ -388,12 +368,11 @@
           <div class="about-card-icon">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-              <line x1="12" y1="22.08" x2="12" y2="12"/>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
             </svg>
           </div>
-          <div class="about-card-name">Product Variety</div>
-          <p class="about-card-text">Manufactures a wide range of livestock and poultry feed — including sacks, rolls, plastic-packaged, and custom nutritional blends for every production need.</p>
+          <div class="about-card-name" data-en="Product Variety" data-ar="تنوع المنتجات">Product Variety</div>
+          <p class="about-card-text" id="aboutCard1Text">Manufactures a wide range of livestock and poultry feed — including sacks, rolls, plastic-packaged, and custom nutritional blends for every production need.</p>
         </div>
 
         <div class="about-card reveal" style="transition-delay:.12s">
@@ -404,8 +383,8 @@
               <path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
             </svg>
           </div>
-          <div class="about-card-name">Zone-Based Warehousing</div>
-          <p class="about-card-text">Operates multiple specialized warehouse zones, each managed independently with its own inventory tracking, access control, and reporting structure.</p>
+          <div class="about-card-name" data-en="Zone-Based Warehousing" data-ar="مستودعات متعددة المناطق">Zone-Based Warehousing</div>
+          <p class="about-card-text" id="aboutCard2Text">Operates multiple specialized warehouse zones, each managed independently with its own inventory tracking, access control, and reporting structure.</p>
         </div>
 
         <div class="about-card reveal" style="transition-delay:.24s">
@@ -416,8 +395,8 @@
               <line x1="12" y1="17" x2="12" y2="21"/>
             </svg>
           </div>
-          <div class="about-card-name">Digital Operations</div>
-          <p class="about-card-text">Fully digitized inventory with real-time stock updates, QR-code–based item tracking, quality control workflows, and Excel-based reporting for operations teams.</p>
+          <div class="about-card-name" data-en="Digital Operations" data-ar="عمليات رقمية">Digital Operations</div>
+          <p class="about-card-text" id="aboutCard3Text">Fully digitized inventory with real-time stock updates, QR-code–based item tracking, quality control workflows, and Excel-based reporting for operations teams.</p>
         </div>
 
       </div>
@@ -425,22 +404,22 @@
       <div class="cstats reveal">
         <div class="cstat">
           <div class="cstat-val">5+</div>
-          <div class="cstat-label">Warehouse Zones</div>
+          <div class="cstat-label" data-en="Warehouse Zones" data-ar="مناطق المستودعات">Warehouse Zones</div>
         </div>
         <div class="cstat-sep"></div>
         <div class="cstat">
           <div class="cstat-val">100+</div>
-          <div class="cstat-label">Product SKUs</div>
+          <div class="cstat-label" data-en="Product SKUs" data-ar="صنف منتج">Product SKUs</div>
         </div>
         <div class="cstat-sep"></div>
         <div class="cstat">
           <div class="cstat-val">2026</div>
-          <div class="cstat-label">Digital Launch</div>
+          <div class="cstat-label" data-en="Digital Launch" data-ar="إطلاق رقمي">Digital Launch</div>
         </div>
         <div class="cstat-sep"></div>
         <div class="cstat">
           <div class="cstat-val">EST‑iMs</div>
-          <div class="cstat-label">Powered By</div>
+          <div class="cstat-label" data-en="Powered By" data-ar="مشغّل بـ">Powered By</div>
         </div>
       </div>
 
@@ -452,9 +431,9 @@
   <!-- ABOUT DEVELOPER -->
   <section class="sec" id="secDev">
     <div class="sec-inner">
-      <div class="sec-badge">Developer</div>
-      <h2 class="sec-title">Built by Hamza K. Ghareb</h2>
-      <p class="sec-sub">From warehouse floors to full-stack systems.</p>
+      <div class="sec-badge" data-en="Developer" data-ar="المطور">Developer</div>
+      <h2 class="sec-title" data-en="Built by Hamza K. Ghareb" data-ar="بناه حمزة خ. غريب">Built by Hamza K. Ghareb</h2>
+      <p class="sec-sub" data-en="From warehouse floors to full-stack systems." data-ar="من أرضية المستودع إلى أنظمة متكاملة.">From warehouse floors to full-stack systems.</p>
 
       <div class="dev-profile-card reveal">
         <div class="dev-profile-photo-side">
@@ -463,81 +442,48 @@
           </div>
           <div class="dev-profile-name-mobile">Hamza K. Ghareb</div>
           <div class="dev-role-tags">
-            <span class="dev-role-tag">Warehouse Keeper</span>
-            <span class="dev-role-tag tag-cyan">IT &amp; Development</span>
+            <span class="dev-role-tag" data-en="Warehouse Keeper" data-ar="أمين مستودع">Warehouse Keeper</span>
+            <span class="dev-role-tag tag-cyan" data-en="IT &amp; Development" data-ar="تقنية المعلومات">IT &amp; Development</span>
             <span class="dev-role-tag tag-purple">MBA</span>
           </div>
         </div>
         <div class="dev-profile-content">
           <div class="dev-profile-name">Hamza K. Ghareb</div>
-          <div class="dev-profile-subtitle">Warehouse Keeper – IT &nbsp;·&nbsp; Master of Business Administration</div>
-          <p class="dev-profile-bio">Designed and built EST-iMs entirely from scratch — combining hands-on warehouse expertise with self-taught full-stack development. The system was created to solve real operational challenges faced daily at Alestesharia Animal Nutrition, transforming manual spreadsheet processes into a live, connected digital platform.</p>
+          <div class="dev-profile-subtitle" id="devProfileSubtitle">Warehouse Keeper – IT &nbsp;·&nbsp; Master of Business Administration</div>
+          <p class="dev-profile-bio" id="devProfileBio">Designed and built EST-iMs entirely from scratch — combining hands-on warehouse expertise with self-taught full-stack development. The system was created to solve real operational challenges faced daily at Alestesharia Animal Nutrition, transforming manual spreadsheet processes into a live, connected digital platform.</p>
 
           <div class="tech-section">
-            <div class="tech-section-title">Built With</div>
+            <div class="tech-section-title" data-en="Built With" data-ar="بُني بـ">Built With</div>
             <div class="tech-tags">
-              <div class="tech-tag">
-                <div class="tech-dot" style="background:#3776ab"></div>
-                Python · Flask
-              </div>
-              <div class="tech-tag">
-                <div class="tech-dot" style="background:#f7df1e"></div>
-                JavaScript ES6+
-              </div>
-              <div class="tech-tag">
-                <div class="tech-dot" style="background:#e34c26"></div>
-                HTML5 · CSS3
-              </div>
-              <div class="tech-tag">
-                <div class="tech-dot" style="background:#4fc3f7"></div>
-                SQLite · JSON
-              </div>
-              <div class="tech-tag">
-                <div class="tech-dot" style="background:#217346"></div>
-                Excel · openpyxl
-              </div>
-              <div class="tech-tag">
-                <div class="tech-dot" style="background:#ff7043"></div>
-                REST API · SSE
-              </div>
-              <div class="tech-tag">
-                <div class="tech-dot" style="background:#ab47bc"></div>
-                Web Push · PWA
-              </div>
-              <div class="tech-tag">
-                <div class="tech-dot" style="background:#26a69a"></div>
-                QR Code · Scan
-              </div>
+              <div class="tech-tag"><div class="tech-dot" style="background:#3776ab"></div>Python · Flask</div>
+              <div class="tech-tag"><div class="tech-dot" style="background:#f7df1e"></div>JavaScript ES6+</div>
+              <div class="tech-tag"><div class="tech-dot" style="background:#e34c26"></div>HTML5 · CSS3</div>
+              <div class="tech-tag"><div class="tech-dot" style="background:#4fc3f7"></div>SQLite · JSON</div>
+              <div class="tech-tag"><div class="tech-dot" style="background:#217346"></div>Excel · openpyxl</div>
+              <div class="tech-tag"><div class="tech-dot" style="background:#ff7043"></div>REST API · SSE</div>
+              <div class="tech-tag"><div class="tech-dot" style="background:#ab47bc"></div>Web Push · PWA</div>
+              <div class="tech-tag"><div class="tech-dot" style="background:#26a69a"></div>QR Code · Scan</div>
             </div>
           </div>
 
           <div class="dev-highlights">
             <div class="dev-highlight">
               <div class="dev-highlight-icon">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-                </svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
               </div>
-              <span>Real-time SSE for live QC updates across all connected devices</span>
+              <span id="devHighlight1">Real-time SSE for live QC updates across all connected devices</span>
             </div>
             <div class="dev-highlight">
               <div class="dev-highlight-icon">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="11" width="18" height="11" rx="2"/>
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                </svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               </div>
-              <span>Zone-based access control with single-session enforcement per user</span>
+              <span id="devHighlight2">Zone-based access control with single-session enforcement per user</span>
             </div>
             <div class="dev-highlight">
               <div class="dev-highlight-icon">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                  <polyline points="14 2 14 8 20 8"/>
-                  <line x1="16" y1="13" x2="8" y2="13"/>
-                </svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
               </div>
-              <span>Excel-based inventory engine with openpyxl for data persistence and export</span>
+              <span id="devHighlight3">Excel-based inventory engine with openpyxl for data persistence and export</span>
             </div>
           </div>
 
@@ -556,8 +502,14 @@
         <img src="/static/icons/low.ico" alt="EST">
         <span class="footer-brand-name">EST-iMs</span>
       </div>
-      <div class="footer-copy">Copyright 2026 &nbsp;|&nbsp; Alestesharia Animal Nutrition &nbsp;|&nbsp; All Rights Reserved &copy;</div>
-      <div class="footer-dev">Developed by <span class="footer-dev-name" onclick="openDevModal()">Hamza K. Ghareb</span></div>
+      <div class="version-tag footer-static">
+        <span class="v-dot"></span>
+        <span id="footerCopyText">Copyright 2026 &nbsp;|&nbsp; Alestesharia Animal Nutrition &nbsp;|&nbsp; All Rights Reserved &copy;</span>
+      </div>
+      <div class="dev-credit footer-static">
+        <span class="dev-dot"></span>
+        <span><span id="footerDevText">Developed By</span> <span class="dev-name" onclick="openDevModal()">Hamza K. Ghareb</span></span>
+      </div>
     </div>
   </footer>
 
@@ -569,14 +521,14 @@
     <div class="stat-dot green"></div>
     <div class="stat-chip-info">
       <div class="stat-chip-value" id="statTotal">—</div>
-      <div class="stat-chip-label">Total</div>
+      <div class="stat-chip-label" data-en="Total" data-ar="الإجمالي">Total</div>
     </div>
   </div>
   <div class="stat-chip">
     <div class="stat-dot white"></div>
     <div class="stat-chip-info">
       <div class="stat-chip-value" id="statToday">—</div>
-      <div class="stat-chip-label">Today</div>
+      <div class="stat-chip-label" data-en="Today" data-ar="اليوم">Today</div>
     </div>
   </div>
 </div>
@@ -598,8 +550,8 @@
             <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
           </svg>
           <div>
-            <div class="dev-info-label">Specialization</div>
-            <div class="dev-info-value">Master of Business Administration</div>
+            <div class="dev-info-label" data-en="Specialization" data-ar="التخصص">Specialization</div>
+            <div class="dev-info-value" data-en="Master of Business Administration" data-ar="ماجستير إدارة الأعمال">Master of Business Administration</div>
           </div>
         </div>
         <div class="dev-info-row">
@@ -607,8 +559,8 @@
             <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
           </svg>
           <div>
-            <div class="dev-info-label">Position</div>
-            <div class="dev-info-value">Warehouse Keeper - IT</div>
+            <div class="dev-info-label" data-en="Position" data-ar="المنصب">Position</div>
+            <div class="dev-info-value" data-en="Warehouse Keeper - IT" data-ar="أمين مستودع - تقنية المعلومات">Warehouse Keeper - IT</div>
           </div>
         </div>
       </div>

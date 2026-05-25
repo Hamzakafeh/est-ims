@@ -281,21 +281,84 @@ fetch('/api/track_visit', { method: 'POST' }).catch(() => {});
   } catch(e) {}
 })();
 
+// ── TAGLINE CYCLER ──
+const TAGLINES = {
+  en: [
+    'Streamlined inventory tracking, real‑time stock management,<br>and precise reporting — all in one place.',
+    'Zone-based access, QR scanning, and Excel export<br>built for warehouse teams.',
+    'From stock intake to final report —<br>every step managed digitally.',
+    'Quality control, multi-zone warehousing,<br>and live dashboards — all connected.'
+  ],
+  ar: [
+    'تتبع المخزون بشكل مبسط، وإدارة المخزون الفوري،<br>وتقارير دقيقة — كل ذلك في مكان واحد.',
+    'وصول قائم على المناطق، مسح QR، وتصدير Excel<br>مصمم لفرق المستودعات.',
+    'من استلام المخزون حتى التقرير النهائي —<br>كل خطوة تُدار رقمياً.',
+    'ضبط الجودة، مستودعات متعددة المناطق،<br>ولوحات تحكم مباشرة — كل شيء متصل.'
+  ]
+};
+let taglineIdx = 0;
+
+function rotateTagline() {
+  const el = document.getElementById('taglineEl');
+  if (!el) return;
+  el.classList.remove('flip-in');
+  el.classList.add('flip-out');
+  setTimeout(function() {
+    taglineIdx = (taglineIdx + 1) % TAGLINES[welcomeLang].length;
+    el.innerHTML = TAGLINES[welcomeLang][taglineIdx];
+    el.classList.remove('flip-out');
+    el.classList.add('flip-in');
+  }, 340);
+}
+setTimeout(function() { setInterval(rotateTagline, 4200); }, 4000);
+
 // ── LANGUAGE TOGGLE (Welcome) ──
 const WELCOME_LANG = {
   en: {
     chip: 'Welcome', subHeading: 'Inventory Management System',
     suffix: 'Animal Nutrition',
-    tagline: 'Streamlined inventory tracking, real‑time stock management,<br>and precise reporting — all in one place.',
     loginBtn: 'Log In', moreBtn: 'For More', langLabel: 'عربي',
     dockLogin: 'Log In', dockContact: 'Contact Us', dockHelp: 'Help', dockScan: 'QR Scan', dockAbout: 'About Us',
+    texts: {
+      step1Desc: 'Register from the welcome page with your employee details and submit an access request.',
+      step2Desc: 'An admin reviews your request and activates your account with the appropriate zone access.',
+      step3Desc: 'Sign in with your credentials to enter the system and access your assigned workspace.',
+      step4Desc: 'Select your warehouse zone — each zone holds its own inventory categorized by year and month.',
+      step5Desc: 'Track items, scan QR codes for quick lookups, edit stock, and export reports to Excel.',
+      aboutCard1Text: 'Manufactures a wide range of livestock and poultry feed — including sacks, rolls, plastic-packaged, and custom nutritional blends for every production need.',
+      aboutCard2Text: 'Operates multiple specialized warehouse zones, each managed independently with its own inventory tracking, access control, and reporting structure.',
+      aboutCard3Text: 'Fully digitized inventory with real-time stock updates, QR-code–based item tracking, quality control workflows, and Excel-based reporting for operations teams.',
+      devProfileSubtitle: 'Warehouse Keeper – IT &nbsp;·&nbsp; Master of Business Administration',
+      devProfileBio: 'Designed and built EST-iMs entirely from scratch — combining hands-on warehouse expertise with self-taught full-stack development. The system was created to solve real operational challenges faced daily at Alestesharia Animal Nutrition, transforming manual spreadsheet processes into a live, connected digital platform.',
+      devHighlight1: 'Real-time SSE for live QC updates across all connected devices',
+      devHighlight2: 'Zone-based access control with single-session enforcement per user',
+      devHighlight3: 'Excel-based inventory engine with openpyxl for data persistence and export',
+      footerCopyText: 'Copyright 2026 &nbsp;|&nbsp; Alestesharia Animal Nutrition &nbsp;|&nbsp; All Rights Reserved &copy;',
+      footerDevText: 'Developed By'
+    }
   },
   ar: {
     chip: 'أهلاً', subHeading: 'نظام إدارة المخزون',
     suffix: 'التغذية الحيوانية',
-    tagline: 'تتبع المخزون بشكل مبسط، وإدارة المخزون الفوري،<br>وتقارير دقيقة — كل ذلك في مكان واحد.',
     loginBtn: 'تسجيل الدخول', moreBtn: 'للمزيد', langLabel: 'English',
     dockLogin: 'دخول', dockContact: 'تواصل معنا', dockHelp: 'مساعدة', dockScan: 'مسح QR', dockAbout: 'من نحن',
+    texts: {
+      step1Desc: 'سجّل من صفحة الترحيب ببياناتك الوظيفية وأرسل طلب الوصول.',
+      step2Desc: 'يراجع المسؤول طلبك ويفعّل حسابك بصلاحيات المنطقة المناسبة.',
+      step3Desc: 'سجّل الدخول ببياناتك للوصول إلى النظام ومساحة العمل المخصصة لك.',
+      step4Desc: 'اختر منطقة المستودع — كل منطقة تحتوي مخزوناً مستقلاً مصنفاً بالسنة والشهر.',
+      step5Desc: 'تتبع الأصناف، امسح رموز QR للبحث السريع، عدّل المخزون، وصدّر التقارير إلى Excel.',
+      aboutCard1Text: 'تصنّع مجموعة واسعة من أعلاف الماشية والدواجن — تشمل الأكياس والرولات والمعبأ بالبلاستيك والمخاليط الغذائية المخصصة لكل احتياج إنتاجي.',
+      aboutCard2Text: 'تدير مناطق مستودعات متعددة ومتخصصة، تُدار كل منها باستقلالية مع تتبع المخزون الخاص بها وصلاحيات الوصول وهيكل التقارير.',
+      aboutCard3Text: 'مخزون رقمي بالكامل مع تحديثات فورية للمخزون، وتتبع الأصناف برموز QR، وسير عمل لضبط الجودة، وتقارير Excel لفرق العمليات.',
+      devProfileSubtitle: 'أمين مستودع – تقنية المعلومات &nbsp;·&nbsp; ماجستير إدارة الأعمال',
+      devProfileBio: 'صمّم وبنى EST-iMs من الصفر — جامعاً بين الخبرة الميدانية في المستودعات والتطوير البرمجي المتكامل المكتسب ذاتياً. أُنشئ النظام لحل تحديات تشغيلية حقيقية يواجهها يومياً في الاستشارية للتغذية الحيوانية، محوّلاً العمليات اليدوية بالجداول إلى منصة رقمية حية ومتكاملة.',
+      devHighlight1: 'SSE الفوري لتحديثات ضبط الجودة المباشرة عبر جميع الأجهزة المتصلة',
+      devHighlight2: 'تحكم بالوصول قائم على المناطق مع تطبيق جلسة مفردة لكل مستخدم',
+      devHighlight3: 'محرك مخزون قائم على Excel مع openpyxl لاستمرارية البيانات والتصدير',
+      footerCopyText: 'حقوق النشر 2026 &nbsp;|&nbsp; الاستشارية للتغذية الحيوانية &nbsp;|&nbsp; جميع الحقوق محفوظة &copy;',
+      footerDevText: 'تطوير بواسطة'
+    }
   }
 };
 let welcomeLang = localStorage.getItem('est-lang') || 'en';
@@ -313,19 +376,25 @@ function applyWelcomeLang(lang) {
   if (sub) sub.textContent = t.subHeading;
   const suf = document.querySelector('.brand-suffix');
   if (suf) suf.textContent = t.suffix;
-  const tag = document.querySelector('.tagline');
-  if (tag) tag.innerHTML = t.tagline;
+  const tagEl = document.getElementById('taglineEl');
+  if (tagEl) tagEl.innerHTML = TAGLINES[lang][taglineIdx];
   const loginText = document.getElementById('welcomeLoginText');
   if (loginText) loginText.textContent = t.loginBtn;
   const moreText = document.getElementById('welcomeMoreText');
   if (moreText) moreText.textContent = t.moreBtn;
   const langLbl = document.getElementById('welcomeLangLabel');
   if (langLbl) langLbl.textContent = t.langLabel;
-  document.querySelectorAll('.dock-label').forEach(el => {
-    const en = el.getAttribute('data-en');
-    const ar = el.getAttribute('data-ar');
-    if (en && ar) el.textContent = isAr ? ar : en;
+  const langDockText = document.getElementById('langDockText');
+  if (langDockText) langDockText.textContent = isAr ? 'EN' : 'AR';
+  document.querySelectorAll('[data-en][data-ar]').forEach(function(el) {
+    el.textContent = isAr ? el.getAttribute('data-ar') : el.getAttribute('data-en');
   });
+  if (t.texts) {
+    Object.keys(t.texts).forEach(function(id) {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = t.texts[id];
+    });
+  }
   updateDockTheme();
 }
 
