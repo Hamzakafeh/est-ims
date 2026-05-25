@@ -1,14 +1,102 @@
+// ── LANGUAGE ──
+const LOGIN_LANG = {
+  en: {
+    title: 'EST Inventory System', subtitle: 'Limited Access',
+    backLabel: 'Back', themeLight: 'Light Mode', themeDark: 'Dark Mode',
+    langLabel: 'عربي',
+    userLabel: 'Username', passLabel: 'Password',
+    userPlaceholder: 'Enter username', passPlaceholder: 'Enter password',
+    signIn: 'Sign In', signingIn: 'Signing in...', success: '✓ Success',
+    signUp: 'Sign Up', forgotPw: 'Forgot password?',
+    morning: 'Good morning ☀️', afternoon: 'Good afternoon 🌤️',
+    evening: 'Good evening 🌆', night: 'Good night 🌙'
+  },
+  ar: {
+    title: 'نظام EST للمخزون', subtitle: 'وصول محدود',
+    backLabel: 'رجوع', themeLight: 'الوضع الفاتح', themeDark: 'الوضع الداكن',
+    langLabel: 'English',
+    userLabel: 'اسم المستخدم', passLabel: 'كلمة المرور',
+    userPlaceholder: 'أدخل اسم المستخدم', passPlaceholder: 'أدخل كلمة المرور',
+    signIn: 'تسجيل الدخول', signingIn: 'جاري الدخول...', success: '✓ تم',
+    signUp: 'إنشاء حساب', forgotPw: 'نسيت كلمة المرور؟',
+    morning: 'صباح الخير ☀️', afternoon: 'مساء الخير 🌤️',
+    evening: 'مساء النور 🌆', night: 'تصبح على خير 🌙'
+  }
+};
+let loginLang = localStorage.getItem('est-lang') || 'en';
+
+function applyLoginLang(lang) {
+  loginLang = lang;
+  localStorage.setItem('est-lang', lang);
+  const t = LOGIN_LANG[lang];
+  const isAr = lang === 'ar';
+  document.documentElement.lang = lang;
+  document.documentElement.dir  = isAr ? 'rtl' : 'ltr';
+
+  const titleEl = document.querySelector('.login-title');
+  if (titleEl) titleEl.textContent = t.title;
+  const subEl = document.querySelector('.login-subtitle');
+  if (subEl) subEl.textContent = t.subtitle;
+
+  const labels = document.querySelectorAll('.field-label');
+  if (labels[0]) labels[0].textContent = t.userLabel;
+  if (labels[1]) labels[1].textContent = t.passLabel;
+
+  const userIn = document.getElementById('username');
+  if (userIn) userIn.placeholder = t.userPlaceholder;
+  const passIn = document.getElementById('password');
+  if (passIn) passIn.placeholder = t.passPlaceholder;
+
+  const btnText = document.getElementById('btnText');
+  if (btnText) {
+    const cur = btnText.textContent;
+    const busy = [LOGIN_LANG.en.signingIn, LOGIN_LANG.ar.signingIn,
+                  LOGIN_LANG.en.success,   LOGIN_LANG.ar.success];
+    if (!busy.includes(cur)) btnText.textContent = t.signIn;
+  }
+
+  const links = document.querySelectorAll('.login-link-disabled');
+  if (links[0]) links[0].textContent = t.signUp;
+  if (links[1]) links[1].textContent = t.forgotPw;
+
+  const backLbl = document.getElementById('dockBackLabel');
+  if (backLbl) backLbl.textContent = t.backLabel;
+
+  const langText = document.getElementById('loginLangText');
+  if (langText) langText.textContent = isAr ? 'EN' : 'AR';
+  const langLbl = document.getElementById('loginLangLabel');
+  if (langLbl) langLbl.textContent = t.langLabel;
+
+  updateLoginGreeting();
+  updateDockTheme();
+}
+
+function toggleLoginLang() {
+  applyLoginLang(loginLang === 'en' ? 'ar' : 'en');
+}
+
+function updateLoginGreeting() {
+  const t = LOGIN_LANG[loginLang];
+  const h = new Date().getHours();
+  const el = document.getElementById('welcomeMsg');
+  if (!el) return;
+  if (h >= 5  && h < 12) el.textContent = t.morning;
+  else if (h >= 12 && h < 17) el.textContent = t.afternoon;
+  else if (h >= 17 && h < 21) el.textContent = t.evening;
+  else                         el.textContent = t.night;
+}
+
 // ── THEME ──
 (function() {
   const saved = localStorage.getItem('est-theme');
   if (saved === 'light') document.documentElement.classList.add('light');
-  updateDockTheme();
 })();
 
 function updateDockTheme() {
   const isLight = document.documentElement.classList.contains('light');
+  const t = LOGIN_LANG[loginLang] || LOGIN_LANG.en;
   const label = document.getElementById('dockThemeLabel');
-  if (label) label.textContent = isLight ? 'Dark Mode' : 'Light Mode';
+  if (label) label.textContent = isLight ? t.themeDark : t.themeLight;
 }
 
 function toggleTheme() {
@@ -17,15 +105,7 @@ function toggleTheme() {
   updateDockTheme();
 }
 
-// ── WELCOME MESSAGE ──
-(function() {
-  const h = new Date().getHours();
-  const el = document.getElementById('welcomeMsg');
-  if (h >= 5 && h < 12)      el.textContent = 'Good morning ☀️';
-  else if (h >= 12 && h < 17) el.textContent = 'Good afternoon 🌤️';
-  else if (h >= 17 && h < 21) el.textContent = 'Good evening 🌆';
-  else                         el.textContent = 'Good night 🌙';
-})();
+// welcome message handled by applyLoginLang → updateLoginGreeting
 
 // ── PASSWORD TOGGLE ──
 document.getElementById('pwToggle').addEventListener('click', function() {
@@ -214,7 +294,7 @@ async function doLogin() {
 
   startProgress();
   spinner.style.display = 'block';
-  btnText.textContent = 'Signing in...';
+  btnText.textContent = LOGIN_LANG[loginLang].signingIn;
   loginBtn.disabled = true;
 
   try {
@@ -229,7 +309,7 @@ async function doLogin() {
       clearLockout();
       _failedAttempts = 0;
       finishProgress(true);
-      btnText.textContent = '✓ Success';
+      btnText.textContent = LOGIN_LANG[loginLang].success;
       spinner.style.display = 'none';
       loginBtn.classList.add('success');
       setTimeout(() => { window.location.href = data.redirect || '/zones'; }, 600);
@@ -277,7 +357,7 @@ function showError(msg) {
 
 function resetBtn() {
   document.getElementById('spinner').style.display = 'none';
-  document.getElementById('btnText').textContent = 'Sign In';
+  document.getElementById('btnText').textContent = LOGIN_LANG[loginLang].signIn;
   document.getElementById('loginBtn').disabled = false;
 }
 
@@ -364,3 +444,6 @@ function resetBtn() {
   init();
   draw();
 })();
+
+// ── INIT LANGUAGE ──
+applyLoginLang(loginLang);

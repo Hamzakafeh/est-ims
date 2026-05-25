@@ -31,7 +31,7 @@
     <div class="dock-icon">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     </div>
-    <div class="dock-label">Back</div>
+    <div class="dock-label" id="dockBackLabel">Back</div>
   </div>
 
   <div class="dock-item" onclick="toggleTheme()">
@@ -48,6 +48,13 @@
       </svg>
     </div>
     <div class="dock-label" id="dockThemeLabel">Light Mode</div>
+  </div>
+
+  <div class="dock-item" onclick="toggleLoginLang()">
+    <div class="dock-icon">
+      <span class="lang-switch-text" id="loginLangText">AR</span>
+    </div>
+    <div class="dock-label" id="loginLangLabel">عربي</div>
   </div>
 
 </div>
