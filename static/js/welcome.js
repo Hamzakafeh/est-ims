@@ -1,149 +1,465 @@
-const canvas=document.getElementById('noiseCanvas');
-const ctx2=canvas.getContext('2d');
-canvas.width=window.innerWidth||680; canvas.height=window.innerHeight||800;
-function drawNoise(){const id=ctx2.createImageData(canvas.width,canvas.height);for(let i=0;i<id.data.length;i+=4){const v=Math.random()*255|0;id.data[i]=id.data[i+1]=id.data[i+2]=v;id.data[i+3]=255;}ctx2.putImageData(id,0,0);setTimeout(drawNoise,80);}
-drawNoise();
+// ── AI AGENT ──
+const SYSTEM_PROMPT = `You are the EST-iMs AI Assistant — a smart, concise helper for the EST-iMs Inventory Management System used by Alestesharia Animal Nutrition.
 
-function scatterTitle(){
-  const chars=document.querySelectorAll('.char');
-  chars.forEach(c=>{const rx=(Math.random()-0.5)*60;const ry=(Math.random()-0.5)*60;c.style.transform=`translate(${rx}px,${ry}px) rotate(${(Math.random()-0.5)*40}deg)`;c.style.color=`hsl(${Math.random()*360},70%,70%)`;setTimeout(()=>{c.style.transform='';c.style.color='';},600);});
-}
-document.querySelectorAll('.char').forEach(c=>{
-  c.addEventListener('mouseover',()=>{c.style.transform=`translateY(${(Math.random()-0.5)*20}px) rotate(${(Math.random()-0.5)*30}deg)`;c.style.color='#f0f0f0';});
-  c.addEventListener('mouseleave',()=>{c.style.transform='';c.style.color='';});
-});
+About the system:
+- EST-iMs is a web-based inventory management system for a feed/animal nutrition company
+- It tracks stock across multiple warehouse zones: Zone 1, Zone 2, Zone 3 (Packaging), Zone 4, Zone 5, Admin, and Dev
+- Features: real-time stock tracking, zone-based access control, edit mode with password protection, inventory reports in Excel, and a clean dark/light UI
+- Users log in with credentials and select their zone. Super zones (Admin, Dev) can view all zones and switch between them
+- The system runs on Flask (Python) with openpyxl for Excel-based inventory storage
+- Developed by Hamza K. Ghareb, Warehouse Keeper - IT, with an MBA background
 
-const scrambleWords=['خارج الخدمة','تحت التشغيل','قيد الإصلاح','غير متاح','يرجى الانتظار','نعود قريباً'];
-let swIdx=0;
-const letters='ابتثجحخدذرزسشصضطظعغفقكلمنهوي';
-function triggerScramble(){
-  swIdx=(swIdx+1)%scrambleWords.length;
-  const target=scrambleWords[swIdx];
-  const el=document.getElementById('wordScramble');
-  let iter=0;
-  const iv=setInterval(()=>{el.textContent=target.split('').map((c,i)=>i<iter?c:letters[Math.floor(Math.random()*letters.length)]).join('');iter+=0.5;if(iter>target.length){clearInterval(iv);el.textContent=target;}},40);
-}
+Your role:
+- Answer questions about how to use EST-iMs, its features, zones, login process, and general inventory management
+- Be concise, helpful, and professional — keep replies short (2-4 sentences max unless a list is needed)
+- Use Arabic if the user writes in Arabic
+- Do NOT make up specific stock numbers or confidential data
+- If asked something outside the system scope, politely redirect to what you can help with`;
 
-const glitchMessages=['كل شيء تحت السيطرة.<br><span>تقريباً.</span>','الكود يعمل.<br><span>أحياناً.</span>','لم نحذف قاعدة البيانات.<br><span>عمداً.</span>','الخادم بخير.<br><span>نظنّ ذلك.</span>','نحن نعمل على تحسين تجربتك.<br><span>يرجى العودة لاحقاً.</span>','الخطأ ليس خطأنا.<br><span>ربما.</span>','جميع الأنظمة تعمل.<br><span>عدا هذا الموقع.</span>'];
-let gmIdx=0;
-setInterval(()=>{gmIdx=(gmIdx+1)%glitchMessages.length;const el=document.getElementById('glitchText');el.style.opacity=0;setTimeout(()=>{el.innerHTML=glitchMessages[gmIdx];el.style.opacity=1;},200);el.style.transition='opacity 0.2s';},3500);
+let aiOpen = false;
+let aiLoading = false;
+let conversationHistory = [];
+let greetingShown = false;
 
-const v1opts=['إعادة بناء','متوقف','يعيد التشغيل','في حالة ذعر','يتأمل','نائم','يبكي'];
-const v2opts=['منذ 00:00','منذ أمس','منذ أسبوع','لا يوجد','يحاول...','فشل','لن يحدث'];
-const v3opts=['لا شيء','منخفض','متوسط','مرتفع','حرج','كارثي','ما فوق الكارثي'];
-const v4opts=['غير معروف','أحمد','الخادم','القطة','لا أحد','الجميع','أنت'];
-const vOpts={v1:v1opts,v2:v2opts,v3:v3opts,v4:v4opts};
-function randomizeVal(id){const opts=vOpts[id];const el=document.getElementById(id);let i=0;const iv=setInterval(()=>{el.textContent=opts[Math.floor(Math.random()*opts.length)];if(++i>8)clearInterval(iv);},60);}
-
-const bigNums=['404','500','418','301','503','200','403','502','410','451'];
-let bnIdx=0;
-function cycleBigNum(){bnIdx=(bnIdx+1)%bigNums.length;const el=document.getElementById('bigNum');el.style.opacity=0;setTimeout(()=>{el.textContent=bigNums[bnIdx];el.style.opacity=1;},150);}
-
-const morseDecoded=['·· ·−· −−· ·· ·−·· ·−','I R G I L A','إرجع لاحقاً','·· ·−· −−· ·· ·−·· ·−'];
-let morseIdx=0;
-function decodeMorse(){morseIdx=(morseIdx+1)%morseDecoded.length;const el=document.getElementById('decodeArea');el.style.color=morseIdx===2?'#f0f0f0':'#333';el.textContent=morseDecoded[morseIdx];}
-
-let flipped=false;
-function flipPage(){const s=document.querySelector('.scene');s.style.transition='transform 0.6s';flipped=!flipped;s.style.transform=flipped?'scaleX(-1)':'scaleX(1)';}
-
-function runAway(btn){
-  const root=document.getElementById('mmRoot');
-  const maxX=Math.min((root.offsetWidth||580)-150,460);
-  const nx=Math.max(20,Math.random()*maxX);
-  const ny=Math.max(20,Math.random()*400+200);
-  btn.style.position='fixed';
-  btn.style.left=nx+'px';
-  btn.style.top=ny+'px';
-  btn.style.zIndex=999;
-  btn.textContent='لا!';
+function toggleAI() {
+  aiOpen = !aiOpen;
+  document.getElementById('aiFab').classList.toggle('open', aiOpen);
+  document.getElementById('aiPanel').classList.toggle('open', aiOpen);
+  if (aiOpen && !greetingShown) {
+    greetingShown = true;
+    setTimeout(() => showGreeting(), 300);
+  }
+  if (aiOpen) setTimeout(() => document.getElementById('aiInput').focus(), 350);
 }
 
-let inverted=false;
-function invertAll(){inverted=!inverted;document.getElementById('mmRoot').style.filter=inverted?'invert(1)':'invert(0)';}
-
-// اعترافات المطور
-const confessions=[
-  'لم أختبر الكود قبل الرفع على الـ Production.',
-  'كتبت "TODO: fix this later" منذ 3 سنوات.',
-  'الباسوورد كان "123456". للخادم.',
-  'حذفت جدول قاعدة البيانات بالخطأ.',
-  'الـ CSS كله !important.',
-  'نسخت الكود من Stack Overflow وما فهمته.',
-  'آخر commit message كان "fix stuff".',
-  'الـ logs مليانة أخطاء لكن تجاهلتها.',
-  'جربت إطفاء وتشغيل الخادم 17 مرة.',
-  'دمرت الـ git history بالكامل.',
-];
-let confIdx=0;
-function nextConfession(){confIdx=(confIdx+1)%confessions.length;const el=document.getElementById('confessMsg');el.style.opacity=0;setTimeout(()=>{el.textContent=confessions[confIdx];el.style.opacity=1;},150);}
-
-// شريط تقدم وهمي
-const progressStates={p1:0,p2:0,p3:0};
-function fakeProgress(id,wrap){
-  const el=document.getElementById(id);
-  const vEl=document.getElementById(id+'val');
-  const cur=progressStates[id];
-  let next;
-  if(cur>=100){next=Math.floor(Math.random()*30);} 
-  else{next=Math.min(100,cur+Math.floor(Math.random()*40)+10);}
-  progressStates[id]=next;
-  el.style.width=next+'%';
-  vEl.textContent=next+'%';
-  if(next===100){setTimeout(()=>{progressStates[id]=0;el.style.width='0%';vEl.textContent='0%';},2000);}
+function showGreeting() {
+  addMessage('ai', "Hello! I'm the EST-iMs Assistant. I can help you understand the inventory system, navigate zones, or answer any questions about features. How can I help you today?");
 }
 
-// عداد النقرات
-let clickCount=0;
-const clickTaunts=['كل مرة تضغط تتأخر أكثر','جرّب مرة ثانية، ربما يفيد','أنت ما زلت تضغط؟','المطور يراك ويضحك','الخادم يتعمد الانتظار'];
-function bumpCounter(){
-  clickCount++;
-  document.getElementById('clickCounter').textContent=clickCount;
-  const t=clickTaunts[Math.min(Math.floor(clickCount/3),clickTaunts.length-1)];
-  document.getElementById('clickTaunt').textContent=t;
+function getTime() {
+  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-// اقتباسات
-const quotes=[
-  {q:'البرنامج لا يعطل. الناس هم اللي يعطلون.',s:'— مجهول، الساعة 3 صباحاً'},
-  {q:'كل بق هو في الأصل فيتشر لم يُوثَّق بعد.',s:'— مطور دفاعي'},
-  {q:'إذا كان يعمل، لا تلمسه.',s:'— حكمة الـ Production'},
-  {q:'الـ deadline كان أمس.',s:'— العميل دائماً'},
-  {q:'يعمل عندي على الـ localhost.',s:'— آخر كلمات المطور'},
-  {q:'لا يوجد كود جميل، فقط كود يعمل.',s:'— واقعي صادق'},
-  {q:'الكومنت الوحيد في الكود كان "لا أعرف لماذا يعمل هذا".',s:'— الـ pull request رقم 847'},
-];
-let qIdx=0;
-function nextQuote(){qIdx=(qIdx+1)%quotes.length;const el=document.getElementById('quoteText');const se=document.getElementById('quoteSource');el.style.opacity=0;setTimeout(()=>{el.textContent=quotes[qIdx].q;se.textContent=quotes[qIdx].s;el.style.opacity=1;},200);}
-
-// شبكة خلايا
-const gridWords=['ERROR','خطأ','500','NULL','⚡','BUG','???','VOID','NaN','☠','HALT','لأ'];
-const grid=document.getElementById('gridGlitch');
-for(let i=0;i<12;i++){
-  const cell=document.createElement('div');
-  cell.className='grid-cell';
-  cell.textContent=gridWords[i%gridWords.length];
-  cell.onclick=function(){this.classList.toggle('active');setTimeout(()=>this.classList.remove('active'),600);};
-  grid.appendChild(cell);
+function addMessage(role, text) {
+  const wrap = document.getElementById('aiMessages');
+  const div = document.createElement('div');
+  div.className = `ai-msg ${role === 'ai' ? 'ai' : 'usr'}`;
+  div.innerHTML = `
+    <div class="ai-bubble">${escapeHtml(text)}</div>
+    <div class="ai-msg-time">${getTime()}</div>
+  `;
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
 }
-setInterval(()=>{const cells=document.querySelectorAll('.grid-cell');const idx=Math.floor(Math.random()*cells.length);cells[idx].classList.add('active');setTimeout(()=>cells[idx].classList.remove('active'),300);},900);
 
-// كتابة وهمية
-const typeMessages=['جاري البحث عن المشكلة...','وجدناها. في مكان آخر.','يتم إلقاء اللوم على النظام...','النظام يرفض الاتهام.','إعادة المحاولة للمرة الـ 99...'];
-let tmIdx=0;
-let typeInterval=null;
-function startTypewriter(){
-  clearTimeout(typeInterval);
-  const el=document.getElementById('typewriterText');
-  const msg=typeMessages[tmIdx%typeMessages.length];
-  tmIdx++;
-  let i=0;
-  el.textContent='';
-  function type(){if(i<msg.length){el.textContent+=msg[i];i++;setTimeout(type,80);}else{typeInterval=setTimeout(startTypewriter,2200);}}
-  type();
+function addTyping() {
+  const wrap = document.getElementById('aiMessages');
+  const div = document.createElement('div');
+  div.className = 'ai-msg ai'; div.id = 'aiTyping';
+  div.innerHTML = `<div class="ai-typing"><span></span><span></span><span></span></div>`;
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
 }
-startTypewriter();
 
-// بيانات ثنائية
-const binaryMessages=['01001001 01010010 01000111 01001001 01001100 01000001','ERROR 0x0000 0x1337 0xDEAD 0xBEEF 0xCAFE','10110100 11001010 01110011 00110001 00101110','إرجع لاحقاً — ASCII 101011 1001011','NULL NULL NULL NaN Infinity -Infinity'];
-let binIdx=0;
-function glitchBinary(){binIdx=(binIdx+1)%binaryMessages.length;const el=document.getElementById('binaryStream');el.style.opacity=0;setTimeout(()=>{el.textContent=binaryMessages[binIdx];el.style.opacity=1;},120);}
+function removeTyping() {
+  const t = document.getElementById('aiTyping');
+  if (t) t.remove();
+}
+
+function escapeHtml(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+function hideChips() {
+  const chips = document.getElementById('aiChips');
+  if (chips) chips.style.display = 'none';
+}
+
+async function sendMessage() {
+  const input = document.getElementById('aiInput');
+  const text = input.value.trim();
+  if (!text || aiLoading) return;
+
+  hideChips();
+  addMessage('usr', text);
+  conversationHistory.push({ role: 'user', content: text });
+  input.value = ''; autoResize(input);
+
+  document.getElementById('aiSendBtn').disabled = true;
+  aiLoading = true;
+  addTyping();
+
+  try {
+    const response = await fetch('/api/ai-chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'llama-3.1-8b-instant',
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        messages: conversationHistory
+      })
+    });
+    const data = await response.json();
+    const reply = data.content?.map(b => b.text || '').join('') || 'Sorry, I could not process that.';
+    removeTyping();
+    addMessage('ai', reply);
+    conversationHistory.push({ role: 'assistant', content: reply });
+  } catch (err) {
+    removeTyping();
+    addMessage('ai', 'Connection error. Please try again.');
+  }
+
+  aiLoading = false;
+  document.getElementById('aiSendBtn').disabled = false;
+}
+
+function sendChip(el) {
+  document.getElementById('aiInput').value = el.textContent;
+  sendMessage();
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function autoResize(el) {
+  el.style.height = '40px';
+  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+// ── DEVELOPER MODAL ──
+function openDevModal() {
+  document.getElementById('devOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDevModal() {
+  document.getElementById('devOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeDevModalOutside(e) {
+  if (e.target === document.getElementById('devOverlay')) closeDevModal();
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDevModal(); closeQuickScan(); } });
+
+// ── THEME ──
+(function() {
+  if (localStorage.getItem('est-theme') === 'light')
+    document.documentElement.classList.add('light');
+  updateDockTheme();
+})();
+
+function updateDockTheme() {
+  const isLight = document.documentElement.classList.contains('light');
+  const label = document.getElementById('dockThemeLabel');
+  if (label) label.textContent = isLight ? 'Dark Mode' : 'Light Mode';
+}
+
+function toggleTheme() {
+  const isLight = document.documentElement.classList.toggle('light');
+  localStorage.setItem('est-theme', isLight ? 'light' : 'dark');
+  updateDockTheme();
+}
+
+// ── TYPEWRITER LOOP ──
+(function() {
+  const word        = 'ALESTESHARIA';
+  const el          = document.getElementById('brandText');
+  const wrap        = document.getElementById('brandName');
+  const typeSpeed   = 155;
+  const deleteSpeed = 85;
+  const pauseFull   = 2400;
+  const pauseEmpty  = 550;
+
+  wrap.style.opacity   = '0';
+  wrap.style.transform = 'translateY(16px)';
+  wrap.style.transition = 'opacity 0.55s ease, transform 0.55s ease';
+
+  setTimeout(() => {
+    wrap.style.opacity   = '1';
+    wrap.style.transform = 'translateY(0)';
+
+    let i = 0, deleting = false;
+
+    function tick() {
+      if (!deleting) {
+        i++;
+        el.textContent = word.slice(0, i);
+        if (i === word.length) {
+          setTimeout(() => { deleting = true; tick(); }, pauseFull);
+        } else {
+          setTimeout(tick, typeSpeed);
+        }
+      } else {
+        i--;
+        el.textContent = word.slice(0, i);
+        if (i === 0) {
+          deleting = false;
+          setTimeout(tick, pauseEmpty);
+        } else {
+          setTimeout(tick, deleteSpeed);
+        }
+      }
+    }
+    tick();
+  }, 500);
+})();
+
+// ── PARTICLES ──
+(function() {
+  const canvas = document.getElementById('particleCanvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H, particles = [], mouse = { x: -999, y: -999 };
+  const isLight = () => document.documentElement.classList.contains('light');
+
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+
+  function Particle() {
+    this.x  = Math.random() * W; this.y  = Math.random() * H;
+    this.vx = (Math.random() - 0.5) * 0.35; this.vy = (Math.random() - 0.5) * 0.35;
+    this.r  = Math.random() * 1.6 + 0.4; this.alpha = Math.random() * 0.4 + 0.08;
+  }
+
+  Particle.prototype.update = function() {
+    this.x += this.vx; this.y += this.vy;
+    if (this.x < 0) this.x = W; if (this.x > W) this.x = 0;
+    if (this.y < 0) this.y = H; if (this.y > H) this.y = 0;
+    const dx = this.x - mouse.x, dy = this.y - mouse.y;
+    const d  = Math.sqrt(dx*dx + dy*dy);
+    if (d < 110) { this.x += dx/d*1.4; this.y += dy/d*1.4; }
+  };
+
+  function init() {
+    resize(); particles = [];
+    const n = Math.floor((W * H) / 13000);
+    for (let i = 0; i < n; i++) particles.push(new Particle());
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const light = isLight();
+    const dc = light ? 'rgba(37,99,235,' : 'rgba(59,130,246,';
+    const lc = light ? 'rgba(37,99,235,' : 'rgba(59,130,246,';
+    const md = 135;
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      p.update();
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = dc + p.alpha + ')'; ctx.fill();
+      for (let j = i+1; j < particles.length; j++) {
+        const q  = particles[j];
+        const dx = p.x - q.x, dy = p.y - q.y;
+        const d  = Math.sqrt(dx*dx + dy*dy);
+        if (d < md) {
+          const a = (1 - d/md) * 0.15 * (light ? 1 : 0.65);
+          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
+          ctx.strokeStyle = lc + a + ')'; ctx.lineWidth = 0.6; ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', init);
+  window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+  window.addEventListener('mouseleave', () => { mouse.x = -999; mouse.y = -999; });
+  init(); draw();
+})();
+
+fetch('https://est-ims.onrender.com/ping').catch(() => {});
+fetch('/api/track_visit', { method: 'POST' }).catch(() => {});
+
+// ── STATS ──
+(async function() {
+  try {
+    const res  = await fetch('/api/stats');
+    const data = await res.json();
+    if (data.total !== undefined) {
+      document.getElementById('statTotal').textContent = data.total.toLocaleString();
+      document.getElementById('statToday').textContent = data.today.toLocaleString();
+    }
+  } catch(e) {}
+})();
+
+// ── LANGUAGE TOGGLE (Welcome) ──
+const WELCOME_LANG = {
+  en: {
+    chip: 'Welcome', subHeading: 'Inventory Management System',
+    suffix: 'Animal Nutrition',
+    tagline: 'Streamlined inventory tracking, real‑time stock management,<br>and precise reporting — all in one place.',
+    loginBtn: 'Log In', moreBtn: 'For More', privacy: 'Privacy Policy', terms: 'Terms of Use', langLabel: 'عربي',
+    dockLogin: 'Log In', dockContact: 'Contact Us', dockHelp: 'Help', dockScan: 'QR Scan', dockAbout: 'About Us',
+  },
+  ar: {
+    chip: 'أهلاً', subHeading: 'نظام إدارة المخزون',
+    suffix: 'التغذية الحيوانية',
+    tagline: 'تتبع المخزون بشكل مبسط، وإدارة المخزون الفوري،<br>وتقارير دقيقة — كل ذلك في مكان واحد.',
+    loginBtn: 'تسجيل الدخول', moreBtn: 'للمزيد', privacy: 'سياسة الخصوصية', terms: 'شروط الاستخدام', langLabel: 'English',
+    dockLogin: 'دخول', dockContact: 'تواصل معنا', dockHelp: 'مساعدة', dockScan: 'مسح QR', dockAbout: 'من نحن',
+  }
+};
+let welcomeLang = localStorage.getItem('est-lang') || 'en';
+
+function applyWelcomeLang(lang) {
+  welcomeLang = lang;
+  localStorage.setItem('est-lang', lang);
+  const t = WELCOME_LANG[lang];
+  const isAr = lang === 'ar';
+  document.documentElement.lang = lang;
+  document.documentElement.dir  = isAr ? 'rtl' : 'ltr';
+  const chip = document.querySelector('.welcome-chip');
+  if (chip) chip.textContent = t.chip;
+  const sub = document.querySelector('.sub-heading');
+  if (sub) sub.textContent = t.subHeading;
+  const suf = document.querySelector('.brand-suffix');
+  if (suf) suf.textContent = t.suffix;
+  const tag = document.querySelector('.tagline');
+  if (tag) tag.innerHTML = t.tagline;
+  const loginText = document.getElementById('welcomeLoginText');
+  if (loginText) loginText.textContent = t.loginBtn;
+  const moreText = document.getElementById('welcomeMoreText');
+  if (moreText) moreText.textContent = t.moreBtn;
+  const privacyLink = document.getElementById('welcomePrivacyLink');
+  if (privacyLink) privacyLink.textContent = t.privacy;
+  const termsLink = document.getElementById('welcomeTermsLink');
+  if (termsLink) termsLink.textContent = t.terms;
+  const langLbl = document.getElementById('welcomeLangLabel');
+  if (langLbl) langLbl.textContent = t.langLabel;
+  document.querySelectorAll('.dock-label').forEach(el => {
+    const en = el.getAttribute('data-en');
+    const ar = el.getAttribute('data-ar');
+    if (en && ar) el.textContent = isAr ? ar : en;
+  });
+  updateDockTheme();
+}
+
+function toggleWelcomeLang() {
+  applyWelcomeLang(welcomeLang === 'en' ? 'ar' : 'en');
+}
+
+applyWelcomeLang(welcomeLang);
+
+// ── QUICK QR SCAN ──
+let quickScanner = null;
+let quickScannerBusy = false;
+
+function quickScanText(key) {
+  const isAr = (localStorage.getItem('est-lang') || 'en') === 'ar';
+  const text = {
+    opening:     isAr ? 'جاري فتح الكاميرا...'                           : 'Opening camera...',
+    scanning:    isAr ? 'وجه الكاميرا على كود QR.'                       : 'Point the camera at a QR code.',
+    loading:     isAr ? 'جاري جلب البيانات...'                           : 'Retrieving live data...',
+    again:       isAr ? 'مسح كود آخر'                                    : 'Scan another code',
+    cameraError: isAr ? 'تعذر فتح الكاميرا. تأكد من السماح بصلاحية الكاميرا.' : 'The camera could not be opened. Please allow camera permission.',
+    notFound:    isAr ? 'الكود غير موجود في النظام.'                     : 'The code is not found in the system.',
+    serverError: isAr ? 'تعذر الاتصال بالسيرفر.'                        : 'Unable to connect to the server.',
+    lastUpdate:  isAr ? 'آخر تحديث: '                                    : 'Last update: '
+  };
+  return text[key];
+}
+
+function setQuickScanStatus(text, isError = false) {
+  const status = document.getElementById('quickScanStatus');
+  if (!status) return;
+  status.textContent = text;
+  status.style.color = isError ? '#ef4444' : 'var(--text-muted)';
+}
+
+function resetQuickScanResult() {
+  const result = document.getElementById('quickScanResult');
+  const again  = document.getElementById('quickScanAgain');
+  if (result) result.style.display = 'none';
+  if (again)  { again.style.display = 'none'; again.textContent = quickScanText('again'); }
+}
+
+function openQuickScan() {
+  const overlay = document.getElementById('quickScanOverlay');
+  if (!overlay) return;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  resetQuickScanResult();
+  setQuickScanStatus(quickScanText('opening'));
+  setTimeout(startQuickScanCamera, 180);
+}
+
+function closeQuickScan() {
+  stopQuickScanCamera();
+  const overlay = document.getElementById('quickScanOverlay');
+  if (overlay) overlay.classList.remove('open');
+  document.body.style.overflow = '';
+  quickScannerBusy = false;
+}
+
+function closeQuickScanOutside(event) {
+  if (event.target === document.getElementById('quickScanOverlay')) closeQuickScan();
+}
+
+function startQuickScanCamera() {
+  if (!document.getElementById('quickScanOverlay')?.classList.contains('open')) return;
+  if (typeof Html5Qrcode === 'undefined') { setQuickScanStatus(quickScanText('cameraError'), true); return; }
+  stopQuickScanCamera();
+  quickScannerBusy = false;
+  document.getElementById('quickQrReader').innerHTML = '';
+  quickScanner = new Html5Qrcode('quickQrReader');
+  quickScanner.start(
+    { facingMode: 'environment' },
+    { fps: 12, qrbox: { width: 240, height: 240 } },
+    decoded => {
+      if (quickScannerBusy) return;
+      quickScannerBusy = true;
+      stopQuickScanCamera();
+      handleQuickScanned(decoded);
+    },
+    () => {}
+  ).then(() => {
+    setQuickScanStatus(quickScanText('scanning'));
+  }).catch(() => {
+    setQuickScanStatus(quickScanText('cameraError'), true);
+  });
+}
+
+function stopQuickScanCamera() {
+  if (quickScanner) {
+    const scanner = quickScanner;
+    quickScanner = null;
+    scanner.stop().catch(() => {}).finally(() => { scanner.clear().catch(() => {}); });
+  }
+}
+
+function handleQuickScanned(raw) {
+  let sku = raw.trim().toUpperCase();
+  try {
+    const url = new URL(raw);
+    const fromParam = url.searchParams.get('sku');
+    if (fromParam) sku = fromParam.trim().toUpperCase();
+  } catch (e) {}
+  setQuickScanStatus(quickScanText('loading'));
+  fetch('/api/qrscan/' + encodeURIComponent(sku))
+    .then(r => r.json())
+    .then(data => { if (data.found) showQuickScanResult(data); else showQuickScanError(data.error || quickScanText('notFound')); })
+    .catch(() => showQuickScanError(quickScanText('serverError')));
+}
+
+function showQuickScanResult(data) {
+  const balance = Number(data.balance);
+  document.getElementById('quickScanResultBar').style.background = data.hex || '#1a3a5c';
+  document.getElementById('quickScanCategory').textContent  = data.category || 'Stocktaking';
+  document.getElementById('quickScanName').textContent      = data.nameAr || data.color || data.sku;
+  document.getElementById('quickScanBalance').textContent   = Number.isFinite(balance) ? balance.toLocaleString() : data.balance;
+  document.getElementById('quickScanDate').textContent      = quickScanText('lastUpdate') + (data.date || '-');
+  document.getElementById('quickScanSku').textContent       = data.sku;
+  document.getElementById('quickScanResult').style.display  = 'block';
+  document.getElementById('quickScanAgain').style.display   = 'block';
+  setQuickScanStatus('');
+}
+
+function showQuickScanError(message) {
+  document.getElementById('quickScanAgain').style.display = 'block';
+  setQuickScanStatus(message, true);
+}
+
+function restartQuickScan() {
+  resetQuickScanResult();
+  setQuickScanStatus(quickScanText('opening'));
+  startQuickScanCamera();
+}

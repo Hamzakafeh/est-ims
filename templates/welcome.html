@@ -1,134 +1,327 @@
-
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>EST | Inventory Management System</title>
+<link rel="icon" type="image/x-icon" href="/static/low1.ico">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="aa3b6cf5-36e2-44e6-9696-2a52049f6fd2"></script>
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <link rel="stylesheet" href="/static/css/welcome.css">
+</head>
+<body>
 
-<canvas class="noise-canvas" id="noiseCanvas"></canvas>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+<div class="grid-overlay"></div>
+<canvas id="particleCanvas"></canvas>
 
-<div class="mm-root" id="mmRoot">
+<!-- SIDE DOCK -->
+<div class="side-dock">
 
-  <div class="ticker-wrap">
-    <div class="ticker">
-      <span class="ticker-item lit">تحت الصيانة</span>
-      <span class="ticker-item">MAINTENANCE</span>
-      <span class="ticker-item lit">نرجع قريباً</span>
-      <span class="ticker-item">OFFLINE</span>
-      <span class="ticker-item lit">شكراً لصبرك</span>
-      <span class="ticker-item">LOADING</span>
-      <span class="ticker-item lit">تحت الصيانة</span>
-      <span class="ticker-item">MAINTENANCE</span>
-      <span class="ticker-item lit">نرجع قريباً</span>
-      <span class="ticker-item">OFFLINE</span>
-      <span class="ticker-item lit">شكراً لصبرك</span>
-      <span class="ticker-item">LOADING</span>
+  <div class="dock-item" onclick="toggleTheme()">
+    <div class="dock-icon" id="dockThemeIcon">
+      <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
     </div>
+    <div class="dock-label" id="dockThemeLabel">Light Mode</div>
   </div>
 
-  <div class="scene">
+  <div class="dock-item" onclick="window.location.href='/login'">
+    <div class="dock-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+        <polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+      </svg>
+    </div>
+    <div class="dock-label" data-en="Log In" data-ar="دخول">Log In</div>
+  </div>
 
-    <div class="title-wrap">
-      <div class="main-title" id="mainTitle" onclick="scatterTitle()">
-        <span class="char">ص</span><span class="char">ي</span><span class="char">ا</span><span class="char">ن</span><span class="char">ة</span>
+  <div class="dock-item" onclick="window.location.href='/qrscan'">
+    <div class="dock-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/>
+        <rect x="3" y="16" width="5" height="5" rx="1"/>
+        <path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M16 21v-3"/><path d="M21 21v.01"/>
+        <path d="M3 10h5"/><path d="M10 3v5"/><path d="M10 10h.01"/>
+      </svg>
+    </div>
+    <div class="dock-label" data-en="QR Scan" data-ar="مسح QR">QR Scan</div>
+  </div>
+
+  <div class="dock-item" onclick="window.location.href='/contact'">
+    <div class="dock-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+        <circle cx="12" cy="10" r="3"/>
+      </svg>
+    </div>
+    <div class="dock-label" data-en="Contact Us" data-ar="تواصل معنا">Contact Us</div>
+  </div>
+
+  <div class="dock-item" onclick="window.location.href='/about'">
+    <div class="dock-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+    </div>
+    <div class="dock-label" data-en="About Us" data-ar="من نحن">About Us</div>
+  </div>
+
+  <div class="dock-item" onclick="window.location.href='/privacy'">
+    <div class="dock-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+    </div>
+    <div class="dock-label" data-en="Privacy Policy" data-ar="سياسة الخصوصية">Privacy Policy</div>
+  </div>
+
+  <div class="dock-item" onclick="window.location.href='/terms'">
+    <div class="dock-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+      </svg>
+    </div>
+    <div class="dock-label" data-en="Terms of Use" data-ar="شروط الاستخدام">Terms of Use</div>
+  </div>
+
+  <div class="dock-item" onclick="window.location.href='/help'">
+    <div class="dock-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+    </div>
+    <div class="dock-label" data-en="Help" data-ar="مساعدة">Help</div>
+  </div>
+
+  <div class="dock-item" onclick="toggleWelcomeLang()">
+    <div class="dock-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+      </svg>
+    </div>
+    <div class="dock-label" id="welcomeLangLabel">عربي</div>
+  </div>
+
+</div>
+
+<!-- QR SCAN FAB -->
+<button class="qr-scan-fab" type="button" onclick="openQuickScan()" title="QR Scan" aria-label="QR Scan">
+  <span class="qr-scan-fab-pulse"></span>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/>
+    <rect x="3" y="16" width="5" height="5" rx="1"/>
+    <path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M16 21v-3"/><path d="M21 21v.01"/>
+    <path d="M3 10h5"/><path d="M10 3v5"/><path d="M10 10h.01"/>
+  </svg>
+</button>
+
+<!-- QUICK SCAN OVERLAY -->
+<div class="quick-scan-overlay" id="quickScanOverlay" onclick="closeQuickScanOutside(event)">
+  <div class="quick-scan-modal">
+    <div class="quick-scan-bar"></div>
+    <button class="quick-scan-close" type="button" onclick="closeQuickScan()">✕</button>
+    <div class="quick-scan-body">
+      <div class="quick-scan-title">QR Scan</div>
+      <p class="quick-scan-hint">Point the camera at an inventory QR code.</p>
+      <div id="quickQrReader"></div>
+      <div class="quick-scan-status" id="quickScanStatus">Opening camera...</div>
+      <div class="quick-scan-result" id="quickScanResult">
+        <div class="quick-scan-result-bar" id="quickScanResultBar"></div>
+        <div class="quick-scan-result-body">
+          <p class="quick-scan-result-cat" id="quickScanCategory">Stocktaking</p>
+          <p class="quick-scan-result-name" id="quickScanName"></p>
+          <p class="quick-scan-result-balance" id="quickScanBalance"></p>
+          <p class="quick-scan-result-unit">Unit</p>
+          <p class="quick-scan-result-date" id="quickScanDate"></p>
+          <p class="quick-scan-result-sku" id="quickScanSku"></p>
+        </div>
       </div>
-      <div class="subtitle">
-        <span class="status-dot"></span> الموقع خارج الخدمة
+      <button class="quick-scan-again" id="quickScanAgain" type="button" onclick="restartQuickScan()">Scan another code</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+
+  <div class="logo-wrap">
+    <img src="/static/low.ico" alt="EST-IMS">
+  </div>
+
+  <div class="welcome-chip">Welcome</div>
+  <div class="sub-heading">Inventory Management System</div>
+
+  <div class="brand-name" id="brandName">
+    <span class="brand-text-inner" id="brandText"></span><span class="type-cursor" id="typeCursor"></span>
+  </div>
+
+  <div class="brand-suffix">Animal Nutrition</div>
+
+  <div class="tagline">
+    Streamlined inventory tracking, real‑time stock management,<br>
+    and precise reporting — all in one place.
+  </div>
+
+  <div class="divider-line"></div>
+
+  <div class="cta-actions">
+    <a class="cta-btn" href="/login" id="welcomeLoginBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+        <polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+      </svg>
+      <span id="welcomeLoginText">Log In</span>
+      <svg class="cta-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </a>
+    <a class="cta-btn cta-secondary" href="/for-more" id="welcomeMoreBtn"><span id="welcomeMoreText">For More</span></a>
+  </div>
+
+  <div class="policy-links">
+    <a class="policy-link" href="/privacy" id="welcomePrivacyLink">Privacy Policy</a>
+    <a class="policy-link" href="/terms" id="welcomeTermsLink">Terms of Use</a>
+  </div>
+
+  <div class="version-tag">
+    <span class="v-dot"></span>
+    Copyright 2026 &nbsp;|&nbsp; All Rights Reserved &copy;
+  </div>
+
+  <div class="dev-credit">
+    <span class="dev-dot"></span>
+    <span>Developed By <span class="dev-name" onclick="openDevModal()">Hamza K. Ghareb</span></span>
+  </div>
+
+</div>
+
+<!-- STATS CORNER -->
+<div class="stats-corner">
+  <div class="stat-chip">
+    <div class="stat-dot green"></div>
+    <div class="stat-chip-info">
+      <div class="stat-chip-value" id="statTotal">—</div>
+      <div class="stat-chip-label">Total</div>
+    </div>
+  </div>
+  <div class="stat-chip">
+    <div class="stat-dot white"></div>
+    <div class="stat-chip-info">
+      <div class="stat-chip-value" id="statToday">—</div>
+      <div class="stat-chip-label">Today</div>
+    </div>
+  </div>
+</div>
+
+<!-- DEVELOPER MODAL -->
+<div class="dev-overlay" id="devOverlay" onclick="closeDevModalOutside(event)">
+  <div class="dev-modal" id="devModal">
+    <div class="dev-modal-bar"></div>
+    <button class="dev-modal-close" onclick="closeDevModal()">✕</button>
+    <div class="dev-modal-body">
+      <div class="dev-photo-wrap">
+        <img src="/static/me.jpg" alt="Hamza K. Ghareb">
+      </div>
+      <div class="dev-info">
+        <div class="dev-info-name">Hamza K. Ghareb</div>
+        <div class="dev-divider"></div>
+        <div class="dev-info-row">
+          <svg class="dev-info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+          <div>
+            <div class="dev-info-label">Specialization</div>
+            <div class="dev-info-value">Master of Business Administration</div>
+          </div>
+        </div>
+        <div class="dev-info-row">
+          <svg class="dev-info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+          </svg>
+          <div>
+            <div class="dev-info-label">Position</div>
+            <div class="dev-info-value">Warehouse Keeper - IT</div>
+          </div>
+        </div>
       </div>
     </div>
+  </div>
+</div>
 
-    <div class="word-scramble" id="wordScramble" onclick="triggerScramble()">خارج الخدمة</div>
+<!-- AI AGENT FAB -->
+<button class="ai-fab" id="aiFab" onclick="toggleAI()" title="AI Assistant">
+  <div class="ai-fab-pulse"></div>
+  <span class="ai-fab-icon-default">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      <circle cx="9" cy="10" r="1" fill="#fff" stroke="none"/>
+      <circle cx="12" cy="10" r="1" fill="#fff" stroke="none"/>
+      <circle cx="15" cy="10" r="1" fill="#fff" stroke="none"/>
+    </svg>
+  </span>
+  <span class="ai-fab-icon-close">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </span>
+</button>
 
-    <div class="glitch-box">
-      <p class="glitch-text" id="glitchText">
-        نحن نعمل على تحسين تجربتك.<br><span>يرجى العودة لاحقاً.</span>
-      </p>
+<!-- AI AGENT PANEL -->
+<div class="ai-panel" id="aiPanel">
+  <div class="ai-panel-bar"></div>
+  <div class="ai-panel-header">
+    <div class="ai-avatar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M12 2a4 4 0 0 1 4 4v5H8V6a4 4 0 0 1 4-4z"/>
+        <circle cx="9" cy="17" r="1" fill="var(--accent-cyan)" stroke="none"/>
+        <circle cx="15" cy="17" r="1" fill="var(--accent-cyan)" stroke="none"/>
+      </svg>
     </div>
-
-    <div class="split-lines">
-      <div class="split-line" onclick="randomizeVal('v1')"><span>حالة النظام</span><span class="val" id="v1">إعادة بناء</span></div>
-      <div class="split-line" onclick="randomizeVal('v2')"><span>آخر نسخة احتياطية</span><span class="val" id="v2" dir="ltr">منذ 00:00</span></div>
-      <div class="split-line" onclick="randomizeVal('v3')"><span>مستوى الخطر</span><span class="val" id="v3">لا شيء</span></div>
-      <div class="split-line" onclick="randomizeVal('v4')"><span>المسؤول</span><span class="val" id="v4">غير معروف</span></div>
-    </div>
-
-    <hr class="section-divider">
-
-    <!-- NEW: اعترافات المطور -->
-    <div class="confess-box" onclick="nextConfession()">
-      <div class="confess-title">اعترافات المطور ← اضغط</div>
-      <div class="confess-msg" id="confessMsg">لم أختبر الكود قبل الرفع على الـ Production.</div>
-    </div>
-
-    <hr class="section-divider">
-
-    <!-- NEW: شريط تقدم وهمي -->
-    <div class="progress-section">
-      <div>
-        <div class="progress-label"><span>إصلاح الخادم</span><span id="p1val">0%</span></div>
-        <div class="progress-bar-wrap" onclick="fakeProgress('p1',this)"><div class="progress-bar-inner" id="p1" style="width:0%"></div></div>
-      </div>
-      <div>
-        <div class="progress-label"><span>إيجاد المشكلة الحقيقية</span><span id="p2val">0%</span></div>
-        <div class="progress-bar-wrap" onclick="fakeProgress('p2',this)"><div class="progress-bar-inner" id="p2" style="width:0%"></div></div>
-      </div>
-      <div>
-        <div class="progress-label"><span>إلقاء اللوم على أحمد</span><span id="p3val">0%</span></div>
-        <div class="progress-bar-wrap" onclick="fakeProgress('p3',this)"><div class="progress-bar-inner" id="p3" style="width:0%"></div></div>
+    <div class="ai-header-info">
+      <div class="ai-header-name">EST-iMs Assistant</div>
+      <div class="ai-header-status">
+        <div class="ai-status-dot"></div>
+        Online · Inventory AI
       </div>
     </div>
-
-    <hr class="section-divider">
-
-    <!-- NEW: عداد النقرات -->
-    <div class="click-counter-wrap">
-      <div class="click-label">عدد مرات الضغط على "إعادة تحميل"</div>
-      <div class="click-counter" id="clickCounter" onclick="bumpCounter()">0</div>
-      <div class="click-label" id="clickTaunt">كل مرة تضغط تتأخر أكثر</div>
-    </div>
-
-    <hr class="section-divider">
-
-    <!-- NEW: اقتباسات تقنية عبثية -->
-    <div class="quote-rotator" onclick="nextQuote()">
-      <div class="quote-text" id="quoteText">البرنامج لا يعطل. الناس هم اللي يعطلون.</div>
-      <div class="quote-source" id="quoteSource">— مجهول، الساعة 3 صباحاً</div>
-    </div>
-
-    <hr class="section-divider">
-
-    <!-- NEW: شبكة خلايا قابلة للضغط -->
-    <div class="grid-glitch" id="gridGlitch"></div>
-
-    <hr class="section-divider">
-
-    <!-- NEW: مربع كتابة وهمي -->
-    <div class="typewriter-box">
-      <span class="typewriter-text" id="typewriterText"></span>
-    </div>
-
-    <hr class="section-divider">
-
-    <div class="big-number" id="bigNum" onclick="cycleBigNum()">404</div>
-
-    <div class="decode-area" id="decodeArea" onclick="decodeMorse()">
-      ·· ·−· −−· ·· ·−·· ·−
-    </div>
-
-    <!-- NEW: بيانات ثنائية -->
-    <div class="binary-stream" id="binaryStream" onclick="glitchBinary()">
-      01001001 01010010 01000111 01001001 01001100 01000001
-    </div>
-
-    <div class="btn-row">
-      <button class="btn btn-primary" onclick="location.href='/login'"><span>Login</span></button>
-      <button class="btn" onclick="location.href='/for-more'"><span>For More</span></button>
-      <button class="btn" onclick="location.href='/privacy'"><span>Privacy Policy</span></button>
-      <button class="btn" onclick="location.href='/terms'"><span>Terms of Use</span></button>
-      <button class="btn" onclick="flipPage()"><span>اقلب الصفحة</span></button>
-      <button class="btn-disappear" id="runBtn" onmouseenter="runAway(this)">لا تضغط هنا</button>
-      <button class="btn" onclick="invertAll()"><span>عكس الألوان</span></button>
-    </div>
-
-    <div class="scroll-msg">↑ مرر للأعلى ↑ هناك المزيد ↑</div>
-
+  </div>
+  <div class="ai-messages" id="aiMessages"></div>
+  <div class="ai-chips" id="aiChips">
+    <div class="ai-chip" onclick="sendChip(this)">What is EST-iMs?</div>
+    <div class="ai-chip" onclick="sendChip(this)">How to log in?</div>
+    <div class="ai-chip" onclick="sendChip(this)">System features</div>
+    <div class="ai-chip" onclick="sendChip(this)">Zones explained</div>
+  </div>
+  <div class="ai-input-row">
+    <textarea class="ai-input" id="aiInput" placeholder="Ask about the system..." rows="1"
+      onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+    <button class="ai-send-btn" id="aiSendBtn" onclick="sendMessage()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </button>
   </div>
 </div>
 
 <script src="/static/js/welcome.js"></script>
+</body>
+</html>
