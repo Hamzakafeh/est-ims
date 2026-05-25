@@ -37,7 +37,7 @@
     <div class="dock-label" id="dockThemeLabel">Light Mode</div>
   </div>
 
-  <div class="dock-item" onclick="window.location.href='/login'">
+  <div class="dock-item dock-item-login" onclick="window.location.href='/login'">
     <div class="dock-icon">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
@@ -47,7 +47,7 @@
     <div class="dock-label" data-en="Log In" data-ar="دخول">Log In</div>
   </div>
 
-  <div class="dock-item" onclick="window.location.href='/qrscan'">
+  <div class="dock-item dock-item-scan" onclick="window.location.href='/qrscan'">
     <div class="dock-icon">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/>
@@ -159,8 +159,8 @@
   </div>
 </div>
 
-<!-- PAGE -->
-<div class="page">
+<!-- HERO PAGE -->
+<div class="page" id="heroPage">
 
   <div class="logo-wrap">
     <img src="/static/icons/low.ico" alt="EST-IMS">
@@ -196,11 +196,6 @@
     <a class="cta-btn cta-secondary" href="/for-more" id="welcomeMoreBtn"><span id="welcomeMoreText">For More</span></a>
   </div>
 
-  <div class="policy-links">
-    <a class="policy-link" href="/privacy" id="welcomePrivacyLink">Privacy Policy</a>
-    <a class="policy-link" href="/terms" id="welcomeTermsLink">Terms of Use</a>
-  </div>
-
   <div class="version-tag">
     <span class="v-dot"></span>
     Copyright 2026 &nbsp;|&nbsp; All Rights Reserved &copy;
@@ -210,6 +205,361 @@
     <span class="dev-dot"></span>
     <span>Developed By <span class="dev-name" onclick="openDevModal()">Hamza K. Ghareb</span></span>
   </div>
+
+  <!-- SCROLL INDICATOR -->
+  <div class="scroll-indicator" id="scrollIndicator" onclick="document.getElementById('secHowTo').scrollIntoView({behavior:'smooth'})">
+    <span class="scroll-ind-label">Explore</span>
+    <div class="scroll-ind-chevron">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+  </div>
+
+</div>
+
+<!-- SCROLL CONTENT -->
+<div class="scroll-wrap">
+
+  <div class="sec-divider"></div>
+
+  <!-- HOW IT WORKS -->
+  <section class="sec" id="secHowTo">
+    <div class="sec-inner">
+      <div class="sec-badge">Guide</div>
+      <h2 class="sec-title">How It Works</h2>
+      <p class="sec-sub">From first access to daily inventory management — five simple steps.</p>
+
+      <div class="steps-flow">
+
+        <div class="step-item reveal">
+          <div class="step-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/>
+              <line x1="22" y1="11" x2="16" y2="11"/>
+            </svg>
+          </div>
+          <div class="step-num">01</div>
+          <div class="step-name">Create Account</div>
+          <p class="step-desc">Register from the welcome page with your employee details and submit an access request.</p>
+        </div>
+
+        <div class="step-connector"><div class="step-line"></div></div>
+
+        <div class="step-item reveal" style="transition-delay:.1s">
+          <div class="step-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <polyline points="9 12 11 14 15 10"/>
+            </svg>
+          </div>
+          <div class="step-num">02</div>
+          <div class="step-name">Get Approved</div>
+          <p class="step-desc">An admin reviews your request and activates your account with the appropriate zone access.</p>
+        </div>
+
+        <div class="step-connector"><div class="step-line"></div></div>
+
+        <div class="step-item reveal" style="transition-delay:.2s">
+          <div class="step-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+              <polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+            </svg>
+          </div>
+          <div class="step-num">03</div>
+          <div class="step-name">Log In</div>
+          <p class="step-desc">Sign in with your credentials to enter the system and access your assigned workspace.</p>
+        </div>
+
+        <div class="step-connector"><div class="step-line"></div></div>
+
+        <div class="step-item reveal" style="transition-delay:.3s">
+          <div class="step-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+              <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+            </svg>
+          </div>
+          <div class="step-num">04</div>
+          <div class="step-name">Choose Zone</div>
+          <p class="step-desc">Select your warehouse zone — each zone holds its own inventory categorized by year and month.</p>
+        </div>
+
+        <div class="step-connector"><div class="step-line"></div></div>
+
+        <div class="step-item reveal" style="transition-delay:.4s">
+          <div class="step-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+              <line x1="12" y1="22.08" x2="12" y2="12"/>
+            </svg>
+          </div>
+          <div class="step-num">05</div>
+          <div class="step-name">Manage Inventory</div>
+          <p class="step-desc">Track items, scan QR codes for quick lookups, edit stock, and export reports to Excel.</p>
+        </div>
+
+      </div>
+
+      <!-- SITE NAVIGATION MAP -->
+      <div class="sitemap-card reveal">
+        <div class="sitemap-card-label">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+          </svg>
+          System Navigation Map
+        </div>
+        <div class="sitemap-flow">
+          <div class="smap-node smap-root">
+            <div class="smap-dot"></div>
+            <span>Welcome</span>
+          </div>
+          <div class="smap-arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </div>
+          <div class="smap-node">
+            <div class="smap-dot blue"></div>
+            <span>Login</span>
+          </div>
+          <div class="smap-arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </div>
+          <div class="smap-node">
+            <div class="smap-dot cyan"></div>
+            <span>Dashboard</span>
+          </div>
+          <div class="smap-arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </div>
+          <div class="smap-branches">
+            <div class="smap-branch">
+              <div class="smap-node smap-small">
+                <div class="smap-dot green"></div>
+                <span>Zone 1–5 Inventory</span>
+              </div>
+            </div>
+            <div class="smap-branch">
+              <div class="smap-node smap-small">
+                <div class="smap-dot purple"></div>
+                <span>QC Workflow</span>
+              </div>
+            </div>
+            <div class="smap-branch">
+              <div class="smap-node smap-small">
+                <div class="smap-dot orange"></div>
+                <span>Reports &amp; Export</span>
+              </div>
+            </div>
+            <div class="smap-branch">
+              <div class="smap-node smap-small">
+                <div class="smap-dot red"></div>
+                <span>Admin Panel</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="sec-divider"></div>
+
+  <!-- ABOUT COMPANY -->
+  <section class="sec" id="secCompany">
+    <div class="sec-inner">
+      <div class="sec-badge">Company</div>
+      <h2 class="sec-title">Alestesharia Animal Nutrition</h2>
+      <p class="sec-sub">Leading the animal feed industry with quality, variety, and precision.</p>
+
+      <div class="about-cards">
+
+        <div class="about-card reveal">
+          <div class="about-card-accent" style="background:linear-gradient(135deg,#3b82f6,#06b6d4)"></div>
+          <div class="about-card-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+              <line x1="12" y1="22.08" x2="12" y2="12"/>
+            </svg>
+          </div>
+          <div class="about-card-name">Product Variety</div>
+          <p class="about-card-text">Manufactures a wide range of livestock and poultry feed — including sacks, rolls, plastic-packaged, and custom nutritional blends for every production need.</p>
+        </div>
+
+        <div class="about-card reveal" style="transition-delay:.12s">
+          <div class="about-card-accent" style="background:linear-gradient(135deg,#06b6d4,#10b981)"></div>
+          <div class="about-card-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="3" width="15" height="13" rx="1"/>
+              <path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+            </svg>
+          </div>
+          <div class="about-card-name">Zone-Based Warehousing</div>
+          <p class="about-card-text">Operates multiple specialized warehouse zones, each managed independently with its own inventory tracking, access control, and reporting structure.</p>
+        </div>
+
+        <div class="about-card reveal" style="transition-delay:.24s">
+          <div class="about-card-accent" style="background:linear-gradient(135deg,#6366f1,#818cf8)"></div>
+          <div class="about-card-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <div class="about-card-name">Digital Operations</div>
+          <p class="about-card-text">Fully digitized inventory with real-time stock updates, QR-code–based item tracking, quality control workflows, and Excel-based reporting for operations teams.</p>
+        </div>
+
+      </div>
+
+      <div class="cstats reveal">
+        <div class="cstat">
+          <div class="cstat-val">5+</div>
+          <div class="cstat-label">Warehouse Zones</div>
+        </div>
+        <div class="cstat-sep"></div>
+        <div class="cstat">
+          <div class="cstat-val">100+</div>
+          <div class="cstat-label">Product SKUs</div>
+        </div>
+        <div class="cstat-sep"></div>
+        <div class="cstat">
+          <div class="cstat-val">2026</div>
+          <div class="cstat-label">Digital Launch</div>
+        </div>
+        <div class="cstat-sep"></div>
+        <div class="cstat">
+          <div class="cstat-val">EST‑iMs</div>
+          <div class="cstat-label">Powered By</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="sec-divider"></div>
+
+  <!-- ABOUT DEVELOPER -->
+  <section class="sec" id="secDev">
+    <div class="sec-inner">
+      <div class="sec-badge">Developer</div>
+      <h2 class="sec-title">Built by Hamza K. Ghareb</h2>
+      <p class="sec-sub">From warehouse floors to full-stack systems.</p>
+
+      <div class="dev-profile-card reveal">
+        <div class="dev-profile-photo-side">
+          <div class="dev-profile-photo-frame">
+            <img src="/static/images/me.jpg" alt="Hamza K. Ghareb">
+          </div>
+          <div class="dev-profile-name-mobile">Hamza K. Ghareb</div>
+          <div class="dev-role-tags">
+            <span class="dev-role-tag">Warehouse Keeper</span>
+            <span class="dev-role-tag tag-cyan">IT &amp; Development</span>
+            <span class="dev-role-tag tag-purple">MBA</span>
+          </div>
+        </div>
+        <div class="dev-profile-content">
+          <div class="dev-profile-name">Hamza K. Ghareb</div>
+          <div class="dev-profile-subtitle">Warehouse Keeper – IT &nbsp;·&nbsp; Master of Business Administration</div>
+          <p class="dev-profile-bio">Designed and built EST-iMs entirely from scratch — combining hands-on warehouse expertise with self-taught full-stack development. The system was created to solve real operational challenges faced daily at Alestesharia Animal Nutrition, transforming manual spreadsheet processes into a live, connected digital platform.</p>
+
+          <div class="tech-section">
+            <div class="tech-section-title">Built With</div>
+            <div class="tech-tags">
+              <div class="tech-tag">
+                <div class="tech-dot" style="background:#3776ab"></div>
+                Python · Flask
+              </div>
+              <div class="tech-tag">
+                <div class="tech-dot" style="background:#f7df1e"></div>
+                JavaScript ES6+
+              </div>
+              <div class="tech-tag">
+                <div class="tech-dot" style="background:#e34c26"></div>
+                HTML5 · CSS3
+              </div>
+              <div class="tech-tag">
+                <div class="tech-dot" style="background:#4fc3f7"></div>
+                SQLite · JSON
+              </div>
+              <div class="tech-tag">
+                <div class="tech-dot" style="background:#217346"></div>
+                Excel · openpyxl
+              </div>
+              <div class="tech-tag">
+                <div class="tech-dot" style="background:#ff7043"></div>
+                REST API · SSE
+              </div>
+              <div class="tech-tag">
+                <div class="tech-dot" style="background:#ab47bc"></div>
+                Web Push · PWA
+              </div>
+              <div class="tech-tag">
+                <div class="tech-dot" style="background:#26a69a"></div>
+                QR Code · Scan
+              </div>
+            </div>
+          </div>
+
+          <div class="dev-highlights">
+            <div class="dev-highlight">
+              <div class="dev-highlight-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+              </div>
+              <span>Real-time SSE for live QC updates across all connected devices</span>
+            </div>
+            <div class="dev-highlight">
+              <div class="dev-highlight-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+              </div>
+              <span>Zone-based access control with single-session enforcement per user</span>
+            </div>
+            <div class="dev-highlight">
+              <div class="dev-highlight-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                </svg>
+              </div>
+              <span>Excel-based inventory engine with openpyxl for data persistence and export</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="sec-divider"></div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="/static/icons/low.ico" alt="EST">
+        <span class="footer-brand-name">EST-iMs</span>
+      </div>
+      <div class="footer-copy">Copyright 2026 &nbsp;|&nbsp; Alestesharia Animal Nutrition &nbsp;|&nbsp; All Rights Reserved &copy;</div>
+      <div class="footer-dev">Developed by <span class="footer-dev-name" onclick="openDevModal()">Hamza K. Ghareb</span></div>
+    </div>
+  </footer>
 
 </div>
 

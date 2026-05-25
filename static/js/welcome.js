@@ -287,14 +287,14 @@ const WELCOME_LANG = {
     chip: 'Welcome', subHeading: 'Inventory Management System',
     suffix: 'Animal Nutrition',
     tagline: 'Streamlined inventory tracking, real‑time stock management,<br>and precise reporting — all in one place.',
-    loginBtn: 'Log In', moreBtn: 'For More', privacy: 'Privacy Policy', terms: 'Terms of Use', langLabel: 'عربي',
+    loginBtn: 'Log In', moreBtn: 'For More', langLabel: 'عربي',
     dockLogin: 'Log In', dockContact: 'Contact Us', dockHelp: 'Help', dockScan: 'QR Scan', dockAbout: 'About Us',
   },
   ar: {
     chip: 'أهلاً', subHeading: 'نظام إدارة المخزون',
     suffix: 'التغذية الحيوانية',
     tagline: 'تتبع المخزون بشكل مبسط، وإدارة المخزون الفوري،<br>وتقارير دقيقة — كل ذلك في مكان واحد.',
-    loginBtn: 'تسجيل الدخول', moreBtn: 'للمزيد', privacy: 'سياسة الخصوصية', terms: 'شروط الاستخدام', langLabel: 'English',
+    loginBtn: 'تسجيل الدخول', moreBtn: 'للمزيد', langLabel: 'English',
     dockLogin: 'دخول', dockContact: 'تواصل معنا', dockHelp: 'مساعدة', dockScan: 'مسح QR', dockAbout: 'من نحن',
   }
 };
@@ -319,10 +319,6 @@ function applyWelcomeLang(lang) {
   if (loginText) loginText.textContent = t.loginBtn;
   const moreText = document.getElementById('welcomeMoreText');
   if (moreText) moreText.textContent = t.moreBtn;
-  const privacyLink = document.getElementById('welcomePrivacyLink');
-  if (privacyLink) privacyLink.textContent = t.privacy;
-  const termsLink = document.getElementById('welcomeTermsLink');
-  if (termsLink) termsLink.textContent = t.terms;
   const langLbl = document.getElementById('welcomeLangLabel');
   if (langLbl) langLbl.textContent = t.langLabel;
   document.querySelectorAll('.dock-label').forEach(el => {
@@ -463,3 +459,28 @@ function restartQuickScan() {
   setQuickScanStatus(quickScanText('opening'));
   startQuickScanCamera();
 }
+
+// ── SCROLL INDICATOR HIDE ON SCROLL ──
+(function() {
+  const si = document.getElementById('scrollIndicator');
+  if (!si) return;
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 80) si.classList.add('hidden');
+    else si.classList.remove('hidden');
+  }, { passive: true });
+})();
+
+// ── SCROLL REVEAL ──
+(function() {
+  const els = document.querySelectorAll('.reveal');
+  if (!els.length) return;
+  const obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('revealed');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  els.forEach(function(el) { obs.observe(el); });
+})();
