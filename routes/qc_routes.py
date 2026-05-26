@@ -9,6 +9,16 @@ from core import QC_SUBMISSIONS_FILE, QC_UPLOAD_DIR, _read_json_list, _write_jso
 
 qc_bp = Blueprint('qc', __name__)
 
+_FIREBASE_CONFIG = {
+    'apiKey':            os.getenv('FIREBASE_API_KEY', ''),
+    'authDomain':        os.getenv('FIREBASE_AUTH_DOMAIN', ''),
+    'databaseURL':       os.getenv('FIREBASE_DATABASE_URL', ''),
+    'projectId':         os.getenv('FIREBASE_PROJECT_ID', ''),
+    'storageBucket':     os.getenv('FIREBASE_STORAGE_BUCKET', ''),
+    'messagingSenderId': os.getenv('FIREBASE_MESSAGING_ID', ''),
+    'appId':             os.getenv('FIREBASE_APP_ID', ''),
+}
+
 _qc_presence = {}
 _qc_presence_lock = threading.Lock()
 _QC_PRESENCE_TTL = 45
@@ -29,6 +39,7 @@ def qc_workflow_page():
         qc_role=session.get('qc_role', 'qc'),
         username=session.get('username', ''),
         verified_users=list(VERIFIED_QC_USERS),
+        firebase_config=_FIREBASE_CONFIG,
     )
 
 

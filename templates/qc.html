@@ -198,15 +198,7 @@ window.QC_CONFIG = {
   username:       '{{ username }}',
   verified_users: {{ verified_users | tojson }},
 };
-window.QC_FIREBASE_CONFIG = {
-  apiKey:            "AIzaSyATHTHbNovkzt1Fjs37aO6ygu_3V2y_aLY",
-  authDomain:        "est-ims.firebaseapp.com",
-  databaseURL:       "https://est-ims-default-rtdb.firebaseio.com",
-  projectId:         "est-ims",
-  storageBucket:     "est-ims.firebasestorage.app",
-  messagingSenderId: "236192290824",
-  appId:             "1:236192290824:web:d62e395d8b5d964031d9bd",
-};
+window.QC_FIREBASE_CONFIG = {{ firebase_config | tojson }};
 </script>
 <script src="/static/js/qc.js"></script>
 </body>
