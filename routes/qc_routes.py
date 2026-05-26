@@ -39,6 +39,15 @@ def api_qc_presence_ping():
     if username:
         with _qc_presence_lock:
             _qc_presence[username] = {'role': role, 'ts': _time.time()}
+            now = _time.time()
+            active = {u: d for u, d in _qc_presence.items() if now - d['ts'] < _QC_PRESENCE_TTL}
+            users_payload = [{'username': u, 'role': d['role'], 'verified': u in VERIFIED_QC_USERS} for u, d in active.items()]
+        sse_payload = 'event: presence_update\ndata: ' + json.dumps({'users': users_payload}, ensure_ascii=False) + '\n\n'
+        try:
+            from app import _broadcast_qc_event
+            _broadcast_qc_event(sse_payload)
+        except Exception:
+            pass
     return jsonify({'ok': True})
 
 
@@ -49,6 +58,15 @@ def api_qc_presence_leave():
     if username:
         with _qc_presence_lock:
             _qc_presence.pop(username, None)
+            now = _time.time()
+            active = {u: d for u, d in _qc_presence.items() if now - d['ts'] < _QC_PRESENCE_TTL}
+            users_payload = [{'username': u, 'role': d['role'], 'verified': u in VERIFIED_QC_USERS} for u, d in active.items()]
+        sse_payload = 'event: presence_update\ndata: ' + json.dumps({'users': users_payload}, ensure_ascii=False) + '\n\n'
+        try:
+            from app import _broadcast_qc_event
+            _broadcast_qc_event(sse_payload)
+        except Exception:
+            pass
     return jsonify({'ok': True})
 
 

@@ -17,7 +17,7 @@
 <!-- TOPBAR -->
 <header class="topbar">
   <div class="topbar-left">
-    <a href="/zones" class="back-btn">
+    <a href="/logout_zone" class="back-btn">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       <span data-en="Back" data-ar="رجوع">Back</span>
     </a>
@@ -57,11 +57,6 @@
         <button class="btn" onclick="loadItems()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
           <span data-en="Refresh" data-ar="تحديث">Refresh</span>
-        </button>
-        <button class="btn chat-disabled" disabled title="Coming soon">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          <span data-en="Chat" data-ar="دردشة">Chat</span>
-          <span class="soon-tag" data-en="Soon" data-ar="قريباً">Soon</span>
         </button>
       </div>
     </section>
@@ -109,7 +104,10 @@
   <aside class="presence-sidebar">
     <div class="presence-title">
       <span class="presence-live-dot"></span>
-      <span data-en="Online" data-ar="متصل الآن">Online</span>
+      <span class="presence-title-text" data-en="Online" data-ar="متصل الآن">Online</span>
+      <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" onclick="toggleSidebar()" title="Toggle sidebar">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
     </div>
     <div id="presencePanel" class="presence-list">
       <div class="presence-loading">—</div>

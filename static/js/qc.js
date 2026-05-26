@@ -261,12 +261,25 @@ function renderPresence(users){
   }).join('');
 }
 
+// Sidebar collapse
+function toggleSidebar(){
+  const sidebar = document.querySelector('.presence-sidebar');
+  const isCollapsed = sidebar.classList.toggle('collapsed');
+  localStorage.setItem('qc-sidebar-collapsed', isCollapsed ? '1' : '0');
+}
+(function applySidebar(){
+  if(localStorage.getItem('qc-sidebar-collapsed') === '1'){
+    const sidebar = document.querySelector('.presence-sidebar');
+    if(sidebar) sidebar.classList.add('collapsed');
+  }
+})();
+
 // Ping on load, then every 30s
 pingPresence();
 setInterval(pingPresence, 30000);
-// Refresh presence list every 12s
+// Refresh presence list every 20s (SSE handles instant updates)
 loadPresence();
-setInterval(loadPresence, 12000);
+setInterval(loadPresence, 20000);
 
 // Remove presence on page close
 window.addEventListener('beforeunload', () => {
@@ -597,6 +610,13 @@ function connectSSE(){
     }catch(err){}
   });
 
+  es.addEventListener('presence_update', e => {
+    try {
+      const data = JSON.parse(e.data);
+      renderPresence(data.users || []);
+    } catch(err) {}
+  });
+
   es.onerror = () => {
     es.close();
     _sseConnected = false;
@@ -612,6 +632,8 @@ function startPolling(){
 // Initial load + SSE
 loadItems();
 connectSSE();
+// Backup poll every 10s to catch any missed SSE events
+setInterval(loadItems, 10000);
 
 if('serviceWorker' in navigator){
   navigator.serviceWorker.addEventListener('message', e => {
