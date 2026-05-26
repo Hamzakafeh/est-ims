@@ -1183,6 +1183,27 @@ def _firebase_set_user_status(username, status, message=''):
     threading.Thread(target=_do, daemon=True).start()
 
 
+def _verify_recaptcha(token):
+    """Verify a reCAPTCHA v2 token with Google. Returns (ok: bool, error_msg: str)."""
+    secret = os.getenv('RECAPTCHA_SECRET_KEY', '')
+    if not secret:
+        return False, 'الكابتشا غير مفعّلة على الخادم'
+    if not token:
+        return False, 'يرجى إتمام التحقق من الكابتشا'
+    try:
+        resp = _requests.post(
+            'https://www.google.com/recaptcha/api/siteverify',
+            data={'secret': secret, 'response': token},
+            timeout=10,
+        )
+        result = resp.json()
+    except Exception as e:
+        return False, f'تعذر التحقق من الكابتشا: {e}'
+    if result.get('success'):
+        return True, ''
+    return False, 'فشل التحقق من الكابتشا، حاول مجدداً'
+
+
 def _firebase_clear_user_status(username):
     """Remove user_status/{username} from Firebase (e.g. on unsuspend)."""
     def _do():

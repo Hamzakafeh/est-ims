@@ -23,6 +23,7 @@ from core import (
     login_required,
     zone_required,
     _firebase_clear_user_status,
+    _verify_recaptcha,
 )
 
 _AVATAR_DIR = os.path.join(DATA_STORE_DIR, 'avatars')
@@ -136,20 +137,9 @@ def api_register():
     if password != confirm_password:
         return jsonify({'success': False, 'message': 'كلمة المرور وتأكيدها غير متطابقين'}), 400
 
-    rc_secret = os.getenv('RECAPTCHA_SECRET_KEY', '')
-    if not rc_secret:
-        return jsonify({'success': False, 'message': 'الكابتشا غير مفعّلة على الخادم'}), 500
-    try:
-        import requests as _req
-        rc_resp = _req.post(
-            'https://www.google.com/recaptcha/api/siteverify',
-            data={'secret': rc_secret, 'response': recaptcha_token},
-            timeout=8,
-        ).json()
-    except Exception:
-        return jsonify({'success': False, 'message': 'تعذر التحقق من الكابتشا، حاول مجدداً'}), 502
-    if not rc_resp.get('success'):
-        return jsonify({'success': False, 'message': 'فشل التحقق من الكابتشا، حاول مجدداً'}), 400
+    rc_ok, rc_err = _verify_recaptcha(recaptcha_token)
+    if not rc_ok:
+        return jsonify({'success': False, 'message': rc_err}), 400
 
     if _username_exists_everywhere(username):
         return jsonify({'success': False, 'message': 'اسم المستخدم مستخدم مسبقاً'}), 409
