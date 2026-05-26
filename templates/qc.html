@@ -17,80 +17,113 @@
 <!-- TOPBAR -->
 <header class="topbar">
   <div class="topbar-left">
-    <a href="/" class="back-btn">
+    <a href="/zones" class="back-btn">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-      Back
+      <span data-en="Back" data-ar="رجوع">Back</span>
     </a>
     <div class="brand"><img src="/static/icons/low.ico" alt="EST">QC Workflow</div>
   </div>
   <div class="topbar-actions">
     <span class="badge">{{ username }} / {{ qc_role }}</span>
-    <button class="icon-btn lang-btn" onclick="toggleTheme()" title="Toggle theme">
+    <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme" id="themeBtn">
       <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
       <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
     </button>
-    <a class="btn ghost" href="/logout">Logout</a>
+    <button class="icon-btn lang-btn" onclick="toggleQcLang()" id="langBtn" title="Switch language">AR</button>
+    <a class="btn ghost" href="/logout" data-en="Logout" data-ar="خروج">Logout</a>
   </div>
 </header>
 
-<main class="main">
+<!-- PAGE LAYOUT -->
+<div class="page-layout">
 
-  <!-- Notification permission banner -->
-  <div id="notifBanner">
-    🔔 Enable push notifications to get alerts even when the browser is in the background.
-    <button class="btn cyan" onclick="requestNotifPermission()">Enable</button>
-  </div>
+  <!-- MAIN CONTENT -->
+  <main class="main">
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="title">
-      <div class="hero-badge"><span class="hero-dot"></span> QC WORKFLOW</div>
-      <h1>Quality Control</h1>
-      <p>Labeling Assistant submits photos — QC reviews as Approved, Rejected, or Pending.</p>
+    <!-- Notification permission banner -->
+    <div id="notifBanner">
+      🔔 <span data-en="Enable push notifications to get alerts even when the browser is in the background." data-ar="فعّل الإشعارات للحصول على تنبيهات حتى عندما يكون المتصفح في الخلفية.">Enable push notifications to get alerts even when the browser is in the background.</span>
+      <button class="btn cyan" onclick="requestNotifPermission()" data-en="Enable" data-ar="تفعيل">Enable</button>
     </div>
-    <div class="hero-actions">
-      <button class="btn" onclick="loadItems()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-        Refresh
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="title">
+        <div class="hero-badge"><span class="hero-dot"></span> QC WORKFLOW</div>
+        <h1 data-en="Quality Control" data-ar="ضبط الجودة">Quality Control</h1>
+        <p data-en="Labeling Assistant submits photos — QC reviews as Approved, Rejected, or Pending." data-ar="مساعد التسمية يرسل الصور — QC يراجعها كموافق أو مرفوض أو قيد الانتظار.">Labeling Assistant submits photos — QC reviews as Approved, Rejected, or Pending.</p>
+      </div>
+      <div class="hero-actions">
+        <button class="btn" onclick="loadItems()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          <span data-en="Refresh" data-ar="تحديث">Refresh</span>
+        </button>
+        <button class="btn chat-disabled" disabled title="Coming soon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span data-en="Chat" data-ar="دردشة">Chat</span>
+          <span class="soon-tag" data-en="Soon" data-ar="قريباً">Soon</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Submit panel (labeling only) -->
+    {% if qc_role == 'labeling' %}
+    <section class="panel">
+      <div class="panel-head">
+        <strong data-en="📤 Send Work Photo" data-ar="📤 إرسال صورة العمل">📤 Send Work Photo</strong>
+        <span class="badge" data-en="Labeling Assistant" data-ar="مساعد التسمية">Labeling Assistant</span>
+      </div>
+      <div class="panel-body">
+        <div class="submit-grid">
+          <div class="upload-area">
+            <div class="upload-btns">
+              <button type="button" class="btn" onclick="document.getElementById('photoFile').click()" data-en="🖼 Gallery" data-ar="🖼 المعرض">🖼 Gallery</button>
+              <button type="button" class="btn cyan" onclick="document.getElementById('photoCamera').click()" data-en="📷 Take Photo" data-ar="📷 التقاط صورة">📷 Take Photo</button>
+            </div>
+            <input id="photoFile"   type="file" accept="image/*">
+            <input id="photoCamera" type="file" accept="image/*" capture="environment">
+            <img id="photoPreview" class="upload-preview" alt="Preview">
+            <span class="upload-label" id="uploadLabel" data-en="No photo selected" data-ar="لم يتم اختيار صورة">No photo selected</span>
+          </div>
+          <textarea id="note" data-en-placeholder="Add a short note (optional)..." data-ar-placeholder="أضف ملاحظة قصيرة (اختياري)..." placeholder="Add a short note (optional)..."></textarea>
+          <button class="btn green" type="button" onclick="submitPhoto()" data-en="📤 Send to QC" data-ar="📤 إرسال لـ QC">📤 Send to QC</button>
+        </div>
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- Submissions panel -->
+    <section class="panel">
+      <div class="panel-head">
+        <strong data-en="📋 Submissions" data-ar="📋 الطلبات">📋 Submissions</strong>
+        <span class="badge" id="countBadge">0 items</span>
+      </div>
+      <div class="panel-body">
+        <div id="items" class="list"><div class="empty" data-en="Loading..." data-ar="جاري التحميل...">Loading...</div></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- PRESENCE SIDEBAR -->
+  <aside class="presence-sidebar">
+    <div class="presence-title">
+      <span class="presence-live-dot"></span>
+      <span data-en="Online" data-ar="متصل الآن">Online</span>
+    </div>
+    <div id="presencePanel" class="presence-list">
+      <div class="presence-loading">—</div>
+    </div>
+    <div class="sidebar-chat-wrap">
+      <button class="btn chat-disabled sidebar-chat-btn" disabled title="Coming soon">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span data-en="Chat" data-ar="دردشة">Chat</span>
+        <span class="soon-tag" data-en="Soon" data-ar="قريباً">Soon</span>
       </button>
     </div>
-  </section>
+  </aside>
 
-  <!-- Submit panel (labeling only) -->
-  {% if qc_role == 'labeling' %}
-  <section class="panel">
-    <div class="panel-head"><strong>📤 Send Work Photo</strong><span class="badge">Labeling Assistant</span></div>
-    <div class="panel-body">
-      <div class="submit-grid">
-        <div class="upload-area">
-          <div class="upload-btns">
-            <button type="button" class="btn" onclick="document.getElementById('photoFile').click()">🖼 Gallery</button>
-            <button type="button" class="btn cyan" onclick="document.getElementById('photoCamera').click()">📷 Take Photo</button>
-          </div>
-          <input id="photoFile"   type="file" accept="image/*">
-          <input id="photoCamera" type="file" accept="image/*" capture="environment">
-          <img id="photoPreview" class="upload-preview" alt="Preview">
-          <span class="upload-label" id="uploadLabel">No photo selected</span>
-        </div>
-        <textarea id="note" placeholder="Add a short note (optional)..."></textarea>
-        <button class="btn green" type="button" onclick="submitPhoto()">📤 Send to QC</button>
-      </div>
-    </div>
-  </section>
-  {% endif %}
-
-  <!-- Submissions panel -->
-  <section class="panel">
-    <div class="panel-head">
-      <strong>📋 Submissions</strong>
-      <span class="badge" id="countBadge">0 items</span>
-    </div>
-    <div class="panel-body">
-      <div id="items" class="list"><div class="empty">Loading...</div></div>
-    </div>
-  </section>
-
-</main>
+</div><!-- end page-layout -->
 
 <!-- Toast -->
 <div id="qcToast"></div>
@@ -108,23 +141,38 @@
   </div>
 </div>
 
-<!-- Note Modal -->
+<!-- Review Note Modal -->
 <div class="modal-backdrop" id="noteModal" onclick="closeNoteModal(event)">
   <div class="modal-box">
     <button class="modal-close" onclick="document.getElementById('noteModal').classList.remove('show')">✕</button>
     <div class="modal-title" id="modalTitle">Add Review Note</div>
-    <label class="modal-label" for="modalNoteText">Note (optional)</label>
+    <label class="modal-label" for="modalNoteText" data-en="Note (optional)" data-ar="ملاحظة (اختياري)">Note (optional)</label>
     <textarea class="modal-textarea" id="modalNoteText" placeholder="Enter your note here..."></textarea>
     <div class="modal-actions">
-      <button class="btn ghost" onclick="document.getElementById('noteModal').classList.remove('show')">Cancel</button>
+      <button class="btn ghost" onclick="document.getElementById('noteModal').classList.remove('show')" data-en="Cancel" data-ar="إلغاء">Cancel</button>
       <button class="btn green" id="modalConfirmBtn" onclick="confirmModalAction()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirm Modal (beta-card style) -->
+<div class="modal-backdrop" id="deleteModal" onclick="closeDeleteModal(event)">
+  <div class="delete-card">
+    <div class="delete-card-icon">🗑</div>
+    <div class="delete-card-title" id="deleteCardTitle" data-en="Delete Submission" data-ar="حذف الطلب">Delete Submission</div>
+    <div class="delete-card-desc" id="deleteCardDesc"></div>
+    <div class="delete-card-actions">
+      <button class="btn ghost" onclick="closeDeleteModal()" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+      <button class="btn red" id="deleteConfirmBtn" onclick="confirmDelete()" data-en="Delete" data-ar="حذف">Delete</button>
     </div>
   </div>
 </div>
 
 <script>
 window.QC_CONFIG = {
-  qc_role: '{{ qc_role }}'
+  qc_role:        '{{ qc_role }}',
+  username:       '{{ username }}',
+  verified_users: {{ verified_users | tojson }},
 };
 </script>
 <script src="/static/js/qc.js"></script>

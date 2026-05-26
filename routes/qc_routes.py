@@ -1,11 +1,19 @@
 import os
 import json
 import secrets
+import threading
+import time as _time
 from datetime import datetime
 from flask import Blueprint, render_template, request, session, jsonify, redirect, url_for
 from core import QC_SUBMISSIONS_FILE, QC_UPLOAD_DIR, _read_json_list, _write_json_list, _next_json_id, _data_lock, zone_required
 
 qc_bp = Blueprint('qc', __name__)
+
+_qc_presence = {}
+_qc_presence_lock = threading.Lock()
+_QC_PRESENCE_TTL = 45
+
+VERIFIED_QC_USERS = {'mlo5'}
 
 
 @qc_bp.route('/qc-workflow')
@@ -13,7 +21,53 @@ qc_bp = Blueprint('qc', __name__)
 def qc_workflow_page():
     if session.get('zone') != 'qc':
         return redirect(url_for('pages.index'))
-    return render_template('qc.html', qc_role=session.get('qc_role', 'qc'), username=session.get('username', ''))
+    return render_template(
+        'qc.html',
+        qc_role=session.get('qc_role', 'qc'),
+        username=session.get('username', ''),
+        verified_users=list(VERIFIED_QC_USERS),
+    )
+
+
+@qc_bp.route('/api/qc/presence/ping', methods=['POST'])
+@zone_required
+def api_qc_presence_ping():
+    if session.get('zone') != 'qc':
+        return jsonify({'error': 'غير مصرح'}), 403
+    username = session.get('username', '')
+    role = session.get('qc_role', 'qc')
+    if username:
+        with _qc_presence_lock:
+            _qc_presence[username] = {'role': role, 'ts': _time.time()}
+    return jsonify({'ok': True})
+
+
+@qc_bp.route('/api/qc/presence/leave', methods=['POST'])
+@zone_required
+def api_qc_presence_leave():
+    username = session.get('username', '')
+    if username:
+        with _qc_presence_lock:
+            _qc_presence.pop(username, None)
+    return jsonify({'ok': True})
+
+
+@qc_bp.route('/api/qc/presence')
+@zone_required
+def api_qc_presence():
+    if session.get('zone') != 'qc':
+        return jsonify({'error': 'غير مصرح'}), 403
+    now = _time.time()
+    with _qc_presence_lock:
+        active = {u: d for u, d in _qc_presence.items() if now - d['ts'] < _QC_PRESENCE_TTL}
+        _qc_presence.clear()
+        _qc_presence.update(active)
+    return jsonify({
+        'users': [
+            {'username': u, 'role': d['role'], 'verified': u in VERIFIED_QC_USERS}
+            for u, d in active.items()
+        ]
+    })
 
 
 @qc_bp.route('/api/qc/submissions', methods=['GET', 'POST'])

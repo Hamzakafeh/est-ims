@@ -1,7 +1,9 @@
 // ══════════════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════════════
-const role = window.QC_CONFIG.qc_role;
+const role           = window.QC_CONFIG.qc_role;
+const CURRENT_USER   = window.QC_CONFIG.username;
+const VERIFIED_USERS = new Set((window.QC_CONFIG.verified_users || []).map(u => u.toLowerCase()));
 
 // ══════════════════════════════════════════════════════
 // THEME
@@ -11,6 +13,90 @@ function toggleTheme(){
   const isLight = document.documentElement.classList.toggle('light');
   localStorage.setItem('est-theme', isLight ? 'light' : 'dark');
 }
+
+// ══════════════════════════════════════════════════════
+// LANGUAGE
+// ══════════════════════════════════════════════════════
+const QC_LANG = {
+  en: {
+    items:           n => n + ' items',
+    noSubs:          'No submissions yet',
+    loading:         'Loading...',
+    failedLoad:      '⚠ Failed to load. Retrying...',
+    approve:         '✅ Approve',
+    reject:          '❌ Reject',
+    pending:         '⏳ Pending',
+    deleteTitle:     'Delete Submission',
+    deleteDesc:      id => `Photo #${id} — This cannot be undone.`,
+    confirmDelete:   'Delete',
+    deleted:         '🗑 Deleted',
+    deleteFailed:    'Delete failed',
+    statusUpdated:   '✅ Status updated',
+    statusFailed:    'Failed to update status',
+    photoSent:       '📤 Photo sent to QC!',
+    photoRequired:   'Photo is required',
+    notifsEnabled:   '✅ Notifications enabled!',
+    notifsBlocked:   'Notifications blocked',
+    notifsNone:      'Notifications not supported',
+    newPhoto:        d => `📸 ${d} new photo${d>1?'s':''} received!`,
+    newPhotoTitle:   '📸 New QC Submission',
+    newPhotoBody:    d => `${d} new photo${d>1?'s':''} waiting for review`,
+    statusChange:    (id, st) => `${st==='approved'?'✅':st==='rejected'?'❌':'⏳'} Photo #${id} marked as ${st}`,
+    noOne:           'No one here yet',
+    me:              '(you)',
+  },
+  ar: {
+    items:           n => n + ' طلب',
+    noSubs:          'لا توجد طلبات بعد',
+    loading:         'جاري التحميل...',
+    failedLoad:      '⚠ فشل التحميل. جاري إعادة المحاولة...',
+    approve:         '✅ موافقة',
+    reject:          '❌ رفض',
+    pending:         '⏳ قيد الانتظار',
+    deleteTitle:     'حذف الطلب',
+    deleteDesc:      id => `الصورة #${id} — لا يمكن التراجع عن هذا الإجراء.`,
+    confirmDelete:   'حذف',
+    deleted:         '🗑 تم الحذف',
+    deleteFailed:    'فشل الحذف',
+    statusUpdated:   '✅ تم تحديث الحالة',
+    statusFailed:    'فشل تحديث الحالة',
+    photoSent:       '📤 تم إرسال الصورة إلى QC!',
+    photoRequired:   'الصورة مطلوبة',
+    notifsEnabled:   '✅ تم تفعيل الإشعارات!',
+    notifsBlocked:   'تم حظر الإشعارات',
+    notifsNone:      'الإشعارات غير مدعومة',
+    newPhoto:        d => `📸 تم استلام ${d} صورة جديدة!`,
+    newPhotoTitle:   '📸 طلب QC جديد',
+    newPhotoBody:    d => `${d} صورة بانتظار المراجعة`,
+    statusChange:    (id, st) => `${st==='approved'?'✅':st==='rejected'?'❌':'⏳'} الصورة #${id} تم تعيينها كـ ${st}`,
+    noOne:           'لا يوجد أحد هنا بعد',
+    me:              '(أنا)',
+  },
+};
+
+let qcLang = localStorage.getItem('est-lang') || 'en';
+
+function applyQcLang(){
+  const isAr = qcLang === 'ar';
+  document.documentElement.dir  = isAr ? 'rtl' : 'ltr';
+  document.documentElement.lang = qcLang;
+  const btn = document.getElementById('langBtn');
+  if(btn) btn.textContent = isAr ? 'EN' : 'AR';
+  document.querySelectorAll('[data-en][data-ar]').forEach(el => {
+    el.textContent = isAr ? el.getAttribute('data-ar') : el.getAttribute('data-en');
+  });
+  document.querySelectorAll('[data-en-placeholder][data-ar-placeholder]').forEach(el => {
+    el.placeholder = isAr ? el.getAttribute('data-ar-placeholder') : el.getAttribute('data-en-placeholder');
+  });
+}
+
+function toggleQcLang(){
+  qcLang = qcLang === 'ar' ? 'en' : 'ar';
+  localStorage.setItem('est-lang', qcLang);
+  applyQcLang();
+}
+
+applyQcLang();
 
 // ══════════════════════════════════════════════════════
 // HELPERS
@@ -53,14 +139,15 @@ function playSound(file){
 // PUSH NOTIFICATIONS — Web Push via Service Worker
 // ══════════════════════════════════════════════════════
 function requestNotifPermission(){
-  if(!('Notification' in window)) { toast('Notifications not supported', false); return; }
+  const t = QC_LANG[qcLang];
+  if(!('Notification' in window)) { toast(t.notifsNone, false); return; }
   Notification.requestPermission().then(p => {
     document.getElementById('notifBanner').classList.remove('show');
     if(p === 'granted'){
-      toast('✅ Notifications enabled!');
+      toast(t.notifsEnabled);
       registerServiceWorker();
     } else {
-      toast('Notifications blocked', false);
+      toast(t.notifsBlocked, false);
     }
   });
 }
@@ -108,7 +195,6 @@ function _urlBase64ToUint8Array(base64String){
 function showBrowserNotif(title, body){
   if(!('Notification' in window)) return;
   if(Notification.permission !== 'granted') return;
-  // Try via service worker for background support
   if('serviceWorker' in navigator){
     navigator.serviceWorker.ready.then(reg => {
       reg.showNotification(title, {
@@ -120,7 +206,6 @@ function showBrowserNotif(title, body){
         vibrate: [200, 100, 200]
       });
     }).catch(() => {
-      // Fallback: direct Notification
       try { new Notification(title, { body, icon: '/static/icons/low.ico', tag: title }); } catch(e){}
     });
   } else {
@@ -128,18 +213,68 @@ function showBrowserNotif(title, body){
   }
 }
 
-// Show banner if permission not yet decided
 (function(){
   if(!('Notification' in window)) return;
   if(Notification.permission === 'default'){
     document.getElementById('notifBanner').classList.add('show');
   }
-  // Register SW if already granted
   if(Notification.permission === 'granted') registerServiceWorker();
 })();
 
 // ══════════════════════════════════════════════════════
-// POLLING — real-time updates via fast polling
+// PRESENCE — who's on the page
+// ══════════════════════════════════════════════════════
+async function pingPresence(){
+  try { await fetch('/api/qc/presence/ping', {method:'POST'}); } catch(e){}
+}
+
+async function loadPresence(){
+  try {
+    const res = await fetch('/api/qc/presence');
+    if(!res.ok) return;
+    const data = await res.json();
+    renderPresence(data.users || []);
+  } catch(e){}
+}
+
+function renderPresence(users){
+  const panel = document.getElementById('presencePanel');
+  if(!panel) return;
+  const t = QC_LANG[qcLang];
+  if(!users.length){
+    panel.innerHTML = `<div class="presence-loading">${t.noOne}</div>`;
+    return;
+  }
+  panel.innerHTML = users.map(u => {
+    const isMe       = u.username === CURRENT_USER;
+    const isVerified = VERIFIED_USERS.has(u.username.toLowerCase());
+    const roleClass  = u.role === 'qc' ? 'qc' : 'lab';
+    const roleLabel  = u.role === 'qc' ? 'QC' : 'Label';
+    const verifiedSvg = isVerified
+      ? `<span class="verified-badge" title="Verified"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>`
+      : '';
+    return `<div class="presence-item${isMe?' me':''}">
+      <span class="presence-dot ${roleClass}"></span>
+      <span class="presence-name">${esc(u.username)}${verifiedSvg}${isMe ? `<span style="font-size:9px;color:var(--dim);margin-left:2px">${t.me}</span>` : ''}</span>
+      <span class="presence-role">${roleLabel}</span>
+    </div>`;
+  }).join('');
+}
+
+// Ping on load, then every 30s
+pingPresence();
+setInterval(pingPresence, 30000);
+// Refresh presence list every 12s
+loadPresence();
+setInterval(loadPresence, 12000);
+
+// Remove presence on page close
+window.addEventListener('beforeunload', () => {
+  navigator.sendBeacon('/api/qc/presence/leave', '');
+});
+
+// ══════════════════════════════════════════════════════
+// SUBMISSIONS — load + render
 // ══════════════════════════════════════════════════════
 let _lastCount    = null;
 let _lastStatuses = {};
@@ -147,24 +282,23 @@ let _allItems     = [];
 
 async function loadItems(){
   const box = document.getElementById('items');
+  const t   = QC_LANG[qcLang];
   try{
     const res  = await fetch('/api/qc/submissions', {cache:'no-store'});
     const data = await res.json();
     const items = data.items || [];
     _allItems = items;
 
-    document.getElementById('countBadge').textContent = items.length + ' items';
+    document.getElementById('countBadge').textContent = t.items(items.length);
 
-    // ── Detect NEW submission (QC gets alert) ──
     if(role === 'qc' && _lastCount !== null && items.length > _lastCount){
       const diff = items.length - _lastCount;
       playSound('qcalert.wav');
-      showBrowserNotif('📸 New QC Submission', `${diff} new photo${diff > 1 ? 's' : ''} waiting for review`);
-      toast(`📸 ${diff} new photo${diff > 1 ? 's' : ''} received!`);
+      showBrowserNotif(t.newPhotoTitle, t.newPhotoBody(diff));
+      toast(t.newPhoto(diff));
     }
     _lastCount = items.length;
 
-    // ── Detect STATUS CHANGE (Labeling gets alert) ──
     if(role === 'labeling' && Object.keys(_lastStatuses).length > 0){
       for(const item of items){
         const prev = _lastStatuses[item.id];
@@ -172,7 +306,7 @@ async function loadItems(){
           playSound('lebelass.wav');
           const emoji = item.status === 'approved' ? '✅' : item.status === 'rejected' ? '❌' : '⏳';
           showBrowserNotif(`${emoji} Photo #${item.id} ${item.status.toUpperCase()}`, item.review_note ? `Note: ${item.review_note}` : `Your photo was marked as ${item.status}`);
-          toast(`${emoji} Photo #${item.id} marked as ${item.status}`);
+          toast(t.statusChange(item.id, item.status));
           break;
         }
       }
@@ -181,13 +315,14 @@ async function loadItems(){
 
     renderItems(items);
   }catch(e){
-    box.innerHTML = '<div class="empty">⚠ Failed to load. Retrying...</div>';
+    box.innerHTML = `<div class="empty">${QC_LANG[qcLang].failedLoad}</div>`;
   }
 }
 
 function renderItems(items){
   const box = document.getElementById('items');
-  if(!items.length){ box.innerHTML = '<div class="empty">No submissions yet</div>'; return; }
+  const t   = QC_LANG[qcLang];
+  if(!items.length){ box.innerHTML = `<div class="empty">${t.noSubs}</div>`; return; }
 
   box.innerHTML = items.map(x => `
     <article class="item" id="item-${x.id}">
@@ -205,12 +340,12 @@ function renderItems(items){
         ${x.review_note ? `<div class="review-note">💬 ${esc(x.review_note)}</div>` : ''}
         <div class="actions">
           ${role === 'qc' ? `
-            <button class="btn green" onclick="openReviewModal(${x.id},'approved')">✅ Approve</button>
-            <button class="btn red"   onclick="openReviewModal(${x.id},'rejected')">❌ Reject</button>
-            <button class="btn amber" onclick="openReviewModal(${x.id},'pending')">⏳ Pending</button>
+            <button class="btn green" onclick="openReviewModal(${x.id},'approved')">${t.approve}</button>
+            <button class="btn red"   onclick="openReviewModal(${x.id},'rejected')">${t.reject}</button>
+            <button class="btn amber" onclick="openReviewModal(${x.id},'pending')">${t.pending}</button>
           ` : ''}
           ${role === 'labeling' ? `
-            <button class="btn-delete" onclick="deleteItem(${x.id})">🗑 Delete</button>
+            <button class="btn-delete" onclick="deleteItem(${x.id})">🗑 ${qcLang==='ar'?'حذف':'Delete'}</button>
           ` : ''}
         </div>
       </div>
@@ -218,19 +353,20 @@ function renderItems(items){
 }
 
 // ══════════════════════════════════════════════════════
-// REVIEW ACTION (with modal note — About-style)
+// REVIEW MODAL
 // ══════════════════════════════════════════════════════
 let _pendingReview = null;
 
 function openReviewModal(id, status){
   _pendingReview = {id, status};
-  const statusLabels = {approved:'✅ Approve', rejected:'❌ Reject', pending:'⏳ Pending'};
-  const statusColors = {approved:'green', rejected:'red', pending:'amber'};
-  document.getElementById('modalTitle').textContent = `${statusLabels[status]} — Photo #${id}`;
+  const t = QC_LANG[qcLang];
+  const labels = {approved: t.approve, rejected: t.reject, pending: t.pending};
+  const colors = {approved:'green', rejected:'red', pending:'amber'};
+  document.getElementById('modalTitle').textContent = `${labels[status]} — Photo #${id}`;
   document.getElementById('modalNoteText').value = '';
   const btn = document.getElementById('modalConfirmBtn');
-  btn.className = 'btn ' + statusColors[status];
-  btn.textContent = statusLabels[status];
+  btn.className = 'btn ' + colors[status];
+  btn.textContent = labels[status];
   document.getElementById('noteModal').classList.add('show');
   setTimeout(() => document.getElementById('modalNoteText').focus(), 100);
 }
@@ -247,8 +383,9 @@ async function confirmModalAction(){
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({status, review_note})
   });
-  if(res.ok){ toast('✅ Status updated'); loadItems(); }
-  else { toast('Failed to update status', false); }
+  const t = QC_LANG[qcLang];
+  if(res.ok){ toast(t.statusUpdated); loadItems(); }
+  else { toast(t.statusFailed, false); }
 }
 
 function closeNoteModal(e){
@@ -259,21 +396,43 @@ function closeNoteModal(e){
 }
 
 // ══════════════════════════════════════════════════════
-// DELETE (labeling only)
+// DELETE MODAL (beta-card style)
 // ══════════════════════════════════════════════════════
-async function deleteItem(id){
-  if(!confirm(`Delete submission #${id}? This cannot be undone.`)) return;
-  const res = await fetch(`/api/qc/submissions/${id}`, {method:'DELETE'});
+let _pendingDelete = null;
+
+function deleteItem(id){
+  _pendingDelete = id;
+  const t = QC_LANG[qcLang];
+  document.getElementById('deleteCardTitle').textContent = t.deleteTitle;
+  document.getElementById('deleteCardDesc').textContent  = t.deleteDesc(id);
+  document.getElementById('deleteConfirmBtn').textContent = t.confirmDelete;
+  document.getElementById('deleteModal').classList.add('show');
+}
+
+async function confirmDelete(){
+  if(_pendingDelete === null) return;
+  const id = _pendingDelete;
+  _pendingDelete = null;
+  document.getElementById('deleteModal').classList.remove('show');
+  const t = QC_LANG[qcLang];
+
+  const res  = await fetch(`/api/qc/submissions/${id}`, {method:'DELETE'});
   const data = await res.json();
   if(res.ok && data.success){
-    toast('🗑 Deleted');
-    // Remove from DOM immediately
+    toast(t.deleted);
     const el = document.getElementById('item-' + id);
     if(el){ el.style.opacity='0'; el.style.transform='scale(.95)'; el.style.transition='.25s'; setTimeout(()=>el.remove(),250); }
     _lastCount = Math.max(0, (_lastCount||1) - 1);
-    document.getElementById('countBadge').textContent = ((_lastCount||0)) + ' items';
+    document.getElementById('countBadge').textContent = QC_LANG[qcLang].items(_lastCount||0);
   } else {
-    toast(data.message || 'Delete failed', false);
+    toast(data.message || t.deleteFailed, false);
+  }
+}
+
+function closeDeleteModal(e){
+  if(!e || e.target === document.getElementById('deleteModal')){
+    document.getElementById('deleteModal').classList.remove('show');
+    _pendingDelete = null;
   }
 }
 
@@ -299,7 +458,8 @@ document.getElementById('photoCamera')?.addEventListener('change', e => handleFi
 // SUBMIT PHOTO
 // ══════════════════════════════════════════════════════
 async function submitPhoto(){
-  if(!selectedFile){ toast('Photo is required', false); return; }
+  const t = QC_LANG[qcLang];
+  if(!selectedFile){ toast(t.photoRequired, false); return; }
   const fd = new FormData();
   fd.append('photo', selectedFile);
   fd.append('note', document.getElementById('note').value);
@@ -308,11 +468,15 @@ async function submitPhoto(){
   if(!res.ok || !data.success){ toast(data.message || 'Failed', false); return; }
   selectedFile = null;
   document.getElementById('photoPreview').classList.remove('show');
-  document.getElementById('uploadLabel').textContent = 'No photo selected';
+  document.getElementById('uploadLabel').textContent = QC_LANG[qcLang === 'ar' ? 'ar' : 'en'].photoRequired.replace('required','');
+  const lbl = document.getElementById('uploadLabel');
+  lbl.setAttribute('data-en','No photo selected');
+  lbl.setAttribute('data-ar','لم يتم اختيار صورة');
+  lbl.textContent = qcLang === 'ar' ? 'لم يتم اختيار صورة' : 'No photo selected';
   document.getElementById('note').value = '';
   document.getElementById('photoFile').value = '';
   document.getElementById('photoCamera').value = '';
-  toast('📤 Photo sent to QC!');
+  toast(t.photoSent);
   loadItems();
 }
 
@@ -320,10 +484,8 @@ async function submitPhoto(){
 // FULLSCREEN LIGHTBOX with zoom & download
 // ══════════════════════════════════════════════════════
 let _lbScale = 1;
-let _lbSrc   = '';
 
 function openLightbox(src){
-  _lbSrc = src;
   _lbScale = 1;
   const img = document.getElementById('lightboxImg');
   img.src = src;
@@ -350,14 +512,12 @@ function applyZoom(){
   document.getElementById('zoomInfo').textContent = Math.round(_lbScale * 100) + '%';
 }
 
-// Pinch-to-zoom on mobile
 (function(){
   const img = document.getElementById('lightboxImg');
-  let initDist = 0;
-  let initScale = 1;
+  let initDist = 0, initScale = 1;
   img.addEventListener('touchstart', e => {
     if(e.touches.length === 2){
-      initDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      initDist  = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
       initScale = _lbScale;
     }
   },{passive:true});
@@ -371,7 +531,6 @@ function applyZoom(){
   },{passive:false});
 })();
 
-// Keyboard shortcuts in lightbox
 document.addEventListener('keydown', e => {
   if(!document.getElementById('lightbox').classList.contains('show')) return;
   if(e.key === 'Escape') closeLightboxDirect();
@@ -394,29 +553,29 @@ function connectSSE(){
   es.addEventListener('new_submission', e => {
     try {
       const item = JSON.parse(e.data);
-      // Add to items list immediately
       if(!_allItems.find(x => x.id === item.id)){
         _allItems.unshift(item);
         if(role === 'qc'){
+          const t = QC_LANG[qcLang];
           playSound('qcalert.wav');
-          showBrowserNotif('📸 New QC Submission', 'New photo waiting for review');
-          toast('📸 New photo received!');
+          showBrowserNotif(t.newPhotoTitle, t.newPhotoBody(1));
+          toast(t.newPhoto(1));
         }
         _lastCount = (_lastCount || 0) + 1;
-        document.getElementById('countBadge').textContent = _allItems.length + ' items';
+        document.getElementById('countBadge').textContent = QC_LANG[qcLang].items(_allItems.length);
         renderItems(_allItems);
       }
-    }catch(e){}
+    }catch(err){}
   });
 
   es.addEventListener('deleted', e => {
     try {
       const {id} = JSON.parse(e.data);
       _allItems = _allItems.filter(x => x.id !== id);
-      document.getElementById('countBadge').textContent = _allItems.length + ' items';
+      document.getElementById('countBadge').textContent = QC_LANG[qcLang].items(_allItems.length);
       const el = document.getElementById('item-' + id);
       if(el){ el.style.opacity='0'; el.style.transform='scale(.95)'; el.style.transition='.25s'; setTimeout(()=>el.remove(),250); }
-    }catch(e){}
+    }catch(err){}
   });
 
   es.addEventListener('status_update', e => {
@@ -427,20 +586,20 @@ function connectSSE(){
         const prev = _allItems[idx].status;
         _allItems[idx] = updated;
         if(role === 'labeling' && prev !== updated.status){
+          const t = QC_LANG[qcLang];
           playSound('lebelass.wav');
           const emoji = updated.status === 'approved' ? '✅' : updated.status === 'rejected' ? '❌' : '⏳';
           showBrowserNotif(`${emoji} Photo #${updated.id} ${updated.status.toUpperCase()}`, updated.review_note ? `Note: ${updated.review_note}` : `Marked as ${updated.status}`);
-          toast(`${emoji} Photo #${updated.id} marked as ${updated.status}`);
+          toast(t.statusChange(updated.id, updated.status));
         }
         renderItems(_allItems);
       }
-    }catch(e){}
+    }catch(err){}
   });
 
   es.onerror = () => {
     es.close();
     _sseConnected = false;
-    // Reconnect after 5s
     setTimeout(connectSSE, 5000);
   };
 }
@@ -450,17 +609,13 @@ function startPolling(){
   setInterval(loadItems, 7000);
 }
 
-// Initial load
+// Initial load + SSE
 loadItems();
-// Connect SSE for instant updates
 connectSSE();
 
-// استقبال رسائل من الـ Service Worker (مثلاً نقرة على إشعار)
 if('serviceWorker' in navigator){
   navigator.serviceWorker.addEventListener('message', e => {
-    if(e.data?.type === 'QC_NOTIFICATION_CLICK'){
-      loadItems();
-    }
+    if(e.data?.type === 'QC_NOTIFICATION_CLICK') loadItems();
   });
 }
 
