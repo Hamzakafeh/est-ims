@@ -22,26 +22,26 @@ const QC_LANG = {
     items:           n => n + ' items',
     noSubs:          'No submissions yet',
     loading:         'Loading...',
-    failedLoad:      '⚠ Failed to load. Retrying...',
-    approve:         '✅ Approve',
-    reject:          '❌ Reject',
-    pending:         '⏳ Pending',
+    failedLoad:      'Failed to load. Retrying...',
+    approve:         'Approve',
+    reject:          'Reject',
+    pending:         'Pending',
     deleteTitle:     'Delete Submission',
     deleteDesc:      id => `Photo #${id} — This cannot be undone.`,
     confirmDelete:   'Delete',
-    deleted:         '🗑 Deleted',
+    deleted:         'Deleted',
     deleteFailed:    'Delete failed',
-    statusUpdated:   '✅ Status updated',
+    statusUpdated:   'Status updated',
     statusFailed:    'Failed to update status',
-    photoSent:       '📤 Photo sent to QC!',
+    photoSent:       'Photo sent to QC',
     photoRequired:   'Photo is required',
-    notifsEnabled:   '✅ Notifications enabled!',
+    notifsEnabled:   'Notifications enabled',
     notifsBlocked:   'Notifications blocked',
     notifsNone:      'Notifications not supported',
-    newPhoto:        d => `📸 ${d} new photo${d>1?'s':''} received!`,
-    newPhotoTitle:   '📸 New QC Submission',
+    newPhoto:        d => `${d} new photo${d>1?'s':''} received`,
+    newPhotoTitle:   'New QC Submission',
     newPhotoBody:    d => `${d} new photo${d>1?'s':''} waiting for review`,
-    statusChange:    (id, st) => `${st==='approved'?'✅':st==='rejected'?'❌':'⏳'} Photo #${id} marked as ${st}`,
+    statusChange:    (id, st) => `Photo #${id} marked as ${st}`,
     noOne:           'No one here yet',
     me:              '(you)',
   },
@@ -49,26 +49,26 @@ const QC_LANG = {
     items:           n => n + ' طلب',
     noSubs:          'لا توجد طلبات بعد',
     loading:         'جاري التحميل...',
-    failedLoad:      '⚠ فشل التحميل. جاري إعادة المحاولة...',
-    approve:         '✅ موافقة',
-    reject:          '❌ رفض',
-    pending:         '⏳ قيد الانتظار',
+    failedLoad:      'فشل التحميل. جاري إعادة المحاولة...',
+    approve:         'موافقة',
+    reject:          'رفض',
+    pending:         'قيد الانتظار',
     deleteTitle:     'حذف الطلب',
     deleteDesc:      id => `الصورة #${id} — لا يمكن التراجع عن هذا الإجراء.`,
     confirmDelete:   'حذف',
-    deleted:         '🗑 تم الحذف',
+    deleted:         'تم الحذف',
     deleteFailed:    'فشل الحذف',
-    statusUpdated:   '✅ تم تحديث الحالة',
+    statusUpdated:   'تم تحديث الحالة',
     statusFailed:    'فشل تحديث الحالة',
-    photoSent:       '📤 تم إرسال الصورة إلى QC!',
+    photoSent:       'تم إرسال الصورة إلى QC',
     photoRequired:   'الصورة مطلوبة',
-    notifsEnabled:   '✅ تم تفعيل الإشعارات!',
+    notifsEnabled:   'تم تفعيل الإشعارات',
     notifsBlocked:   'تم حظر الإشعارات',
     notifsNone:      'الإشعارات غير مدعومة',
-    newPhoto:        d => `📸 تم استلام ${d} صورة جديدة!`,
-    newPhotoTitle:   '📸 طلب QC جديد',
+    newPhoto:        d => `تم استلام ${d} صورة جديدة`,
+    newPhotoTitle:   'طلب QC جديد',
     newPhotoBody:    d => `${d} صورة بانتظار المراجعة`,
-    statusChange:    (id, st) => `${st==='approved'?'✅':st==='rejected'?'❌':'⏳'} الصورة #${id} تم تعيينها كـ ${st}`,
+    statusChange:    (id, st) => `الصورة #${id} تم تعيينها كـ ${st}`,
     noOne:           'لا يوجد أحد هنا بعد',
     me:              '(أنا)',
   },
@@ -331,8 +331,7 @@ async function loadItems(){
         const prev = _lastStatuses[item.id];
         if(prev !== undefined && prev !== item.status){
           playSound('lebelass.wav');
-          const emoji = item.status === 'approved' ? '✅' : item.status === 'rejected' ? '❌' : '⏳';
-          showBrowserNotif(`${emoji} Photo #${item.id} ${item.status.toUpperCase()}`, item.review_note ? `Note: ${item.review_note}` : `Your photo was marked as ${item.status}`);
+          showBrowserNotif(`Photo #${item.id} — ${item.status.toUpperCase()}`, item.review_note ? `Note: ${item.review_note}` : `Your photo was marked as ${item.status}`);
           toast(t.statusChange(item.id, item.status));
           break;
         }
@@ -355,7 +354,7 @@ function renderItems(items){
     <article class="item" id="item-${x.id}">
       <div class="item-img-wrap" onclick="openLightbox('${esc(x.image_url)}')">
         <img src="${esc(x.image_url)}" alt="QC photo #${x.id}" loading="lazy">
-        <span class="img-zoom-hint">🔍 Tap to view</span>
+        <span class="img-zoom-hint">Tap to view</span>
       </div>
       <div class="item-body">
         <div class="meta">
@@ -363,12 +362,12 @@ function renderItems(items){
           <span>${esc(x.created_at)}</span>
         </div>
         <div class="item-actors">
-          <span class="actor-submit">📤 ${esc(x.created_by)}</span>
-          ${x.reviewed_by ? `<span class="actor-review">${x.status==='approved'?'✅':x.status==='rejected'?'❌':'⏳'} ${esc(x.reviewed_by)}</span>` : ''}
+          <span class="actor-submit">${esc(x.created_by)}</span>
+          ${x.reviewed_by ? `<span class="actor-review actor-${esc(x.status)}">${esc(x.reviewed_by)}</span>` : ''}
         </div>
         <span class="status ${esc(x.status)}">${esc(x.status)}</span>
         ${x.note ? `<div class="note" style="margin-top:6px">${esc(x.note)}</div>` : ''}
-        ${x.review_note ? `<div class="review-note">💬 ${esc(x.review_note)}</div>` : ''}
+        ${x.review_note ? `<div class="review-note">${esc(x.review_note)}</div>` : ''}
         <div class="actions">
           ${role === 'qc' ? `
             <button class="btn green" onclick="openReviewModal(${x.id},'approved')">${t.approve}</button>
@@ -376,7 +375,7 @@ function renderItems(items){
             <button class="btn amber" onclick="openReviewModal(${x.id},'pending')">${t.pending}</button>
           ` : ''}
           ${role === 'labeling' ? `
-            <button class="btn-delete" onclick="deleteItem(${x.id})">🗑 ${qcLang==='ar'?'حذف':'Delete'}</button>
+            <button class="btn-delete" onclick="deleteItem(${x.id})"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg> ${qcLang==='ar'?'حذف':'Delete'}</button>
           ` : ''}
         </div>
       </div>
@@ -619,8 +618,7 @@ function connectSSE(){
         if(role === 'labeling' && prev !== updated.status){
           const t = QC_LANG[qcLang];
           playSound('lebelass.wav');
-          const emoji = updated.status === 'approved' ? '✅' : updated.status === 'rejected' ? '❌' : '⏳';
-          showBrowserNotif(`${emoji} Photo #${updated.id} ${updated.status.toUpperCase()}`, updated.review_note ? `Note: ${updated.review_note}` : `Marked as ${updated.status}`);
+          showBrowserNotif(`Photo #${updated.id} — ${updated.status.toUpperCase()}`, updated.review_note ? `Note: ${updated.review_note}` : `Marked as ${updated.status}`);
           toast(t.statusChange(updated.id, updated.status));
         }
         renderItems(_allItems);

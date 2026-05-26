@@ -257,7 +257,9 @@ html.light .item { background: rgba(0,0,0,.02); border-color: var(--border); }
   padding: 2px 8px; border-radius: 6px;
 }
 .actor-submit { background: rgba(59,130,246,.1); color: #93c5fd; border: 1px solid rgba(59,130,246,.2); }
-.actor-review { background: rgba(16,185,129,.1); color: #6ee7b7; border: 1px solid rgba(16,185,129,.2); }
+.actor-review { background: rgba(100,116,139,.1); color: #94a3b8; border: 1px solid rgba(100,116,139,.2); }
+.actor-review.actor-approved { background: rgba(16,185,129,.1); color: #6ee7b7; border-color: rgba(16,185,129,.2); }
+.actor-review.actor-rejected { background: rgba(239,68,68,.1);  color: #fca5a5; border-color: rgba(239,68,68,.2); }
 .empty { padding: 40px; text-align: center; color: var(--dim); font-size: 14px; }
 
 /* ── Delete button ── */

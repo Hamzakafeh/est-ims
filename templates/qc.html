@@ -42,7 +42,7 @@
 
     <!-- Notification permission banner -->
     <div id="notifBanner">
-      🔔 <span data-en="Enable push notifications to get alerts even when the browser is in the background." data-ar="فعّل الإشعارات للحصول على تنبيهات حتى عندما يكون المتصفح في الخلفية.">Enable push notifications to get alerts even when the browser is in the background.</span>
+      <span data-en="Enable push notifications to get alerts even when the browser is in the background." data-ar="فعّل الإشعارات للحصول على تنبيهات حتى عندما يكون المتصفح في الخلفية.">Enable push notifications to get alerts even when the browser is in the background.</span>
       <button class="btn cyan" onclick="requestNotifPermission()" data-en="Enable" data-ar="تفعيل">Enable</button>
     </div>
 
@@ -65,15 +65,15 @@
     {% if qc_role == 'labeling' %}
     <section class="panel">
       <div class="panel-head">
-        <strong data-en="📤 Send Work Photo" data-ar="📤 إرسال صورة العمل">📤 Send Work Photo</strong>
+        <strong data-en="Send Work Photo" data-ar="إرسال صورة العمل">Send Work Photo</strong>
         <span class="badge" data-en="Labeling Assistant" data-ar="مساعد التسمية">Labeling Assistant</span>
       </div>
       <div class="panel-body">
         <div class="submit-grid">
           <div class="upload-area">
             <div class="upload-btns">
-              <button type="button" class="btn" onclick="document.getElementById('photoFile').click()" data-en="🖼 Gallery" data-ar="🖼 المعرض">🖼 Gallery</button>
-              <button type="button" class="btn cyan" onclick="document.getElementById('photoCamera').click()" data-en="📷 Take Photo" data-ar="📷 التقاط صورة">📷 Take Photo</button>
+              <button type="button" class="btn" onclick="document.getElementById('photoFile').click()" data-en="Gallery" data-ar="المعرض">Gallery</button>
+              <button type="button" class="btn cyan" onclick="document.getElementById('photoCamera').click()" data-en="Take Photo" data-ar="التقاط صورة">Take Photo</button>
             </div>
             <input id="photoFile"   type="file" accept="image/*">
             <input id="photoCamera" type="file" accept="image/*" capture="environment">
@@ -81,7 +81,7 @@
             <span class="upload-label" id="uploadLabel" data-en="No photo selected" data-ar="لم يتم اختيار صورة">No photo selected</span>
           </div>
           <textarea id="note" data-en-placeholder="Add a short note (optional)..." data-ar-placeholder="أضف ملاحظة قصيرة (اختياري)..." placeholder="Add a short note (optional)..."></textarea>
-          <button class="btn green" type="button" onclick="submitPhoto()" data-en="📤 Send to QC" data-ar="📤 إرسال لـ QC">📤 Send to QC</button>
+          <button class="btn green" type="button" onclick="submitPhoto()" data-en="Send to QC" data-ar="إرسال لـ QC">Send to QC</button>
         </div>
       </div>
     </section>
@@ -90,7 +90,7 @@
     <!-- Submissions panel -->
     <section class="panel">
       <div class="panel-head">
-        <strong data-en="📋 Submissions" data-ar="📋 الطلبات">📋 Submissions</strong>
+        <strong data-en="Submissions" data-ar="الطلبات">Submissions</strong>
         <span class="badge" id="countBadge">0 items</span>
       </div>
       <div class="panel-body">
@@ -156,7 +156,9 @@
 <!-- Delete Confirm Modal (beta-card style) -->
 <div class="modal-backdrop" id="deleteModal" onclick="closeDeleteModal(event)">
   <div class="delete-card">
-    <div class="delete-card-icon">🗑</div>
+    <div class="delete-card-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+    </div>
     <div class="delete-card-title" id="deleteCardTitle" data-en="Delete Submission" data-ar="حذف الطلب">Delete Submission</div>
     <div class="delete-card-desc" id="deleteCardDesc"></div>
     <div class="delete-card-actions">
