@@ -16,11 +16,6 @@ from core import (
     _is_locked_out,
     _lockout_remaining,
     _clear_attempts,
-    _register_active_session,
-    _is_single_login_exempt,
-    _active_sessions_lock,
-    _active_user_sessions,
-    _active_session_alive,
     _record_login,
     ENV_USERS,
     login_required,
@@ -248,22 +243,9 @@ def do_login():
                     'message': f'الحساب موقوف مؤقتاً. الوقت المتبقي {mins}:{secs:02d}'
                 }), 403
         login_username = db_user['username'] if db_user is not None else username
-        if not _is_single_login_exempt(login_username):
-            uname = _normalize_username(login_username)
-            with _active_sessions_lock:
-                record = _active_user_sessions.get(uname)
-                if _active_session_alive(record):
-                    return jsonify({
-                        'success': False,
-                        'active_elsewhere': True,
-                        'message': 'هذا المستخدم مسجل دخوله من جهاز آخر حالياً'
-                    }), 409
-                _active_user_sessions.pop(uname, None)
         _clear_attempts(ip)
         session['logged_in'] = True
         session['username'] = login_username
-        if not _is_single_login_exempt(login_username):
-            _register_active_session(login_username)
         qr_next = session.pop('qr_next', None)
         if qr_next and qr_next.startswith('/'):
             return jsonify({'success': True, 'redirect': qr_next})

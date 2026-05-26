@@ -6,3 +6,4 @@ requests
 python-dotenv
 gevent
 pywebpush
+psycopg2-binary

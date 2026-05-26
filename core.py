@@ -365,18 +365,78 @@ def _verify_secret(value, stored):
     return test == digest
 
 
+# ── Database backend (SQLite local / PostgreSQL on Render) ─────────
+_DATABASE_URL = os.getenv('DATABASE_URL', '')
+if _DATABASE_URL.startswith('postgres://'):
+    _DATABASE_URL = 'postgresql://' + _DATABASE_URL[len('postgres://'):]
+_USE_PG = bool(_DATABASE_URL)
+
+if _USE_PG:
+    import psycopg2
+    import psycopg2.extras
+
+
+class _PGCursor:
+    """Wraps psycopg2 cursor to match sqlite3 cursor API."""
+    __slots__ = ('_cur',)
+
+    def __init__(self, cur):
+        self._cur = cur
+
+    def fetchone(self):
+        return self._cur.fetchone()
+
+    def fetchall(self):
+        return self._cur.fetchall()
+
+    @property
+    def rowcount(self):
+        return self._cur.rowcount
+
+
+class _PGConn:
+    """Wraps psycopg2 connection to match sqlite3 connection API used throughout the codebase."""
+    __slots__ = ('_conn',)
+
+    def __init__(self, conn):
+        self._conn = conn
+
+    def execute(self, sql, params=()):
+        cur = self._conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute(re.sub(r'\?', '%s', sql), params if params else None)
+        return _PGCursor(cur)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is None:
+            self._conn.commit()
+        else:
+            self._conn.rollback()
+        self._conn.close()
+        return False
+
+
 def _db_connect():
+    if _USE_PG:
+        return _PGConn(psycopg2.connect(_DATABASE_URL))
     conn = sqlite3.connect(AUTH_DB_FILE)
     conn.row_factory = sqlite3.Row
     return conn
 
 
 def _init_auth_db():
-    _prepare_auth_db_file()
+    if not _USE_PG:
+        _prepare_auth_db_file()
+
+    _id_col  = 'id BIGSERIAL PRIMARY KEY' if _USE_PG else 'id INTEGER PRIMARY KEY AUTOINCREMENT'
+    _add_col = 'ADD COLUMN IF NOT EXISTS' if _USE_PG else 'ADD COLUMN'
+
     with _db_connect() as conn:
-        conn.execute("""
+        conn.execute(f"""
             CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                {_id_col},
                 full_name TEXT NOT NULL,
                 username TEXT NOT NULL UNIQUE,
                 email TEXT NOT NULL,
@@ -398,9 +458,9 @@ def _init_auth_db():
                 suspended_at TEXT
             )
         """)
-        conn.execute("""
+        conn.execute(f"""
             CREATE TABLE IF NOT EXISTS registration_requests (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                {_id_col},
                 full_name TEXT NOT NULL,
                 username TEXT NOT NULL,
                 email TEXT NOT NULL,
@@ -420,20 +480,23 @@ def _init_auth_db():
             )
         """)
         for column_sql in (
-            "ALTER TABLE users ADD COLUMN gender TEXT",
-            "ALTER TABLE users ADD COLUMN birth_date TEXT",
-            "ALTER TABLE users ADD COLUMN privacy_accepted INTEGER NOT NULL DEFAULT 0",
-            "ALTER TABLE users ADD COLUMN suspended_until TEXT",
-            "ALTER TABLE users ADD COLUMN suspended_by TEXT",
-            "ALTER TABLE users ADD COLUMN suspended_at TEXT",
-            "ALTER TABLE registration_requests ADD COLUMN gender TEXT",
-            "ALTER TABLE registration_requests ADD COLUMN birth_date TEXT",
-            "ALTER TABLE registration_requests ADD COLUMN privacy_accepted INTEGER NOT NULL DEFAULT 0",
+            f"ALTER TABLE users {_add_col} gender TEXT",
+            f"ALTER TABLE users {_add_col} birth_date TEXT",
+            f"ALTER TABLE users {_add_col} privacy_accepted INTEGER NOT NULL DEFAULT 0",
+            f"ALTER TABLE users {_add_col} suspended_until TEXT",
+            f"ALTER TABLE users {_add_col} suspended_by TEXT",
+            f"ALTER TABLE users {_add_col} suspended_at TEXT",
+            f"ALTER TABLE registration_requests {_add_col} gender TEXT",
+            f"ALTER TABLE registration_requests {_add_col} birth_date TEXT",
+            f"ALTER TABLE registration_requests {_add_col} privacy_accepted INTEGER NOT NULL DEFAULT 0",
         ):
-            try:
+            if _USE_PG:
                 conn.execute(column_sql)
-            except sqlite3.OperationalError:
-                pass
+            else:
+                try:
+                    conn.execute(column_sql)
+                except sqlite3.OperationalError:
+                    pass
 
 
 def _username_in_env(username):
