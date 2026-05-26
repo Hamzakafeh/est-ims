@@ -138,8 +138,17 @@ function playSound(file){
 // ══════════════════════════════════════════════════════
 // PUSH NOTIFICATIONS — Web Push via Service Worker
 // ══════════════════════════════════════════════════════
+const _isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const _isStandalone = window.navigator.standalone === true
+  || window.matchMedia('(display-mode: standalone)').matches;
+
 function requestNotifPermission(){
   const t = QC_LANG[qcLang];
+  // iOS in browser (not PWA): show add-to-home-screen instructions
+  if(_isIOS && !_isStandalone){
+    _showIosInstallBanner();
+    return;
+  }
   if(!('Notification' in window)) { toast(t.notifsNone, false); return; }
   Notification.requestPermission().then(p => {
     document.getElementById('notifBanner').classList.remove('show');
@@ -152,10 +161,29 @@ function requestNotifPermission(){
   });
 }
 
+function _showIosInstallBanner(){
+  const existing = document.getElementById('iosInstallBanner');
+  if(existing){ existing.remove(); return; }
+  const div = document.createElement('div');
+  div.id = 'iosInstallBanner';
+  div.className = 'ios-install-banner';
+  div.innerHTML = `
+    <button class="ios-install-close" onclick="this.parentElement.remove()">✕</button>
+    <div class="ios-install-title">Enable Notifications on iOS</div>
+    <ol class="ios-install-steps">
+      <li>Tap the <strong>Share</strong> button <span class="ios-share-icon">⎋</span> at the bottom of Safari</li>
+      <li>Tap <strong>"Add to Home Screen"</strong></li>
+      <li>Open the app from your home screen</li>
+      <li>Tap <strong>Enable</strong> in the notification banner</li>
+    </ol>
+  `;
+  document.body.appendChild(div);
+}
+
 async function registerServiceWorker(){
   if(!('serviceWorker' in navigator)) return;
   try {
-    const reg = await navigator.serviceWorker.register('/static/qc-sw.js');
+    const reg = await navigator.serviceWorker.register('/static/qc-sw.js', { scope: '/' });
     await subscribeToPush(reg);
   } catch(e){ console.warn('SW register failed', e); }
 }
@@ -195,30 +223,35 @@ function _urlBase64ToUint8Array(base64String){
 function showBrowserNotif(title, body){
   if(!('Notification' in window)) return;
   if(Notification.permission !== 'granted') return;
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.ready.then(reg => {
-      reg.showNotification(title, {
-        body,
-        icon: '/static/icons/low.ico',
-        badge: '/static/icons/low.ico',
-        tag: title,
-        requireInteraction: true,
-        vibrate: [200, 100, 200]
-      });
-    }).catch(() => {
-      try { new Notification(title, { body, icon: '/static/icons/low.ico', tag: title }); } catch(e){}
+  navigator.serviceWorker.ready.then(reg => {
+    reg.showNotification(title, {
+      body,
+      icon:  '/static/icons/icon-192.png',
+      badge: '/static/icons/icon-192.png',
+      tag:   title,
+      requireInteraction: false,
+      vibrate: [200, 100, 200],
+      data: { url: '/qc-workflow' },
     });
-  } else {
-    try { new Notification(title, { body, icon: '/static/icons/low.ico', tag: title }); } catch(e){}
-  }
+  }).catch(() => {
+    try { new Notification(title, { body, icon: '/static/icons/icon-192.png' }); } catch(e){}
+  });
 }
 
-(function(){
-  if(!('Notification' in window)) return;
-  if(Notification.permission === 'default'){
-    document.getElementById('notifBanner').classList.add('show');
+(function initNotifications(){
+  // Always register SW first so it's ready for background push
+  if('serviceWorker' in navigator){
+    if(Notification.permission === 'granted'){
+      registerServiceWorker();
+    } else if(Notification.permission === 'default'){
+      // iOS in browser → show custom install banner
+      if(_isIOS && !_isStandalone){
+        document.getElementById('notifBanner').classList.add('show');
+      } else {
+        document.getElementById('notifBanner').classList.add('show');
+      }
+    }
   }
-  if(Notification.permission === 'granted') registerServiceWorker();
 })();
 
 // ══════════════════════════════════════════════════════

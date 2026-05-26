@@ -1104,11 +1104,14 @@ def _find_month_folder(year_path, month_code):
 
 def _send_push_notification(subscription_info, title, body, url='/qc-workflow', tag='qc-update'):
     try:
-        from pywebpush import webpush
-        private_key = os.getenv('VAPID_PRIVATE_KEY', '')
+        from pywebpush import webpush, Vapid
+        private_key_pem = os.getenv('VAPID_PRIVATE_KEY', '')
         email = os.getenv('VAPID_CLAIMS_EMAIL', 'admin@example.com')
-        if not private_key:
+        if not private_key_pem:
             return False
+        # Restore newlines if Render flattened them
+        pem = private_key_pem.replace('\\n', '\n')
+        vapid = Vapid.from_string(private_key=pem)
         payload = json.dumps({
             'title': title,
             'body':  body,
@@ -1120,7 +1123,7 @@ def _send_push_notification(subscription_info, title, body, url='/qc-workflow', 
         webpush(
             subscription_info=subscription_info,
             data=payload,
-            vapid_private_key=private_key,
+            vapid_private_key=vapid,
             vapid_claims={'sub': f'mailto:{email}'},
         )
         return True

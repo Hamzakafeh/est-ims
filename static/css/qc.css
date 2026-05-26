@@ -281,6 +281,28 @@ html.light .item { background: rgba(0,0,0,.02); border-color: var(--border); }
 #notifBanner.show { display: flex; }
 #notifBanner button { margin-left: auto; flex-shrink: 0; }
 
+/* ── iOS Install Banner ── */
+.ios-install-banner {
+  position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+  width: min(360px, calc(100vw - 32px)); z-index: 900;
+  background: rgba(21,28,40,0.97); backdrop-filter: blur(20px);
+  border: 1px solid rgba(59,130,246,0.35); border-radius: 18px;
+  padding: 20px 20px 18px; box-shadow: 0 16px 48px rgba(0,0,0,.6);
+  animation: fadeUp .3s ease both;
+}
+.ios-install-close {
+  position: absolute; top: 10px; right: 12px;
+  background: none; border: none; color: var(--dim); cursor: pointer; font-size: 16px;
+}
+.ios-install-title {
+  font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 12px;
+}
+.ios-install-steps {
+  padding-left: 18px; color: var(--muted); font-size: 13px; line-height: 2;
+}
+.ios-install-steps strong { color: var(--text); }
+.ios-share-icon { font-size: 15px; vertical-align: middle; }
+
 /* ── Toast ── */
 #qcToast {
   position: fixed; bottom: 24px; right: 24px; z-index: 9999;
