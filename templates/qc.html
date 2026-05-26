@@ -112,8 +112,7 @@
     <div id="presencePanel" class="presence-list">
       <div class="presence-loading">—</div>
     </div>
-    <!-- chat button disabled — pending Firebase integration -->
-    <div class="sidebar-chat-wrap" style="display:none" id="sidebarChatWrap">
+    <div class="sidebar-chat-wrap" id="sidebarChatWrap">
       <button class="btn sidebar-chat-btn" onclick="toggleChat()" id="chatOpenBtn">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         <span data-en="Chat" data-ar="دردشة">Chat</span>
@@ -167,8 +166,8 @@
   </div>
 </div>
 
-<!-- Chat Panel — disabled pending Firebase integration -->
-<div id="chatPanel" class="chat-panel" style="display:none">
+<!-- Chat Panel -->
+<div id="chatPanel" class="chat-panel">
   <div class="chat-panel-header">
     <span class="chat-panel-title">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -189,11 +188,22 @@
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script>
 window.QC_CONFIG = {
   qc_role:        '{{ qc_role }}',
   username:       '{{ username }}',
   verified_users: {{ verified_users | tojson }},
+};
+window.QC_FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyATHTHbNovkzt1Fjs37aO6ygu_3V2y_aLY",
+  authDomain:        "est-ims.firebaseapp.com",
+  databaseURL:       "https://est-ims-default-rtdb.firebaseio.com",
+  projectId:         "est-ims",
+  storageBucket:     "est-ims.firebasestorage.app",
+  messagingSenderId: "236192290824",
+  appId:             "1:236192290824:web:d62e395d8b5d964031d9bd",
 };
 </script>
 <script src="/static/js/qc.js"></script>

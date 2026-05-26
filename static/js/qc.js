@@ -222,20 +222,44 @@ function showBrowserNotif(title, body){
 })();
 
 // ══════════════════════════════════════════════════════
-// PRESENCE — who's on the page
+// FIREBASE — presence + chat
 // ══════════════════════════════════════════════════════
-async function pingPresence(){
-  try { await fetch('/api/qc/presence/ping', {method:'POST'}); } catch(e){}
+let _db = null;
+
+function initFirebase(){
+  if(!window.firebase || !window.QC_FIREBASE_CONFIG) return;
+  try {
+    firebase.initializeApp(window.QC_FIREBASE_CONFIG);
+    _db = firebase.database();
+    _initFirebasePresence();
+    _initFirebaseChat();
+  } catch(e){ console.warn('Firebase init failed', e); }
 }
 
-async function loadPresence(){
-  try {
-    const res = await fetch('/api/qc/presence');
-    if(!res.ok) return;
-    const data = await res.json();
-    renderPresence(data.users || []);
-  } catch(e){}
+function _initFirebasePresence(){
+  const username = CURRENT_USER;
+  const role     = window.QC_CONFIG.qc_role;
+  const myRef    = _db.ref('qc_presence/' + username);
+
+  _db.ref('.info/connected').on('value', snap => {
+    if(!snap.val()) return;
+    myRef.onDisconnect().remove();
+    myRef.set({ role, ts: firebase.database.ServerValue.TIMESTAMP });
+  });
+
+  _db.ref('qc_presence').on('value', snap => {
+    const users = [];
+    snap.forEach(child => {
+      const d = child.val();
+      users.push({ username: child.key, role: d.role, verified: VERIFIED_USERS.has(child.key.toLowerCase()) });
+    });
+    renderPresence(users);
+  });
 }
+
+// legacy no-ops kept so old call sites don't throw
+function pingPresence(){}
+function loadPresence(){}
 
 function renderPresence(users){
   const panel = document.getElementById('presencePanel');
@@ -274,17 +298,7 @@ function toggleSidebar(){
   }
 })();
 
-// Ping on load, then every 30s
-pingPresence();
-setInterval(pingPresence, 30000);
-// Refresh presence list every 20s (SSE handles instant updates)
-loadPresence();
-setInterval(loadPresence, 20000);
-
-// Remove presence on page close
-window.addEventListener('beforeunload', () => {
-  navigator.sendBeacon('/api/qc/presence/leave', '');
-});
+// Firebase handles presence — no polling needed
 
 // ══════════════════════════════════════════════════════
 // SUBMISSIONS — load + render
@@ -610,15 +624,6 @@ function connectSSE(){
     }catch(err){}
   });
 
-  es.addEventListener('presence_update', e => {
-    try {
-      const data = JSON.parse(e.data);
-      renderPresence(data.users || []);
-    } catch(err) {}
-  });
-
-  es.addEventListener('chat_message', _handleChatMessage);
-
   es.onerror = () => {
     es.close();
     _sseConnected = false;
@@ -631,9 +636,10 @@ function startPolling(){
   setInterval(loadItems, 7000);
 }
 
-// Initial load + SSE
+// Initial load + SSE + Firebase
 loadItems();
 connectSSE();
+initFirebase();
 // Backup poll every 5s to catch any missed SSE events
 setInterval(loadItems, 5000);
 
@@ -677,16 +683,8 @@ function updateChatBadge(){
   }
 }
 
-async function loadChat(){
-  const box = document.getElementById('chatMessages');
-  try {
-    const res = await fetch('/api/qc/chat', {cache:'no-store'});
-    const data = await res.json();
-    _chatLoaded = true;
-    renderChatMessages(data.messages || []);
-  } catch(e){
-    if(box) box.innerHTML = '<div class="chat-loading">⚠ Failed to load</div>';
-  }
+function loadChat(){
+  // no-op — Firebase handles initial load in _initFirebaseChat
 }
 
 function renderChatMessages(msgs){
@@ -714,50 +712,64 @@ function scrollChatBottom(){
   if(box) box.scrollTop = box.scrollHeight;
 }
 
-async function sendChat(){
+function sendChat(){
   const input = document.getElementById('chatInput');
-  const text = input?.value.trim();
-  if(!text) return;
+  const text  = input?.value.trim();
+  if(!text || !_db) return;
   input.value = '';
-  try {
-    const res = await fetch('/api/qc/chat', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({text})
-    });
-    if(!res.ok) { input.value = text; toast('Failed to send', false); }
-  } catch(e){
+  const now     = new Date();
+  const sent_at = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+  _db.ref('qc_chat').push({
+    username: CURRENT_USER,
+    role:     window.QC_CONFIG.qc_role,
+    text,
+    sent_at,
+    ts: firebase.database.ServerValue.TIMESTAMP,
+  }).catch(() => {
     input.value = text;
     toast('Failed to send', false);
+  });
+}
+
+function _appendChatMsg(msg){
+  const box = document.getElementById('chatMessages');
+  if(!box) return;
+  const emptyDiv = box.querySelector('.chat-loading');
+  if(emptyDiv) emptyDiv.remove();
+  const mine      = msg.username === CURRENT_USER;
+  const roleClass = msg.role === 'qc' ? 'cm-role-qc' : 'cm-role-lab';
+  const roleLabel = msg.role === 'qc' ? 'QC' : 'Label';
+  const el = document.createElement('div');
+  el.className = `chat-msg ${mine ? 'mine' : 'theirs'}`;
+  el.innerHTML = `<div class="chat-msg-meta">
+    <span class="cm-user">${esc(msg.username)}</span>
+    <span class="${roleClass}">${roleLabel}</span>
+    <span>${esc(msg.sent_at)}</span>
+  </div>
+  <div class="chat-msg-bubble">${esc(msg.text)}</div>`;
+  box.appendChild(el);
+  scrollChatBottom();
+  if(!_chatOpen && !mine){
+    _chatUnread++;
+    updateChatBadge();
+    playSound('lebelass.wav');
   }
 }
 
-// SSE chat_message handler (added to connectSSE)
-function _handleChatMessage(e){
-  try {
-    const msg = JSON.parse(e.data);
-    const box = document.getElementById('chatMessages');
-    if(!box) return;
-    _chatLoaded = true;
-    const emptyDiv = box.querySelector('.chat-loading');
-    if(emptyDiv) emptyDiv.remove();
-    const mine = msg.username === CURRENT_USER;
-    const roleClass = msg.role === 'qc' ? 'cm-role-qc' : 'cm-role-lab';
-    const roleLabel = msg.role === 'qc' ? 'QC' : 'Label';
-    const el = document.createElement('div');
-    el.className = `chat-msg ${mine ? 'mine' : 'theirs'}`;
-    el.innerHTML = `<div class="chat-msg-meta">
-      <span class="cm-user">${esc(msg.username)}</span>
-      <span class="${roleClass}">${roleLabel}</span>
-      <span>${esc(msg.sent_at)}</span>
-    </div>
-    <div class="chat-msg-bubble">${esc(msg.text)}</div>`;
-    box.appendChild(el);
-    scrollChatBottom();
-    if(!_chatOpen && !mine){
-      _chatUnread++;
-      updateChatBadge();
-      playSound('lebelass.wav');
-    }
-  } catch(err){}
+function _initFirebaseChat(){
+  const chatRef = _db.ref('qc_chat').limitToLast(100);
+  let _initialDone = false;
+  const _buf = [];
+
+  chatRef.on('child_added', snap => {
+    if(!_initialDone){ _buf.push(snap.val()); return; }
+    _appendChatMsg(snap.val());
+  });
+
+  chatRef.once('value', () => {
+    _initialDone = true;
+    _chatLoaded  = true;
+    renderChatMessages(_buf);
+    _buf.length = 0;
+  });
 }
