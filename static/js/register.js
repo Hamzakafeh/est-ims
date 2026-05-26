@@ -9,7 +9,6 @@ const AUTH_LANG = {
   ar:{lang:'English',back:'رجوع',topbar:'التسجيل',badge:'دخول EST-iMs',heroTitle:'التسجيل',heroSub:'إرسال طلب حساب موظف جديد بانتظار موافقة الأدمن.',c1t:'بيانات الحساب',c1:'استخدم اسم مستخدم فريد وبيانات اتصال دقيقة.',c2t:'السؤال الأمني',c2:'اختر سؤالاً تستطيع الإجابة عنه لاحقاً لاسترجاع كلمة المرور.',formTitle:'بيانات التسجيل',fullName:'الاسم الكامل',username:'اسم المستخدم',email:'الإيميل',phone:'الهاتف',jobTitle:'الوظيفة',gender:'الجنس',birthDate:'تاريخ الميلاد',genderSelect:'اختر',male:'ذكر',female:'أنثى',privacyText:'أوافق على <a href="/privacy" target="_blank">سياسة الخصوصية</a> و <a href="/terms" target="_blank">شروط الاستخدام</a>',successTitle:'تم إرسال التسجيل',successText:'تم إرسال طلبك بنجاح وهو بانتظار موافقة الأدمن. سيتم تحويلك إلى صفحة الدخول.',password:'كلمة المرور',confirmPassword:'تأكيد كلمة المرور',securityQuestion:'السؤال الأمني',securityAnswer:'إجابة السؤال الأمني',captcha:'كابتشا',refresh:'تحديث',captchaHelp:'حل الكابتشا للتأكد أن الطلب من شخص حقيقي.',submit:'إرسال الطلب',loginBack:'العودة للدخول',sending:'جاري الإرسال...',captchaLoadError:'تعذر تحميل الكابتشا',submitError:'تعذر إرسال الطلب'}
 };
 let authLang = localStorage.getItem('est-lang') || 'en';
-let captchaToken = '';
 function setText(id, value){ const el = document.getElementById(id); if (el) el.textContent = value; }
 function applyAuthLang(lang){
   authLang = lang; localStorage.setItem('est-lang', lang);
@@ -17,11 +16,10 @@ function applyAuthLang(lang){
   document.documentElement.lang = lang; document.documentElement.dir = isAr ? 'rtl' : 'ltr';
   setText('langBtn', t.lang); setText('backText', t.back); setText('topbarTitle', t.topbar); setText('badgeText', t.badge); setText('heroTitle', t.heroTitle); setText('heroSub', t.heroSub);
   setText('card1Title', t.c1t); setText('card1Text', t.c1); setText('card2Title', t.c2t); setText('card2Text', t.c2); setText('formTitle', t.formTitle);
-  setText('fullNameLabel', t.fullName); setText('usernameLabel', t.username); setText('emailLabel', t.email); setText('phoneLabel', t.phone); setText('jobTitleLabel', t.jobTitle); setText('genderLabel', t.gender); setText('birthDateLabel', t.birthDate); document.getElementById('privacyText').innerHTML = t.privacyText; setText('successTitle', t.successTitle); setText('successText', t.successText); setText('passwordLabel', t.password); setText('confirmPasswordLabel', t.confirmPassword); setText('securityQuestionLabel', t.securityQuestion); setText('securityAnswerLabel', t.securityAnswer); setText('captchaLabel', t.captcha); setText('reloadCaptchaBtn', t.refresh); setText('captchaHelp', t.captchaHelp); setText('submitBtn', t.submit); setText('loginBackBtn', t.loginBack);
+  setText('fullNameLabel', t.fullName); setText('usernameLabel', t.username); setText('emailLabel', t.email); setText('phoneLabel', t.phone); setText('jobTitleLabel', t.jobTitle); setText('genderLabel', t.gender); setText('birthDateLabel', t.birthDate); document.getElementById('privacyText').innerHTML = t.privacyText; setText('successTitle', t.successTitle); setText('successText', t.successText); setText('passwordLabel', t.password); setText('confirmPasswordLabel', t.confirmPassword); setText('securityQuestionLabel', t.securityQuestion); setText('securityAnswerLabel', t.securityAnswer); setText('captchaLabel', t.captcha); setText('captchaHelp', t.captchaHelp); setText('submitBtn', t.submit); setText('loginBackBtn', t.loginBack);
   const sel = document.getElementById('securityQuestion'); const current = sel.value; sel.innerHTML = ''; questions[lang].forEach(q => { const opt = document.createElement('option'); opt.value = q; opt.textContent = q; sel.appendChild(opt); }); if (questions[lang].includes(current)) sel.value = current; const genderEl = document.getElementById('gender'); if (genderEl) { genderEl.options[0].textContent = t.genderSelect; genderEl.options[1].textContent = t.male; genderEl.options[2].textContent = t.female; }
 }
 function toggleAuthLang(){ applyAuthLang(authLang === 'en' ? 'ar' : 'en'); }
-async function loadCaptcha(){ const res = await fetch('/api/captcha', {cache:'no-store'}); const data = await res.json(); captchaToken = data.token || ''; document.getElementById('captchaQuestion').textContent = data.question || '...'; }
 function setStatus(msg, ok){ const box = document.getElementById('statusBox'); box.className = 'status ' + (ok ? 'ok' : 'err'); box.textContent = msg; }
 function markInvalid(el){ if (el) el.classList.add('invalid'); }
 function clearInvalid(){ document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid')); }
@@ -29,20 +27,25 @@ function validateRegisterForm(){
   let ok = true;
   const emailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.value.trim());
   const passOk = /[A-Za-z]/.test(password.value) && /\d/.test(password.value);
-  const checks = [fullName, username, email, phone, jobTitle, gender, birthDate, password, confirmPassword, securityAnswer, captchaAnswer];
+  const checks = [fullName, username, email, phone, jobTitle, gender, birthDate, password, confirmPassword, securityAnswer];
   checks.forEach(el => { if (!String(el.value || '').trim()) { markInvalid(el); ok = false; } });
   if (username.value.trim().length < 5 || ['admin','administrator','dev','developer','root','superadmin'].includes(username.value.trim().toLowerCase())) { markInvalid(username); ok = false; }
   if (!emailOk) { markInvalid(email); ok = false; }
   if (!passOk || password.value !== confirmPassword.value) { markInvalid(password); markInvalid(confirmPassword); ok = false; }
   if (!privacyAccepted.checked) { markInvalid(privacyAccepted); ok = false; }
+  const rcToken = typeof grecaptcha !== 'undefined' ? grecaptcha.getResponse() : '';
+  if (!rcToken) { const wrap = document.getElementById('recaptchaWidget'); if (wrap) wrap.style.outline = '2px solid var(--danger, #ef4444)'; ok = false; }
   if (!ok) setStatus(AUTH_LANG[authLang].submitError, false);
   return ok;
 }
 function showSuccessModal(){ document.getElementById('successModal')?.classList.add('open'); }
-document.getElementById('reloadCaptchaBtn').addEventListener('click', loadCaptcha);
 document.getElementById('registerForm').addEventListener('submit', async e => {
   e.preventDefault();
-  clearInvalid(); if (!validateRegisterForm()) return; const payload = { full_name: fullName.value.trim(), username: username.value.trim(), email: email.value.trim(), phone: phone.value.trim(), job_title: jobTitle.value.trim(), gender: gender.value, birth_date: birthDate.value, privacy_accepted: privacyAccepted.checked, password: password.value, confirm_password: confirmPassword.value, security_question: securityQuestion.value, security_answer: securityAnswer.value.trim(), captcha_answer: captchaAnswer.value.trim(), captcha_token: captchaToken };
+  clearInvalid();
+  const wrap = document.getElementById('recaptchaWidget'); if (wrap) wrap.style.outline = '';
+  if (!validateRegisterForm()) return;
+  const recaptchaToken = typeof grecaptcha !== 'undefined' ? grecaptcha.getResponse() : '';
+  const payload = { full_name: fullName.value.trim(), username: username.value.trim(), email: email.value.trim(), phone: phone.value.trim(), job_title: jobTitle.value.trim(), gender: gender.value, birth_date: birthDate.value, privacy_accepted: privacyAccepted.checked, password: password.value, confirm_password: confirmPassword.value, security_question: securityQuestion.value, security_answer: securityAnswer.value.trim(), recaptcha_token: recaptchaToken };
   const btn = document.getElementById('submitBtn'); btn.disabled = true; btn.textContent = AUTH_LANG[authLang].sending;
   const avatarFile = document.getElementById('avatarFile')?.files[0];
   try {
@@ -61,9 +64,12 @@ document.getElementById('registerForm').addEventListener('submit', async e => {
     document.getElementById('avatarPreview').style.display = 'none';
     const ph = document.getElementById('avatarPlaceholderIcon'); if (ph) ph.style.display = '';
     document.getElementById('avatarFileName').textContent = 'No photo selected';
-    applyAuthLang(authLang); await loadCaptcha(); setTimeout(() => window.location.href = '/login', 1800);
+    applyAuthLang(authLang); setTimeout(() => window.location.href = '/login', 1800);
   }
-  catch(err){ setStatus(err.message || AUTH_LANG[authLang].submitError, false); await loadCaptcha().catch(()=>{}); }
+  catch(err){
+    setStatus(err.message || AUTH_LANG[authLang].submitError, false);
+    if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
+  }
   finally { btn.disabled = false; btn.textContent = AUTH_LANG[authLang].submit; }
 });
 // ── Birth date bounds (18–80 years old) ──
@@ -95,4 +101,4 @@ document.getElementById('avatarFile').addEventListener('change', function(){
   }
 });
 
-applyAuthLang(authLang); loadCaptcha().catch(() => setStatus(AUTH_LANG[authLang].captchaLoadError, false));
+applyAuthLang(authLang);

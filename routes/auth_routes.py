@@ -22,6 +22,7 @@ from core import (
     ENV_USERS,
     login_required,
     zone_required,
+    _firebase_clear_user_status,
 )
 
 _AVATAR_DIR = os.path.join(DATA_STORE_DIR, 'avatars')
@@ -43,7 +44,7 @@ def login_page():
 def register_page():
     if session.get('logged_in'):
         return redirect(url_for('pages.index') if session.get('zone') else url_for('zones.zones_page'))
-    return render_template('register.html')
+    return render_template('register.html', recaptcha_site_key=os.getenv('RECAPTCHA_SITE_KEY', ''))
 
 
 @auth_bp.route('/forgot-password')
@@ -102,8 +103,7 @@ def api_register():
     confirm_password = _g('confirm_password')
     security_question = _g('security_question')
     security_answer = _g('security_answer')
-    captcha_answer = _g('captcha_answer')
-    captcha_token = _g('captcha_token')
+    recaptcha_token = _g('recaptcha_token')
 
     required = [
         full_name,
@@ -117,11 +117,10 @@ def api_register():
         confirm_password,
         security_question,
         security_answer,
-        captcha_answer,
-        captcha_token,
+        recaptcha_token,
     ]
     if not all(required):
-        return jsonify({'success': False, 'message': 'يرجى تعبئة جميع الحقول'}), 400
+        return jsonify({'success': False, 'message': 'يرجى تعبئة جميع الحقول وإتمام التحقق من الكابتشا'}), 400
 
     reserved_usernames = {'admin', 'administrator', 'dev', 'developer', 'root', 'superadmin'}
     if username in reserved_usernames:
@@ -137,9 +136,20 @@ def api_register():
     if password != confirm_password:
         return jsonify({'success': False, 'message': 'كلمة المرور وتأكيدها غير متطابقين'}), 400
 
-    captcha = session.get('register_captcha') or {}
-    if captcha.get('token') != captcha_token or str(captcha.get('answer', '')).strip() != captcha_answer:
-        return jsonify({'success': False, 'message': 'التحقق الأمني غير صحيح'}), 400
+    rc_secret = os.getenv('RECAPTCHA_SECRET_KEY', '')
+    if not rc_secret:
+        return jsonify({'success': False, 'message': 'الكابتشا غير مفعّلة على الخادم'}), 500
+    try:
+        import requests as _req
+        rc_resp = _req.post(
+            'https://www.google.com/recaptcha/api/siteverify',
+            data={'secret': rc_secret, 'response': recaptcha_token},
+            timeout=8,
+        ).json()
+    except Exception:
+        return jsonify({'success': False, 'message': 'تعذر التحقق من الكابتشا، حاول مجدداً'}), 502
+    if not rc_resp.get('success'):
+        return jsonify({'success': False, 'message': 'فشل التحقق من الكابتشا، حاول مجدداً'}), 400
 
     if _username_exists_everywhere(username):
         return jsonify({'success': False, 'message': 'اسم المستخدم مستخدم مسبقاً'}), 409
@@ -283,6 +293,7 @@ def do_login():
                 }), 403
         login_username = db_user['username'] if db_user is not None else username
         _clear_attempts(ip)
+        _firebase_clear_user_status(login_username)
         session['logged_in'] = True
         session['username'] = login_username
         qr_next = session.pop('qr_next', None)

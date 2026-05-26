@@ -1,13 +1,16 @@
 """Public and main application pages."""
-from flask import Blueprint, render_template, redirect, url_for, session, send_from_directory, make_response
+from flask import Blueprint, render_template, redirect, url_for, session, send_from_directory, make_response, jsonify
 import os
 from core import (
     zone_required,
+    login_required,
     get_structure,
     get_available_years,
     get_base_path,
     MONTH_AR,
     get_firebase_config,
+    _db_connect,
+    _user_suspension_remaining,
 )
 
 pages_bp = Blueprint('pages', __name__)
@@ -63,6 +66,27 @@ def index():
         login_time=session.get('login_time', ''),
         firebase_config=get_firebase_config(),
     )
+
+
+@pages_bp.route('/api/me/status')
+@login_required
+def api_me_status():
+    username = session.get('username', '')
+    try:
+        with _db_connect() as conn:
+            row = conn.execute(
+                "SELECT suspended_until FROM users WHERE lower(username) = lower(?) AND approved = 1",
+                (username,),
+            ).fetchone()
+    except Exception:
+        return jsonify({'status': 'ok'})
+    if row is None:
+        return jsonify({'status': 'deleted', 'message': 'تم حذف حسابك من النظام بواسطة الإدارة'})
+    remaining = _user_suspension_remaining(dict(row))
+    if remaining > 0:
+        mins = remaining // 60
+        return jsonify({'status': 'suspended', 'message': f'حسابك موقوف مؤقتاً. الوقت المتبقي: {mins} دقيقة'})
+    return jsonify({'status': 'ok'})
 
 
 @pages_bp.route('/about')

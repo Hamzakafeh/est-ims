@@ -66,7 +66,7 @@
             </div>
           </div>
         </div>
-        <div class="field full"><label id="captchaLabel">Captcha</label><div class="captcha-box"><div class="captcha-code" id="captchaQuestion">...</div><input id="captchaAnswer" dir="ltr" inputmode="numeric"><button class="btn btn-cyan" type="button" id="reloadCaptchaBtn">Refresh</button></div><div class="helper" id="captchaHelp">Solve the captcha to confirm the request is human.</div></div>
+        <div class="field full"><label id="captchaLabel">Captcha</label><div class="recaptcha-wrap"><div class="g-recaptcha" id="recaptchaWidget" data-sitekey="{{ recaptcha_site_key }}"></div></div><div class="helper" id="captchaHelp">Complete the captcha to confirm the request is human.</div></div>
         <div class="field full"><label class="check-row"><input id="privacyAccepted" type="checkbox"><span id="privacyText">I agree to the <a href="/privacy" target="_blank">Privacy Policy</a> and <a href="/terms" target="_blank">Terms of Use</a></span></label></div>
       </div>
       <div class="actions"><button class="btn btn-primary" type="submit" id="submitBtn">Send request</button><a class="btn btn-ghost" href="/login" id="loginBackBtn">Back to login</a></div>
@@ -76,6 +76,7 @@
   <div class="version-strip">EST-iMs V3.1.1.0 &nbsp;|&nbsp; Registration</div>
 </div>
 <div class="success-overlay" id="successModal"><div class="success-box"><div class="success-mark">✓</div><div class="success-title" id="successTitle">Registration sent</div><div class="success-text" id="successText">Your request was sent successfully and is waiting for admin approval. You will be redirected to login.</div></div></div>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script src="/static/js/register.js"></script>
 </body>
 </html>
