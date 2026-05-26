@@ -251,6 +251,13 @@ html.light .item { background: rgba(0,0,0,.02); border-color: var(--border); }
 
 .actions { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 12px; align-items: center; }
 .review-note { margin-top: 8px; color: var(--dim); font-size: 11px; font-style: italic; }
+.item-actors { display: flex; gap: 10px; flex-wrap: wrap; margin: 5px 0; }
+.actor-submit, .actor-review {
+  font-size: 11px; font-weight: 600; font-family: 'JetBrains Mono', monospace;
+  padding: 2px 8px; border-radius: 6px;
+}
+.actor-submit { background: rgba(59,130,246,.1); color: #93c5fd; border: 1px solid rgba(59,130,246,.2); }
+.actor-review { background: rgba(16,185,129,.1); color: #6ee7b7; border: 1px solid rgba(16,185,129,.2); }
 .empty { padding: 40px; text-align: center; color: var(--dim); font-size: 14px; }
 
 /* ── Delete button ── */
@@ -634,7 +641,27 @@ html.light .delete-card {
   justify-content: center;
 }
 
-/* ── Chat unread badge ── */
+/* ── Chat FAB ── */
+.chat-fab {
+  position: fixed; bottom: 28px; right: 28px; z-index: 500;
+  width: 54px; height: 54px; border-radius: 18px;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  border: none; cursor: pointer; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 28px rgba(59,130,246,0.45), 0 0 0 1px rgba(59,130,246,0.2);
+  transition: transform 0.25s cubic-bezier(.34,1.56,.64,1), box-shadow 0.25s;
+}
+.chat-fab:hover { transform: translateY(-3px) scale(1.07); box-shadow: 0 14px 40px rgba(59,130,246,0.55); }
+.chat-fab:active { transform: scale(0.94); }
+.chat-fab-badge {
+  position: absolute; top: -5px; right: -5px;
+  background: var(--red); color: #fff;
+  font-size: 9px; font-weight: 800; font-family: 'JetBrains Mono', monospace;
+  border-radius: 999px; padding: 2px 5px; border: 2px solid var(--bg-deep);
+  pointer-events: none;
+}
+
+/* ── Chat unread badge (sidebar legacy) ── */
 .chat-unread-badge {
   background: var(--red); color: #fff;
   font-size: 9px; font-weight: 800; font-family: 'JetBrains Mono', monospace;

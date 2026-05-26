@@ -359,8 +359,12 @@ function renderItems(items){
       </div>
       <div class="item-body">
         <div class="meta">
-          <span>#${x.id} — ${esc(x.created_by)}</span>
+          <span>#${x.id}</span>
           <span>${esc(x.created_at)}</span>
+        </div>
+        <div class="item-actors">
+          <span class="actor-submit">📤 ${esc(x.created_by)}</span>
+          ${x.reviewed_by ? `<span class="actor-review">${x.status==='approved'?'✅':x.status==='rejected'?'❌':'⏳'} ${esc(x.reviewed_by)}</span>` : ''}
         </div>
         <span class="status ${esc(x.status)}">${esc(x.status)}</span>
         ${x.note ? `<div class="note" style="margin-top:6px">${esc(x.note)}</div>` : ''}
@@ -752,7 +756,7 @@ function _appendChatMsg(msg){
   if(!_chatOpen && !mine){
     _chatUnread++;
     updateChatBadge();
-    playSound('lebelass.wav');
+    playSound('drdasha.wav');
   }
 }
 

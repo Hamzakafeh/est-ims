@@ -112,16 +112,16 @@
     <div id="presencePanel" class="presence-list">
       <div class="presence-loading">—</div>
     </div>
-    <div class="sidebar-chat-wrap" id="sidebarChatWrap">
-      <button class="btn sidebar-chat-btn" onclick="toggleChat()" id="chatOpenBtn">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        <span data-en="Chat" data-ar="دردشة">Chat</span>
-        <span class="chat-unread-badge" id="chatUnreadBadge" style="display:none">0</span>
-      </button>
-    </div>
+    <!-- chat moved to FAB -->
   </aside>
 
 </div><!-- end page-layout -->
+
+<!-- Chat FAB -->
+<button class="chat-fab" id="chatOpenBtn" onclick="toggleChat()" title="Chat">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  <span class="chat-fab-badge" id="chatUnreadBadge" style="display:none">0</span>
+</button>
 
 <!-- Toast -->
 <div id="qcToast"></div>
