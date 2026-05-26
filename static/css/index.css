@@ -1059,13 +1059,40 @@
   .admin-user-list { display: grid; gap: 8px; padding: 14px; }
   .admin-user-row {
     width: 100%; border: 1px solid var(--border); background: var(--bg-card);
-    color: var(--text-main); border-radius: 10px; padding: 12px 14px;
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    color: var(--text-main); border-radius: 10px; padding: 10px 14px;
+    display: flex; align-items: center; gap: 12px;
     cursor: pointer; text-align: left; font-family: inherit; transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease;
   }
   .admin-user-row:hover { background: var(--bg-hover); border-color: var(--accent-blue); transform: translateY(-1px) scale(1.01); box-shadow: 0 12px 28px rgba(0,0,0,.22); }
-  .admin-user-row strong { font-size: 14px; }
+  .admin-user-row strong { font-size: 13px; }
   .admin-user-row span { color: var(--text-muted); font-size: 11px; }
+  .admin-user-row-text { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+  .admin-user-fullname { font-weight: 400; color: var(--text-muted); font-size: 12px; }
+  /* Avatar — circular thumbnail in user list */
+  .admin-user-avatar-img {
+    width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
+    border: 1.5px solid var(--border); background: var(--bg-hover);
+  }
+  /* Suspended badge */
+  .admin-user-suspended-badge {
+    font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 999px;
+    background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.3);
+    flex-shrink: 0; white-space: nowrap;
+  }
+  /* Detail modal header with avatar */
+  .admin-detail-header {
+    display: flex; align-items: center; gap: 16px;
+    padding: 20px 18px 16px; border-bottom: 1px solid var(--border);
+  }
+  .admin-detail-avatar-img {
+    width: 64px; height: 64px; border-radius: 50%; object-fit: cover;
+    border: 2px solid var(--border-light); background: var(--bg-hover); flex-shrink: 0;
+  }
+  .admin-detail-header-info { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  .admin-detail-header-name { font-size: 16px; font-weight: 700; color: var(--text-main); }
+  .admin-detail-header-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .admin-detail-header-user { font-size: 12px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+  .admin-detail-header-job { font-size: 11px; color: var(--text-dim); }
   .admin-detail-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; padding: 16px; }
   .admin-detail-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; min-width: 0; }
   .admin-detail-label { color: var(--text-dim); font-size: 10px; letter-spacing: .7px; text-transform: uppercase; margin-bottom: 5px; }

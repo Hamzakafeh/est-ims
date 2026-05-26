@@ -569,12 +569,31 @@ EST-iMs © | 2026    </div>
   </div>
 </div>
 
+<script type="application/json" id="index-fb-cfg">{"username":{{ username | tojson }},"firebase_config":{{ firebase_config | tojson }}}</script>
 <script>
 window.INDEX_CONFIG = {
   IS_SUPER: {{ 'true' if is_super else 'false' }},
   zone: '{{ zone }}'
 };
 </script>
+
+<!-- Firebase SDK — account status real-time listener -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+<!-- Force-logout modal (shown when account is deleted or suspended) -->
+<div id="forceLogoutModal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.82);backdrop-filter:blur(8px);align-items:center;justify-content:center;">
+  <div style="background:rgba(13,17,23,0.96);border:1px solid rgba(239,68,68,0.45);border-radius:20px;padding:36px 28px 28px;max-width:400px;width:calc(100% - 40px);text-align:center;box-shadow:0 24px 60px rgba(0,0,0,0.6);">
+    <div style="width:52px;height:52px;border-radius:14px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <div id="flTitle" style="font-size:17px;font-weight:700;color:#f1f5f9;margin-bottom:10px;">Account Action</div>
+    <div id="flMessage" style="font-size:13px;color:#94a3b8;line-height:1.6;margin-bottom:24px;"></div>
+    <div style="font-size:11px;color:#52627a;margin-bottom:18px;" id="flCountdown">Redirecting in 5s…</div>
+    <a href="/logout" style="display:block;padding:11px 24px;background:linear-gradient(135deg,#ef4444,#dc2626);border-radius:10px;color:#fff;font-weight:600;font-size:13px;text-decoration:none;">Log Out Now</a>
+  </div>
+</div>
+
 <script src="/static/js/index.js"></script>
 </body>
 </html>

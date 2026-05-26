@@ -7,6 +7,7 @@ from core import (
     zone_required, _db_connect, _normalize_username, _hash_secret,
     _is_single_login_exempt, _clear_active_session, AUTH_DB_FILE,
     CONTACT_MESSAGES_FILE, _read_json_list, _write_json_list, _data_lock,
+    _firebase_set_user_status, _firebase_clear_user_status,
 )
 
 admin_bp = Blueprint('admin', __name__)
@@ -258,6 +259,10 @@ def api_admin_suspend_user(user_id):
             (until.strftime('%Y-%m-%d %H:%M:%S'), admin_user, now.strftime('%Y-%m-%d %H:%M:%S'), user_id),
         )
     _clear_active_session(row['username'])
+    _firebase_set_user_status(
+        row['username'], 'suspended',
+        f'تم إيقاف حسابك مؤقتاً حتى {until.strftime("%Y-%m-%d %H:%M")} بواسطة الإدارة'
+    )
     return jsonify({'success': True, 'message': 'تم إيقاف المستخدم مؤقتاً', 'suspended_until': until.strftime('%Y-%m-%d %H:%M:%S')})
 
 
@@ -267,12 +272,16 @@ def api_admin_unsuspend_user(user_id):
     if session.get('zone') != 'dev':
         return jsonify({'error': 'غير مصرح'}), 403
     with _db_connect() as conn:
+        row = conn.execute("SELECT username FROM users WHERE id = ?", (user_id,)).fetchone()
+        if not row:
+            return jsonify({'success': False, 'message': 'المستخدم غير موجود'}), 404
         cur = conn.execute(
             "UPDATE users SET suspended_until = NULL, suspended_by = NULL, suspended_at = NULL WHERE id = ?",
             (user_id,),
         )
     if cur.rowcount == 0:
         return jsonify({'success': False, 'message': 'المستخدم غير موجود'}), 404
+    _firebase_clear_user_status(row['username'])
     return jsonify({'success': True, 'message': 'تم إلغاء الإيقاف'})
 
 
@@ -310,6 +319,7 @@ def api_admin_delete_user(user_id):
             return jsonify({'success': False, 'message': 'لا يمكن حذف حساب الأدمن أو الديف'}), 400
         conn.execute("DELETE FROM users WHERE id = ?", (user_id,))
     _clear_active_session(row['username'])
+    _firebase_set_user_status(row['username'], 'deleted', 'تم حذف حسابك من النظام بواسطة الإدارة')
     return jsonify({'success': True, 'message': 'تم حذف المستخدم'})
 
 

@@ -1149,6 +1149,56 @@ def _write_push_subs(data):
         json.dump(data, f, ensure_ascii=False)
 
 
+def get_firebase_config():
+    """Return Firebase client config dict from env vars."""
+    return {
+        'apiKey':            os.getenv('FIREBASE_API_KEY', ''),
+        'authDomain':        os.getenv('FIREBASE_AUTH_DOMAIN', ''),
+        'databaseURL':       os.getenv('FIREBASE_DATABASE_URL', ''),
+        'projectId':         os.getenv('FIREBASE_PROJECT_ID', ''),
+        'storageBucket':     os.getenv('FIREBASE_STORAGE_BUCKET', ''),
+        'messagingSenderId': os.getenv('FIREBASE_MESSAGING_ID', ''),
+        'appId':             os.getenv('FIREBASE_APP_ID', ''),
+    }
+
+
+def _firebase_set_user_status(username, status, message=''):
+    """Write user_status/{username} in Firebase Realtime DB — non-blocking.
+    Used to notify a logged-in user in real-time when their account is deleted or suspended.
+    Requires FIREBASE_DATABASE_URL and FIREBASE_DB_SECRET env vars.
+    """
+    def _do():
+        try:
+            db_url = os.getenv('FIREBASE_DATABASE_URL', '').rstrip('/')
+            db_secret = os.getenv('FIREBASE_DB_SECRET', '')
+            if not db_url or not db_secret:
+                return
+            # Firebase keys cannot contain . # $ [ ] /
+            safe_key = re.sub(r'[.#$\[\]/]', '_', username)
+            url = f"{db_url}/user_status/{safe_key}.json?auth={db_secret}"
+            payload = {'status': status, 'message': message, 'ts': _time.time()}
+            _requests.put(url, json=payload, timeout=8)
+        except Exception:
+            pass
+    threading.Thread(target=_do, daemon=True).start()
+
+
+def _firebase_clear_user_status(username):
+    """Remove user_status/{username} from Firebase (e.g. on unsuspend)."""
+    def _do():
+        try:
+            db_url = os.getenv('FIREBASE_DATABASE_URL', '').rstrip('/')
+            db_secret = os.getenv('FIREBASE_DB_SECRET', '')
+            if not db_url or not db_secret:
+                return
+            safe_key = re.sub(r'[.#$\[\]/]', '_', username)
+            url = f"{db_url}/user_status/{safe_key}.json?auth={db_secret}"
+            _requests.delete(url, timeout=8)
+        except Exception:
+            pass
+    threading.Thread(target=_do, daemon=True).start()
+
+
 _COUNTER_FILE = os.path.join(APP_DIR, 'visit_counter.json')
 _counter_lock = threading.Lock()
 

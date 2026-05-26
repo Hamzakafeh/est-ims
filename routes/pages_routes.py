@@ -7,6 +7,7 @@ from core import (
     get_available_years,
     get_base_path,
     MONTH_AR,
+    get_firebase_config,
 )
 
 pages_bp = Blueprint('pages', __name__)
@@ -60,6 +61,7 @@ def index():
         can_edit=can_edit,
         username=username,
         login_time=session.get('login_time', ''),
+        firebase_config=get_firebase_config(),
     )
 
 

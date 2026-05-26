@@ -1,3 +1,58 @@
+// ══════════════════════════════════════════════════════
+// ACCOUNT STATUS — Firebase real-time listener
+// Detects delete/suspend actions by admin and force-logs out the user
+// ══════════════════════════════════════════════════════
+(function _initAccountStatusListener() {
+  const cfgEl = document.getElementById('index-fb-cfg');
+  if (!cfgEl) return;
+  let cfg;
+  try { cfg = JSON.parse(cfgEl.textContent); } catch(e) { return; }
+  if (!cfg.firebase_config || !cfg.firebase_config.databaseURL || !cfg.username) return;
+
+  const _pageLoadTs = Date.now() / 1000; // compare against event timestamp
+
+  try {
+    const app = firebase.initializeApp(cfg.firebase_config, 'est-status');
+    const db  = firebase.database(app);
+    // Firebase keys cannot contain . # $ [ ] /
+    const safeKey = cfg.username.replace(/[.#$[\]/]/g, '_');
+
+    db.ref('user_status/' + safeKey).on('value', snap => {
+      const val = snap.val();
+      if (!val || !val.status) return;
+      // Only react to events set AFTER the page loaded (ignore stale flags)
+      if (val.ts && val.ts <= _pageLoadTs) return;
+      if (val.status === 'deleted' || val.status === 'suspended') {
+        _showForceLogout(val.status, val.message || '');
+      }
+    });
+  } catch(e) { console.warn('[EST-iMs] Account status listener error:', e); }
+})();
+
+const _flCountdownIntervals = [];
+function _showForceLogout(status, message) {
+  const modal = document.getElementById('forceLogoutModal');
+  if (!modal) return;
+  const titleEl = document.getElementById('flTitle');
+  const msgEl   = document.getElementById('flMessage');
+  const cdEl    = document.getElementById('flCountdown');
+  if (titleEl) titleEl.textContent = status === 'deleted' ? 'تم حذف حسابك' : 'تم إيقاف حسابك مؤقتاً';
+  if (msgEl)   msgEl.textContent   = message || (status === 'deleted'
+    ? 'حسابك تم حذفه من النظام بواسطة الإدارة.'
+    : 'حسابك موقوف مؤقتاً بواسطة الإدارة.');
+  modal.style.display = 'flex';
+  // Countdown
+  let secs = 5;
+  if (cdEl) cdEl.textContent = `Redirecting in ${secs}s…`;
+  const iv = setInterval(() => {
+    secs--;
+    if (cdEl) cdEl.textContent = secs > 0 ? `Redirecting in ${secs}s…` : 'Redirecting…';
+    if (secs <= 0) { clearInterval(iv); window.location.href = '/logout'; }
+  }, 1000);
+  _flCountdownIntervals.push(iv);
+}
+
+
 // ── BETA POPUP (show only once per session) ──
 function closeBetaOverlay() {
   const overlay = document.getElementById('betaOverlay');
@@ -2190,12 +2245,16 @@ async function loadAdminUsers() {
       return;
     }
     body.innerHTML = `
-      <div class="users-empty" style="padding:12px 16px;text-align:start;">Database: ${escHtml(data.db_file || 'auth.sqlite3')}</div>
+      <div class="users-empty" style="padding:10px 16px;text-align:start;font-size:11px;">Database: ${escHtml(data.db_file || 'auth.sqlite3')} · ${adminUsersCache.length} users</div>
       <div class="admin-user-list">
         ${adminUsersCache.map((u, i) => `
           <button class="admin-user-row" type="button" onclick="openAdminUserDetail(${Number(u.id)})">
-            <strong>${i + 1}. ${escHtml(u.username || '—')}</strong>
-            <span>${u.suspended_until ? 'موقوف حتى ' + escHtml(u.suspended_until) : 'عرض البيانات'}</span>
+            <img class="admin-user-avatar-img" src="/api/avatar/${escHtml(u.username)}" onerror="this.style.visibility='hidden'" alt="">
+            <div class="admin-user-row-text">
+              <strong>${i + 1}. ${escHtml(u.username || '—')}${u.full_name ? ' <span class="admin-user-fullname">· ' + escHtml(u.full_name) + '</span>' : ''}</strong>
+              <span>${u.suspended_until ? 'موقوف حتى ' + escHtml(u.suspended_until.slice(0,16)) : (u.job_title ? escHtml(u.job_title) : 'عرض البيانات')}</span>
+            </div>
+            ${u.suspended_until ? '<span class="admin-user-suspended-badge">موقوف</span>' : ''}
           </button>
         `).join('')}
       </div>`;
@@ -2216,6 +2275,17 @@ function openAdminUserDetail(id) {
     ['Approved at', u.approved_at || u.created_at], ['Suspended until', u.suspended_until || '—'], ['Suspended by', u.suspended_by || '—']
   ];
   body.innerHTML = `
+    <div class="admin-detail-header">
+      <img class="admin-detail-avatar-img" src="/api/avatar/${escHtml(u.username)}" onerror="this.style.display='none'" alt="Avatar">
+      <div class="admin-detail-header-info">
+        <div class="admin-detail-header-name">${escHtml(u.full_name || u.username)}</div>
+        <div class="admin-detail-header-meta">
+          <span class="admin-detail-header-user">@${escHtml(u.username)}</span>
+          ${u.job_title ? `<span class="admin-detail-header-job">${escHtml(u.job_title)}</span>` : ''}
+          ${u.suspended_until ? `<span class="admin-user-suspended-badge">موقوف حتى ${escHtml(u.suspended_until.slice(0,16))}</span>` : ''}
+        </div>
+      </div>
+    </div>
     <div class="admin-detail-grid">
       ${rows.map(([label, value]) => `<div class="admin-detail-item"><div class="admin-detail-label">${escHtml(label)}</div><div class="admin-detail-value">${escHtml(value || '—')}</div></div>`).join('')}
     </div>
