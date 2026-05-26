@@ -23,7 +23,7 @@ def ping():
 
 @pages_bp.route('/')
 def welcome():
-    return render_template('welcome.html')
+    return render_template('welcome.html', logged_username=session.get('username', ''))
 
 
 @pages_bp.route('/index')

@@ -1,7 +1,7 @@
 // ── LANGUAGE ──
 const LOGIN_LANG = {
   en: {
-    title: 'EST Inventory System', subtitle: 'Limited Access',
+    title: 'EST-iMs ©', subtitle: 'Limited Access',
     backLabel: 'Back', themeLight: 'Light Mode', themeDark: 'Dark Mode',
     langLabel: 'عربي',
     userLabel: 'Username', passLabel: 'Password',

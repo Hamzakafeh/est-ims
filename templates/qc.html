@@ -112,7 +112,8 @@
     <div id="presencePanel" class="presence-list">
       <div class="presence-loading">—</div>
     </div>
-    <div class="sidebar-chat-wrap">
+    <!-- chat button disabled — pending Firebase integration -->
+    <div class="sidebar-chat-wrap" style="display:none" id="sidebarChatWrap">
       <button class="btn sidebar-chat-btn" onclick="toggleChat()" id="chatOpenBtn">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         <span data-en="Chat" data-ar="دردشة">Chat</span>
@@ -166,8 +167,8 @@
   </div>
 </div>
 
-<!-- Chat Panel -->
-<div id="chatPanel" class="chat-panel">
+<!-- Chat Panel — disabled pending Firebase integration -->
+<div id="chatPanel" class="chat-panel" style="display:none">
   <div class="chat-panel-header">
     <span class="chat-panel-title">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
