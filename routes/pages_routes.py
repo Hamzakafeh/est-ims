@@ -11,6 +11,7 @@ from core import (
     get_firebase_config,
     _db_connect,
     _user_suspension_remaining,
+    _username_in_env,
 )
 
 pages_bp = Blueprint('pages', __name__)
@@ -81,6 +82,8 @@ def api_me_status():
     except Exception:
         return jsonify({'status': 'ok'})
     if row is None:
+        if _username_in_env(username):
+            return jsonify({'status': 'ok'})
         return jsonify({'status': 'deleted', 'message': 'تم حذف حسابك من النظام بواسطة الإدارة'})
     remaining = _user_suspension_remaining(dict(row))
     if remaining > 0:
