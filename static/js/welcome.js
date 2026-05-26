@@ -529,13 +529,14 @@ function restartQuickScan() {
   startQuickScanCamera();
 }
 
-// ── SCROLL INDICATOR HIDE ON SCROLL ──
+// ── SCROLL INDICATOR HIDE + BACK TO TOP ──
 (function() {
-  const si = document.getElementById('scrollIndicator');
-  if (!si) return;
+  const si  = document.getElementById('scrollIndicator');
+  const btt = document.getElementById('backToTop');
   window.addEventListener('scroll', function() {
-    if (window.scrollY > 80) si.classList.add('hidden');
-    else si.classList.remove('hidden');
+    const y = window.scrollY;
+    if (si)  si.classList.toggle('hidden', y > 80);
+    if (btt) btt.classList.toggle('visible', y > 400);
   }, { passive: true });
 })();
 
