@@ -297,6 +297,22 @@ def api_admin_reset_user_password(user_id):
     return jsonify({'success': True, 'message': 'تم تغيير كلمة مرور المستخدم'})
 
 
+@admin_bp.route('/api/admin/registered_users/<int:user_id>', methods=['DELETE'])
+@zone_required
+def api_admin_delete_user(user_id):
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    with _db_connect() as conn:
+        row = conn.execute("SELECT username FROM users WHERE id = ?", (user_id,)).fetchone()
+        if not row:
+            return jsonify({'success': False, 'message': 'المستخدم غير موجود'}), 404
+        if _is_single_login_exempt(row['username']):
+            return jsonify({'success': False, 'message': 'لا يمكن حذف حساب الأدمن أو الديف'}), 400
+        conn.execute("DELETE FROM users WHERE id = ?", (user_id,))
+    _clear_active_session(row['username'])
+    return jsonify({'success': True, 'message': 'تم حذف المستخدم'})
+
+
 @admin_bp.route('/api/admin/contact_messages')
 @zone_required
 def api_admin_contact_messages():

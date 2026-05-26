@@ -68,6 +68,24 @@ function closeProfileModal() {
   document.getElementById('profileModal')?.classList.remove('open');
 }
 
+async function uploadProfileAvatar(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const fd = new FormData();
+  fd.append('avatar', file);
+  try {
+    const res = await fetch('/api/profile/avatar', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (!res.ok || !data.success) { toast(data.message || 'Failed to upload', false); return; }
+    const avatarEl = document.getElementById('profileAvatar');
+    avatarEl.innerHTML = `<img src="${escAttr(data.avatar_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    toast('✅ Photo updated!');
+  } catch (e) {
+    toast('Upload failed', false);
+  }
+  input.value = '';
+}
+
 async function loadProfile() {
   const body = document.getElementById('profileBody');
   body.innerHTML = '<div class="profile-loading">Loading profile...</div>';
@@ -85,7 +103,12 @@ async function loadProfile() {
 function renderProfile(data) {
   const role = data.is_super ? 'Super User' : 'Zone User';
   const verified = data.is_verified || String(data.username || '').toUpperCase() === 'MLO5';
-  document.getElementById('profileAvatar').textContent = profileInitials(data.username);
+  const avatarEl = document.getElementById('profileAvatar');
+  if (data.avatar_url) {
+    avatarEl.innerHTML = `<img src="${escAttr(data.avatar_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${escAttr(profileInitials(data.username))}'">`;
+  } else {
+    avatarEl.textContent = profileInitials(data.username);
+  }
   document.getElementById('profileName').textContent = data.username || 'User';
   const profileVerified = document.getElementById('profileVerifiedBadge');
   if (profileVerified) profileVerified.style.display = verified ? 'inline-flex' : 'none';

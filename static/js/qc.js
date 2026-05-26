@@ -617,6 +617,8 @@ function connectSSE(){
     } catch(err) {}
   });
 
+  es.addEventListener('chat_message', _handleChatMessage);
+
   es.onerror = () => {
     es.close();
     _sseConnected = false;
@@ -632,8 +634,8 @@ function startPolling(){
 // Initial load + SSE
 loadItems();
 connectSSE();
-// Backup poll every 10s to catch any missed SSE events
-setInterval(loadItems, 10000);
+// Backup poll every 5s to catch any missed SSE events
+setInterval(loadItems, 5000);
 
 if('serviceWorker' in navigator){
   navigator.serviceWorker.addEventListener('message', e => {
@@ -643,3 +645,119 @@ if('serviceWorker' in navigator){
 
 document.addEventListener('visibilitychange', () => { if(!document.hidden && !_sseConnected) loadItems(); });
 window.addEventListener('focus', () => { if(!_sseConnected) loadItems(); });
+
+// ══════════════════════════════════════════════════════
+// CHAT
+// ══════════════════════════════════════════════════════
+let _chatOpen = false;
+let _chatLoaded = false;
+let _chatUnread = 0;
+
+function toggleChat(){
+  _chatOpen = !_chatOpen;
+  const panel = document.getElementById('chatPanel');
+  panel.classList.toggle('open', _chatOpen);
+  if(_chatOpen){
+    _chatUnread = 0;
+    updateChatBadge();
+    if(!_chatLoaded) loadChat();
+    else scrollChatBottom();
+    setTimeout(() => document.getElementById('chatInput')?.focus(), 200);
+  }
+}
+
+function updateChatBadge(){
+  const badge = document.getElementById('chatUnreadBadge');
+  if(!badge) return;
+  if(_chatUnread > 0 && !_chatOpen){
+    badge.textContent = _chatUnread > 9 ? '9+' : _chatUnread;
+    badge.style.display = '';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+async function loadChat(){
+  const box = document.getElementById('chatMessages');
+  try {
+    const res = await fetch('/api/qc/chat', {cache:'no-store'});
+    const data = await res.json();
+    _chatLoaded = true;
+    renderChatMessages(data.messages || []);
+  } catch(e){
+    if(box) box.innerHTML = '<div class="chat-loading">⚠ Failed to load</div>';
+  }
+}
+
+function renderChatMessages(msgs){
+  const box = document.getElementById('chatMessages');
+  if(!box) return;
+  if(!msgs.length){ box.innerHTML = '<div class="chat-loading">No messages yet. Say hi! 👋</div>'; return; }
+  box.innerHTML = msgs.map(m => {
+    const mine = m.username === CURRENT_USER;
+    const roleClass = m.role === 'qc' ? 'cm-role-qc' : 'cm-role-lab';
+    const roleLabel = m.role === 'qc' ? 'QC' : 'Label';
+    return `<div class="chat-msg ${mine ? 'mine' : 'theirs'}">
+      <div class="chat-msg-meta">
+        <span class="cm-user">${esc(m.username)}</span>
+        <span class="${roleClass}">${roleLabel}</span>
+        <span>${esc(m.sent_at)}</span>
+      </div>
+      <div class="chat-msg-bubble">${esc(m.text)}</div>
+    </div>`;
+  }).join('');
+  scrollChatBottom();
+}
+
+function scrollChatBottom(){
+  const box = document.getElementById('chatMessages');
+  if(box) box.scrollTop = box.scrollHeight;
+}
+
+async function sendChat(){
+  const input = document.getElementById('chatInput');
+  const text = input?.value.trim();
+  if(!text) return;
+  input.value = '';
+  try {
+    const res = await fetch('/api/qc/chat', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({text})
+    });
+    if(!res.ok) { input.value = text; toast('Failed to send', false); }
+  } catch(e){
+    input.value = text;
+    toast('Failed to send', false);
+  }
+}
+
+// SSE chat_message handler (added to connectSSE)
+function _handleChatMessage(e){
+  try {
+    const msg = JSON.parse(e.data);
+    const box = document.getElementById('chatMessages');
+    if(!box) return;
+    _chatLoaded = true;
+    const emptyDiv = box.querySelector('.chat-loading');
+    if(emptyDiv) emptyDiv.remove();
+    const mine = msg.username === CURRENT_USER;
+    const roleClass = msg.role === 'qc' ? 'cm-role-qc' : 'cm-role-lab';
+    const roleLabel = msg.role === 'qc' ? 'QC' : 'Label';
+    const el = document.createElement('div');
+    el.className = `chat-msg ${mine ? 'mine' : 'theirs'}`;
+    el.innerHTML = `<div class="chat-msg-meta">
+      <span class="cm-user">${esc(msg.username)}</span>
+      <span class="${roleClass}">${roleLabel}</span>
+      <span>${esc(msg.sent_at)}</span>
+    </div>
+    <div class="chat-msg-bubble">${esc(msg.text)}</div>`;
+    box.appendChild(el);
+    scrollChatBottom();
+    if(!_chatOpen && !mine){
+      _chatUnread++;
+      updateChatBadge();
+      playSound('lebelass.wav');
+    }
+  } catch(err){}
+}

@@ -1,6 +1,9 @@
+import os
+import secrets
 import threading
 from datetime import datetime
 from flask import Blueprint, render_template, jsonify, request, session, redirect, url_for, send_from_directory
+from core import APP_DIR
 from core import (
     _get_ip,
     _normalize_username,
@@ -168,6 +171,41 @@ def force_logout_other():
     return jsonify({'success': True, 'message': 'تم تسجيل الخروج من الجهاز الآخر'})
 
 
+_AVATAR_DIR = os.path.join(APP_DIR, 'static', 'avatars')
+
+
+def _avatar_url(username):
+    for ext in ('jpg', 'jpeg', 'png', 'webp'):
+        if os.path.isfile(os.path.join(_AVATAR_DIR, f'{username}.{ext}')):
+            return f'/static/avatars/{username}.{ext}'
+    return None
+
+
+@zone_bp.route('/api/profile/avatar', methods=['POST'])
+@zone_required
+def api_profile_avatar():
+    username = session.get('username', '')
+    if not username:
+        return jsonify({'success': False, 'message': 'غير مصرح'}), 403
+    photo = request.files.get('avatar')
+    if not photo:
+        return jsonify({'success': False, 'message': 'لم يتم إرسال صورة'}), 400
+    ext = os.path.splitext(photo.filename or '')[1].lower()
+    if ext not in {'.jpg', '.jpeg', '.png', '.webp'}:
+        ext = '.jpg'
+    os.makedirs(_AVATAR_DIR, exist_ok=True)
+    for old_ext in ('jpg', 'jpeg', 'png', 'webp'):
+        old_path = os.path.join(_AVATAR_DIR, f'{username}.{old_ext}')
+        try:
+            if os.path.isfile(old_path):
+                os.remove(old_path)
+        except Exception:
+            pass
+    filename = f'{username}{ext}'
+    photo.save(os.path.join(_AVATAR_DIR, filename))
+    return jsonify({'success': True, 'avatar_url': f'/static/avatars/{filename}?v={secrets.token_hex(4)}'})
+
+
 @zone_bp.route('/api/profile')
 @zone_required
 def api_profile():
@@ -199,6 +237,7 @@ def api_profile():
 
     return jsonify({
         'username': username,
+        'avatar_url': _avatar_url(username),
         'is_verified': str(username).lower() in VERIFIED_USERS,
         'zone': zone_id,
         'zone_name': session.get('zone_name', ''),

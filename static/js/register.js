@@ -44,8 +44,55 @@ document.getElementById('registerForm').addEventListener('submit', async e => {
   e.preventDefault();
   clearInvalid(); if (!validateRegisterForm()) return; const payload = { full_name: fullName.value.trim(), username: username.value.trim(), email: email.value.trim(), phone: phone.value.trim(), job_title: jobTitle.value.trim(), gender: gender.value, birth_date: birthDate.value, privacy_accepted: privacyAccepted.checked, password: password.value, confirm_password: confirmPassword.value, security_question: securityQuestion.value, security_answer: securityAnswer.value.trim(), captcha_answer: captchaAnswer.value.trim(), captcha_token: captchaToken };
   const btn = document.getElementById('submitBtn'); btn.disabled = true; btn.textContent = AUTH_LANG[authLang].sending;
-  try { const res = await fetch('/api/register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }); const data = await res.json(); if(!res.ok || !data.success) throw new Error(data.message || AUTH_LANG[authLang].submitError); showSuccessModal(); e.target.reset(); applyAuthLang(authLang); await loadCaptcha(); setTimeout(() => window.location.href = '/login', 1800); }
+  const avatarFile = document.getElementById('avatarFile')?.files[0];
+  try {
+    let res, data;
+    if (avatarFile) {
+      const fd = new FormData();
+      Object.entries(payload).forEach(([k, v]) => fd.append(k, v));
+      fd.append('avatar', avatarFile);
+      res = await fetch('/api/register', { method:'POST', body: fd });
+    } else {
+      res = await fetch('/api/register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    }
+    data = await res.json();
+    if(!res.ok || !data.success) throw new Error(data.message || AUTH_LANG[authLang].submitError);
+    showSuccessModal(); e.target.reset();
+    document.getElementById('avatarPreview').style.display = 'none';
+    const ph = document.getElementById('avatarPlaceholderIcon'); if (ph) ph.style.display = '';
+    document.getElementById('avatarFileName').textContent = 'No photo selected';
+    applyAuthLang(authLang); await loadCaptcha(); setTimeout(() => window.location.href = '/login', 1800);
+  }
   catch(err){ setStatus(err.message || AUTH_LANG[authLang].submitError, false); await loadCaptcha().catch(()=>{}); }
   finally { btn.disabled = false; btn.textContent = AUTH_LANG[authLang].submit; }
 });
+// ── Birth date bounds (18–80 years old) ──
+(function setBirthDateBounds(){
+  const el = document.getElementById('birthDate');
+  if (!el) return;
+  const today = new Date();
+  const maxDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+  const minDate = new Date(today.getFullYear() - 80, today.getMonth(), today.getDate());
+  el.max = maxDate.toISOString().split('T')[0];
+  el.min = minDate.toISOString().split('T')[0];
+})();
+
+// ── Avatar preview ──
+document.getElementById('avatarFile').addEventListener('change', function(){
+  const file = this.files[0];
+  const preview = document.getElementById('avatarPreview');
+  const placeholder = document.getElementById('avatarPlaceholderIcon');
+  const label = document.getElementById('avatarFileName');
+  if (file) {
+    label.textContent = file.name;
+    const reader = new FileReader();
+    reader.onload = e => {
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+      if (placeholder) placeholder.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
 applyAuthLang(authLang); loadCaptcha().catch(() => setStatus(AUTH_LANG[authLang].captchaLoadError, false));

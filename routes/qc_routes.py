@@ -5,13 +5,16 @@ import threading
 import time as _time
 from datetime import datetime
 from flask import Blueprint, render_template, request, session, jsonify, redirect, url_for
-from core import QC_SUBMISSIONS_FILE, QC_UPLOAD_DIR, _read_json_list, _write_json_list, _next_json_id, _data_lock, zone_required
+from core import QC_SUBMISSIONS_FILE, QC_UPLOAD_DIR, _read_json_list, _write_json_list, _next_json_id, _data_lock, zone_required, DATA_STORE_DIR
 
 qc_bp = Blueprint('qc', __name__)
 
 _qc_presence = {}
 _qc_presence_lock = threading.Lock()
 _QC_PRESENCE_TTL = 45
+
+QC_CHAT_FILE = os.path.join(DATA_STORE_DIR, 'qc_chat.json')
+_QC_CHAT_MAX = 200
 
 VERIFIED_QC_USERS = {'mlo5'}
 
@@ -171,6 +174,48 @@ def api_qc_submission_delete(item_id):
     except Exception:
         pass
     return jsonify({'success': True})
+
+
+@qc_bp.route('/api/qc/chat', methods=['GET'])
+@zone_required
+def api_qc_chat_get():
+    if session.get('zone') != 'qc':
+        return jsonify({'error': 'غير مصرح'}), 403
+    messages = _read_json_list(QC_CHAT_FILE)
+    return jsonify({'messages': messages[-100:]})
+
+
+@qc_bp.route('/api/qc/chat', methods=['POST'])
+@zone_required
+def api_qc_chat_post():
+    from app import _broadcast_qc_event
+    if session.get('zone') != 'qc':
+        return jsonify({'error': 'غير مصرح'}), 403
+    data = request.get_json(silent=True) or {}
+    text = str(data.get('text', '')).strip()
+    if not text or len(text) > 500:
+        return jsonify({'success': False, 'message': 'رسالة غير صالحة'}), 400
+    username = session.get('username', '')
+    role = session.get('qc_role', 'qc')
+    msg = {
+        'id': int(_time.time() * 1000),
+        'username': username,
+        'role': role,
+        'text': text,
+        'sent_at': datetime.now().strftime('%H:%M'),
+    }
+    with _data_lock:
+        messages = _read_json_list(QC_CHAT_FILE)
+        messages.append(msg)
+        if len(messages) > _QC_CHAT_MAX:
+            messages = messages[-_QC_CHAT_MAX:]
+        _write_json_list(QC_CHAT_FILE, messages)
+    sse_payload = 'event: chat_message\ndata: ' + json.dumps(msg, ensure_ascii=False) + '\n\n'
+    try:
+        _broadcast_qc_event(sse_payload)
+    except Exception:
+        pass
+    return jsonify({'success': True, 'message': msg})
 
 
 @qc_bp.route('/api/qc/submissions/<int:item_id>/status', methods=['POST'])

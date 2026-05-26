@@ -1,8 +1,10 @@
+import os
 import re
 import secrets
 from datetime import datetime
 from flask import Blueprint, render_template, jsonify, request, session, redirect, url_for
 from core import (
+    APP_DIR,
     _get_ip,
     _normalize_username,
     _normalize_text,
@@ -21,6 +23,8 @@ from core import (
     login_required,
     zone_required,
 )
+
+_AVATAR_DIR = os.path.join(APP_DIR, 'static', 'avatars')
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -51,30 +55,55 @@ def forgot_password_page():
 
 @auth_bp.route('/api/captcha')
 def api_captcha():
-    a = secrets.randbelow(8) + 2
-    b = secrets.randbelow(8) + 2
     token = secrets.token_hex(8)
-    session['register_captcha'] = {'token': token, 'answer': str(a + b)}
-    return jsonify({'token': token, 'question': f'{a} + {b} = ?'})
+    op = secrets.randbelow(3)
+    if op == 0:
+        a = secrets.randbelow(30) + 15
+        b = secrets.randbelow(20) + 8
+        answer = a + b
+        question = f'{a} + {b} = ?'
+    elif op == 1:
+        b = secrets.randbelow(15) + 5
+        a = b + secrets.randbelow(25) + 5
+        answer = a - b
+        question = f'{a} − {b} = ?'
+    else:
+        a = secrets.randbelow(10) + 3
+        b = secrets.randbelow(10) + 3
+        answer = a * b
+        question = f'{a} × {b} = ?'
+    session['register_captcha'] = {'token': token, 'answer': str(answer)}
+    return jsonify({'token': token, 'question': question})
 
 
 @auth_bp.route('/api/register', methods=['POST'])
 def api_register():
-    data = request.get_json(silent=True) or {}
-    full_name = str(data.get('full_name', '')).strip()
-    username = _normalize_username(data.get('username', ''))
-    email = str(data.get('email', '')).strip()
-    phone = str(data.get('phone', '')).strip()
-    job_title = str(data.get('job_title', '')).strip()
-    gender = str(data.get('gender', '')).strip()
-    birth_date = str(data.get('birth_date', '')).strip()
-    privacy_accepted = bool(data.get('privacy_accepted'))
-    password = str(data.get('password', '')).strip()
-    confirm_password = str(data.get('confirm_password', '')).strip()
-    security_question = str(data.get('security_question', '')).strip()
-    security_answer = str(data.get('security_answer', '')).strip()
-    captcha_answer = str(data.get('captcha_answer', '')).strip()
-    captcha_token = str(data.get('captcha_token', '')).strip()
+    is_multipart = request.content_type and 'multipart' in request.content_type
+    if is_multipart:
+        src = request.form
+        avatar_file = request.files.get('avatar')
+        def _g(k): return str(src.get(k, '')).strip()
+        privacy_accepted = src.get('privacy_accepted') in ('true', '1', 'True', 'on')
+    else:
+        data = request.get_json(silent=True) or {}
+        src = data
+        avatar_file = None
+        def _g(k): return str(data.get(k, '')).strip()
+        privacy_accepted = bool(data.get('privacy_accepted'))
+
+    full_name = _g('full_name')
+    username = _normalize_username(src.get('username', ''))
+    email = _g('email')
+    phone = _g('phone')
+    job_title = _g('job_title')
+    gender = _g('gender')
+    birth_date = _g('birth_date')
+    password = _g('password')
+    confirm_password = _g('confirm_password')
+    security_question = _g('security_question')
+    security_answer = _g('security_answer')
+    captcha_answer = _g('captcha_answer')
+    captcha_token = _g('captcha_token')
 
     required = [
         full_name,
@@ -141,6 +170,16 @@ def api_register():
                 now,
             ),
         )
+
+    if avatar_file:
+        try:
+            ext = os.path.splitext(avatar_file.filename or '')[1].lower()
+            if ext not in {'.jpg', '.jpeg', '.png', '.webp'}:
+                ext = '.jpg'
+            os.makedirs(_AVATAR_DIR, exist_ok=True)
+            avatar_file.save(os.path.join(_AVATAR_DIR, f'{username}{ext}'))
+        except Exception:
+            pass
 
     session.pop('register_captcha', None)
     return jsonify({'success': True, 'message': 'تم إرسال طلب التسجيل بنجاح. بانتظار موافقة الأدمن.'})

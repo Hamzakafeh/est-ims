@@ -333,7 +333,7 @@ const WELCOME_LANG = {
       devHighlight1: 'Real-time SSE for live QC updates across all connected devices',
       devHighlight2: 'Zone-based access control with single-session enforcement per user',
       devHighlight3: 'Excel-based inventory engine with openpyxl for data persistence and export',
-      footerCopyText: 'Copyright 2026 &nbsp;|&nbsp; Alestesharia Animal Nutrition &nbsp;|&nbsp; All Rights Reserved &copy;',
+      footerCopyText: 'Copyright 2026 &nbsp;|&nbsp; EST-iMs © &nbsp;|&nbsp; All Rights Reserved',
       footerDevText: 'Developed By'
     }
   },
@@ -356,7 +356,7 @@ const WELCOME_LANG = {
       devHighlight1: 'SSE الفوري لتحديثات ضبط الجودة المباشرة عبر جميع الأجهزة المتصلة',
       devHighlight2: 'تحكم بالوصول قائم على المناطق مع تطبيق جلسة مفردة لكل مستخدم',
       devHighlight3: 'محرك مخزون قائم على Excel مع openpyxl لاستمرارية البيانات والتصدير',
-      footerCopyText: 'حقوق النشر 2026 &nbsp;|&nbsp; الاستشارية للتغذية الحيوانية &nbsp;|&nbsp; جميع الحقوق محفوظة &copy;',
+      footerCopyText: 'حقوق النشر 2026 &nbsp;|&nbsp; EST-iMs © &nbsp;|&nbsp; جميع الحقوق محفوظة',
       footerDevText: 'تطوير بواسطة'
     }
   }
