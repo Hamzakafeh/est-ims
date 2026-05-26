@@ -298,6 +298,12 @@
     font-size: 26px; font-weight: 800; letter-spacing: 3px;
     text-transform: uppercase;
     color: var(--text-main);
+    margin-bottom: 4px;
+  }
+  .login-subtitle {
+    text-align: center;
+    font-size: 11px; color: var(--accent-cyan);
+    letter-spacing: 1.2px; text-transform: uppercase;
     margin-bottom: 28px;
   }
 
