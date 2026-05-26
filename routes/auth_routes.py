@@ -4,7 +4,7 @@ import secrets
 from datetime import datetime
 from flask import Blueprint, render_template, jsonify, request, session, redirect, url_for
 from core import (
-    APP_DIR,
+    DATA_STORE_DIR,
     _get_ip,
     _normalize_username,
     _normalize_text,
@@ -24,7 +24,7 @@ from core import (
     zone_required,
 )
 
-_AVATAR_DIR = os.path.join(APP_DIR, 'static', 'avatars')
+_AVATAR_DIR = os.path.join(DATA_STORE_DIR, 'avatars')
 
 auth_bp = Blueprint('auth', __name__)
 

@@ -3,7 +3,7 @@ import secrets
 import threading
 from datetime import datetime
 from flask import Blueprint, render_template, jsonify, request, session, redirect, url_for, send_from_directory
-from core import APP_DIR
+from core import DATA_STORE_DIR
 from core import (
     _get_ip,
     _normalize_username,
@@ -171,14 +171,24 @@ def force_logout_other():
     return jsonify({'success': True, 'message': 'تم تسجيل الخروج من الجهاز الآخر'})
 
 
-_AVATAR_DIR = os.path.join(APP_DIR, 'static', 'avatars')
+_AVATAR_DIR = os.path.join(DATA_STORE_DIR, 'avatars')
 
 
 def _avatar_url(username):
     for ext in ('jpg', 'jpeg', 'png', 'webp'):
         if os.path.isfile(os.path.join(_AVATAR_DIR, f'{username}.{ext}')):
-            return f'/static/avatars/{username}.{ext}'
+            return f'/api/avatar/{username}'
     return None
+
+
+@zone_bp.route('/api/avatar/<username>')
+def api_serve_avatar(username):
+    for ext in ('jpg', 'jpeg', 'png', 'webp'):
+        path = os.path.join(_AVATAR_DIR, f'{username}.{ext}')
+        if os.path.isfile(path):
+            return send_from_directory(_AVATAR_DIR, f'{username}.{ext}')
+    from flask import abort
+    abort(404)
 
 
 @zone_bp.route('/api/profile/avatar', methods=['POST'])
@@ -203,7 +213,7 @@ def api_profile_avatar():
             pass
     filename = f'{username}{ext}'
     photo.save(os.path.join(_AVATAR_DIR, filename))
-    return jsonify({'success': True, 'avatar_url': f'/static/avatars/{filename}?v={secrets.token_hex(4)}'})
+    return jsonify({'success': True, 'avatar_url': f'/api/avatar/{username}?v={secrets.token_hex(4)}'})
 
 
 @zone_bp.route('/api/profile')
