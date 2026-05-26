@@ -7,7 +7,7 @@ const LOGIN_LANG = {
     userLabel: 'Username', passLabel: 'Password',
     userPlaceholder: 'Enter username', passPlaceholder: 'Enter password',
     signIn: 'Sign In', signingIn: 'Signing in...', success: '✓ Success',
-    signUp: 'Sign Up', forgotPw: 'Forgot password?',
+    signUp: 'Sign Up', forgotPw: 'Forgot password?', noAccount: "Don't Have An Account?",
     morning: 'Good morning ☀️', afternoon: 'Good afternoon 🌤️',
     evening: 'Good evening 🌆', night: 'Good night 🌙'
   },
@@ -18,7 +18,7 @@ const LOGIN_LANG = {
     userLabel: 'اسم المستخدم', passLabel: 'كلمة المرور',
     userPlaceholder: 'أدخل اسم المستخدم', passPlaceholder: 'أدخل كلمة المرور',
     signIn: 'تسجيل الدخول', signingIn: 'جاري الدخول...', success: '✓ تم',
-    signUp: 'إنشاء حساب', forgotPw: 'نسيت كلمة المرور؟',
+    signUp: 'إنشاء حساب', forgotPw: 'نسيت كلمة المرور؟', noAccount: 'ليس لديك حساب؟',
     morning: 'صباح الخير ☀️', afternoon: 'مساء الخير 🌤️',
     evening: 'مساء النور 🌆', night: 'تصبح على خير 🌙'
   }
@@ -38,10 +38,6 @@ function applyLoginLang(lang) {
   const subEl = document.querySelector('.login-subtitle');
   if (subEl) subEl.textContent = t.subtitle;
 
-  const labels = document.querySelectorAll('.field-label');
-  if (labels[0]) labels[0].textContent = t.userLabel;
-  if (labels[1]) labels[1].textContent = t.passLabel;
-
   const userIn = document.getElementById('username');
   if (userIn) userIn.placeholder = t.userPlaceholder;
   const passIn = document.getElementById('password');
@@ -55,9 +51,12 @@ function applyLoginLang(lang) {
     if (!busy.includes(cur)) btnText.textContent = t.signIn;
   }
 
-  const links = document.querySelectorAll('.login-link-disabled');
-  if (links[0]) links[0].textContent = t.signUp;
-  if (links[1]) links[1].textContent = t.forgotPw;
+  const signupLink = document.getElementById('loginLinkSignup');
+  if (signupLink) signupLink.textContent = t.signUp;
+  const forgotLink = document.getElementById('loginLinkForgot');
+  if (forgotLink) forgotLink.textContent = t.forgotPw;
+  const noAccount = document.getElementById('loginNoAccount');
+  if (noAccount) noAccount.textContent = t.noAccount;
 
   const backLbl = document.getElementById('dockBackLabel');
   if (backLbl) backLbl.textContent = t.backLabel;
