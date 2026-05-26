@@ -1,5 +1,6 @@
 """Public and main application pages."""
-from flask import Blueprint, render_template, redirect, url_for, session, send_from_directory
+from flask import Blueprint, render_template, redirect, url_for, session, send_from_directory, make_response
+import os
 from core import (
     zone_required,
     get_structure,
@@ -14,6 +15,16 @@ pages_bp = Blueprint('pages', __name__)
 @pages_bp.route('/favicon.ico')
 def favicon():
     return send_from_directory('static/icons', 'est.ico')
+
+
+@pages_bp.route('/qc-sw.js')
+def qc_service_worker():
+    """Serve SW from root so it controls /qc-workflow scope."""
+    resp = make_response(send_from_directory('static', 'qc-sw.js'))
+    resp.headers['Content-Type'] = 'application/javascript'
+    resp.headers['Service-Worker-Allowed'] = '/'
+    resp.headers['Cache-Control'] = 'no-cache'
+    return resp
 
 
 @pages_bp.route('/ping')

@@ -183,7 +183,7 @@ function _showIosInstallBanner(){
 async function registerServiceWorker(){
   if(!('serviceWorker' in navigator)) return;
   try {
-    const reg = await navigator.serviceWorker.register('/static/qc-sw.js', { scope: '/' });
+    const reg = await navigator.serviceWorker.register('/qc-sw.js');
     await subscribeToPush(reg);
   } catch(e){ console.warn('SW register failed', e); }
 }
