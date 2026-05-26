@@ -103,6 +103,7 @@ def push_subscribe():
         subs = _read_push_subs()
         subs[sub_key] = {
             'username': username,
+            'qc_role': str(data.get('qc_role', '')),
             'subscription': subscription,
             'saved_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         }

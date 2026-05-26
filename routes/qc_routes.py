@@ -29,6 +29,33 @@ _QC_CHAT_MAX = 200
 VERIFIED_QC_USERS = {'mlo5'}
 
 
+# ── Push notification helpers ────────────────────────────────────────────────
+
+def _push_bg(target, *args, **kwargs):
+    threading.Thread(target=target, args=args, kwargs=kwargs, daemon=True).start()
+
+def _do_push_to_qc(title, body, tag='qc-new'):
+    from core import _read_push_subs, _send_push_notification
+    for s in _read_push_subs().values():
+        if s.get('qc_role') == 'qc':
+            _send_push_notification(s['subscription'], title, body, tag=tag)
+
+def _do_push_to_user(username, title, body, tag='qc-status'):
+    from core import _read_push_subs, _send_push_notification
+    for s in _read_push_subs().values():
+        if s.get('username') == username:
+            _send_push_notification(s['subscription'], title, body, tag=tag)
+
+def _do_push_to_all_except(exclude, title, body, tag='qc-chat'):
+    from core import _read_push_subs, _send_push_notification
+    seen = set()
+    for s in _read_push_subs().values():
+        u = s.get('username', '')
+        if u and u != exclude and u not in seen:
+            seen.add(u)
+            _send_push_notification(s['subscription'], title, body, tag=tag)
+
+
 @qc_bp.route('/qc-workflow')
 @zone_required
 def qc_workflow_page():
@@ -145,6 +172,9 @@ def api_qc_submissions():
         _broadcast_qc_event(sse_payload)
     except Exception:
         pass
+    # Push notification to QC reviewers (background)
+    submitter = session.get('username', '')
+    _push_bg(_do_push_to_qc, 'New QC Submission', f'Photo from {submitter} is waiting for review', tag='qc-new')
     return jsonify({'success': True, 'item': item})
 
 
@@ -226,6 +256,9 @@ def api_qc_chat_post():
         _broadcast_qc_event(sse_payload)
     except Exception:
         pass
+    # Push chat message to all other QC users (background)
+    preview = text[:80] + ('…' if len(text) > 80 else '')
+    _push_bg(_do_push_to_all_except, username, 'QC Chat', f'{username}: {preview}', tag='qc-chat')
     return jsonify({'success': True, 'message': msg})
 
 
@@ -261,4 +294,11 @@ def api_qc_submission_status(item_id):
             _broadcast_qc_event(sse_payload)
         except Exception:
             pass
+        # Push notification to the labeling assistant who submitted the photo
+        creator = updated.get('created_by', '')
+        if creator:
+            label = {'approved': 'Approved', 'rejected': 'Rejected', 'pending': 'Pending'}.get(status, status.capitalize())
+            note = updated.get('review_note', '')
+            body = note if note else f'Your photo was marked {label}'
+            _push_bg(_do_push_to_user, creator, f'Photo #{item_id} — {label}', body, tag='qc-status')
     return jsonify({'success': True})

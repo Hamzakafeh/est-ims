@@ -897,3 +897,48 @@ html.light .chat-input { background: rgba(0,0,0,0.03); }
     border-radius: 16px;
   }
 }
+
+/* ── Small phone (≤480px) — clean up topbar & panels ── */
+@media (max-width: 480px) {
+  /* Topbar: hide username/role badge to avoid overflow */
+  .topbar { padding: 8px 12px; gap: 6px; }
+  .topbar > .topbar-actions > .badge { display: none; }
+  .brand { font-size: 13px; }
+  .brand img { width: 22px; height: 22px; border-radius: 6px; }
+  .back-btn { padding: 5px 9px; font-size: 12px; gap: 4px; }
+  .topbar-actions { gap: 5px; }
+  .icon-btn { width: 32px; height: 32px; border-radius: 7px; }
+
+  /* Notification banner: stack vertically */
+  #notifBanner { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px 14px; }
+  #notifBanner button { margin-left: 0; width: 100%; justify-content: center; }
+
+  /* Presence bar: smaller text and tighter padding */
+  .presence-sidebar { padding: 8px 12px !important; gap: 5px; }
+  .presence-item { padding: 3px 8px; font-size: 10px; }
+  .presence-title { gap: 6px; }
+
+  /* Hero */
+  .hero { gap: 12px; margin-bottom: 14px; }
+  .hero h1 { font-size: 26px; }
+  .hero-badge { font-size: 9px; padding: 3px 8px; }
+
+  /* Panels */
+  .panel { border-radius: 16px; }
+  .panel-head { padding: 12px 14px 10px; gap: 8px; }
+  .panel-body { padding: 12px 12px; }
+  .panel-head strong { font-size: 13px; }
+
+  /* Item cards */
+  .item-body { padding: 10px 12px 12px; }
+  .meta { font-size: 10px; gap: 6px; }
+  .actions { gap: 5px; }
+  .btn { padding: 7px 12px; font-size: 12px; }
+
+  /* Submit grid */
+  .submit-grid { gap: 10px; }
+
+  /* Modals */
+  .modal-box { padding: 22px 16px 18px; margin: 12px; }
+  .delete-card { padding: 24px 16px 18px; }
+}

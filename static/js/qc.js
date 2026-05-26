@@ -1,3 +1,12 @@
+// Bootstrap window.QC_CONFIG + window.QC_FIREBASE_CONFIG from JSON data island
+(function(){
+  const el = document.getElementById('qc-cfg');
+  if(!el) return;
+  const d = JSON.parse(el.textContent);
+  window.QC_CONFIG         = { qc_role: d.qc_role, username: d.username, verified_users: d.verified_users };
+  window.QC_FIREBASE_CONFIG = d.firebase_config;
+})();
+
 // ══════════════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════════════
@@ -206,7 +215,7 @@ async function subscribeToPush(reg){
     await fetch('/api/push/subscribe', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ subscription: sub.toJSON() })
+      body: JSON.stringify({ subscription: sub.toJSON(), qc_role: window.QC_CONFIG?.qc_role || '' })
     });
   } catch(e){
     console.warn('Push subscribe failed:', e);
@@ -363,7 +372,6 @@ async function loadItems(){
       for(const item of items){
         const prev = _lastStatuses[item.id];
         if(prev !== undefined && prev !== item.status){
-          playSound('lebelass.wav');
           showBrowserNotif(`Photo #${item.id} — ${item.status.toUpperCase()}`, item.review_note ? `Note: ${item.review_note}` : `Your photo was marked as ${item.status}`);
           toast(t.statusChange(item.id, item.status));
           break;
@@ -650,7 +658,6 @@ function connectSSE(){
         _allItems[idx] = updated;
         if(role === 'labeling' && prev !== updated.status){
           const t = QC_LANG[qcLang];
-          playSound('lebelass.wav');
           showBrowserNotif(`Photo #${updated.id} — ${updated.status.toUpperCase()}`, updated.review_note ? `Note: ${updated.review_note}` : `Marked as ${updated.status}`);
           toast(t.statusChange(updated.id, updated.status));
         }
