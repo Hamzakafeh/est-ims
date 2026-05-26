@@ -554,20 +554,20 @@ html.light .stat-chip { background: rgba(255,255,255,0.75); border-color: rgba(0
 
 /* ── BACK TO TOP ── */
 .back-to-top {
-  position: fixed; bottom: 164px; right: 28px; z-index: 500;
-  width: 44px; height: 44px; border-radius: 14px;
+  position: fixed; bottom: 28px; right: 96px; z-index: 500;
+  width: 56px; height: 56px; border-radius: 18px;
   background: rgba(13,17,23,0.72); backdrop-filter: blur(14px);
-  border: 1px solid rgba(59,130,246,0.38);
+  border: 1px solid rgba(59,130,246,0.35);
   color: var(--accent-blue); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   opacity: 0; pointer-events: none;
-  transform: translateY(10px);
-  transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 16px rgba(59,130,246,0.18);
+  transform: translateY(12px) scale(0.9);
+  transition: opacity 0.3s ease, transform 0.35s cubic-bezier(.34,1.56,.64,1), background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 8px 28px rgba(59,130,246,0.2);
 }
-html.light .back-to-top { background: rgba(255,255,255,0.88); border-color: rgba(37,99,235,0.28); box-shadow: 0 4px 16px rgba(37,99,235,0.1); }
-.back-to-top.visible { opacity: 1; pointer-events: all; transform: translateY(0); }
-.back-to-top:hover { background: rgba(59,130,246,0.18); border-color: var(--accent-blue); box-shadow: 0 6px 24px rgba(59,130,246,0.32); transform: translateY(-3px); }
+html.light .back-to-top { background: rgba(255,255,255,0.88); border-color: rgba(37,99,235,0.28); box-shadow: 0 8px 24px rgba(37,99,235,0.12); }
+.back-to-top.visible { opacity: 1; pointer-events: all; transform: translateY(0) scale(1); }
+.back-to-top:hover { background: rgba(59,130,246,0.2); border-color: var(--accent-blue); box-shadow: 0 12px 36px rgba(59,130,246,0.38); transform: translateY(-4px) scale(1.08); }
 html.light .back-to-top:hover { background: rgba(37,99,235,0.1); }
 
 /* ── RESPONSIVE ── */
@@ -607,7 +607,7 @@ html.light .back-to-top:hover { background: rgba(37,99,235,0.1); }
   .ai-fab { bottom: 76px !important; right: 16px; }
   .qr-scan-fab { bottom: 140px !important; right: 16px; width: 52px; height: 52px; border-radius: 16px; }
   .ai-panel { bottom: 140px !important; max-height: 60vh !important; right: 10px; width: calc(100vw - 20px) !important; }
-  .back-to-top { bottom: 204px !important; right: 16px; width: 40px; height: 40px; }
+  .back-to-top { bottom: 76px !important; right: 84px; width: 52px; height: 52px; border-radius: 16px; }
   .quick-scan-overlay { align-items: flex-start; padding: 14px; }
   .quick-scan-modal { max-height: calc(100vh - 96px); margin-top: 12px; }
   .quick-scan-body { padding: 24px 16px 18px; }
