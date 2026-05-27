@@ -2279,8 +2279,8 @@ async function loadAdminRequests() {
             </div>
             <div>
               <div style="font-size:15px;font-weight:700;color:var(--text-main);">${escHtml(r.full_name || '—')}</div>
-              <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">@${escHtml(r.username || '—')} â€¢ ${escHtml(r.job_title || '—')}</div>
-              <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">${escHtml(r.email || '—')} â€¢ ${escHtml(r.phone || '—')}</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">@${escHtml(r.username || '—')} • ${escHtml(r.job_title || '—')}</div>
+              <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">${escHtml(r.email || '—')} • ${escHtml(r.phone || '—')}</div>
               <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Security Q: ${escHtml(r.security_question || '—')}</div>
               <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">${escHtml(r.created_at || '—')}</div>
             </div>
@@ -2325,12 +2325,7 @@ const ADMIN_SECURITY_QUESTIONS = [
   'What is your mother\'s maiden name?',
   'What city were you born in?',
   'What is the name of your favorite teacher?',
-  'What was your first phone number?',
-  'Ù…Ø§ Ø§Ø³Ù… Ø£ÙˆÙ„ Ù…Ø¯Ø±Ø³Ø© Ø§Ù„ØªØ­Ù‚Øª Ø¨Ù‡Ø§ØŸ',
-  'Ù…Ø§ Ø§Ø³Ù… Ø¹Ø§Ø¦Ù„Ø© ÙˆØ§Ù„Ø¯ØªÙƒ Ù‚Ø¨Ù„ Ø§Ù„Ø²ÙˆØ§Ø¬ØŸ',
-  'ÙÙŠ Ø£ÙŠ Ù…Ø¯ÙŠÙ†Ø© ÙˆÙ„Ø¯ØªØŸ',
-  'Ù…Ø§ Ø§Ø³Ù… Ù…Ø¹Ù„Ù…Ùƒ Ø§Ù„Ù…ÙØ¶Ù„ØŸ',
-  'Ù…Ø§ Ù‡Ùˆ Ø£ÙˆÙ„ Ø±Ù‚Ù… Ù‡Ø§ØªÙ Ø§Ø³ØªØ®Ø¯Ù…ØªÙ‡ØŸ'
+  'What was your first phone number?'
 ];
 function adminSecurityOptions(current) {
   const value = String(current || '');
