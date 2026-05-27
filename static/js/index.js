@@ -76,6 +76,7 @@ function _showForceLogout(status, message) {
       })
       .catch(() => {});
   }
+  _poll();
   setInterval(_poll, 15000);
 })();
 
