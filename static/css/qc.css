@@ -682,6 +682,22 @@ html.light .delete-card {
   border-radius: 0;
   display: block;
 }
+.chat-fab-initial {
+  font-size: 20px; font-weight: 800; color: #fff; line-height: 1; pointer-events: none;
+}
+
+/* ── Presence avatar ── */
+.presence-avatar {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  color: #fff; font-size: 11px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; overflow: hidden; position: relative;
+}
+.presence-avatar-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover; display: none;
+}
 .chat-fab:hover { transform: translateY(-3px) scale(1.07); box-shadow: 0 14px 40px rgba(59,130,246,0.55); }
 .chat-fab:active { transform: scale(0.94); }
 .chat-fab-badge {

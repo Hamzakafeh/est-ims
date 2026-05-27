@@ -14,19 +14,20 @@ const role           = window.QC_CONFIG.qc_role;
 const CURRENT_USER   = window.QC_CONFIG.username;
 const VERIFIED_USERS = new Set((window.QC_CONFIG.verified_users || []).map(u => u.toLowerCase()));
 
-// ── Chat FAB avatar ──
+// ── Chat FAB avatar / initial ──
 (function () {
   if (!CURRENT_USER) return;
-  const img = document.getElementById('chatFabAvatar');
-  const icon = document.getElementById('chatFabIcon');
+  const img     = document.getElementById('chatFabAvatar');
+  const initial = document.getElementById('chatFabInitial');
   if (!img) return;
+  if (initial) initial.textContent = CURRENT_USER.charAt(0).toUpperCase();
   img.onload = function () {
     img.style.display = 'block';
-    if (icon) icon.style.display = 'none';
+    if (initial) initial.style.display = 'none';
   };
   img.onerror = function () {
     img.style.display = 'none';
-    if (icon) icon.style.display = '';
+    if (initial) initial.style.display = '';
   };
   img.src = '/api/avatar/' + CURRENT_USER;
 })();
@@ -333,10 +334,12 @@ function renderPresence(users){
     const isVerified = VERIFIED_USERS.has(u.username.toLowerCase());
     const roleClass  = u.role === 'qc' ? 'qc' : 'lab';
     const roleLabel  = u.role === 'qc' ? 'QC' : 'Label';
+    const initial    = esc(u.username.charAt(0).toUpperCase());
     const verifiedSvg = isVerified
       ? `<span class="verified-badge" title="Verified"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>`
       : '';
     return `<div class="presence-item${isMe?' me':''}">
+      <div class="presence-avatar">${initial}<img class="presence-avatar-img" src="/api/avatar/${esc(u.username)}" onload="this.style.display='block'" onerror="this.style.display='none'"></div>
       <span class="presence-dot ${roleClass}"></span>
       <span class="presence-name">${esc(u.username)}${verifiedSvg}${isMe ? `<span style="font-size:9px;color:var(--dim);margin-left:2px">${t.me}</span>` : ''}</span>
       <span class="presence-role">${roleLabel}</span>
