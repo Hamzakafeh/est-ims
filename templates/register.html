@@ -5,23 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EST-iMs | Register</title>
 <link rel="icon" type="image/x-icon" href="/static/icons/low1.ico">
+<link rel="stylesheet" href="/static/css/side-dock.css">
 <link rel="stylesheet" href="/static/css/register.css">
 </head>
 <body>
 <div class="blob blob-1"></div>
 <div class="blob blob-2"></div>
 <div class="grid-overlay"></div>
-<div class="topbar">
-  <div class="topbar-left">
-    <a href="/login" class="back-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg><span id="backText">Back</span></a>
-    <span class="topbar-title" id="topbarTitle">Registration</span>
+
+<div class="side-dock">
+  <div class="dock-item" onclick="toggleTheme()">
+    <div class="dock-icon">
+      <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </div>
+    <div class="dock-label">Light Mode</div>
   </div>
-  <div class="topbar-actions">
-    <button class="icon-btn lang-btn" type="button" onclick="toggleAuthLang()" id="langBtn">عربي</button>
-    <button class="icon-btn" type="button" onclick="toggleTheme()" title="Toggle theme">
-      <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-      <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    </button>
+  <div class="dock-item" onclick="window.location.href='/login'">
+    <div class="dock-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div class="dock-label">Back</div>
+  </div>
+  <div class="dock-item" onclick="toggleAuthLang()">
+    <div class="dock-icon"><span class="lang-switch-text" id="langDockText">AR</span></div>
+    <div class="dock-label" id="langDockLabel">Language</div>
   </div>
 </div>
 <div class="main">
@@ -66,7 +72,7 @@
             </div>
           </div>
         </div>
-        <div class="field full"><label id="captchaLabel">Captcha</label><div class="recaptcha-wrap"><div class="g-recaptcha" id="recaptchaWidget" data-sitekey="{{ recaptcha_site_key }}"></div></div><div class="helper" id="captchaHelp">Complete the captcha to confirm the request is human.</div></div>
+        <div class="field full"><label id="captchaLabel">Captcha</label><div class="recaptcha-wrap"><div class="g-recaptcha" id="recaptchaWidget" data-sitekey="{{ recaptcha_site_key }}"></div></div></div>
         <div class="field full"><label class="check-row"><input id="privacyAccepted" type="checkbox"><span id="privacyText">I agree to the <a href="/privacy" target="_blank">Privacy Policy</a> and <a href="/terms" target="_blank">Terms of Use</a></span></label></div>
       </div>
       <div class="actions"><button class="btn btn-primary" type="submit" id="submitBtn">Send request</button><a class="btn btn-ghost" href="/login" id="loginBackBtn">Back to login</a></div>

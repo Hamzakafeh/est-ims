@@ -2396,7 +2396,7 @@ function openAdminUserDetail(id) {
       <div class="admin-dz-label">Suspend Account</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
         <input id="suspendMinutes" type="number" min="1" max="43200" value="60" placeholder="Minutes" style="width:100px;">
-        <button class="btn btn-purple" style="padding:8px 14px;font-size:12px;" onclick="suspendAdminUser(${Number(u.id)})">Suspend</button>
+        <button class="btn" style="padding:8px 14px;font-size:12px;background:#ef4444;color:#fff;border:none;" onclick="suspendAdminUser(${Number(u.id)})">Suspend</button>
         <button class="btn btn-ghost" style="padding:8px 14px;font-size:12px;" onclick="unsuspendAdminUser(${Number(u.id)})">Unsuspend</button>
       </div>
     </div>
@@ -2405,7 +2405,7 @@ function openAdminUserDetail(id) {
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <input id="adminNewPassword" type="password" placeholder="New password" style="flex:1 1 160px;">
         <input id="adminConfirmPassword" type="password" placeholder="Confirm password" style="flex:1 1 160px;">
-        <button class="btn btn-purple" style="padding:8px 14px;font-size:12px;" onclick="resetAdminUserPassword(${Number(u.id)})">Save Password</button>
+        <button class="btn" style="padding:8px 14px;font-size:12px;background:#3b82f6;color:#fff;border:none;" onclick="resetAdminUserPassword(${Number(u.id)})">Save Password</button>
       </div>
     </div>
     <div class="admin-danger-zone">
@@ -2413,14 +2413,41 @@ function openAdminUserDetail(id) {
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <select id="adminSecurityQuestion" style="flex:2 1 220px;">${adminSecurityOptions(u.security_question)}</select>
         <input id="adminSecurityAnswer" type="text" placeholder="New security answer" style="flex:1 1 160px;">
-        <button class="btn btn-purple" style="padding:8px 14px;font-size:12px;" onclick="resetAdminUserSecurity(${Number(u.id)})">Save Question</button>
+        <button class="btn" style="padding:8px 14px;font-size:12px;background:#f59e0b;color:#000;border:none;" onclick="resetAdminUserSecurity(${Number(u.id)})">Save Question</button>
       </div>
     </div>
     <div class="admin-danger-zone" id="adminZonesSection_${Number(u.id)}">
       <div class="admin-dz-label">Zone Access</div>
       <div id="adminZonesBody_${Number(u.id)}" style="margin-bottom:10px;color:var(--text-dim);font-size:12px;">Loading...</div>
-      <button class="btn btn-purple" style="padding:8px 14px;font-size:12px;" onclick="saveAdminUserZones(${Number(u.id)})">Save Zones</button>
+      <button class="btn" style="padding:8px 14px;font-size:12px;background:#10b981;color:#fff;border:none;" onclick="saveAdminUserZones(${Number(u.id)})">Save Zones</button>
       <button class="btn btn-ghost" style="padding:8px 14px;font-size:12px;" onclick="clearAdminUserZones(${Number(u.id)})">Allow All Zones</button>
+    </div>
+    <div class="admin-danger-zone">
+      <div class="admin-dz-label">Permissions</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px 20px;margin-bottom:10px;">
+        <label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;color:var(--text-muted);">
+          <input type="checkbox" id="perm_switch_${Number(u.id)}" ${u.perm_switch_zones ? 'checked' : ''} style="accent-color:#3b82f6;">
+          Switch Zones
+        </label>
+        <label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;color:var(--text-muted);">
+          <input type="checkbox" id="perm_edit_${Number(u.id)}" ${u.can_edit ? 'checked' : ''} style="accent-color:#3b82f6;">
+          Edit Inventory
+        </label>
+        <label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;color:var(--text-muted);">
+          <input type="checkbox" id="perm_manage_${Number(u.id)}" ${u.perm_manage_permissions ? 'checked' : ''} style="accent-color:#3b82f6;">
+          Manage Permissions
+        </label>
+      </div>
+      <button class="btn" style="padding:8px 14px;font-size:12px;background:#6366f1;color:#fff;border:none;" onclick="saveAdminUserPerms(${Number(u.id)})">Save Permissions</button>
+    </div>
+    <div class="admin-danger-zone">
+      <div class="admin-dz-label">Verified Badge</div>
+      <label style="display:inline-flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;color:var(--text-muted);margin-bottom:10px;">
+        <input type="checkbox" id="verifiedBadge_${Number(u.id)}" ${u.is_verified ? 'checked' : ''} style="accent-color:#3b82f6;">
+        Show ✓ verified badge next to username
+      </label>
+      <br>
+      <button class="btn" style="padding:8px 14px;font-size:12px;background:#3b82f6;color:#fff;border:none;" onclick="saveAdminUserVerified(${Number(u.id)})">Save Badge</button>
     </div>
     <div class="admin-danger-zone" style="border-color:rgba(239,68,68,0.3);">
       <div class="admin-dz-label" style="color:#ef4444;">Danger Zone</div>
@@ -2472,6 +2499,34 @@ async function clearAdminUserZones(id) {
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
     toast('All zones allowed', true);
     loadAdminUserZones(id);
+  } catch(e) { toast(e.message || 'Failed', false); }
+}
+
+async function saveAdminUserPerms(id) {
+  const switchZones = document.getElementById(`perm_switch_${id}`)?.checked || false;
+  const canEdit = document.getElementById(`perm_edit_${id}`)?.checked || false;
+  const managePerms = document.getElementById(`perm_manage_${id}`)?.checked || false;
+  try {
+    const res = await fetch(`/api/admin/registered_users/${id}/permissions`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ switch_zones: switchZones, can_edit: canEdit, manage_permissions: managePerms })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
+    toast('Permissions saved', true);
+  } catch(e) { toast(e.message || 'Failed', false); }
+}
+
+async function saveAdminUserVerified(id) {
+  const isVerified = document.getElementById(`verifiedBadge_${id}`)?.checked || false;
+  try {
+    const res = await fetch(`/api/admin/registered_users/${id}/toggle_verified`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ is_verified: isVerified })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
+    toast('Verified badge updated', true);
   } catch(e) { toast(e.message || 'Failed', false); }
 }
 

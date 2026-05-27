@@ -86,7 +86,7 @@
     background: rgba(6,182,212,0.08);
   }
   .lang-btn:hover { background: rgba(6,182,212,0.16); }
-  .main { position: relative; z-index: 10; max-width: 900px; margin: 0 auto; padding: 44px 24px 80px; }
+  .main { position: relative; z-index: 10; max-width: 900px; margin: 0 auto; padding: 44px 24px 80px 60px; }
   .hero { text-align: center; margin-bottom: 32px; animation: fadeUp 0.5s ease both; }
   .hero-logo {
     width: 80px; height: 80px; border-radius: 22px;
@@ -186,5 +186,5 @@
   .avatar-upload-actions { display: flex; flex-direction: column; gap: 8px; }
 
   @keyframes fadeUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
-  @media (max-width: 700px) { .cards-grid, .form-grid { grid-template-columns: 1fr; } .main { padding: 32px 16px 64px; } }
+  @media (max-width: 700px) { .cards-grid, .form-grid { grid-template-columns: 1fr; } .main { padding: 32px 16px 90px; } }
   @media (max-width: 520px) { .topbar { padding: 0 12px; } .topbar-title { display: none; } .back-btn span { display: none; } .hero { margin-bottom: 24px; } .section, .info-card { padding: 20px; } .actions .btn { flex: 1 1 140px; } }

@@ -1,13 +1,15 @@
 // ── LANGUAGE ──
 const LOGIN_LANG = {
   en: {
-    title: 'EST-iMs ©', subtitle: 'Limited Access',
+    title: 'EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-left:2px">©</sup>',
+    subtitle: 'Limited Access',
     backLabel: 'Back', themeLight: 'Light Mode', themeDark: 'Dark Mode',
     langLabel: 'عربي',
     userLabel: 'Username', passLabel: 'Password',
     userPlaceholder: 'Enter username', passPlaceholder: 'Enter password',
     signIn: 'Sign In', signingIn: 'Signing in...', success: '✓ Success',
     signUp: 'Sign Up', forgotPw: 'Forgot password?', noAccount: "Don't Have An Account?",
+    rememberMe: 'Remember me',
     morning: 'Good morning ☀️', afternoon: 'Good afternoon 🌤️',
     evening: 'Good evening 🌆', night: 'Good night 🌙'
   },
@@ -19,6 +21,7 @@ const LOGIN_LANG = {
     userPlaceholder: 'أدخل اسم المستخدم', passPlaceholder: 'أدخل كلمة المرور',
     signIn: 'تسجيل الدخول', signingIn: 'جاري الدخول...', success: '✓ تم',
     signUp: 'إنشاء حساب', forgotPw: 'نسيت كلمة المرور؟', noAccount: 'ليس لديك حساب؟',
+    rememberMe: 'تذكرني',
     morning: 'صباح الخير ☀️', afternoon: 'مساء الخير 🌤️',
     evening: 'مساء النور 🌆', night: 'تصبح على خير 🌙'
   }
@@ -34,7 +37,7 @@ function applyLoginLang(lang) {
   document.documentElement.dir  = isAr ? 'rtl' : 'ltr';
 
   const titleEl = document.querySelector('.login-title');
-  if (titleEl) titleEl.textContent = t.title;
+  if (titleEl) titleEl.innerHTML = t.title;
   const subEl = document.querySelector('.login-subtitle');
   if (subEl) subEl.textContent = t.subtitle;
 
@@ -57,6 +60,8 @@ function applyLoginLang(lang) {
   if (forgotLink) forgotLink.textContent = t.forgotPw;
   const noAccount = document.getElementById('loginNoAccount');
   if (noAccount) noAccount.textContent = t.noAccount;
+  const rmEl = document.getElementById('rememberMeText');
+  if (rmEl) rmEl.textContent = t.rememberMe;
 
   const backLbl = document.getElementById('dockBackLabel');
   if (backLbl) backLbl.textContent = t.backLabel;

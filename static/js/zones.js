@@ -253,8 +253,10 @@ function applyLang(lang) {
   document.querySelector('.zones-sub').textContent   = t.sub;
   document.querySelector('.zones-divider-text').textContent = t.mgmt;
   const dockItems = document.querySelectorAll('.dock-label');
-  // Welcome, Light/Dark, Lang, Logout
+  // Home, Light/Dark, Lang, Logout
   if (dockItems[0]) dockItems[0].textContent = t.welcome;
+  const dockLangText = document.getElementById('dockLangText');
+  if (dockLangText) dockLangText.textContent = isAr ? 'EN' : 'AR';
   if (document.getElementById('dockLangLabel')) document.getElementById('dockLangLabel').textContent = t.lang;
   // zone cards
   document.querySelectorAll('.zone-card').forEach(card => {

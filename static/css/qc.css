@@ -412,7 +412,7 @@ html.light .modal-textarea { background: rgba(0,0,0,.03); }
   position: relative; z-index: 10;
   flex: 1;
   min-width: 0;
-  padding: 32px 20px 80px;
+  padding: 32px 20px 80px 60px;
 }
 
 /* ── Presence Sidebar ── */
@@ -849,6 +849,7 @@ html.light .chat-input { background: rgba(0,0,0,0.03); }
 /* ── Mobile responsive ── */
 @media (max-width: 900px) {
   .page-layout { flex-direction: column; }
+  .main { padding: 24px 14px 90px 14px; }
   .presence-sidebar,
   .presence-sidebar.collapsed {
     width: 100% !important;

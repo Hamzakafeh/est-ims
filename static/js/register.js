@@ -20,7 +20,8 @@ function applyAuthLang(lang){
   authLang = lang; localStorage.setItem('est-lang', lang);
   const t = AUTH_LANG[lang]; const isAr = lang === 'ar';
   document.documentElement.lang = lang; document.documentElement.dir = isAr ? 'rtl' : 'ltr';
-  setText('langBtn', t.lang); setText('backText', t.back); setText('topbarTitle', t.topbar); setText('badgeText', t.badge); setText('heroTitle', t.heroTitle); setText('heroSub', t.heroSub);
+  const dockLang = document.getElementById('langDockText'); if (dockLang) dockLang.textContent = isAr ? 'EN' : 'AR';
+  setText('badgeText', t.badge); setText('heroTitle', t.heroTitle); setText('heroSub', t.heroSub);
   setText('card1Title', t.c1t); setText('card1Text', t.c1); setText('card2Title', t.c2t); setText('card2Text', t.c2); setText('formTitle', t.formTitle);
   setText('fullNameLabel', t.fullName); setText('usernameLabel', t.username); setText('emailLabel', t.email); setText('phoneLabel', t.phone); setText('jobTitleLabel', t.jobTitle); setText('genderLabel', t.gender); setText('birthDateLabel', t.birthDate); document.getElementById('privacyText').innerHTML = t.privacyText; setText('successTitle', t.successTitle); setText('successText', t.successText); setText('passwordLabel', t.password); setText('confirmPasswordLabel', t.confirmPassword); setText('securityQuestionLabel', t.securityQuestion); setText('securityAnswerLabel', t.securityAnswer); setText('captchaLabel', t.captcha); setText('captchaHelp', t.captchaHelp); setText('submitBtn', t.submit); setText('loginBackBtn', t.loginBack);
   const sel = document.getElementById('securityQuestion'); const current = sel.value; sel.innerHTML = ''; questions[lang].forEach(q => { const opt = document.createElement('option'); opt.value = q; opt.textContent = q; sel.appendChild(opt); }); if (questions[lang].includes(current)) sel.value = current;

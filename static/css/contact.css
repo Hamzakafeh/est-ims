@@ -184,7 +184,7 @@
     margin-bottom: 14px;
     display: flex; align-items: center; gap: 10px;
   }
-  .follow-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .follow-label::before, .follow-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
   .social-row { display: flex; flex-wrap: wrap; gap: 10px; }
   .social-btn {
     width: 44px; height: 44px; border-radius: 12px;
