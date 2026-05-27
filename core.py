@@ -41,6 +41,8 @@ _ACTIVE_SESSION_TTL = 8 * 60 * 60
 
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 LEGACY_AUTH_DB_FILE = os.path.join(APP_DIR, 'auth.sqlite3')
+APP_VERSION = 'V3.1.2.0'
+
 AUTH_DB_FILE = os.getenv(
     'AUTH_DB_FILE',
     os.path.join(os.getenv('RENDER_DISK_PATH', APP_DIR), 'auth.sqlite3')

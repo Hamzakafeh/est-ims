@@ -12,6 +12,7 @@ from core import (
     _db_connect,
     _user_suspension_remaining,
     _username_in_env,
+    APP_VERSION,
 )
 
 pages_bp = Blueprint('pages', __name__)
@@ -66,6 +67,7 @@ def index():
         username=username,
         login_time=session.get('login_time', ''),
         firebase_config=get_firebase_config(),
+        app_version=APP_VERSION,
     )
 
 

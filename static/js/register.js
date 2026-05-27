@@ -72,7 +72,7 @@ function validateRegisterForm(){
   if (!ok) setStatus(t.submitError, false);
   return ok;
 }
-function showSuccessModal(){ document.getElementById('successModal')?.classList.add('open'); }
+function showSuccessModal(){ const m = document.getElementById('successModal'); if(m) m.style.display = 'flex'; }
 document.getElementById('registerForm').addEventListener('submit', async e => {
   e.preventDefault();
   clearInvalid();

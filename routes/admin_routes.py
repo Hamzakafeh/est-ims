@@ -1,4 +1,5 @@
 import io
+import json
 import os
 import openpyxl
 from datetime import datetime, timedelta
@@ -7,8 +8,24 @@ from core import (
     zone_required, _db_connect, _normalize_username, _hash_secret,
     _is_single_login_exempt, _clear_active_session, AUTH_DB_FILE,
     CONTACT_MESSAGES_FILE, _read_json_list, _write_json_list, _data_lock,
-    _firebase_set_user_status, _firebase_clear_user_status,
+    _firebase_set_user_status, _firebase_clear_user_status, DATA_STORE_DIR,
 )
+
+USER_ZONES_FILE = os.path.join(DATA_STORE_DIR, 'user_zones.json')
+
+
+def _read_user_zones():
+    try:
+        with open(USER_ZONES_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+def _write_user_zones(data):
+    os.makedirs(DATA_STORE_DIR, exist_ok=True)
+    with open(USER_ZONES_FILE, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -346,4 +363,52 @@ def api_admin_contact_message_read(msg_id):
                 m['status'] = 'read'
                 break
         _write_json_list(CONTACT_MESSAGES_FILE, messages)
+    return jsonify({'success': True})
+
+
+@admin_bp.route('/api/admin/contact_messages/<int:msg_id>', methods=['DELETE'])
+@zone_required
+def api_admin_contact_message_delete(msg_id):
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    with _data_lock:
+        messages = _read_json_list(CONTACT_MESSAGES_FILE)
+        messages = [m for m in messages if int(m.get('id', -1)) != msg_id]
+        _write_json_list(CONTACT_MESSAGES_FILE, messages)
+    return jsonify({'success': True})
+
+
+@admin_bp.route('/api/admin/registered_users/<int:user_id>/zones', methods=['GET'])
+@zone_required
+def api_admin_get_user_zones(user_id):
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    with _db_connect() as conn:
+        row = conn.execute("SELECT username FROM users WHERE id = ?", (user_id,)).fetchone()
+    if not row:
+        return jsonify({'error': 'المستخدم غير موجود'}), 404
+    username = row['username'].lower()
+    zones = _read_user_zones()
+    return jsonify({'zones': zones.get(username, None)})
+
+
+@admin_bp.route('/api/admin/registered_users/<int:user_id>/zones', methods=['POST'])
+@zone_required
+def api_admin_set_user_zones(user_id):
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    data = request.get_json(silent=True) or {}
+    allowed = data.get('zones')  # None = all zones, [] = no zones, [...] = specific
+    with _db_connect() as conn:
+        row = conn.execute("SELECT username FROM users WHERE id = ?", (user_id,)).fetchone()
+    if not row:
+        return jsonify({'error': 'المستخدم غير موجود'}), 404
+    username = row['username'].lower()
+    with _data_lock:
+        zones = _read_user_zones()
+        if allowed is None:
+            zones.pop(username, None)  # remove restriction = all zones
+        else:
+            zones[username] = [str(z) for z in allowed]
+        _write_user_zones(zones)
     return jsonify({'success': True})

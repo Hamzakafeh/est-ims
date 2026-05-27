@@ -1099,6 +1099,7 @@
   .admin-detail-value { color: var(--text-main); font-size: 13px; overflow-wrap: anywhere; }
   .admin-danger-zone { border-top: 1px solid var(--border); padding: 14px 16px 18px; display:flex; gap:8px; flex-wrap:wrap; }
   .admin-danger-zone input { width: 120px; border-radius: 8px; border:1px solid var(--border); background:var(--bg-card); color:var(--text-main); padding:9px 10px; }
+  .admin-dz-label { font-size: 10px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--text-dim); padding: 10px 16px 4px; }
   @media (max-width: 720px) {
     .users-box { width: 100%; max-width: 100%; max-height: 88vh; border-radius: 14px; }
     .users-header { padding: 16px; }

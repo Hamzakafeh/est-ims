@@ -1,7 +1,7 @@
-// ══════════════════════════════════════════════════════
-// ACCOUNT STATUS — Firebase real-time listener
+﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ACCOUNT STATUS â€” Firebase real-time listener
 // Detects delete/suspend actions by admin and force-logs out the user
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 (function _initAccountStatusListener() {
   const cfgEl = document.getElementById('index-fb-cfg');
   if (!cfgEl) return;
@@ -36,17 +36,17 @@ function _showForceLogout(status, message) {
   const titleEl = document.getElementById('flTitle');
   const msgEl   = document.getElementById('flMessage');
   const cdEl    = document.getElementById('flCountdown');
-  if (titleEl) titleEl.textContent = status === 'deleted' ? 'تم حذف حسابك' : 'تم إيقاف حسابك مؤقتاً';
+  if (titleEl) titleEl.textContent = status === 'deleted' ? 'ØªÙ… Ø­Ø°Ù Ø­Ø³Ø§Ø¨Ùƒ' : 'ØªÙ… Ø¥ÙŠÙ‚Ø§Ù Ø­Ø³Ø§Ø¨Ùƒ Ù…Ø¤Ù‚ØªØ§Ù‹';
   if (msgEl)   msgEl.textContent   = message || (status === 'deleted'
-    ? 'حسابك تم حذفه من النظام بواسطة الإدارة.'
-    : 'حسابك موقوف مؤقتاً بواسطة الإدارة.');
+    ? 'Ø­Ø³Ø§Ø¨Ùƒ ØªÙ… Ø­Ø°ÙÙ‡ Ù…Ù† Ø§Ù„Ù†Ø¸Ø§Ù… Ø¨ÙˆØ§Ø³Ø·Ø© Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©.'
+    : 'Ø­Ø³Ø§Ø¨Ùƒ Ù…ÙˆÙ‚ÙˆÙ Ù…Ø¤Ù‚ØªØ§Ù‹ Ø¨ÙˆØ§Ø³Ø·Ø© Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©.');
   modal.style.display = 'flex';
   // Countdown
   let secs = 5;
-  if (cdEl) cdEl.textContent = `Redirecting in ${secs}s…`;
+  if (cdEl) cdEl.textContent = `Redirecting in ${secs}sâ€¦`;
   const iv = setInterval(() => {
     secs--;
-    if (cdEl) cdEl.textContent = secs > 0 ? `Redirecting in ${secs}s…` : 'Redirecting…';
+    if (cdEl) cdEl.textContent = secs > 0 ? `Redirecting in ${secs}sâ€¦` : 'Redirectingâ€¦';
     if (secs <= 0) { clearInterval(iv); window.location.href = '/logout'; }
   }, 1000);
   _flCountdownIntervals.push(iv);
@@ -54,7 +54,7 @@ function _showForceLogout(status, message) {
 
 
 
-// ── BETA POPUP (show only once per session) ──
+// â”€â”€ BETA POPUP (show only once per session) â”€â”€
 function closeBetaOverlay() {
   const overlay = document.getElementById('betaOverlay');
   if (!overlay) return;
@@ -72,7 +72,7 @@ function closeBetaOverlay() {
 })();
 
 
-// ── COMING SOON MODAL ──
+// â”€â”€ COMING SOON MODAL â”€â”€
 function openSoonModal(feature) {
   const titles = {
     dashboard: 'Dashboard',
@@ -90,7 +90,7 @@ function closeSoonModal() {
   document.getElementById('soonModal').classList.remove('open');
 }
 
-// ── USER PROFILE MODAL ──
+// â”€â”€ USER PROFILE MODAL â”€â”€
 let _profileLoaded = false;
 let _profileData = null;
 
@@ -106,7 +106,7 @@ function profileInitials(username) {
 }
 
 function formatDuration(seconds) {
-  if (!Number.isFinite(seconds)) return '—';
+  if (!Number.isFinite(seconds)) return 'â€”';
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
   const s = seconds % 60;
@@ -135,7 +135,7 @@ async function uploadProfileAvatar(input) {
     if (!res.ok || !data.success) { toast(data.message || 'Failed to upload', false); return; }
     const avatarEl = document.getElementById('profileAvatar');
     avatarEl.innerHTML = `<img src="${escAttr(data.avatar_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-    toast('✅ Photo updated!');
+    toast('âœ… Photo updated!');
   } catch (e) {
     toast('Upload failed', false);
   }
@@ -152,7 +152,7 @@ async function loadProfile() {
     _profileLoaded = true;
     renderProfile(_profileData);
   } catch (e) {
-    body.innerHTML = '<div class="profile-error">⚠️ Failed to load profile data</div>';
+    body.innerHTML = '<div class="profile-error">âš ï¸ Failed to load profile data</div>';
   }
 }
 
@@ -160,8 +160,10 @@ function renderProfile(data) {
   const role = data.is_super ? 'Super User' : 'Zone User';
   const verified = data.is_verified || String(data.username || '').toUpperCase() === 'MLO5';
   const avatarEl = document.getElementById('profileAvatar');
-  if (data.avatar_url) {
-    avatarEl.innerHTML = `<img src="${escAttr(data.avatar_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${escAttr(profileInitials(data.username))}'">`;
+  const isMlo5 = String(data.username || '').toLowerCase() === 'mlo5';
+  const avatarSrc = isMlo5 ? '/static/images/me.jpg' : (data.avatar_url || null);
+  if (avatarSrc) {
+    avatarEl.innerHTML = `<img src="${escAttr(avatarSrc)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${escAttr(profileInitials(data.username))}'">`;
   } else {
     avatarEl.textContent = profileInitials(data.username);
   }
@@ -188,16 +190,16 @@ function renderProfile(data) {
 
   const zones = (data.allowed_zones || []).map(z => `
     <span class="profile-zone-pill">${escHtml(z.label || z.name || z.id)}</span>
-  `).join('') || '<span class="profile-zone-pill">—</span>';
+  `).join('') || '<span class="profile-zone-pill">â€”</span>';
 
   const logins = (data.recent_logins || []).length
     ? data.recent_logins.map(entry => `
         <div class="profile-log-item">
           <div>
             <div class="profile-log-main">${escHtml(entry.zone_label || entry.zone_id || 'Zone')}</div>
-            <div class="profile-log-sub">IP: ${escHtml(entry.ip || '—')}</div>
+            <div class="profile-log-sub">IP: ${escHtml(entry.ip || 'â€”')}</div>
           </div>
-          <div class="profile-log-time">${escHtml(entry.time || '—')}</div>
+          <div class="profile-log-time">${escHtml(entry.time || 'â€”')}</div>
         </div>
       `).join('')
     : '<div class="users-empty" style="padding:18px;">No login history yet</div>';
@@ -206,17 +208,17 @@ function renderProfile(data) {
     <div class="profile-grid">
       <div class="profile-card">
         <div class="profile-card-label">Current Zone</div>
-        <div class="profile-card-value">${escHtml(data.zone_label || data.zone_name || data.zone || '—')}</div>
+        <div class="profile-card-value">${escHtml(data.zone_label || data.zone_name || data.zone || 'â€”')}</div>
         <div class="profile-card-sub">${escHtml(data.zone_name || data.zone || '')}</div>
       </div>
       <div class="profile-card">
         <div class="profile-card-label">Active View</div>
-        <div class="profile-card-value">${escHtml(data.active_view_zone_label || data.active_view_zone || '—')}</div>
+        <div class="profile-card-value">${escHtml(data.active_view_zone_label || data.active_view_zone || 'â€”')}</div>
         <div class="profile-card-sub">${data.is_super ? 'Super-zone view access' : 'Assigned zone access'}</div>
       </div>
       <div class="profile-card">
         <div class="profile-card-label">Login Time</div>
-        <div class="profile-card-value">${escHtml(data.login_time || '—')}</div>
+        <div class="profile-card-value">${escHtml(data.login_time || 'â€”')}</div>
         <div class="profile-card-sub">Session: ${escHtml(formatDuration(Number(data.login_duration_seconds)))}</div>
       </div>
     </div>
@@ -270,7 +272,7 @@ function submitProfilePasswordChange() {
     status.className = 'profile-pw-status err';
     return;
   }
-  status.textContent = 'Saving…';
+  status.textContent = 'Savingâ€¦';
   status.className = 'profile-pw-status';
   fetch('/api/profile/change-password', {
     method: 'POST',
@@ -294,7 +296,7 @@ function submitProfilePasswordChange() {
   });
 }
 
-// ── LANGUAGE TOGGLE (index) ──
+// â”€â”€ LANGUAGE TOGGLE (index) â”€â”€
 const INDEX_LANG = {
   en: {
     refresh: 'Refresh', print: 'Print', exportCSV: 'Export CSV',
@@ -305,12 +307,12 @@ const INDEX_LANG = {
     editMode: 'Edit Mode', zoneView: 'Zone View',
   },
   ar: {
-    refresh: 'تحديث', print: 'طباعة', exportCSV: 'تصدير CSV',
-    about: 'عن النظام', logout: 'خروج', lang: 'Ar-En',
-    selectMonth: 'اختر شهراً للبدء',
-    searchPh: 'بحث في البيانات...',
-    yearLabel: 'السنة', monthsLabel: 'الأشهر', filesLabel: 'الملفات', sheetsLabel: 'الأوراق',
-    editMode: 'وضع التعديل', zoneView: 'عرض الزون',
+    refresh: 'ØªØ­Ø¯ÙŠØ«', print: 'Ø·Ø¨Ø§Ø¹Ø©', exportCSV: 'ØªØµØ¯ÙŠØ± CSV',
+    about: 'Ø¹Ù† Ø§Ù„Ù†Ø¸Ø§Ù…', logout: 'Ø®Ø±ÙˆØ¬', lang: 'Ar-En',
+    selectMonth: 'Ø§Ø®ØªØ± Ø´Ù‡Ø±Ø§Ù‹ Ù„Ù„Ø¨Ø¯Ø¡',
+    searchPh: 'Ø¨Ø­Ø« ÙÙŠ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª...',
+    yearLabel: 'Ø§Ù„Ø³Ù†Ø©', monthsLabel: 'Ø§Ù„Ø£Ø´Ù‡Ø±', filesLabel: 'Ø§Ù„Ù…Ù„ÙØ§Øª', sheetsLabel: 'Ø§Ù„Ø£ÙˆØ±Ø§Ù‚',
+    editMode: 'ÙˆØ¶Ø¹ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„', zoneView: 'Ø¹Ø±Ø¶ Ø§Ù„Ø²ÙˆÙ†',
   }
 };
 let indexLang = localStorage.getItem('est-lang') || 'en';
@@ -346,6 +348,10 @@ function applyIndexLang(lang) {
     const el = document.getElementById(id);
     if (el) el.textContent = langLabel;
   });
+  // Update all bilingual data-en / data-ar elements
+  document.querySelectorAll('[data-en][data-ar]').forEach(el => {
+    el.textContent = isAr ? el.dataset.ar : el.dataset.en;
+  });
   // Search
   const si = document.getElementById('searchInput');
   if (si) si.placeholder = t.searchPh;
@@ -353,10 +359,10 @@ function applyIndexLang(lang) {
 function toggleIndexLang() {
   applyIndexLang(indexLang === 'en' ? 'ar' : 'en');
 }
-// تطبيق اللغة عند التحميل
+// ØªØ·Ø¨ÙŠÙ‚ Ø§Ù„Ù„ØºØ© Ø¹Ù†Ø¯ Ø§Ù„ØªØ­Ù…ÙŠÙ„
 applyIndexLang(indexLang);
 
-// ── LOGIN SOUND ──
+// â”€â”€ LOGIN SOUND â”€â”€
 (function() {
   try {
     const audio = new Audio('/static/audio/id.mp3');
@@ -365,35 +371,36 @@ applyIndexLang(indexLang);
   } catch(e) {}
 })();
 
-// ── SIDEBAR TOGGLE ──
+// â”€â”€ SIDEBAR TOGGLE â”€â”€
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
   const btn = document.getElementById('sidebarToggleBtn');
   const collapsed = sidebar.classList.toggle('collapsed');
-  btn.textContent = collapsed ? '▶' : '◀';
+  btn.innerHTML = collapsed
+    ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>'
+    : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>';
   btn.title = collapsed ? 'Show sidebar' : 'Hide sidebar';
 }
 
-// ── PRINT MODAL ──
+// â”€â”€ PRINT MODAL â”€â”€
 function openPrintModal() {
   const table = document.querySelector('.data-table');
-  if (!table) { toast('⚠️ No data to print', false); return; }
-  document.getElementById('printInfoFile').textContent = state.selectedFile || '—';
-  document.getElementById('printInfoSheet').textContent = state.selectedSheet || '—';
-  document.getElementById('printInfoPeriod').textContent = (state.selectedMonth && state.selectedYear) ? `${state.selectedMonth} ${state.selectedYear}` : '—';
-  document.getElementById('printInfoRecords').textContent = state.allRows.length ? `${state.allRows.length} rows` : '—';
-  document.getElementById('printModalSub').textContent = `Printing: ${state.selectedFile || ''} / ${state.selectedSheet || ''}`;
-  document.getElementById('printModal').classList.add('open');
+  if (!table) { toast('No data to print', false); return; }
+  document.getElementById('printInfoFile').textContent = state.selectedFile || 'â€”';
+  document.getElementById('printInfoSheet').textContent = state.selectedSheet || 'â€”';
+  document.getElementById('printInfoPeriod').textContent = (state.selectedMonth && state.selectedYear) ? `${state.selectedMonth} ${state.selectedYear}` : 'â€”';
+  document.getElementById('printInfoRecords').textContent = state.allRows.length ? `${state.allRows.length} rows` : 'â€”';
+  document.getElementById('printModal').style.display = 'flex';
 }
 function closePrintModal() {
-  document.getElementById('printModal').classList.remove('open');
+  document.getElementById('printModal').style.display = 'none';
 }
 function doPrint() {
   closePrintModal();
   printTable();
 }
 
-// ── STATE ──
+// â”€â”€ STATE â”€â”€
 const state = {
   structure: {},
   availableYears: [],
@@ -406,7 +413,7 @@ const state = {
   filePath: null,
   editMode: false,
   isInventorySheet: false,
-  sheetOptions: { colors: [], types: [], sizes: [], categories: [] },   // ← dropdown options from Excel
+  sheetOptions: { colors: [], types: [], sizes: [], categories: [] },   // â† dropdown options from Excel
 };
 
 const MONTH_NUMS = { January:1,February:2,March:3,April:4,May:5,June:6,July:7,August:8,September:9,October:10,November:11,December:12 };
@@ -418,7 +425,7 @@ const READ_ONLY_COLS = ['Current Balance', 'IN', 'OUT', '__row__'];
 // Columns that identify it as an inventory sheet
 const NON_INVENTORY_SHEETS = ['Stocktaking'];
 
-// ── THEME ──
+// â”€â”€ THEME â”€â”€
 (function() {
   const saved = localStorage.getItem('est-theme');
   if (saved === 'light') document.documentElement.classList.add('light');
@@ -429,10 +436,10 @@ function toggleTheme() {
 }
 document.getElementById('themeBtn').addEventListener('click', toggleTheme);
 
-// ── CLOCK (disabled per update) ──
+// â”€â”€ CLOCK (disabled per update) â”€â”€
 // function updateClock() { ... }
 
-// ── TOAST ──
+// â”€â”€ TOAST â”€â”€
 let _toastTimer;
 function toast(msg, ok=true) {
   const el = document.getElementById('toast');
@@ -442,7 +449,7 @@ function toast(msg, ok=true) {
   _toastTimer = setTimeout(() => { el.className = ''; }, 3000);
 }
 
-// ── GO HOME (reset to initial state) ──
+// â”€â”€ GO HOME (reset to initial state) â”€â”€
 function goHome() {
   state.selectedMonth = null;
   state.selectedFile  = null;
@@ -452,12 +459,12 @@ function goHome() {
   // deactivate month pills
   document.querySelectorAll('.month-pill').forEach(p => p.classList.remove('active'));
   showEmptyState('Select a month to begin');
-  updateHeader('Select a month to begin', `${state.selectedYear} → ...`);
-  document.getElementById('pathInfo').textContent = '—';
+  updateHeader('Select a month to begin', `${state.selectedYear} â†’ ...`);
+  document.getElementById('pathInfo').textContent = 'â€”';
   setStatus('Ready');
 }
 
-// ── INIT ──
+// â”€â”€ INIT â”€â”€
 const IS_SUPER = window.INDEX_CONFIG.IS_SUPER;
 let currentViewZone = window.INDEX_CONFIG.zone;
 
@@ -511,7 +518,7 @@ async function init() {
   buildMonthGrid();
 }
 
-// ── BUILD YEAR SELECT ──
+// â”€â”€ BUILD YEAR SELECT â”€â”€
 function buildYearSelect() {
   const sel = document.getElementById('yearSelect');
   sel.innerHTML = '';
@@ -523,7 +530,7 @@ function buildYearSelect() {
   });
 }
 
-// ── SELECT YEAR ──
+// â”€â”€ SELECT YEAR â”€â”€
 function selectYear(year) {
   state.selectedYear = year;
   state.selectedMonth = null;
@@ -532,12 +539,12 @@ function selectYear(year) {
   document.getElementById('fileSection').style.display = 'none';
   document.getElementById('sheetSection').style.display = 'none';
   showEmptyState('Select a month to begin');
-  updateHeader('Select a month to begin', `${year} → ...`);
-  document.getElementById('pathInfo').textContent = '—';
+  updateHeader('Select a month to begin', `${year} â†’ ...`);
+  document.getElementById('pathInfo').textContent = 'â€”';
   buildMonthGrid();
 }
 
-// ── BUILD MONTH GRID ──
+// â”€â”€ BUILD MONTH GRID â”€â”€
 function buildMonthGrid() {
   const grid = document.getElementById('monthGrid');
   grid.innerHTML = '';
@@ -553,7 +560,7 @@ function buildMonthGrid() {
   });
 }
 
-// ── SELECT MONTH ──
+// â”€â”€ SELECT MONTH â”€â”€
 function selectMonth(month) {
   state.selectedMonth = month;
   state.selectedFile = null;
@@ -564,11 +571,11 @@ function selectMonth(month) {
   document.getElementById('fileSection').style.display = '';
   document.getElementById('sheetSection').style.display = 'none';
   showEmptyState(`Select a file from ${month} files`);
-  updateHeader('Select a file', `${state.selectedYear} → ${month}`);
+  updateHeader('Select a file', `${state.selectedYear} â†’ ${month}`);
   document.getElementById('pathInfo').textContent = `${state.selectedYear} / ${month}`;
 }
 
-// ── BUILD FILE LIST ──
+// â”€â”€ BUILD FILE LIST â”€â”€
 function buildFileList(files) {
   const list = document.getElementById('fileList');
   list.innerHTML = '';
@@ -577,13 +584,13 @@ function buildFileList(files) {
     item.className = 'file-item';
     item.dataset.name = fname;
     item.dataset.path = fpath;
-    item.innerHTML = `<span class="fi-icon">${FILE_ICONS[fname] || '📄'}</span>${FILE_LABELS[fname] || fname}`;
+    item.innerHTML = `<span class="fi-icon">${FILE_ICONS[fname] || 'ðŸ“„'}</span>${FILE_LABELS[fname] || fname}`;
     item.onclick = () => selectFile(fname, fpath);
     list.appendChild(item);
   });
 }
 
-// ── SELECT FILE ──
+// â”€â”€ SELECT FILE â”€â”€
 async function selectFile(fname, fpath) {
   state.selectedFile = fname;
   state.selectedSheet = null;
@@ -596,10 +603,10 @@ async function selectFile(fname, fpath) {
   buildSheetList(data.sheets);
   document.getElementById('sheetSection').style.display = '';
   if (data.sheets.length > 0) selectSheet(data.sheets[0]);
-  updateHeader(fname, `${state.selectedYear} → ${state.selectedMonth} → ${fname}`);
+  updateHeader(fname, `${state.selectedYear} â†’ ${state.selectedMonth} â†’ ${fname}`);
 }
 
-// ── BUILD SHEET LIST ──
+// â”€â”€ BUILD SHEET LIST â”€â”€
 function buildSheetList(sheets) {
   const list = document.getElementById('sheetList');
   list.innerHTML = '';
@@ -613,7 +620,7 @@ function buildSheetList(sheets) {
   });
 }
 
-// ── SELECT SHEET ──
+// â”€â”€ SELECT SHEET â”€â”€
 async function selectSheet(sheet) {
   const switchingSheet = state.selectedSheet !== sheet;
   // Only reset edit mode when actively switching to a different sheet
@@ -648,7 +655,7 @@ async function selectSheet(sheet) {
   }
 
   renderTable(state.headers, state.allRows);
-  updateHeader(sheet, `${state.selectedYear} → ${state.selectedMonth} → ${state.selectedFile} → ${sheet}`);
+  updateHeader(sheet, `${state.selectedYear} â†’ ${state.selectedMonth} â†’ ${state.selectedFile} â†’ ${sheet}`);
   document.getElementById('recordCount').textContent = `${data.count} Records`;
   setStatus(`Loaded ${state.selectedFile} / ${sheet}`);
   document.getElementById('pathInfo').textContent = `${state.selectedYear} / ${state.selectedMonth} / ${state.selectedFile}.xlsm / ${sheet}`;
@@ -663,25 +670,25 @@ async function selectSheet(sheet) {
   document.getElementById('editBadge').style.display = state.editMode ? '' : 'none';
 }
 
-// ── TOGGLE EDIT MODE ──
+// â”€â”€ TOGGLE EDIT MODE â”€â”€
 function toggleEditMode() {
   const toggle = document.getElementById('editToggle');
   if (toggle.checked) {
-    // Turning ON — require password
+    // Turning ON â€” require password
     toggle.checked = false; // revert visually until password confirmed
     document.getElementById('pwdInput').value = '';
     document.getElementById('pwdError').textContent = '';
     document.getElementById('pwdModal').classList.add('open');
     setTimeout(() => document.getElementById('pwdInput').focus(), 120);
   } else {
-    // Turning OFF — no password needed
+    // Turning OFF â€” no password needed
     state.editMode = false;
     document.getElementById('editBadge').style.display = 'none';
     renderTable(state.headers, state.allRows);
   }
 }
 
-// ── PASSWORD MODAL ──
+// â”€â”€ PASSWORD MODAL â”€â”€
 async function confirmPwd() {
   const val = document.getElementById('pwdInput').value;
   try {
@@ -697,14 +704,14 @@ async function confirmPwd() {
       document.getElementById('editToggle').checked = true;
       document.getElementById('editBadge').style.display = '';
       renderTable(state.headers, state.allRows);
-      toast('✎ Edit mode ON — click any cell or use IN/OUT buttons', true);
+      toast('âœŽ Edit mode ON â€” click any cell or use IN/OUT buttons', true);
     } else {
-      document.getElementById('pwdError').textContent = '✗ Incorrect password';
+      document.getElementById('pwdError').textContent = 'âœ— Incorrect password';
       document.getElementById('pwdInput').value = '';
       document.getElementById('pwdInput').focus();
     }
   } catch (e) {
-    document.getElementById('pwdError').textContent = '✗ Connection error';
+    document.getElementById('pwdError').textContent = 'âœ— Connection error';
   }
 }
 function cancelPwdModal() {
@@ -713,7 +720,7 @@ function cancelPwdModal() {
   document.getElementById('pwdError').textContent = '';
 }
 
-// ── RENDER TABLE ──
+// â”€â”€ RENDER TABLE â”€â”€
 function renderTable(headers, rows) {
   const wrap = document.getElementById('tableWrap');
   if (!headers.length) { showEmptyState('No data in this sheet'); return; }
@@ -741,13 +748,13 @@ function renderTable(headers, rows) {
         const val = row[h];
         const hLower = h.toLowerCase();
         let cls = '';
-        if (hLower === 'date' || hLower === 'التاريخ') cls = 'cell-date';
+        if (hLower === 'date' || hLower === 'Ø§Ù„ØªØ§Ø±ÙŠØ®') cls = 'cell-date';
         else if (hLower === 'in') cls = 'cell-in';
         else if (hLower === 'out') cls = 'cell-out';
         else if (hLower.includes('balance')) cls = 'cell-balance';
 
         const display = (val === null || val === undefined || val === '') ?
-          `<span class="cell-null">—</span>` : escHtml(String(val));
+          `<span class="cell-null">â€”</span>` : escHtml(String(val));
 
         const isReadOnly = READ_ONLY_COLS.some(ro => hLower.includes(ro.toLowerCase()));
         const editable   = state.editMode && !isReadOnly;
@@ -763,7 +770,7 @@ function renderTable(headers, rows) {
         html += `<td class="action-cell">
           <button class="btn-in"  onclick="openTxModal(${excelRow}, 'IN')">+IN</button>
           <button class="btn-out" onclick="openTxModal(${excelRow}, 'OUT')">-OUT</button>
-          <button class="btn-del" onclick="confirmClearRow(${excelRow})" title="Clear row data">🗑</button>
+          <button class="btn-del" onclick="confirmClearRow(${excelRow})" title="Clear row data">ðŸ—‘</button>
         </td>`;
       }
       html += `</tr>`;
@@ -773,9 +780,9 @@ function renderTable(headers, rows) {
   wrap.innerHTML = html;
 }
 
-// ── INLINE CELL EDIT ──
+// â”€â”€ INLINE CELL EDIT â”€â”€
 function _buildDropdown(options, currentText, excelRow, colName) {
-  let optHtml = `<option value="">— اختر —</option>`;
+  let optHtml = `<option value="">â€” Ø§Ø®ØªØ± â€”</option>`;
   let found = false;
   options.forEach(o => {
     const sel = o === currentText ? ' selected' : '';
@@ -785,7 +792,7 @@ function _buildDropdown(options, currentText, excelRow, colName) {
   if (currentText && !found) {
     optHtml += `<option value="${escAttr(currentText)}" selected>${escHtml(currentText)}</option>`;
   }
-  optHtml += `<option value="__new__">✏️ إضافة قيمة جديدة…</option>`;
+  optHtml += `<option value="__new__">âœï¸ Ø¥Ø¶Ø§ÙØ© Ù‚ÙŠÙ…Ø© Ø¬Ø¯ÙŠØ¯Ø©â€¦</option>`;
   return `<select
     onchange="handleDDChange(this,${excelRow},'${escAttr(colName)}')"
     onblur="handleDDBlur(this,${excelRow},'${escAttr(colName)}')"
@@ -795,7 +802,7 @@ function _buildDropdown(options, currentText, excelRow, colName) {
 
 function startEdit(td, excelRow, colName) {
   if (td.querySelector('input') || td.querySelector('select')) return;
-  const currentText = td.innerText.trim() === '—' ? '' : td.innerText.trim();
+  const currentText = td.innerText.trim() === 'â€”' ? '' : td.innerText.trim();
   const colLower = colName.toLowerCase();
 
   const ddMap = {
@@ -827,7 +834,7 @@ function handleDDChange(select, excelRow, colName) {
   if (select.value !== '__new__') return;
   // Prevent blur from firing during prompt
   select._prompting = true;
-  const newVal = prompt(`أضف قيمة جديدة لـ ${colName}:`);
+  const newVal = prompt(`Ø£Ø¶Ù Ù‚ÙŠÙ…Ø© Ø¬Ø¯ÙŠØ¯Ø© Ù„Ù€ ${colName}:`);
   select._prompting = false;
   if (newVal && newVal.trim()) {
     const v = newVal.trim();
@@ -890,13 +897,13 @@ async function _applyAutoBalance(excelRow, colorValue) {
           if (basicKey)   rowObj[basicKey]   = data.balance;
           if (currentKey) rowObj[currentKey] = data.balance;
         }
-        toast(`✓ Color: ${colorValue} — رصيد افتتاحي: ${data.balance}`, true);
+        toast(`âœ“ Color: ${colorValue} â€” Ø±ØµÙŠØ¯ Ø§ÙØªØªØ§Ø­ÙŠ: ${data.balance}`, true);
         renderTable(state.headers, state.allRows);
         return;
       }
     }
-    // No previous balance found — just toast color saved, leave Basic/Current empty
-    toast(`✓ Color: ${colorValue} — لا يوجد رصيد سابق لهذا الصنف`, true);
+    // No previous balance found â€” just toast color saved, leave Basic/Current empty
+    toast(`âœ“ Color: ${colorValue} â€” Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ø±ØµÙŠØ¯ Ø³Ø§Ø¨Ù‚ Ù„Ù‡Ø°Ø§ Ø§Ù„ØµÙ†Ù`, true);
   } catch(e) {
     // silently ignore
   }
@@ -924,14 +931,14 @@ async function commitEditSelect(select, excelRow, colName) {
     const rowObj = state.allRows.find(r => r['__row__'] === excelRow);
     if (rowObj) rowObj[colName] = newValue;
 
-    // If Color was just set → auto-fill Basic + Current from last balance
+    // If Color was just set â†’ auto-fill Basic + Current from last balance
     if (colName.toLowerCase() === 'color') {
       await _applyAutoBalance(excelRow, newValue);
     } else {
-      toast(`✓ Saved: ${colName} = ${newValue}`);
+      toast(`âœ“ Saved: ${colName} = ${newValue}`);
     }
   } else {
-    toast(`✗ Error: ${d.error}`, false);
+    toast(`âœ— Error: ${d.error}`, false);
     renderTable(state.headers, state.allRows);
   }
 }
@@ -941,7 +948,7 @@ async function commitEdit(input, excelRow, colName) {
   const td = input.parentElement;
 
   // Optimistic UI
-  td.textContent = newValue || '—';
+  td.textContent = newValue || 'â€”';
 
   const res = await fetch('/api/update_cell', {
     method: 'POST',
@@ -956,22 +963,22 @@ async function commitEdit(input, excelRow, colName) {
   });
   const data = await res.json();
   if (data.success) {
-    toast(`✓ Saved: ${colName} = ${newValue}`);
+    toast(`âœ“ Saved: ${colName} = ${newValue}`);
     // Update local state so re-render is correct
     const rowObj = state.allRows.find(r => r['__row__'] === excelRow);
     if (rowObj) rowObj[colName] = newValue;
   } else {
-    toast(`✗ Error: ${data.error}`, false);
+    toast(`âœ— Error: ${data.error}`, false);
     renderTable(state.headers, state.allRows); // revert
   }
 }
 
-// ── CLEAR ROW ──
+// â”€â”€ CLEAR ROW â”€â”€
 async function confirmClearRow(excelRow) {
   const rowObj = state.allRows.find(r => r['__row__'] === excelRow) || {};
   const colorVal = Object.entries(rowObj).find(([k]) => k.toLowerCase() === 'color')?.[1];
   const label = colorVal ? `(Color: ${colorVal})` : `(Row ${excelRow})`;
-  if (!confirm(`حذف بيانات الصف ${label}؟\nهذا سيمسح جميع القيم — هل أنت متأكد؟`)) return;
+  if (!confirm(`Ø­Ø°Ù Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„ØµÙ ${label}ØŸ\nÙ‡Ø°Ø§ Ø³ÙŠÙ…Ø³Ø­ Ø¬Ù…ÙŠØ¹ Ø§Ù„Ù‚ÙŠÙ… â€” Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ØŸ`)) return;
 
   const res = await fetch('/api/clear_row', {
     method: 'POST',
@@ -980,14 +987,14 @@ async function confirmClearRow(excelRow) {
   });
   const d = await res.json();
   if (d.success) {
-    toast('✓ تم مسح بيانات الصف');
+    toast('âœ“ ØªÙ… Ù…Ø³Ø­ Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„ØµÙ');
     await selectSheet(state.selectedSheet);
   } else {
-    toast(`✗ ${d.error}`, false);
+    toast(`âœ— ${d.error}`, false);
   }
 }
 
-// ── TRANSACTION MODAL ──
+// â”€â”€ TRANSACTION MODAL â”€â”€
 let _txRow = null, _txOp = null;
 
 function openTxModal(excelRow, operation) {
@@ -1001,12 +1008,12 @@ function openTxModal(excelRow, operation) {
   const colorKey = Object.keys(rowObj).find(k => k.toLowerCase() === 'color');
   const colorVal = colorKey ? rowObj[colorKey] : null;
   if (!colorVal || String(colorVal).trim() === '' || String(colorVal).trim().toLowerCase() === 'null') {
-    toast('⚠️ يجب تحديد اللون (Color) أولاً قبل إجراء أي عملية', false);
+    toast('âš ï¸ ÙŠØ¬Ø¨ ØªØ­Ø¯ÙŠØ¯ Ø§Ù„Ù„ÙˆÙ† (Color) Ø£ÙˆÙ„Ø§Ù‹ Ù‚Ø¨Ù„ Ø¥Ø¬Ø±Ø§Ø¡ Ø£ÙŠ Ø¹Ù…Ù„ÙŠØ©', false);
     return;
   }
 
-  document.getElementById('txTitle').textContent    = operation === 'IN' ? '➕ IN — Add Stock' : '➖ OUT — Remove Stock';
-  document.getElementById('txSubtitle').textContent = `${state.selectedFile} / ${state.selectedSheet} — Row ${excelRow}`;
+  document.getElementById('txTitle').textContent    = operation === 'IN' ? 'âž• IN â€” Add Stock' : 'âž– OUT â€” Remove Stock';
+  document.getElementById('txSubtitle').textContent = `${state.selectedFile} / ${state.selectedSheet} â€” Row ${excelRow}`;
 
   // Info grid
   const infoFields = ['Color', 'Size', 'Type', 'Category', 'Current Balance', 'Basic'];
@@ -1024,7 +1031,7 @@ function openTxModal(excelRow, operation) {
 
   const btn = document.getElementById('txConfirmBtn');
   btn.className = `btn ${operation === 'IN' ? 'btn-in-modal' : 'btn-out-modal'}`;
-  btn.textContent = operation === 'IN' ? '✓ Add Stock' : '✓ Remove Stock';
+  btn.textContent = operation === 'IN' ? 'âœ“ Add Stock' : 'âœ“ Remove Stock';
 
   document.getElementById('txQty').value = '';
   document.getElementById('txModal').classList.add('open');
@@ -1038,7 +1045,7 @@ function closeTxModal() {
 
 async function submitTx() {
   const qty = parseFloat(document.getElementById('txQty').value);
-  if (isNaN(qty) || qty < 0) { toast('أدخل كمية صحيحة (0 أو أكثر)', false); return; }
+  if (isNaN(qty) || qty < 0) { toast('Ø£Ø¯Ø®Ù„ ÙƒÙ…ÙŠØ© ØµØ­ÙŠØ­Ø© (0 Ø£Ùˆ Ø£ÙƒØ«Ø±)', false); return; }
   if (!_txRow || !_txOp) return;
 
   const btn = document.getElementById('txConfirmBtn');
@@ -1059,19 +1066,19 @@ async function submitTx() {
   const data = await res.json();
 
   btn.disabled = false;
-  btn.textContent = _txOp === 'IN' ? '✓ Add Stock' : '✓ Remove Stock';
+  btn.textContent = _txOp === 'IN' ? 'âœ“ Add Stock' : 'âœ“ Remove Stock';
 
   if (data.success) {
-    toast(`✓ ${_txOp} ${qty} — New balance: ${data.new_balance}`);
+    toast(`âœ“ ${_txOp} ${qty} â€” New balance: ${data.new_balance}`);
     closeTxModal();
     // Refresh to show updated Current Balance across all rows with same Color
     await selectSheet(state.selectedSheet);
   } else {
-    toast(`✗ ${data.error}`, false);
+    toast(`âœ— ${data.error}`, false);
   }
 }
 
-// ── FILTER ──
+// â”€â”€ FILTER â”€â”€
 function filterTable(query) {
   const q = query.trim().toLowerCase();
   const rows = document.querySelectorAll('.data-table tbody tr[data-row]');
@@ -1085,11 +1092,11 @@ function filterTable(query) {
   info.textContent = q ? `${visible} of ${state.allRows.length} results` : '';
 }
 
-// ── HELPERS ──
+// â”€â”€ HELPERS â”€â”€
 function showEmptyState(msg) {
   document.getElementById('tableWrap').innerHTML = `
     <div class="empty-state">
-      <div class="es-icon">📂</div>
+      <div class="es-icon">ðŸ“‚</div>
       <h3>${msg}</h3>
       <p>Select a month, file and sheet from the sidebar</p>
     </div>`;
@@ -1110,7 +1117,7 @@ function escAttr(s) {
   return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;');
 }
 
-// ── ACTIONS ──
+// â”€â”€ ACTIONS â”€â”€
 function refreshData() { if (state.selectedSheet) selectSheet(state.selectedSheet); }
 
 function printTable() {
@@ -1127,7 +1134,7 @@ function printTable() {
       tr:nth-child(even) { background: #f5f5f5; }
       .action-cell { display: none; }
     </style></head><body>`);
-  win.document.write(`<h2>${state.selectedFile} / ${state.selectedSheet} — ${state.selectedMonth} ${state.selectedYear}</h2>`);
+  win.document.write(`<h2>${state.selectedFile} / ${state.selectedSheet} â€” ${state.selectedMonth} ${state.selectedYear}</h2>`);
   win.document.write(table.outerHTML);
   win.document.write('</body></html>');
   win.document.close();
@@ -1136,7 +1143,7 @@ function printTable() {
 
 function exportCSV() {
   if (!state.headers.length || !state.allRows.length) {
-    toast('⚠️ No data to export', false);
+    toast('âš ï¸ No data to export', false);
     return;
   }
   openCsvModal();
@@ -1145,15 +1152,15 @@ function exportCSV() {
 function openCsvModal() {
   const filename = state.headers.length
     ? `${state.selectedFile || 'data'}_${state.selectedSheet || 'sheet'}_${state.selectedMonth || ''}_${state.selectedYear || ''}.csv`
-    : '—';
-  document.getElementById('csvInfoFile').textContent    = state.selectedFile  || '—';
-  document.getElementById('csvInfoSheet').textContent   = state.selectedSheet || '—';
-  document.getElementById('csvInfoPeriod').textContent  = (state.selectedMonth && state.selectedYear) ? `${state.selectedMonth} ${state.selectedYear}` : '—';
-  document.getElementById('csvInfoRecords').textContent = state.allRows.length ? `${state.allRows.length} rows` : '—';
+    : 'â€”';
+  document.getElementById('csvInfoFile').textContent    = state.selectedFile  || 'â€”';
+  document.getElementById('csvInfoSheet').textContent   = state.selectedSheet || 'â€”';
+  document.getElementById('csvInfoPeriod').textContent  = (state.selectedMonth && state.selectedYear) ? `${state.selectedMonth} ${state.selectedYear}` : 'â€”';
+  document.getElementById('csvInfoRecords').textContent = state.allRows.length ? `${state.allRows.length} rows` : 'â€”';
   document.getElementById('csvInfoFilename').textContent = filename;
   document.getElementById('csvModalSub').textContent = state.headers.length
     ? `Export: ${state.selectedFile || ''} / ${state.selectedSheet || ''}`
-    : 'No data loaded — please select a file and sheet first.';
+    : 'No data loaded â€” please select a file and sheet first.';
   document.getElementById('csvModal').classList.add('open');
 }
 
@@ -1185,15 +1192,33 @@ function doExportCSV() {
   closeCsvModal();
 }
 
-// ── KEYBOARD ──
+// â”€â”€ KEYBOARD â”€â”€
 document.addEventListener('keydown', e => {
   if (e.ctrlKey && e.key === 'f') { e.preventDefault(); document.getElementById('searchInput').focus(); }
-  if (e.key === 'Escape') { closeTxModal(); closeAbout(); cancelPwdModal(); closePrintModal(); closeCsvModal(); closeLogout(); closeDashboard(); closeProfileModal(); closeUsersModal(); closeAdminRequestsModal(); closeAdminUsersModal(); closeAdminUserDetailModal(); document.getElementById('reportsDropdownMenu')?.classList.remove('open'); }
+  if (e.key === 'Escape') { closeTxModal(); closeAbout(); cancelPwdModal(); closePrintModal(); closeCsvModal(); closeLogout(); closeDashboard(); closeProfileModal(); closeUsersModal(); closeAdminRequestsModal(); closeAdminUsersModal(); closeAdminUserDetailModal(); closeDeleteConfirm(); document.getElementById('reportsDropdownMenu')?.classList.remove('open'); }
 });
 
-// ── ABOUT ──
+// â”€â”€ ABOUT â”€â”€
 function showAbout()  { document.getElementById('aboutModal').style.display = 'flex'; }
 function closeAbout() { document.getElementById('aboutModal').style.display = 'none'; }
+
+// â”€â”€ DELETE CONFIRM MODAL â”€â”€
+let _deleteConfirmCallback = null;
+function openDeleteConfirm(title, msg, callback) {
+  _deleteConfirmCallback = callback;
+  document.getElementById('deleteConfirmTitle').textContent = title || 'Delete?';
+  document.getElementById('deleteConfirmMsg').textContent = msg || 'This action cannot be undone.';
+  document.getElementById('deleteConfirmModal').style.display = 'flex';
+}
+function closeDeleteConfirm() {
+  document.getElementById('deleteConfirmModal').style.display = 'none';
+  _deleteConfirmCallback = null;
+}
+function _doDeleteConfirm() {
+  closeDeleteConfirm();
+  if (_deleteConfirmCallback) _deleteConfirmCallback();
+}
+
 
 function confirmLogout() {
   document.getElementById('logoutModal').classList.add('open');
@@ -1204,9 +1229,9 @@ function closeLogout() {
 function doLogout() {
 window.location.href = '/logout';}
 
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // DASHBOARD
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let _dashData   = null;
 let _dashView   = 'overview';
 let _dashCharts = [];
@@ -1230,13 +1255,13 @@ async function loadDashData() {
     if (!res.ok || _dashData.error) throw new Error(_dashData.error || 'Dashboard request failed');
     dashShow(_dashView);
   } catch(e) {
-    setDashContent('<div class="dash-loading">⚠️ Failed to load dashboard data</div>');
+    setDashContent('<div class="dash-loading">âš ï¸ Failed to load dashboard data</div>');
   }
 }
 
 function setDashContent(html) {
   const c = document.getElementById('dashContent');
-  c.innerHTML = `<button class="dash-close-btn" onclick="closeDashboard()">✕</button>` + html;
+  c.innerHTML = `<button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>` + html;
 }
 
 function setDashContentSafe(html) {
@@ -1303,14 +1328,14 @@ async function dashExcelStatus() {
     setDashContent(`<div class="dash-content-title">Excel Link Status</div><div class="dash-empty">Failed to read Excel status.</div>`);
   }
 }
-/* ── OVERVIEW ── */
+/* â”€â”€ OVERVIEW â”€â”€ */
 function dashOverview(d) {
   const kpis = [
-    { label:'Total Items',     value: d.total_items   ?? '—', sub:'across all sheets',   cls:'blue'  },
-    { label:'Total IN',        value: d.total_in      ?? '—', sub:'all time',             cls:'green' },
-    { label:'Total OUT',       value: d.total_out     ?? '—', sub:'all time',             cls:'red'   },
-    { label:'Low Stock Items', value: d.low_stock     ?? '—', sub:'below threshold',      cls:'amber' },
-    { label:'Zero Stock',      value: d.zero_stock    ?? '—', sub:'need restocking',      cls:'red'   },
+    { label:'Total Items',     value: d.total_items   ?? 'â€”', sub:'across all sheets',   cls:'blue'  },
+    { label:'Total IN',        value: d.total_in      ?? 'â€”', sub:'all time',             cls:'green' },
+    { label:'Total OUT',       value: d.total_out     ?? 'â€”', sub:'all time',             cls:'red'   },
+    { label:'Low Stock Items', value: d.low_stock     ?? 'â€”', sub:'below threshold',      cls:'amber' },
+    { label:'Zero Stock',      value: d.zero_stock    ?? 'â€”', sub:'need restocking',      cls:'red'   },
   ];
   const kpiHtml = kpis.map(k => `
     <div class="dash-kpi-card ${k.cls}">
@@ -1320,12 +1345,12 @@ function dashOverview(d) {
     </div>`).join('');
 
   setDashContent(`
-    <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
-    <div class="dash-content-title">📊 Overview</div>
+    <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
+    <div class="dash-content-title">ðŸ“Š Overview</div>
     <div class="dash-content-sub">Summary of current inventory status</div>
     <div class="dash-kpi-grid">${kpiHtml}</div>
     <div class="dash-chart-wrap">
-      <div class="dash-chart-title">IN vs OUT — Current Data</div>
+      <div class="dash-chart-title">IN vs OUT â€” Current Data</div>
       <canvas id="dashChartCanvas"></canvas>
     </div>`);
 
@@ -1339,11 +1364,11 @@ function dashOverview(d) {
   ]);
 }
 
-/* ── MOVEMENT ── */
+/* â”€â”€ MOVEMENT â”€â”€ */
 function dashMovement(d) {
   setDashContent(`
-    <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
-    <div class="dash-content-title">📈 IN / OUT Movement</div>
+    <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
+    <div class="dash-content-title">ðŸ“ˆ IN / OUT Movement</div>
     <div class="dash-content-sub">Stock movement breakdown by zone</div>
     <div class="dash-chart-wrap">
       <div class="dash-chart-title">IN per Zone</div>
@@ -1370,38 +1395,38 @@ function dashMovement(d) {
   });
 }
 
-/* ── ALERTS ── */
+/* â”€â”€ ALERTS â”€â”€ */
 function dashAlerts(d) {
   const items = d.alerts || [];
   const rows = items.length
     ? items.map(a => `
         <div class="dash-alert-item ${a.level}">
-          <div class="dash-alert-icon">${a.level==='danger'?'🔴':'🟡'}</div>
+          <div class="dash-alert-icon">${a.level==='danger'?'ðŸ”´':'ðŸŸ¡'}</div>
           <div class="dash-alert-text">
             <div class="dash-alert-name">${escHtml(a.name)}</div>
-            <div class="dash-alert-desc">${escHtml(a.sheet||'')} — Balance: ${a.balance}</div>
+            <div class="dash-alert-desc">${escHtml(a.sheet||'')} â€” Balance: ${a.balance}</div>
           </div>
           <div class="dash-alert-badge ${a.level==='danger'?'red':'amber'}">${a.level==='danger'?'ZERO':'LOW'}</div>
         </div>`)
       .join('')
-    : '<div class="dash-loading">✅ All items have sufficient stock</div>';
+    : '<div class="dash-loading">âœ… All items have sufficient stock</div>';
 
   setDashContent(`
-    <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
-    <div class="dash-content-title">⚠️ Stock Alerts</div>
+    <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
+    <div class="dash-content-title">âš ï¸ Stock Alerts</div>
     <div class="dash-content-sub">${items.length} item(s) need attention</div>
     <div class="dash-alert-list">${rows}</div>`);
 }
 
-/* ── TOP ITEMS ── */
+/* â”€â”€ TOP ITEMS â”€â”€ */
 function dashTop(d) {
   const items  = (d.top_items || []).slice(0, 10);
   const labels = items.map(i => i.name);
   const vals   = items.map(i => i.out);
 
   setDashContent(`
-    <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
-    <div class="dash-content-title">🏆 Top Items by Consumption</div>
+    <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
+    <div class="dash-content-title">ðŸ† Top Items by Consumption</div>
     <div class="dash-content-sub">Items with highest OUT quantity</div>
     <div class="dash-chart-wrap">
       <div class="dash-chart-title">Top 10 Most Consumed Items</div>
@@ -1413,20 +1438,20 @@ function dashTop(d) {
   ], { indexAxis: 'y' });
 }
 
-/* ── ZONES ── */
+/* â”€â”€ ZONES â”€â”€ */
 function dashZones(d) {
   const zones  = Object.keys(d.zone_in || {});
   const rows   = zones.map(z => `
     <tr>
-      <td>🏭 ${escHtml(z)}</td>
+      <td>ðŸ­ ${escHtml(z)}</td>
       <td style="color:var(--accent-green);font-weight:600;">${d.zone_in[z]  || 0}</td>
       <td style="color:var(--accent-red);font-weight:600;">${d.zone_out[z] || 0}</td>
       <td style="color:var(--accent-cyan);font-weight:600;">${(d.zone_in[z]||0) - (d.zone_out[z]||0)}</td>
     </tr>`).join('');
 
   setDashContent(`
-    <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
-    <div class="dash-content-title">🏭 Zones Summary</div>
+    <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
+    <div class="dash-content-title">ðŸ­ Zones Summary</div>
     <div class="dash-content-sub">IN / OUT breakdown per zone</div>
     <div class="dash-chart-wrap" style="padding:0;overflow:hidden;">
       <table class="dash-zone-table">
@@ -1447,7 +1472,7 @@ function dashZones(d) {
   ]);
 }
 
-/* ── CHART HELPERS ── */
+/* â”€â”€ CHART HELPERS â”€â”€ */
 function chartOpts(yLabel='') {
   return {
     responsive:true, maintainAspectRatio:true,
@@ -1476,7 +1501,7 @@ function drawChart(type, labels, datasets, extra={}) {
   });
 }
 
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function fmtDashNum(v) {
   const n = Number(v || 0);
   return Number.isInteger(n) ? n.toLocaleString() : n.toLocaleString(undefined, { maximumFractionDigits: 2 });
@@ -1745,7 +1770,7 @@ async function loadDashData(silent=false, isAuto=false) {
   }
 }
 
-// View switch does NOT reset the countdown — timer continues
+// View switch does NOT reset the countdown â€” timer continues
 const _origDashShow_wrapped = dashShow;
 
 function onDashZoneChange(value) {
@@ -1860,7 +1885,7 @@ function dashZones(d) {
 }
 
 // WELCOME TOAST
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 (function() {
   const t = document.getElementById('welcomeToast');
   if (!t) return;
@@ -1868,9 +1893,9 @@ function dashZones(d) {
   setTimeout(() => t.classList.remove('show'), 4500);
 })();
 
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // SESSION TIMER
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 (function() {
   const el = document.getElementById('sessionTimer');
   if (!el) return;
@@ -1881,16 +1906,16 @@ function dashZones(d) {
     const m = Math.floor((s % 3600) / 60);
     const sec = s % 60;
     el.textContent = h > 0
-      ? `⏱ ${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
-      : `⏱ ${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+      ? `â± ${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
+      : `â± ${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
   }
   tick();
   setInterval(tick, 1000);
 })();
 
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // ALERT BADGE (zero stock count)
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 (function() {
   const badge = document.getElementById('alertBadge');
   if (!badge) return;
@@ -1944,16 +1969,38 @@ async function loadAdminMessages() {
     adminMessagesCache = data.messages || [];
     setForMoreMessagesBadge(data.count || 0);
     if (!adminMessagesCache.length) { body.innerHTML = '<div class="users-empty">No messages yet</div>'; return; }
-    body.innerHTML = adminMessagesCache.map(m => `<div style="border:1px solid var(--border);background:var(--bg-card);border-radius:12px;padding:14px 16px;margin:12px;"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;"><strong>${escHtml(m.name || '-')}</strong><span style="color:var(--text-dim);font-size:11px;">${escHtml(m.created_at || '')}</span></div><div style="color:var(--text-muted);font-size:12px;margin-top:5px;">${escHtml(m.phone || '')}${m.email ? ' | ' + escHtml(m.email) : ''}${m.department ? ' | ' + escHtml(m.department) : ''}</div><div style="color:var(--text-main);font-size:13px;line-height:1.6;margin-top:10px;white-space:pre-wrap;">${escHtml(m.message || '')}</div>${m.status === 'new' ? `<button class="btn btn-ghost" style="margin-top:10px;" onclick="markAdminMessageRead(${Number(m.id)})">Mark read</button>` : `<div style="margin-top:10px;color:var(--text-dim);font-size:11px;">Read</div>`}</div>`).join('');
+    body.innerHTML = adminMessagesCache.map(m => {
+      const isNew = m.status === 'new';
+      const borderColor = isNew ? 'rgba(239,68,68,0.45)' : 'rgba(16,185,129,0.35)';
+      const bgColor = isNew ? 'rgba(239,68,68,0.06)' : 'rgba(16,185,129,0.05)';
+      return `<div style="border:1px solid ${borderColor};background:${bgColor};border-radius:12px;padding:14px 16px;margin:12px;transition:border-color 0.3s;">
+        <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start;">
+          <strong style="color:var(--text-main);">${escHtml(m.name || 'â€”')}</strong>
+          <span style="color:var(--text-dim);font-size:11px;">${escHtml(m.created_at || '')}</span>
+        </div>
+        <div style="color:var(--text-muted);font-size:12px;margin-top:5px;">${escHtml(m.phone || '')}${m.email ? ' | ' + escHtml(m.email) : ''}${m.department ? ' | ' + escHtml(m.department) : ''}</div>
+        <div style="color:var(--text-main);font-size:13px;line-height:1.6;margin-top:10px;white-space:pre-wrap;">${escHtml(m.message || '')}</div>
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+          ${isNew ? `<button class="btn btn-ghost" style="padding:6px 14px;font-size:12px;border-color:rgba(16,185,129,0.4);color:var(--accent-green);" onclick="markAdminMessageRead(${Number(m.id)})">Mark as Read</button>` : `<span style="font-size:11px;color:var(--accent-green);padding:6px 0;">Read</span>`}
+          <button class="btn" style="padding:6px 14px;font-size:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);color:#ef4444;" onclick="deleteAdminMessage(${Number(m.id)})">Delete</button>
+        </div>
+      </div>`;
+    }).join('');
   } catch(e) { body.innerHTML = `<div class="users-empty">Failed to load messages<br>${escHtml(String(e.message || e))}</div>`; }
 }
 async function markAdminMessageRead(id) { await fetch(`/api/admin/contact_messages/${id}/read`, { method:'POST' }); loadAdminMessages(); }
+async function deleteAdminMessage(id) {
+  try {
+    await fetch(`/api/admin/contact_messages/${id}`, { method: 'DELETE' });
+    loadAdminMessages();
+  } catch(e) {}
+}
 setInterval(() => { if (document.getElementById('forMoreMessagesBadge')) fetch('/api/admin/contact_messages',{cache:'no-store'}).then(r=>r.json()).then(d=>setForMoreMessagesBadge(d.count||0)).catch(()=>{}); }, 30000);
 
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // BACKGROUND NOTIFICATION SYSTEM
 // Works even when page is minimized or in another tab
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 (function() {
   // Request notification permission on load
   function requestNotifPermission() {
@@ -1991,8 +2038,8 @@ setInterval(() => { if (document.getElementById('forMoreMessagesBadge')) fetch('
     // Show browser notification if page hidden/minimized
     if (document.hidden || !document.hasFocus()) {
       showBrowserNotif(
-        '💬 رسائل جديدة - For More Messages',
-        `وصل ${newCount - prevCount} رسالة جديدة`,
+        'ðŸ’¬ Ø±Ø³Ø§Ø¦Ù„ Ø¬Ø¯ÙŠØ¯Ø© - For More Messages',
+        `ÙˆØµÙ„ ${newCount - prevCount} Ø±Ø³Ø§Ù„Ø© Ø¬Ø¯ÙŠØ¯Ø©`,
         '/static/icons/low.ico'
       );
     }
@@ -2007,8 +2054,8 @@ setInterval(() => { if (document.getElementById('forMoreMessagesBadge')) fetch('
     } catch(e) {}
     if (document.hidden || !document.hasFocus()) {
       showBrowserNotif(
-        '🟣 طلب تسجيل جديد',
-        `وصل ${newCount - prevCount} طلب جديد`,
+        'ðŸŸ£ Ø·Ù„Ø¨ ØªØ³Ø¬ÙŠÙ„ Ø¬Ø¯ÙŠØ¯',
+        `ÙˆØµÙ„ ${newCount - prevCount} Ø·Ù„Ø¨ Ø¬Ø¯ÙŠØ¯`,
         '/static/icons/low.ico'
       );
     }
@@ -2064,9 +2111,9 @@ setInterval(() => { if (document.getElementById('forMoreMessagesBadge')) fetch('
   });
 })();
 
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // USERS / LOGIN LOG MODAL
-// ══════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function openUsersModal() {
   document.getElementById('usersModal')?.classList.add('open');
   loadLoginLog();
@@ -2084,7 +2131,7 @@ async function loadLoginLogLegacy() {
     const data = await res.json();
     const entries = data.entries || [];
     if (!entries.length) {
-      body.innerHTML = '<div class="users-empty">📭 No login records yet</div>';
+      body.innerHTML = '<div class="users-empty">ðŸ“­ No login records yet</div>';
       return;
     }
     const rows = entries.map((e, i) => `
@@ -2093,12 +2140,12 @@ async function loadLoginLogLegacy() {
         <td>
           <span style="display:inline-flex;align-items:center;gap:6px;">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <strong>${escHtml(e.username || '—')}</strong>
+            <strong>${escHtml(e.username || 'â€”')}</strong>
           </span>
         </td>
-        <td><span class="zone-badge" style="font-size:11px;padding:2px 10px;">${escHtml(e.zone_label || e.zone_id || '—')}</span></td>
-        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);">${escHtml(e.time || '—')}</td>
-        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);">${escHtml(e.ip || '—')}</td>
+        <td><span class="zone-badge" style="font-size:11px;padding:2px 10px;">${escHtml(e.zone_label || e.zone_id || 'â€”')}</span></td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);">${escHtml(e.time || 'â€”')}</td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);">${escHtml(e.ip || 'â€”')}</td>
       </tr>`).join('');
 
     body.innerHTML = `
@@ -2115,11 +2162,11 @@ async function loadLoginLogLegacy() {
         <tbody>${rows}</tbody>
       </table>`;
   } catch(e) {
-    body.innerHTML = '<div class="users-empty">⚠️ Failed to load log</div>';
+    body.innerHTML = '<div class="users-empty">âš ï¸ Failed to load log</div>';
   }
 }
 
-// ── REPORTS DROPDOWN ──
+// â”€â”€ REPORTS DROPDOWN â”€â”€
 async function loadLoginLog() {
   const body = document.getElementById('usersBody');
   if (!body) return;
@@ -2199,7 +2246,7 @@ function closeAdminUsersModal() {
 
 function exportAdminUsers() {
   if (!adminUsersCache.length) {
-    toast('⚠️ No registered users to export', false);
+    toast('âš ï¸ No registered users to export', false);
     return;
   }
   window.location.href = '/api/admin/registered_users/export.xlsx';
@@ -2216,28 +2263,36 @@ async function loadAdminRequests() {
     setAdminRequestBadge(data.count || 0);
     const items = data.requests || [];
     if (!items.length) {
-      body.innerHTML = '<div class="users-empty">لا توجد طلبات تسجيل حالياً</div>';
+      body.innerHTML = '<div class="users-empty">Ù„Ø§ ØªÙˆØ¬Ø¯ Ø·Ù„Ø¨Ø§Øª ØªØ³Ø¬ÙŠÙ„ Ø­Ø§Ù„ÙŠØ§Ù‹</div>';
       return;
     }
-    body.innerHTML = items.map((r) => `
+    body.innerHTML = items.map((r) => {
+      const avatarSrc = `/api/avatar/${escAttr(r.username || '')}`;
+      const initial = escHtml((r.full_name || r.username || '?').charAt(0).toUpperCase());
+      return `
       <div style="border:1px solid var(--border);background:var(--bg-card);border-radius:12px;padding:14px 16px;margin-bottom:10px;">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-          <div style="min-width:240px;">
-            <div style="font-size:15px;font-weight:700;color:var(--text-main);">${escHtml(r.full_name || '—')}</div>
-            <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">@${escHtml(r.username || '—')} • ${escHtml(r.job_title || '—')}</div>
-            <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">${escHtml(r.email || '—')} • ${escHtml(r.phone || '—')}</div>
-            <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">السؤال الأمني: ${escHtml(r.security_question || '—')}</div>
-            <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">${escHtml(r.created_at || '—')}</div>
+          <div style="display:flex;gap:14px;align-items:flex-start;min-width:240px;">
+            <div style="width:52px;height:52px;border-radius:50%;background:var(--accent-blue);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden;border:2px solid rgba(59,130,246,0.3);">
+              <img src="${avatarSrc}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.textContent='${initial}'">
+            </div>
+            <div>
+              <div style="font-size:15px;font-weight:700;color:var(--text-main);">${escHtml(r.full_name || 'â€”')}</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">@${escHtml(r.username || 'â€”')} â€¢ ${escHtml(r.job_title || 'â€”')}</div>
+              <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">${escHtml(r.email || 'â€”')} â€¢ ${escHtml(r.phone || 'â€”')}</div>
+              <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Security Q: ${escHtml(r.security_question || 'â€”')}</div>
+              <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">${escHtml(r.created_at || 'â€”')}</div>
+            </div>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button class="btn btn-purple" style="padding:8px 12px;font-size:12px;" onclick="approveRegistration(${Number(r.id)})">موافقة</button>
-            <button class="btn btn-ghost" style="padding:8px 12px;font-size:12px;" onclick="rejectRegistration(${Number(r.id)})">رفض</button>
+            <button class="btn btn-purple" style="padding:8px 14px;font-size:12px;" onclick="approveRegistration(${Number(r.id)})">Approve</button>
+            <button class="btn btn-ghost" style="padding:8px 14px;font-size:12px;" onclick="rejectRegistration(${Number(r.id)})">Reject</button>
           </div>
         </div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
   } catch (e) {
-    body.innerHTML = `<div class="users-empty">فشل تحميل الطلبات<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
+    body.innerHTML = `<div class="users-empty">ÙØ´Ù„ ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ø·Ù„Ø¨Ø§Øª<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
   }
 }
 
@@ -2249,7 +2304,7 @@ async function approveRegistration(id) {
     await loadAdminRequests();
     await loadAdminUsers();
   } catch (e) {
-    alert(e.message || 'تعذر الموافقة على الطلب');
+    alert(e.message || 'ØªØ¹Ø°Ø± Ø§Ù„Ù…ÙˆØ§ÙÙ‚Ø© Ø¹Ù„Ù‰ Ø§Ù„Ø·Ù„Ø¨');
   }
 }
 
@@ -2260,7 +2315,7 @@ async function rejectRegistration(id) {
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
     await loadAdminRequests();
   } catch (e) {
-    alert(e.message || 'تعذر رفض الطلب');
+    alert(e.message || 'ØªØ¹Ø°Ø± Ø±ÙØ¶ Ø§Ù„Ø·Ù„Ø¨');
   }
 }
 
@@ -2270,11 +2325,11 @@ const ADMIN_SECURITY_QUESTIONS = [
   'What city were you born in?',
   'What is the name of your favorite teacher?',
   'What was your first phone number?',
-  'ما اسم أول مدرسة التحقت بها؟',
-  'ما اسم عائلة والدتك قبل الزواج؟',
-  'في أي مدينة ولدت؟',
-  'ما اسم معلمك المفضل؟',
-  'ما هو أول رقم هاتف استخدمته؟'
+  'Ù…Ø§ Ø§Ø³Ù… Ø£ÙˆÙ„ Ù…Ø¯Ø±Ø³Ø© Ø§Ù„ØªØ­Ù‚Øª Ø¨Ù‡Ø§ØŸ',
+  'Ù…Ø§ Ø§Ø³Ù… Ø¹Ø§Ø¦Ù„Ø© ÙˆØ§Ù„Ø¯ØªÙƒ Ù‚Ø¨Ù„ Ø§Ù„Ø²ÙˆØ§Ø¬ØŸ',
+  'ÙÙŠ Ø£ÙŠ Ù…Ø¯ÙŠÙ†Ø© ÙˆÙ„Ø¯ØªØŸ',
+  'Ù…Ø§ Ø§Ø³Ù… Ù…Ø¹Ù„Ù…Ùƒ Ø§Ù„Ù…ÙØ¶Ù„ØŸ',
+  'Ù…Ø§ Ù‡Ùˆ Ø£ÙˆÙ„ Ø±Ù‚Ù… Ù‡Ø§ØªÙ Ø§Ø³ØªØ®Ø¯Ù…ØªÙ‡ØŸ'
 ];
 function adminSecurityOptions(current) {
   const value = String(current || '');
@@ -2293,25 +2348,25 @@ async function loadAdminUsers() {
     if (!res.ok || data.error) throw new Error(data.error || 'Failed');
     adminUsersCache = data.users || [];
     if (!adminUsersCache.length) {
-      body.innerHTML = '<div class="users-empty">لا يوجد مستخدمون مسجلون بعد</div>';
+      body.innerHTML = '<div class="users-empty">Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ù…Ø³ØªØ®Ø¯Ù…ÙˆÙ† Ù…Ø³Ø¬Ù„ÙˆÙ† Ø¨Ø¹Ø¯</div>';
       return;
     }
     body.innerHTML = `
-      <div class="users-empty" style="padding:10px 16px;text-align:start;font-size:11px;">Database: ${escHtml(data.db_file || 'auth.sqlite3')} · ${adminUsersCache.length} users</div>
+      <div class="users-empty" style="padding:10px 16px;text-align:start;font-size:11px;">Database: ${escHtml(data.db_file || 'auth.sqlite3')} Â· ${adminUsersCache.length} users</div>
       <div class="admin-user-list">
         ${adminUsersCache.map((u, i) => `
           <button class="admin-user-row" type="button" onclick="openAdminUserDetail(${Number(u.id)})">
             <img class="admin-user-avatar-img" src="/api/avatar/${escHtml(u.username)}" onerror="this.style.visibility='hidden'" alt="">
             <div class="admin-user-row-text">
-              <strong>${i + 1}. ${escHtml(u.username || '—')}${u.full_name ? ' <span class="admin-user-fullname">· ' + escHtml(u.full_name) + '</span>' : ''}</strong>
-              <span>${u.suspended_until ? 'موقوف حتى ' + escHtml(u.suspended_until.slice(0,16)) : (u.job_title ? escHtml(u.job_title) : 'عرض البيانات')}</span>
+              <strong>${i + 1}. ${escHtml(u.username || 'â€”')}${u.full_name ? ' <span class="admin-user-fullname">Â· ' + escHtml(u.full_name) + '</span>' : ''}</strong>
+              <span>${u.suspended_until ? 'Ù…ÙˆÙ‚ÙˆÙ Ø­ØªÙ‰ ' + escHtml(u.suspended_until.slice(0,16)) : (u.job_title ? escHtml(u.job_title) : 'Ø¹Ø±Ø¶ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª')}</span>
             </div>
-            ${u.suspended_until ? '<span class="admin-user-suspended-badge">موقوف</span>' : ''}
+            ${u.suspended_until ? '<span class="admin-user-suspended-badge">Ù…ÙˆÙ‚ÙˆÙ</span>' : ''}
           </button>
         `).join('')}
       </div>`;
   } catch (e) {
-    body.innerHTML = `<div class="users-empty">فشل تحميل المستخدمين<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
+    body.innerHTML = `<div class="users-empty">ÙØ´Ù„ ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙŠÙ†<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
   }
 }
 
@@ -2322,9 +2377,9 @@ function openAdminUserDetail(id) {
   if (!body) return;
   const rows = [
     ['Full name', u.full_name], ['Username', u.username], ['Job title', u.job_title], ['Gender', u.gender], ['Birth date', u.birth_date], ['Privacy accepted', u.privacy_accepted ? 'Yes' : 'No'], ['Email', u.email],
-    ['Phone', u.phone], ['Security question', u.security_question], ['Password', u.password_stored_as ? 'Hidden (one-way hash)' : '—'],
-    ['Security answer', u.security_answer_stored_as ? 'Hidden (one-way hash)' : '—'],
-    ['Approved at', u.approved_at || u.created_at], ['Suspended until', u.suspended_until || '—'], ['Suspended by', u.suspended_by || '—']
+    ['Phone', u.phone], ['Security question', u.security_question], ['Password', u.password_stored_as ? 'Hidden (one-way hash)' : 'â€”'],
+    ['Security answer', u.security_answer_stored_as ? 'Hidden (one-way hash)' : 'â€”'],
+    ['Approved at', u.approved_at || u.created_at], ['Suspended until', u.suspended_until || 'â€”'], ['Suspended by', u.suspended_by || 'â€”']
   ];
   body.innerHTML = `
     <div class="admin-detail-header">
@@ -2334,34 +2389,94 @@ function openAdminUserDetail(id) {
         <div class="admin-detail-header-meta">
           <span class="admin-detail-header-user">@${escHtml(u.username)}</span>
           ${u.job_title ? `<span class="admin-detail-header-job">${escHtml(u.job_title)}</span>` : ''}
-          ${u.suspended_until ? `<span class="admin-user-suspended-badge">موقوف حتى ${escHtml(u.suspended_until.slice(0,16))}</span>` : ''}
+          ${u.suspended_until ? `<span class="admin-user-suspended-badge">Ù…ÙˆÙ‚ÙˆÙ Ø­ØªÙ‰ ${escHtml(u.suspended_until.slice(0,16))}</span>` : ''}
         </div>
       </div>
     </div>
     <div class="admin-detail-grid">
-      ${rows.map(([label, value]) => `<div class="admin-detail-item"><div class="admin-detail-label">${escHtml(label)}</div><div class="admin-detail-value">${escHtml(value || '—')}</div></div>`).join('')}
+      ${rows.map(([label, value]) => `<div class="admin-detail-item"><div class="admin-detail-label">${escHtml(label)}</div><div class="admin-detail-value">${escHtml(value || 'â€”')}</div></div>`).join('')}
     </div>
     <div class="admin-danger-zone">
-      <input id="suspendMinutes" type="number" min="1" max="43200" value="60" title="مدة الإيقاف بالدقائق">
-      <button class="btn btn-purple" onclick="suspendAdminUser(${Number(u.id)})">إيقاف مؤقت</button>
-      <button class="btn btn-ghost" onclick="unsuspendAdminUser(${Number(u.id)})">إلغاء الإيقاف</button>
-      <button class="btn btn-logout" onclick="deleteAdminUser(${Number(u.id)}, '${escAttr(u.username || '')}')">حذف الحساب</button>
+      <div class="admin-dz-label">Suspend Account</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <input id="suspendMinutes" type="number" min="1" max="43200" value="60" placeholder="Minutes" style="width:100px;">
+        <button class="btn btn-purple" style="padding:8px 14px;font-size:12px;" onclick="suspendAdminUser(${Number(u.id)})">Suspend</button>
+        <button class="btn btn-ghost" style="padding:8px 14px;font-size:12px;" onclick="unsuspendAdminUser(${Number(u.id)})">Unsuspend</button>
+      </div>
     </div>
     <div class="admin-danger-zone">
-      <input id="adminNewPassword" type="password" placeholder="New password">
-      <input id="adminConfirmPassword" type="password" placeholder="Confirm password">
-      <button class="btn btn-purple" onclick="resetAdminUserPassword(${Number(u.id)})">تغيير كلمة السر</button>
+      <div class="admin-dz-label">Change Password</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <input id="adminNewPassword" type="password" placeholder="New password" style="flex:1 1 160px;">
+        <input id="adminConfirmPassword" type="password" placeholder="Confirm password" style="flex:1 1 160px;">
+        <button class="btn btn-purple" style="padding:8px 14px;font-size:12px;" onclick="resetAdminUserPassword(${Number(u.id)})">Save Password</button>
+      </div>
     </div>
     <div class="admin-danger-zone">
-      <select id="adminSecurityQuestion" style="flex:2 1 260px;">${adminSecurityOptions(u.security_question)}</select>
-      <input id="adminSecurityAnswer" type="text" placeholder="New security answer" style="flex:1.4 1 180px;">
-      <button class="btn btn-purple" onclick="resetAdminUserSecurity(${Number(u.id)})">تغيير السؤال الأمني</button>
+      <div class="admin-dz-label">Security Question</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <select id="adminSecurityQuestion" style="flex:2 1 220px;">${adminSecurityOptions(u.security_question)}</select>
+        <input id="adminSecurityAnswer" type="text" placeholder="New security answer" style="flex:1 1 160px;">
+        <button class="btn btn-purple" style="padding:8px 14px;font-size:12px;" onclick="resetAdminUserSecurity(${Number(u.id)})">Save Question</button>
+      </div>
+    </div>
+    <div class="admin-danger-zone" id="adminZonesSection_${Number(u.id)}">
+      <div class="admin-dz-label">Zone Access</div>
+      <div id="adminZonesBody_${Number(u.id)}" style="margin-bottom:10px;color:var(--text-dim);font-size:12px;">Loading...</div>
+      <button class="btn btn-purple" style="padding:8px 14px;font-size:12px;" onclick="saveAdminUserZones(${Number(u.id)})">Save Zones</button>
+      <button class="btn btn-ghost" style="padding:8px 14px;font-size:12px;" onclick="clearAdminUserZones(${Number(u.id)})">Allow All Zones</button>
+    </div>
+    <div class="admin-danger-zone" style="border-color:rgba(239,68,68,0.3);">
+      <div class="admin-dz-label" style="color:#ef4444;">Danger Zone</div>
+      <button class="btn btn-logout" style="padding:8px 14px;font-size:12px;" onclick="deleteAdminUser(${Number(u.id)}, '${escAttr(u.username || '')}')">Delete Account</button>
     </div>`;
   document.getElementById('adminUserDetailModal')?.classList.add('open');
+  loadAdminUserZones(Number(u.id));
 }
 
 function closeAdminUserDetailModal() {
   document.getElementById('adminUserDetailModal')?.classList.remove('open');
+}
+
+const _ALL_ZONES = [
+  {id:'zone1',name:'Zone 1'},{id:'zone2',name:'Zone 2'},{id:'zone3',name:'Packaging'},
+  {id:'zone4',name:'Zone 4'},{id:'zone5',name:'Zone 5'},{id:'qc',name:'QC Workflow'}
+];
+async function loadAdminUserZones(id) {
+  const body = document.getElementById(`adminZonesBody_${id}`);
+  if (!body) return;
+  try {
+    const res = await fetch(`/api/admin/registered_users/${id}/zones`);
+    const data = await res.json();
+    const allowed = data.zones; // null = all zones
+    body.innerHTML = _ALL_ZONES.map(z => {
+      const checked = allowed === null || (Array.isArray(allowed) && allowed.includes(z.id));
+      return `<label style="display:inline-flex;align-items:center;gap:6px;margin:4px 8px 4px 0;font-size:12px;cursor:pointer;">
+        <input type="checkbox" data-zone-id="${escAttr(z.id)}" ${checked ? 'checked' : ''} style="accent-color:var(--accent-blue);">
+        ${escHtml(z.name)}
+      </label>`;
+    }).join('');
+  } catch(e) { body.textContent = 'Failed to load'; }
+}
+async function saveAdminUserZones(id) {
+  const body = document.getElementById(`adminZonesBody_${id}`);
+  if (!body) return;
+  const checked = [...body.querySelectorAll('input[data-zone-id]:checked')].map(el => el.dataset.zoneId);
+  try {
+    const res = await fetch(`/api/admin/registered_users/${id}/zones`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ zones: checked }) });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
+    toast('Zone access saved', true);
+  } catch(e) { toast(e.message || 'Failed', false); }
+}
+async function clearAdminUserZones(id) {
+  try {
+    const res = await fetch(`/api/admin/registered_users/${id}/zones`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ zones: null }) });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
+    toast('All zones allowed', true);
+    loadAdminUserZones(id);
+  } catch(e) { toast(e.message || 'Failed', false); }
 }
 
 async function suspendAdminUser(id) {
@@ -2370,10 +2485,10 @@ async function suspendAdminUser(id) {
     const res = await fetch(`/api/admin/registered_users/${id}/suspend`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ minutes }) });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
-    toast(data.message || 'تم الإيقاف', true);
+    toast(data.message || 'ØªÙ… Ø§Ù„Ø¥ÙŠÙ‚Ø§Ù', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'تعذر إيقاف المستخدم'); }
+  } catch(e) { alert(e.message || 'ØªØ¹Ø°Ø± Ø¥ÙŠÙ‚Ø§Ù Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…'); }
 }
 
 async function unsuspendAdminUser(id) {
@@ -2381,10 +2496,10 @@ async function unsuspendAdminUser(id) {
     const res = await fetch(`/api/admin/registered_users/${id}/unsuspend`, { method:'POST' });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
-    toast(data.message || 'تم إلغاء الإيقاف', true);
+    toast(data.message || 'ØªÙ… Ø¥Ù„ØºØ§Ø¡ Ø§Ù„Ø¥ÙŠÙ‚Ø§Ù', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'تعذر إلغاء الإيقاف'); }
+  } catch(e) { alert(e.message || 'ØªØ¹Ø°Ø± Ø¥Ù„ØºØ§Ø¡ Ø§Ù„Ø¥ÙŠÙ‚Ø§Ù'); }
 }
 
 async function resetAdminUserPassword(id) {
@@ -2394,10 +2509,10 @@ async function resetAdminUserPassword(id) {
     const res = await fetch(`/api/admin/registered_users/${id}/password`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ new_password, confirm_password }) });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
-    toast(data.message || 'تم تغيير كلمة السر', true);
+    toast(data.message || 'ØªÙ… ØªØºÙŠÙŠØ± ÙƒÙ„Ù…Ø© Ø§Ù„Ø³Ø±', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'تعذر تغيير كلمة السر'); }
+  } catch(e) { alert(e.message || 'ØªØ¹Ø°Ø± ØªØºÙŠÙŠØ± ÙƒÙ„Ù…Ø© Ø§Ù„Ø³Ø±'); }
 }
 
 async function resetAdminUserSecurity(id) {
@@ -2407,22 +2522,27 @@ async function resetAdminUserSecurity(id) {
     const res = await fetch(`/api/admin/registered_users/${id}/security`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ security_question, security_answer }) });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
-    toast(data.message || 'تم تغيير السؤال الأمني', true);
+    toast(data.message || 'ØªÙ… ØªØºÙŠÙŠØ± Ø§Ù„Ø³Ø¤Ø§Ù„ Ø§Ù„Ø£Ù…Ù†ÙŠ', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'تعذر تغيير السؤال الأمني'); }
+  } catch(e) { alert(e.message || 'ØªØ¹Ø°Ø± ØªØºÙŠÙŠØ± Ø§Ù„Ø³Ø¤Ø§Ù„ Ø§Ù„Ø£Ù…Ù†ÙŠ'); }
 }
 
 async function deleteAdminUser(id, username) {
-  if (!confirm(`حذف حساب ${username} بالكامل؟`)) return;
-  try {
-    const res = await fetch(`/api/admin/registered_users/${id}`, { method:'DELETE' });
-    const data = await res.json();
-    if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
-    toast(data.message || 'تم الحذف', true);
-    await loadAdminUsers();
-    closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'تعذر حذف المستخدم'); }
+  openDeleteConfirm(
+    `Delete ${username}?`,
+    'This will permanently remove the account. This action cannot be undone.',
+    async () => {
+      try {
+        const res = await fetch(`/api/admin/registered_users/${id}`, { method:'DELETE' });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
+        toast(data.message || 'Deleted', true);
+        await loadAdminUsers();
+        closeAdminUserDetailModal();
+      } catch(e) { toast(e.message || 'Failed to delete', false); }
+    }
+  );
 }
 
 let _reportsLoaded = false;
@@ -2444,17 +2564,17 @@ async function toggleReportsDropdown(e) {
       const data = await res.json();
       _reportsLoaded = true;
       if (!data.files || !data.files.length) {
-        menu.innerHTML = '<div class="reports-dropdown-empty">📂 No reports found</div>';
+        menu.innerHTML = '<div class="reports-dropdown-empty">ðŸ“‚ No reports found</div>';
       } else {
         menu.innerHTML = data.files.map(f =>
           `<div class="reports-dropdown-item" onclick="printReport('${escAttr(f)}')">
-             <span class="ri-icon">📊</span>
+             <span class="ri-icon">ðŸ“Š</span>
              <span style="overflow:hidden;text-overflow:ellipsis;">${escHtml(f)}</span>
            </div>`
         ).join('');
       }
     } catch {
-      menu.innerHTML = '<div class="reports-dropdown-empty">⚠️ Failed to load</div>';
+      menu.innerHTML = '<div class="reports-dropdown-empty">âš ï¸ Failed to load</div>';
     }
   } else {
     menu.classList.add('open');
@@ -2463,7 +2583,7 @@ async function toggleReportsDropdown(e) {
 
 function printReport(filename) {
   document.getElementById('reportsDropdownMenu').classList.remove('open');
-  // Open the server-rendered HTML print page directly — no download, no iframe tricks
+  // Open the server-rendered HTML print page directly â€” no download, no iframe tricks
   window.open('/reports/print/' + encodeURIComponent(filename), '_blank');
 }
 
@@ -2475,7 +2595,7 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// ── TOGGLE BUTTONS VISIBILITY ──
+// â”€â”€ TOGGLE BUTTONS VISIBILITY â”€â”€
 function toggleButtonsVisibility() {
   const actions = document.querySelector('.topbar-actions');
   const btn = document.getElementById('buttonsToggleBtn');
@@ -2492,5 +2612,5 @@ function toggleButtonsVisibility() {
   try { localStorage.setItem('topbarButtonsHidden', hidden ? '1' : '0'); } catch(e){}
 }
 
-// ── START ──
+// â”€â”€ START â”€â”€
 init();

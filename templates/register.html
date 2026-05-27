@@ -75,7 +75,19 @@
   </div>
   <div class="version-strip">EST-iMs V3.1.1.0 &nbsp;|&nbsp; Registration</div>
 </div>
-<div class="success-overlay" id="successModal"><div class="success-box"><div class="success-mark">✓</div><div class="success-title" id="successTitle">Registration sent</div><div class="success-text" id="successText">Your request was sent successfully and is waiting for admin approval. You will be redirected to login.</div></div></div>
+<div class="success-overlay" id="successModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);align-items:center;justify-content:center;">
+  <div style="background:rgba(13,17,23,0.55);backdrop-filter:blur(28px) saturate(160%);border:1px solid rgba(59,130,246,0.22);border-radius:20px;padding:44px 48px;text-align:center;max-width:380px;width:90%;position:relative;box-shadow:0 24px 64px rgba(0,0,0,0.5);animation:cardPop 0.4s cubic-bezier(.34,1.56,.64,1) both;">
+    <div style="position:absolute;top:0;left:15%;right:15%;height:2px;background:linear-gradient(90deg,transparent,#10b981,#3b82f6,transparent);border-radius:2px;"></div>
+    <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.35);border-radius:50px;padding:5px 16px;margin-bottom:20px;font-size:11px;font-weight:700;color:#10b981;letter-spacing:1.5px;text-transform:uppercase;">
+      <span style="width:7px;height:7px;border-radius:50%;background:#10b981;animation:betaBlink 1.1s ease-in-out infinite;flex-shrink:0;"></span>
+      EST-iMs
+    </div>
+    <div style="font-size:22px;font-weight:700;color:var(--text-main,#f1f5f9);margin-bottom:8px;line-height:1.3;" id="successTitle">Registration sent</div>
+    <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:16px;"></div>
+    <div style="font-size:13px;color:var(--text-muted,#94a3b8);margin-bottom:28px;line-height:1.6;" id="successText">Your request was sent successfully and is waiting for admin approval. You will be redirected to login.</div>
+    <button style="background:#3b82f6;color:#fff;border:none;border-radius:10px;padding:11px 36px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;" onclick="document.getElementById('successModal').style.display='none'">OK</button>
+  </div>
+</div>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script src="/static/js/register.js"></script>
 </body>
