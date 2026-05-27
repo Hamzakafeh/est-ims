@@ -37,6 +37,12 @@
     </div>
     <div class="dock-label" id="dockLangLabel">Language</div>
   </div>
+  <div class="dock-item" onclick="openOnlineUsers()">
+    <div class="dock-icon">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </div>
+    <div class="dock-label">Online</div>
+  </div>
   <div class="dock-item" onclick="window.location.href='/logout'">
     <div class="dock-icon" style="color:#ef4444">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -46,9 +52,10 @@
 </div>
 
 <!-- USER CORNER -->
-<div class="user-corner">
+<div class="user-corner" id="userCorner" onclick="openZoneProfile()" style="cursor:pointer;user-select:none" data-username="{{ username }}">
   <div class="user-corner-avatar">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <img id="ucAvatarImg" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:6px;" alt="">
+    <svg id="ucAvatarIcon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
   </div>
   <span class="user-corner-name">{{ username }}</span>
   <span class="user-corner-dot"></span>
@@ -161,6 +168,35 @@
     <button class="denied-btn" onclick="closeDenied()">Understood</button>
   </div>
 </div>
+<!-- PROFILE MODAL -->
+<div class="zp-overlay" id="zpOverlay" onclick="if(event.target===this)closeZoneProfile()">
+  <div class="zp-panel">
+    <div class="zp-close-btn" onclick="closeZoneProfile()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </div>
+    <div class="zp-avatar-wrap">
+      <div class="zp-avatar" id="zpAvatar">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+    </div>
+    <div class="zp-name" id="zpName">—</div>
+    <div class="zp-username" id="zpUsername">—</div>
+    <div class="zp-divider"></div>
+    <div class="zp-fields" id="zpFields"></div>
+  </div>
+</div>
+
+<!-- ONLINE USERS MODAL -->
+<div class="zu-overlay" id="zuOverlay" onclick="if(event.target===this)closeOnlineUsers()">
+  <div class="zu-panel">
+    <div class="zp-close-btn" onclick="closeOnlineUsers()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </div>
+    <div class="zu-title"><span class="zu-live-dot"></span>Online Users</div>
+    <div class="zu-list" id="zuList"><div class="zu-loading">Loading...</div></div>
+  </div>
+</div>
+
 <script src="/static/js/account-status.js"></script>
 </body>
 </html>

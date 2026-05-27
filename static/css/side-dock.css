@@ -27,3 +27,7 @@ html.light .dock-icon .icon-moon { display: block; }
   .side-dock { gap: 3px; padding: 4px; }
   .dock-icon { width: 36px; height: 36px; }
 }
+/* ── SHARED FOOTER ── */
+.copy-line { margin-top: 36px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim, #64748b); text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.copy-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent-green, #10b981); box-shadow: 0 0 6px var(--accent-green, #10b981); animation: copyPulse 2.2s ease-in-out infinite; flex-shrink: 0; }
+@keyframes copyPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }

@@ -270,3 +270,114 @@ function toggleLang() {
 }
 // تطبيق اللغة عند التحميل
 applyLang(currentLang);
+
+// ── PRESENCE PING ──
+(function pingPresence() {
+  fetch('/api/zones/ping', { method: 'POST' }).catch(() => {});
+  setInterval(() => fetch('/api/zones/ping', { method: 'POST' }).catch(() => {}), 10000);
+})();
+
+// Load avatar in user-corner
+(function() {
+  const username = document.getElementById('userCorner')?.dataset.username || '';
+  if (!username) return;
+  const img = document.getElementById('ucAvatarImg');
+  const icon = document.getElementById('ucAvatarIcon');
+  img.src = '/api/avatar/' + encodeURIComponent(username);
+  img.onload = () => { img.style.display = 'block'; if (icon) icon.style.display = 'none'; };
+})();
+
+// ── PROFILE MODAL ──
+let _zpData = null;
+
+async function openZoneProfile() {
+  document.getElementById('zpOverlay').classList.add('open');
+  if (!_zpData) {
+    try {
+      const res = await fetch('/api/zones/me');
+      _zpData = await res.json();
+    } catch(e) { _zpData = {}; }
+  }
+  const d = _zpData;
+  const username = d.username || '';
+
+  // Avatar
+  const avatarEl = document.getElementById('zpAvatar');
+  if (username) {
+    avatarEl.textContent = (username[0] || '?').toUpperCase();
+    const img = new Image();
+    img.onload = () => {
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
+      avatarEl.textContent = '';
+      avatarEl.appendChild(img);
+    };
+    img.src = '/api/avatar/' + encodeURIComponent(username);
+  }
+
+  document.getElementById('zpName').textContent = d.full_name || username || '—';
+  document.getElementById('zpUsername').textContent = username ? '@' + username : '—';
+
+  const rows = [];
+  if (d.job_title) rows.push(['Job Title', d.job_title]);
+  if (d.email)    rows.push(['Email',     d.email]);
+  if (d.phone)    rows.push(['Phone',     d.phone]);
+  if (d.gender)   rows.push(['Gender',    d.gender]);
+
+  document.getElementById('zpFields').innerHTML = rows.length
+    ? rows.map(([l, v]) => `<div class="zp-field"><span class="zp-field-label">${l}</span><span class="zp-field-val">${v}</span></div>`).join('')
+    : '<div style="text-align:center;font-size:12px;color:var(--text-dim);padding:8px 0">No details</div>';
+}
+
+function closeZoneProfile() {
+  document.getElementById('zpOverlay').classList.remove('open');
+}
+
+// ── ONLINE USERS MODAL ──
+async function openOnlineUsers() {
+  document.getElementById('zuOverlay').classList.add('open');
+  const list = document.getElementById('zuList');
+  list.innerHTML = '<div class="zu-loading">Loading...</div>';
+  try {
+    const res = await fetch('/api/zones/presence');
+    const data = await res.json();
+    const users = data.users || [];
+    if (!users.length) {
+      list.innerHTML = '<div class="zu-empty">No users online</div>';
+      return;
+    }
+    list.innerHTML = '';
+    users.forEach(u => {
+      const row = document.createElement('div');
+      row.className = 'zu-user';
+      const avDiv = document.createElement('div');
+      avDiv.className = 'zu-user-av';
+      avDiv.textContent = (u[0] || '?').toUpperCase();
+      const img = new Image();
+      img.onload = () => {
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
+        avDiv.textContent = '';
+        avDiv.appendChild(img);
+      };
+      img.src = '/api/avatar/' + encodeURIComponent(u);
+      const nameEl = document.createElement('span');
+      nameEl.className = 'zu-user-name';
+      nameEl.textContent = u;
+      const dot = document.createElement('span');
+      dot.className = 'zu-user-dot';
+      row.appendChild(avDiv);
+      row.appendChild(nameEl);
+      row.appendChild(dot);
+      list.appendChild(row);
+    });
+  } catch(e) {
+    list.innerHTML = '<div class="zu-loading">Failed to load</div>';
+  }
+}
+
+function closeOnlineUsers() {
+  document.getElementById('zuOverlay').classList.remove('open');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeZoneProfile(); closeOnlineUsers(); }
+});

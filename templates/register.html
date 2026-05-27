@@ -45,17 +45,6 @@
     <div class="section-title" id="formTitle">Registration Details</div>
     <form id="registerForm">
       <div class="form-grid">
-        <div class="field full"><label id="fullNameLabel">Full name</label><input id="fullName" dir="auto" autocomplete="name"><span class="field-hint" id="hintFullName"></span></div>
-        <div class="field"><label id="usernameLabel">Username</label><input id="username" dir="ltr" autocomplete="username" placeholder="username"><span class="field-hint" id="hintUsername"></span></div>
-        <div class="field"><label id="emailLabel">Email</label><input id="email" dir="ltr" type="email" autocomplete="email" placeholder="name@example.com"><span class="field-hint" id="hintEmail"></span></div>
-        <div class="field"><label id="phoneLabel">Phone</label><input id="phone" dir="ltr" autocomplete="tel" placeholder="+962..."><span class="field-hint" id="hintPhone"></span></div>
-        <div class="field"><label id="jobTitleLabel">Job title</label><select id="jobTitle"><option value="" id="jobTitlePlaceholder">Select</option></select><span class="field-hint" id="hintJobTitle"></span></div>
-        <div class="field"><label id="genderLabel">Gender</label><select id="gender"><option value="">Select</option><option value="male">Male</option><option value="female">Female</option></select><span class="field-hint" id="hintGender"></span></div>
-        <div class="field"><label id="birthDateLabel">Birth date</label><input id="birthDate" dir="ltr" type="date"><span class="field-hint" id="hintBirthDate"></span></div>
-        <div class="field"><label id="passwordLabel">Password</label><input id="password" dir="ltr" type="password" autocomplete="new-password"><span class="field-hint" id="hintPassword"></span></div>
-        <div class="field"><label id="confirmPasswordLabel">Confirm password</label><input id="confirmPassword" dir="ltr" type="password" autocomplete="new-password"><span class="field-hint" id="hintConfirmPassword"></span></div>
-        <div class="field full"><label id="securityQuestionLabel">Security question</label><select id="securityQuestion"></select></div>
-        <div class="field full"><label id="securityAnswerLabel">Security answer</label><input id="securityAnswer" dir="auto" autocomplete="off"><span class="field-hint" id="hintSecurityAnswer"></span></div>
         <div class="field full">
           <label id="avatarLabel">Profile Photo <span style="font-size:11px;opacity:.55">(optional)</span></label>
           <div class="avatar-upload-wrap">
@@ -72,6 +61,17 @@
             </div>
           </div>
         </div>
+        <div class="field full"><label id="fullNameLabel">Full name</label><input id="fullName" dir="auto" autocomplete="name"><span class="field-hint" id="hintFullName"></span></div>
+        <div class="field"><label id="usernameLabel">Username</label><input id="username" dir="ltr" autocomplete="username" placeholder="username"><span class="field-hint" id="hintUsername"></span></div>
+        <div class="field"><label id="emailLabel">Email</label><input id="email" dir="ltr" type="email" autocomplete="email" placeholder="name@example.com"><span class="field-hint" id="hintEmail"></span></div>
+        <div class="field"><label id="phoneLabel">Phone</label><input id="phone" dir="ltr" autocomplete="tel" placeholder="+962..."><span class="field-hint" id="hintPhone"></span></div>
+        <div class="field"><label id="jobTitleLabel">Job title</label><select id="jobTitle"><option value="" id="jobTitlePlaceholder">Select</option></select><span class="field-hint" id="hintJobTitle"></span></div>
+        <div class="field"><label id="genderLabel">Gender</label><select id="gender"><option value="">Select</option><option value="male">Male</option><option value="female">Female</option></select><span class="field-hint" id="hintGender"></span></div>
+        <div class="field"><label id="birthDateLabel">Birth date</label><input id="birthDate" dir="ltr" type="date"><span class="field-hint" id="hintBirthDate"></span></div>
+        <div class="field"><label id="passwordLabel">Password</label><input id="password" dir="ltr" type="password" autocomplete="new-password"><span class="field-hint" id="hintPassword"></span></div>
+        <div class="field"><label id="confirmPasswordLabel">Confirm password</label><input id="confirmPassword" dir="ltr" type="password" autocomplete="new-password"><span class="field-hint" id="hintConfirmPassword"></span></div>
+        <div class="field full"><label id="securityQuestionLabel">Security question</label><select id="securityQuestion"></select></div>
+        <div class="field full"><label id="securityAnswerLabel">Security answer</label><input id="securityAnswer" dir="auto" autocomplete="off"><span class="field-hint" id="hintSecurityAnswer"></span></div>
         <div class="field full"><label id="captchaLabel">Captcha</label><div class="recaptcha-wrap"><div class="g-recaptcha" id="recaptchaWidget" data-sitekey="{{ recaptcha_site_key }}"></div></div></div>
         <div class="field full"><label class="check-row"><input id="privacyAccepted" type="checkbox"><span id="privacyText">I agree to the <a href="/privacy" target="_blank">Privacy Policy</a> and <a href="/terms" target="_blank">Terms of Use</a></span></label></div>
       </div>

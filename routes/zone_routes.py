@@ -2,6 +2,7 @@ import os
 import re
 import secrets
 import threading
+import time as _time
 from datetime import datetime
 from flask import Blueprint, render_template, jsonify, request, session, redirect, url_for, send_from_directory
 from core import DATA_STORE_DIR
@@ -35,6 +36,10 @@ from core import (
 )
 
 zone_bp = Blueprint('zones', __name__)
+
+_zones_presence = {}
+_zones_presence_lock = threading.Lock()
+_ZONES_PRESENCE_TTL = 30
 
 
 @zone_bp.route('/zones')
@@ -327,6 +332,42 @@ def api_profile_change_password():
         conn.execute('UPDATE users SET password_hash = ? WHERE lower(username) = lower(?)', (new_hash, username))
 
     return jsonify({'success': True, 'message': 'تم تغيير كلمة المرور بنجاح'})
+
+
+@zone_bp.route('/api/zones/ping', methods=['POST'])
+@login_required
+def api_zones_ping():
+    username = session.get('username', '')
+    if username:
+        with _zones_presence_lock:
+            _zones_presence[username] = {'ts': _time.time()}
+    return jsonify({'success': True})
+
+
+@zone_bp.route('/api/zones/presence')
+@login_required
+def api_zones_presence():
+    now = _time.time()
+    with _zones_presence_lock:
+        active = [u for u, d in _zones_presence.items() if now - d['ts'] < _ZONES_PRESENCE_TTL]
+    return jsonify({'users': active})
+
+
+@zone_bp.route('/api/zones/me')
+@login_required
+def api_zones_me():
+    username = session.get('username', '')
+    user = _approved_db_user(username)
+    if user:
+        return jsonify({
+            'username': user.get('username', username),
+            'full_name': user.get('full_name', ''),
+            'job_title': user.get('job_title', ''),
+            'email': user.get('email', ''),
+            'phone': user.get('phone', ''),
+            'gender': user.get('gender', ''),
+        })
+    return jsonify({'username': username, 'full_name': '', 'job_title': '', 'email': '', 'phone': '', 'gender': ''})
 
 
 @zone_bp.route('/logout')

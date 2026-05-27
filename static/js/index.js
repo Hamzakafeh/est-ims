@@ -2511,8 +2511,9 @@ async function saveAdminUserPerms(id) {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ switch_zones: switchZones, can_edit: canEdit, manage_permissions: managePerms })
     });
-    const data = await res.json();
-    if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
+    let data = {};
+    try { data = await res.json(); } catch(_) {}
+    if (!res.ok || !data.success) throw new Error(data.message || (res.ok ? 'Failed' : `Server error ${res.status}`));
     toast('Permissions saved', true);
   } catch(e) { toast(e.message || 'Failed', false); }
 }
@@ -2524,8 +2525,9 @@ async function saveAdminUserVerified(id) {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ is_verified: isVerified })
     });
-    const data = await res.json();
-    if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
+    let data = {};
+    try { data = await res.json(); } catch(_) {}
+    if (!res.ok || !data.success) throw new Error(data.message || (res.ok ? 'Failed' : `Server error ${res.status}`));
     toast('Verified badge updated', true);
   } catch(e) { toast(e.message || 'Failed', false); }
 }
