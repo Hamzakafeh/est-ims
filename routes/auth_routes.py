@@ -249,6 +249,7 @@ def do_login():
     username = data.get('username', '').strip()
     password = data.get('password', '').strip()
     next_url = data.get('next', '/zones')
+    remember_me = bool(data.get('remember_me', False))
 
     username_key = _normalize_username(username)
     env_password = ENV_USERS.get(username_key)
@@ -284,6 +285,7 @@ def do_login():
         login_username = db_user['username'] if db_user is not None else username
         _clear_attempts(ip)
         _firebase_clear_user_status(login_username)
+        session.permanent = remember_me
         session['logged_in'] = True
         session['username'] = login_username
         qr_next = session.pop('qr_next', None)

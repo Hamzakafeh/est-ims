@@ -742,15 +742,19 @@ function _chatAvatarHtml(username) {
 }
 
 function _chatMsgHtml(m) {
-  const mine      = m.username === CURRENT_USER;
-  const roleClass = m.role === 'qc' ? 'cm-role-qc' : 'cm-role-lab';
-  const roleLabel = m.role === 'qc' ? 'QC' : 'Label';
-  const avatar    = _chatAvatarHtml(m.username);
+  const mine        = m.username === CURRENT_USER;
+  const roleClass   = m.role === 'qc' ? 'cm-role-qc' : 'cm-role-lab';
+  const roleLabel   = m.role === 'qc' ? 'QC' : 'Label';
+  const avatar      = _chatAvatarHtml(m.username);
+  const isVerified  = VERIFIED_USERS.has(m.username.toLowerCase());
+  const verifiedBadge = isVerified
+    ? `<span class="verified-badge" title="Verified"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>`
+    : '';
   return `<div class="chat-msg-row ${mine ? 'mine' : 'theirs'}">
     ${mine ? '' : avatar}
     <div class="chat-msg ${mine ? 'mine' : 'theirs'}">
       <div class="chat-msg-meta">
-        <span class="cm-user">${esc(m.username)}</span>
+        <span class="cm-user">${esc(m.username)}${verifiedBadge}</span>
         <span class="${roleClass}">${roleLabel}</span>
         <span>${esc(m.sent_at)}</span>
       </div>

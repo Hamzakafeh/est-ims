@@ -301,7 +301,7 @@ async function doLogin() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'same-origin',
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify({ username, password, remember_me: document.getElementById('rememberMe')?.checked || false })
     });
     const data = await res.json();
     if (data.success) {

@@ -236,11 +236,62 @@ function renderProfile(data) {
       <div class="profile-log-list">${logins}</div>
     </div>
 
+    <div class="profile-section">
+      <div class="profile-section-title">Change Password</div>
+      <div class="profile-change-pw" id="profileChangePwForm">
+        <input type="password" id="profilePwCurrent" placeholder="Current password" autocomplete="current-password">
+        <input type="password" id="profilePwNew" placeholder="New password" autocomplete="new-password">
+        <input type="password" id="profilePwConfirm" placeholder="Confirm new password" autocomplete="new-password">
+        <div class="profile-pw-status" id="profilePwStatus"></div>
+        <button class="btn btn-primary" onclick="submitProfilePasswordChange()">Save new password</button>
+      </div>
+    </div>
+
     <div class="profile-actions">
       <button class="btn btn-primary" onclick="loadProfile()">Refresh Profile</button>
       <button class="btn btn-logout" onclick="confirmLogout()">Logout</button>
     </div>
   `;
+}
+
+function submitProfilePasswordChange() {
+  const current = (document.getElementById('profilePwCurrent')?.value || '').trim();
+  const newPw   = (document.getElementById('profilePwNew')?.value || '').trim();
+  const confirm = (document.getElementById('profilePwConfirm')?.value || '').trim();
+  const status  = document.getElementById('profilePwStatus');
+  if (!status) return;
+  if (!current || !newPw || !confirm) {
+    status.textContent = 'Please fill in all fields';
+    status.className = 'profile-pw-status err';
+    return;
+  }
+  if (newPw !== confirm) {
+    status.textContent = 'New passwords do not match';
+    status.className = 'profile-pw-status err';
+    return;
+  }
+  status.textContent = 'Saving…';
+  status.className = 'profile-pw-status';
+  fetch('/api/profile/change-password', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'same-origin',
+    body: JSON.stringify({ current_password: current, new_password: newPw, confirm_password: confirm })
+  })
+  .then(r => r.json())
+  .then(data => {
+    status.textContent = data.message || (data.success ? 'Done' : 'Error');
+    status.className = 'profile-pw-status ' + (data.success ? 'ok' : 'err');
+    if (data.success) {
+      ['profilePwCurrent', 'profilePwNew', 'profilePwConfirm'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.value = '';
+      });
+    }
+  })
+  .catch(() => {
+    status.textContent = 'Request failed';
+    status.className = 'profile-pw-status err';
+  });
 }
 
 // ── LANGUAGE TOGGLE (index) ──

@@ -101,7 +101,8 @@ async function sendMessage() {
       })
     });
     const data = await response.json();
-    const reply = data.content?.map(b => b.text || '').join('') || 'Sorry, I could not process that.';
+    const reply = (data.content?.map(b => b.text || '').join('') || '').trim()
+      || (data.error === 'AI not configured' ? 'AI assistant is not available on this server.' : (data.error || 'Sorry, I could not process that.'));
     removeTyping();
     addMessage('ai', reply);
     conversationHistory.push({ role: 'assistant', content: reply });

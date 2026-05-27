@@ -4,9 +4,15 @@ const questions = {
   en: ['What was the name of your first school?','What is your mother\'s maiden name?','What city were you born in?','What is the name of your favorite teacher?','What was your first phone number?'],
   ar: ['ما اسم أول مدرسة التحقت بها؟','ما اسم عائلة والدتك قبل الزواج؟','في أي مدينة ولدت؟','ما اسم معلمك المفضل؟','ما هو أول رقم هاتف استخدمته؟']
 };
+const jobTitles = {
+  en: ['QC Inspector','QC Supervisor','Lab Technician','Lab Supervisor','Lab Manager','Quality Assurance Specialist','Sample Coordinator','Lab Assistant','Data Entry','Technical Analyst','Warehouse Supervisor','Production Supervisor','Other'],
+  ar: ['مفتش مراقبة الجودة','مشرف مراقبة الجودة','فني مختبر','مشرف مختبر','مدير مختبر','أخصائي ضمان الجودة','منسق العينات','مساعد مختبر','إدخال بيانات','محلل فني','مشرف مستودعات','مشرف إنتاج','أخرى']
+};
 const AUTH_LANG = {
-  en:{lang:'عربي',back:'Back',topbar:'Registration',badge:'EST-iMs Access',heroTitle:'REGISTER',heroSub:'Send a new employee account request for admin approval.',c1t:'Account Details',c1:'Use a unique username and accurate contact information.',c2t:'Security Question',c2:'Choose a question you can answer later for password recovery.',formTitle:'Registration Details',fullName:'Full name',username:'Username',email:'Email',phone:'Phone',jobTitle:'Job title',gender:'Gender',birthDate:'Birth date',genderSelect:'Select',male:'Male',female:'Female',privacyText:'I agree to the <a href="/privacy" target="_blank">Privacy Policy</a> and <a href="/terms" target="_blank">Terms of Use</a>',successTitle:'Registration sent',successText:'Your request was sent successfully and is waiting for admin approval. You will be redirected to login.',password:'Password',confirmPassword:'Confirm password',securityQuestion:'Security question',securityAnswer:'Security answer',captcha:'Captcha',refresh:'Refresh',captchaHelp:'Solve the captcha to confirm the request is human.',submit:'Send request',loginBack:'Back to login',sending:'Sending...',captchaLoadError:'Could not load captcha',submitError:'Could not submit request'},
-  ar:{lang:'English',back:'رجوع',topbar:'التسجيل',badge:'دخول EST-iMs',heroTitle:'التسجيل',heroSub:'إرسال طلب حساب موظف جديد بانتظار موافقة الأدمن.',c1t:'بيانات الحساب',c1:'استخدم اسم مستخدم فريد وبيانات اتصال دقيقة.',c2t:'السؤال الأمني',c2:'اختر سؤالاً تستطيع الإجابة عنه لاحقاً لاسترجاع كلمة المرور.',formTitle:'بيانات التسجيل',fullName:'الاسم الكامل',username:'اسم المستخدم',email:'الإيميل',phone:'الهاتف',jobTitle:'الوظيفة',gender:'الجنس',birthDate:'تاريخ الميلاد',genderSelect:'اختر',male:'ذكر',female:'أنثى',privacyText:'أوافق على <a href="/privacy" target="_blank">سياسة الخصوصية</a> و <a href="/terms" target="_blank">شروط الاستخدام</a>',successTitle:'تم إرسال التسجيل',successText:'تم إرسال طلبك بنجاح وهو بانتظار موافقة الأدمن. سيتم تحويلك إلى صفحة الدخول.',password:'كلمة المرور',confirmPassword:'تأكيد كلمة المرور',securityQuestion:'السؤال الأمني',securityAnswer:'إجابة السؤال الأمني',captcha:'كابتشا',refresh:'تحديث',captchaHelp:'حل الكابتشا للتأكد أن الطلب من شخص حقيقي.',submit:'إرسال الطلب',loginBack:'العودة للدخول',sending:'جاري الإرسال...',captchaLoadError:'تعذر تحميل الكابتشا',submitError:'تعذر إرسال الطلب'}
+  en:{lang:'عربي',back:'Back',topbar:'Registration',badge:'EST-iMs Access',heroTitle:'REGISTER',heroSub:'Send a new employee account request for admin approval.',c1t:'Account Details',c1:'Use a unique username and accurate contact information.',c2t:'Security Question',c2:'Choose a question you can answer later for password recovery.',formTitle:'Registration Details',fullName:'Full name',username:'Username',email:'Email',phone:'Phone',jobTitle:'Job title',gender:'Gender',birthDate:'Birth date',genderSelect:'Select',male:'Male',female:'Female',privacyText:'I agree to the <a href="/privacy" target="_blank">Privacy Policy</a> and <a href="/terms" target="_blank">Terms of Use</a>',successTitle:'Registration sent',successText:'Your request was sent successfully and is waiting for admin approval. You will be redirected to login.',password:'Password',confirmPassword:'Confirm password',securityQuestion:'Security question',securityAnswer:'Security answer',captcha:'Captcha',refresh:'Refresh',captchaHelp:'Solve the captcha to confirm the request is human.',submit:'Send request',loginBack:'Back to login',sending:'Sending...',captchaLoadError:'Could not load captcha',submitError:'Could not submit request',
+    hintRequired:'This field is required',hintUsernameMin:'At least 5 characters',hintUsernameReserved:'This username is reserved',hintEmailInvalid:'Enter a valid email address',hintPasswordWeak:'Must contain letters and numbers',hintPasswordMismatch:'Passwords do not match'},
+  ar:{lang:'English',back:'رجوع',topbar:'التسجيل',badge:'دخول EST-iMs',heroTitle:'التسجيل',heroSub:'إرسال طلب حساب موظف جديد بانتظار موافقة الأدمن.',c1t:'بيانات الحساب',c1:'استخدم اسم مستخدم فريد وبيانات اتصال دقيقة.',c2t:'السؤال الأمني',c2:'اختر سؤالاً تستطيع الإجابة عنه لاحقاً لاسترجاع كلمة المرور.',formTitle:'بيانات التسجيل',fullName:'الاسم الكامل',username:'اسم المستخدم',email:'الإيميل',phone:'الهاتف',jobTitle:'الوظيفة',gender:'الجنس',birthDate:'تاريخ الميلاد',genderSelect:'اختر',male:'ذكر',female:'أنثى',privacyText:'أوافق على <a href="/privacy" target="_blank">سياسة الخصوصية</a> و <a href="/terms" target="_blank">شروط الاستخدام</a>',successTitle:'تم إرسال التسجيل',successText:'تم إرسال طلبك بنجاح وهو بانتظار موافقة الأدمن. سيتم تحويلك إلى صفحة الدخول.',password:'كلمة المرور',confirmPassword:'تأكيد كلمة المرور',securityQuestion:'السؤال الأمني',securityAnswer:'إجابة السؤال الأمني',captcha:'كابتشا',refresh:'تحديث',captchaHelp:'حل الكابتشا للتأكد أن الطلب من شخص حقيقي.',submit:'إرسال الطلب',loginBack:'العودة للدخول',sending:'جاري الإرسال...',captchaLoadError:'تعذر تحميل الكابتشا',submitError:'تعذر إرسال الطلب',
+    hintRequired:'هذا الحقل مطلوب',hintUsernameMin:'5 أحرف على الأقل',hintUsernameReserved:'اسم المستخدم محجوز',hintEmailInvalid:'أدخل بريداً إلكترونياً صحيحاً',hintPasswordWeak:'يجب أن تحتوي على أحرف وأرقام',hintPasswordMismatch:'كلمتا المرور غير متطابقتين'}
 };
 let authLang = localStorage.getItem('est-lang') || 'en';
 function setText(id, value){ const el = document.getElementById(id); if (el) el.textContent = value; }
@@ -17,25 +23,53 @@ function applyAuthLang(lang){
   setText('langBtn', t.lang); setText('backText', t.back); setText('topbarTitle', t.topbar); setText('badgeText', t.badge); setText('heroTitle', t.heroTitle); setText('heroSub', t.heroSub);
   setText('card1Title', t.c1t); setText('card1Text', t.c1); setText('card2Title', t.c2t); setText('card2Text', t.c2); setText('formTitle', t.formTitle);
   setText('fullNameLabel', t.fullName); setText('usernameLabel', t.username); setText('emailLabel', t.email); setText('phoneLabel', t.phone); setText('jobTitleLabel', t.jobTitle); setText('genderLabel', t.gender); setText('birthDateLabel', t.birthDate); document.getElementById('privacyText').innerHTML = t.privacyText; setText('successTitle', t.successTitle); setText('successText', t.successText); setText('passwordLabel', t.password); setText('confirmPasswordLabel', t.confirmPassword); setText('securityQuestionLabel', t.securityQuestion); setText('securityAnswerLabel', t.securityAnswer); setText('captchaLabel', t.captcha); setText('captchaHelp', t.captchaHelp); setText('submitBtn', t.submit); setText('loginBackBtn', t.loginBack);
-  const sel = document.getElementById('securityQuestion'); const current = sel.value; sel.innerHTML = ''; questions[lang].forEach(q => { const opt = document.createElement('option'); opt.value = q; opt.textContent = q; sel.appendChild(opt); }); if (questions[lang].includes(current)) sel.value = current; const genderEl = document.getElementById('gender'); if (genderEl) { genderEl.options[0].textContent = t.genderSelect; genderEl.options[1].textContent = t.male; genderEl.options[2].textContent = t.female; }
+  const sel = document.getElementById('securityQuestion'); const current = sel.value; sel.innerHTML = ''; questions[lang].forEach(q => { const opt = document.createElement('option'); opt.value = q; opt.textContent = q; sel.appendChild(opt); }); if (questions[lang].includes(current)) sel.value = current;
+  const genderEl = document.getElementById('gender'); if (genderEl) { genderEl.options[0].textContent = t.genderSelect; genderEl.options[1].textContent = t.male; genderEl.options[2].textContent = t.female; }
+  const jobSel = document.getElementById('jobTitle'); if (jobSel) { const curJob = jobSel.value; jobSel.innerHTML = `<option value="">${t.genderSelect}</option>`; jobTitles[lang].forEach(j => { const o = document.createElement('option'); o.value = j; o.textContent = j; jobSel.appendChild(o); }); if (jobTitles[lang].includes(curJob)) jobSel.value = curJob; }
 }
 function toggleAuthLang(){ applyAuthLang(authLang === 'en' ? 'ar' : 'en'); }
 function setStatus(msg, ok){ const box = document.getElementById('statusBox'); box.className = 'status ' + (ok ? 'ok' : 'err'); box.textContent = msg; }
 function markInvalid(el){ if (el) el.classList.add('invalid'); }
 function clearInvalid(){ document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid')); }
+function setHint(id, msg){ const el = document.getElementById(id); if (el) { el.textContent = msg; el.classList.toggle('err', !!msg); } }
+function clearHints(){ document.querySelectorAll('.field-hint').forEach(el => { el.textContent = ''; el.classList.remove('err'); }); }
 function validateRegisterForm(){
+  clearHints(); clearInvalid();
   let ok = true;
-  const emailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.value.trim());
+  const t = AUTH_LANG[authLang];
+  // Full name
+  if (!fullName.value.trim()) { markInvalid(fullName); setHint('hintFullName', t.hintRequired); ok = false; }
+  // Username
+  const uname = username.value.trim();
+  if (!uname) { markInvalid(username); setHint('hintUsername', t.hintRequired); ok = false; }
+  else if (uname.length < 5) { markInvalid(username); setHint('hintUsername', t.hintUsernameMin); ok = false; }
+  else if (['admin','administrator','dev','developer','root','superadmin'].includes(uname.toLowerCase())) { markInvalid(username); setHint('hintUsername', t.hintUsernameReserved); ok = false; }
+  // Email
+  if (!email.value.trim()) { markInvalid(email); setHint('hintEmail', t.hintRequired); ok = false; }
+  else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.value.trim())) { markInvalid(email); setHint('hintEmail', t.hintEmailInvalid); ok = false; }
+  // Phone
+  if (!phone.value.trim()) { markInvalid(phone); setHint('hintPhone', t.hintRequired); ok = false; }
+  // Job title
+  if (!jobTitle.value) { markInvalid(jobTitle); setHint('hintJobTitle', t.hintRequired); ok = false; }
+  // Gender
+  if (!gender.value) { markInvalid(gender); setHint('hintGender', t.hintRequired); ok = false; }
+  // Birth date
+  if (!birthDate.value) { markInvalid(birthDate); setHint('hintBirthDate', t.hintRequired); ok = false; }
+  // Password
   const passOk = /[A-Za-z]/.test(password.value) && /\d/.test(password.value);
-  const checks = [fullName, username, email, phone, jobTitle, gender, birthDate, password, confirmPassword, securityAnswer];
-  checks.forEach(el => { if (!String(el.value || '').trim()) { markInvalid(el); ok = false; } });
-  if (username.value.trim().length < 5 || ['admin','administrator','dev','developer','root','superadmin'].includes(username.value.trim().toLowerCase())) { markInvalid(username); ok = false; }
-  if (!emailOk) { markInvalid(email); ok = false; }
-  if (!passOk || password.value !== confirmPassword.value) { markInvalid(password); markInvalid(confirmPassword); ok = false; }
+  if (!password.value) { markInvalid(password); setHint('hintPassword', t.hintRequired); ok = false; }
+  else if (!passOk) { markInvalid(password); setHint('hintPassword', t.hintPasswordWeak); ok = false; }
+  // Confirm password
+  if (!confirmPassword.value) { markInvalid(confirmPassword); setHint('hintConfirmPassword', t.hintRequired); ok = false; }
+  else if (password.value !== confirmPassword.value) { markInvalid(confirmPassword); setHint('hintConfirmPassword', t.hintPasswordMismatch); ok = false; }
+  // Security answer
+  if (!securityAnswer.value.trim()) { markInvalid(securityAnswer); setHint('hintSecurityAnswer', t.hintRequired); ok = false; }
+  // Privacy
   if (!privacyAccepted.checked) { markInvalid(privacyAccepted); ok = false; }
+  // reCAPTCHA
   const rcToken = typeof grecaptcha !== 'undefined' ? grecaptcha.getResponse() : '';
   if (!rcToken) { const wrap = document.getElementById('recaptchaWidget'); if (wrap) wrap.style.outline = '2px solid var(--danger, #ef4444)'; ok = false; }
-  if (!ok) setStatus(AUTH_LANG[authLang].submitError, false);
+  if (!ok) setStatus(t.submitError, false);
   return ok;
 }
 function showSuccessModal(){ document.getElementById('successModal')?.classList.add('open'); }

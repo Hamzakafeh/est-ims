@@ -1,4 +1,5 @@
 import os
+import re
 import secrets
 import threading
 from datetime import datetime
@@ -16,6 +17,8 @@ from core import (
     _clear_active_session,
     _approved_db_user,
     _verify_secret,
+    _hash_secret,
+    _db_connect,
     _read_login_log,
     _log_lock,
     ENV_USERS,
@@ -281,6 +284,35 @@ def verify_edit_password():
     if EDIT_PASSWORD and password == EDIT_PASSWORD:
         return jsonify({'success': True})
     return jsonify({'success': False}), 401
+
+
+@zone_bp.route('/api/profile/change-password', methods=['POST'])
+@zone_required
+def api_profile_change_password():
+    data = request.get_json(silent=True) or {}
+    current_password = str(data.get('current_password', '')).strip()
+    new_password = str(data.get('new_password', '')).strip()
+    confirm_password = str(data.get('confirm_password', '')).strip()
+
+    if not current_password or not new_password or not confirm_password:
+        return jsonify({'success': False, 'message': 'يرجى تعبئة جميع الحقول'}), 400
+    if new_password != confirm_password:
+        return jsonify({'success': False, 'message': 'كلمة المرور الجديدة وتأكيدها غير متطابقين'}), 400
+    if not (re.search(r'[A-Za-z]', new_password) and re.search(r'\d', new_password)):
+        return jsonify({'success': False, 'message': 'كلمة المرور يجب أن تحتوي على أحرف وأرقام'}), 400
+
+    username = session.get('username', '')
+    user = _approved_db_user(username)
+    if user is None:
+        return jsonify({'success': False, 'message': 'لا يمكن تغيير كلمة المرور لهذا الحساب'}), 403
+    if not _verify_secret(current_password, user['password_hash']):
+        return jsonify({'success': False, 'message': 'كلمة المرور الحالية غير صحيحة'}), 401
+
+    new_hash = _hash_secret(new_password)
+    with _db_connect() as conn:
+        conn.execute('UPDATE users SET password_hash = ? WHERE lower(username) = lower(?)', (new_hash, username))
+
+    return jsonify({'success': True, 'message': 'تم تغيير كلمة المرور بنجاح'})
 
 
 @zone_bp.route('/logout')
