@@ -1215,8 +1215,9 @@ function closeDeleteConfirm() {
   _deleteConfirmCallback = null;
 }
 function _doDeleteConfirm() {
+  const cb = _deleteConfirmCallback;
   closeDeleteConfirm();
-  if (_deleteConfirmCallback) _deleteConfirmCallback();
+  if (cb) cb();
 }
 
 
