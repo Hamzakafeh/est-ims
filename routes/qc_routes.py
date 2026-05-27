@@ -56,16 +56,27 @@ def _do_push_to_all_except(exclude, title, body, tag='qc-chat'):
             _send_push_notification(s['subscription'], title, body, tag=tag)
 
 
+def _all_verified_usernames():
+    try:
+        from core import _db_connect
+        with _db_connect() as conn:
+            rows = conn.execute("SELECT username FROM users WHERE is_verified = 1 AND approved = 1").fetchall()
+            return {r['username'].lower() for r in rows}
+    except Exception:
+        return set()
+
+
 @qc_bp.route('/qc-workflow')
 @zone_required
 def qc_workflow_page():
     if session.get('zone') != 'qc':
         return redirect(url_for('pages.index'))
+    all_verified = VERIFIED_QC_USERS | _all_verified_usernames()
     return render_template(
         'qc.html',
         qc_role=session.get('qc_role', 'qc'),
         username=session.get('username', ''),
-        verified_users=list(VERIFIED_QC_USERS),
+        verified_users=list(all_verified),
         firebase_config=_FIREBASE_CONFIG,
     )
 

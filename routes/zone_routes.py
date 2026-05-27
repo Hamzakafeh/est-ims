@@ -120,6 +120,20 @@ def api_zone_login():
     session['zone_label'] = zone['label']
     session['can_edit'] = zone_id in EDIT_ZONES
     session['is_super'] = zone_id in SUPER_ZONES
+    # Apply per-user DB permissions
+    _login_username = session.get('username', '')
+    _udb = _approved_db_user(_login_username)
+    if _udb:
+        try:
+            if _udb['perm_can_edit']:
+                session['can_edit'] = True
+        except Exception:
+            pass
+        try:
+            if _udb['perm_switch_zones']:
+                session['can_switch_zones'] = True
+        except Exception:
+            pass
     session['login_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     if zone_id == 'qc':
         role = str(data.get('qc_role', '')).strip()
@@ -159,7 +173,7 @@ def api_zone_access_check():
 @zone_bp.route('/api/switch_zone', methods=['POST'])
 @zone_required
 def api_switch_zone():
-    if not session.get('is_super'):
+    if not (session.get('is_super') or session.get('can_switch_zones')):
         return jsonify({'success': False, 'message': 'غير مصرح'}), 403
     data = request.get_json(silent=True) or {}
     zone_id = data.get('zone_id', '').strip()
@@ -288,7 +302,7 @@ def api_profile():
             'can_print': True,
             'can_reports': True,
             'can_view_all_zones': bool(session.get('is_super', False)),
-            'can_switch_zones': bool(session.get('is_super', False)),
+            'can_switch_zones': bool(session.get('is_super', False) or session.get('can_switch_zones', False)),
         },
         'allowed_zones': allowed_zones,
         'recent_logins': recent_logins,
@@ -344,7 +358,7 @@ def api_zones_users():
         online_set = {u.lower() for u, d in _zones_presence.items() if now - d['ts'] < _ZONES_PRESENCE_TTL}
     with _db_connect() as conn:
         rows = conn.execute(
-            "SELECT username, full_name, job_title, gender FROM users WHERE approved = 1 ORDER BY full_name, username"
+            "SELECT username, full_name, job_title, gender, is_verified FROM users WHERE approved = 1 ORDER BY full_name, username"
         ).fetchall()
     return jsonify({
         'users': [
@@ -354,6 +368,7 @@ def api_zones_users():
                 'job_title': r['job_title'] or '',
                 'gender': r['gender'] or '',
                 'online': r['username'].lower() in online_set,
+                'is_verified': r['username'].lower() in VERIFIED_USERS or bool(r['is_verified'] if 'is_verified' in r.keys() else 0),
             }
             for r in rows
         ]
@@ -385,15 +400,18 @@ def api_zones_me():
     username = session.get('username', '')
     user = _approved_db_user(username)
     if user:
+        u = dict(user)
+        is_v = str(username).lower() in VERIFIED_USERS or bool(u.get('is_verified', 0))
         return jsonify({
-            'username': user.get('username', username),
-            'full_name': user.get('full_name', ''),
-            'job_title': user.get('job_title', ''),
-            'email': user.get('email', ''),
-            'phone': user.get('phone', ''),
-            'gender': user.get('gender', ''),
+            'username': u.get('username', username),
+            'full_name': u.get('full_name', ''),
+            'job_title': u.get('job_title', ''),
+            'email': u.get('email', ''),
+            'phone': u.get('phone', ''),
+            'gender': u.get('gender', ''),
+            'is_verified': is_v,
         })
-    return jsonify({'username': username, 'full_name': '', 'job_title': '', 'email': '', 'phone': '', 'gender': ''})
+    return jsonify({'username': username, 'full_name': '', 'job_title': '', 'email': '', 'phone': '', 'gender': '', 'is_verified': str(username).lower() in VERIFIED_USERS})
 
 
 @zone_bp.route('/logout')
@@ -413,6 +431,7 @@ def logout_zone():
     session.pop('zone_label', None)
     session.pop('can_edit', None)
     session.pop('is_super', None)
+    session.pop('can_switch_zones', None)
     session.pop('active_view_zone', None)
     session.pop('active_view_zone_name', None)
     return redirect(url_for('zones.zones_page'))

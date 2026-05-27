@@ -51,6 +51,7 @@ def index():
     zone = session.get('zone', '')
     is_super = session.get('is_super', False)
     can_edit = session.get('can_edit', False)
+    can_switch_zones = bool(is_super or session.get('can_switch_zones', False))
     zone_label = session.get('zone_label', '')
     username = session.get('username', '')
     return render_template(
@@ -64,6 +65,7 @@ def index():
         is_super=is_super,
         is_dev=(zone == 'dev'),
         can_edit=can_edit,
+        can_switch_zones=can_switch_zones,
         username=username,
         login_time=session.get('login_time', ''),
         firebase_config=get_firebase_config(),

@@ -334,7 +334,22 @@ async function openZoneProfile() {
   }
 
   document.getElementById('zpName').textContent = d.full_name || username || '—';
-  document.getElementById('zpUsername').textContent = username ? '@' + username : '—';
+  const zpUser = document.getElementById('zpUsername');
+  zpUser.textContent = username ? '@' + username : '—';
+  // Verified badge below username
+  let vbadge = document.getElementById('zpVerifiedBadge');
+  if (d.is_verified) {
+    if (!vbadge) {
+      vbadge = document.createElement('div');
+      vbadge.id = 'zpVerifiedBadge';
+      vbadge.className = 'zp-verified-badge';
+      vbadge.innerHTML = '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Verified';
+      zpUser.insertAdjacentElement('afterend', vbadge);
+    }
+    vbadge.style.display = '';
+  } else if (vbadge) {
+    vbadge.style.display = 'none';
+  }
 
   const rows = [];
   if (d.job_title) rows.push(['Job Title', d.job_title]);
@@ -388,7 +403,18 @@ async function openOnlineUsers() {
       infoEl.style.cssText = 'flex:1;min-width:0;';
       const nameEl = document.createElement('div');
       nameEl.className = 'zu-user-name';
-      nameEl.textContent = u.full_name || u.username || u;
+      nameEl.style.display = 'flex';
+      nameEl.style.alignItems = 'center';
+      nameEl.style.gap = '4px';
+      const nameText = document.createTextNode(u.full_name || u.username || u);
+      nameEl.appendChild(nameText);
+      if (u.is_verified) {
+        const vEl = document.createElement('span');
+        vEl.className = 'zu-verified';
+        vEl.title = 'Verified';
+        vEl.innerHTML = '<svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+        nameEl.appendChild(vEl);
+      }
       infoEl.appendChild(nameEl);
       if (u.job_title) {
         const jobEl = document.createElement('div');
