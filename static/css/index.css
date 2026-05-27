@@ -14,6 +14,7 @@
     --accent-green:#10b981;
     --accent-amber:#f59e0b;
     --accent-red:  #ef4444;
+    --accent-purple:#8b5cf6;
     --text-main:  #e2e8f0;
     --text-muted: #8b9db8;
     --text-dim:   #4a5568;
@@ -37,6 +38,7 @@
     --accent-green: #059669;
     --accent-amber: #d97706;
     --accent-red:   #dc2626;
+    --accent-purple:#7c3aed;
     --text-main:    #1a2332;
     --text-muted:   #4a6080;
     --text-dim:     #8fa3be;
@@ -725,6 +727,8 @@
   html.light .btn-success:hover { background: #047857; }
   html.light .btn-warning { background: #d97706; color: #fff; box-shadow: 0 2px 8px rgba(217,119,6,0.25); }
   html.light .btn-warning:hover { background: #b45309; }
+  html.light .btn-purple { background: #7c3aed; color: #fff; box-shadow: 0 2px 8px rgba(124,58,237,0.25); }
+  html.light .btn-purple:hover { background: #6d28d9; }
   html.light .btn-about   { background: #1e293b; color: #fff; }
   html.light .btn-about:hover { background: #0f172a; }
   html.light .btn-ghost   { background: #fff; color: #334155; border-color: #cbd5e1; }

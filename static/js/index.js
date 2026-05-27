@@ -1,5 +1,5 @@
-﻿// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// ACCOUNT STATUS â€” Firebase real-time listener
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ACCOUNT STATUS — Firebase real-time listener
 // Detects delete/suspend actions by admin and force-logs out the user
 // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 (function _initAccountStatusListener() {
@@ -36,17 +36,17 @@ function _showForceLogout(status, message) {
   const titleEl = document.getElementById('flTitle');
   const msgEl   = document.getElementById('flMessage');
   const cdEl    = document.getElementById('flCountdown');
-  if (titleEl) titleEl.textContent = status === 'deleted' ? 'ØªÙ… Ø­Ø°Ù Ø­Ø³Ø§Ø¨Ùƒ' : 'ØªÙ… Ø¥ÙŠÙ‚Ø§Ù Ø­Ø³Ø§Ø¨Ùƒ Ù…Ø¤Ù‚ØªØ§Ù‹';
+  if (titleEl) titleEl.textContent = status === 'deleted' ? 'Account Deleted' : 'Account Suspended';
   if (msgEl)   msgEl.textContent   = message || (status === 'deleted'
-    ? 'Ø­Ø³Ø§Ø¨Ùƒ ØªÙ… Ø­Ø°ÙÙ‡ Ù…Ù† Ø§Ù„Ù†Ø¸Ø§Ù… Ø¨ÙˆØ§Ø³Ø·Ø© Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©.'
-    : 'Ø­Ø³Ø§Ø¨Ùƒ Ù…ÙˆÙ‚ÙˆÙ Ù…Ø¤Ù‚ØªØ§Ù‹ Ø¨ÙˆØ§Ø³Ø·Ø© Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©.');
+    ? 'Your account has been removed from the system by the administration.'
+    : 'Your account has been temporarily suspended by the administration.');
   modal.style.display = 'flex';
   // Countdown
   let secs = 5;
-  if (cdEl) cdEl.textContent = `Redirecting in ${secs}sâ€¦`;
+  if (cdEl) cdEl.textContent = `Redirecting in ${secs}s...`;
   const iv = setInterval(() => {
     secs--;
-    if (cdEl) cdEl.textContent = secs > 0 ? `Redirecting in ${secs}sâ€¦` : 'Redirectingâ€¦';
+    if (cdEl) cdEl.textContent = secs > 0 ? `Redirecting in ${secs}s...` : 'Redirecting...';
     if (secs <= 0) { clearInterval(iv); window.location.href = '/logout'; }
   }, 1000);
   _flCountdownIntervals.push(iv);
@@ -106,7 +106,7 @@ function profileInitials(username) {
 }
 
 function formatDuration(seconds) {
-  if (!Number.isFinite(seconds)) return 'â€”';
+  if (!Number.isFinite(seconds)) return '—';
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
   const s = seconds % 60;
@@ -135,7 +135,7 @@ async function uploadProfileAvatar(input) {
     if (!res.ok || !data.success) { toast(data.message || 'Failed to upload', false); return; }
     const avatarEl = document.getElementById('profileAvatar');
     avatarEl.innerHTML = `<img src="${escAttr(data.avatar_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-    toast('âœ… Photo updated!');
+    toast(' Photo updated!');
   } catch (e) {
     toast('Upload failed', false);
   }
@@ -152,7 +152,7 @@ async function loadProfile() {
     _profileLoaded = true;
     renderProfile(_profileData);
   } catch (e) {
-    body.innerHTML = '<div class="profile-error">âš ï¸ Failed to load profile data</div>';
+    body.innerHTML = '<div class="profile-error">⚠ Failed to load profile data</div>';
   }
 }
 
@@ -190,16 +190,16 @@ function renderProfile(data) {
 
   const zones = (data.allowed_zones || []).map(z => `
     <span class="profile-zone-pill">${escHtml(z.label || z.name || z.id)}</span>
-  `).join('') || '<span class="profile-zone-pill">â€”</span>';
+  `).join('') || '<span class="profile-zone-pill">—</span>';
 
   const logins = (data.recent_logins || []).length
     ? data.recent_logins.map(entry => `
         <div class="profile-log-item">
           <div>
             <div class="profile-log-main">${escHtml(entry.zone_label || entry.zone_id || 'Zone')}</div>
-            <div class="profile-log-sub">IP: ${escHtml(entry.ip || 'â€”')}</div>
+            <div class="profile-log-sub">IP: ${escHtml(entry.ip || '—')}</div>
           </div>
-          <div class="profile-log-time">${escHtml(entry.time || 'â€”')}</div>
+          <div class="profile-log-time">${escHtml(entry.time || '—')}</div>
         </div>
       `).join('')
     : '<div class="users-empty" style="padding:18px;">No login history yet</div>';
@@ -208,17 +208,17 @@ function renderProfile(data) {
     <div class="profile-grid">
       <div class="profile-card">
         <div class="profile-card-label">Current Zone</div>
-        <div class="profile-card-value">${escHtml(data.zone_label || data.zone_name || data.zone || 'â€”')}</div>
+        <div class="profile-card-value">${escHtml(data.zone_label || data.zone_name || data.zone || '—')}</div>
         <div class="profile-card-sub">${escHtml(data.zone_name || data.zone || '')}</div>
       </div>
       <div class="profile-card">
         <div class="profile-card-label">Active View</div>
-        <div class="profile-card-value">${escHtml(data.active_view_zone_label || data.active_view_zone || 'â€”')}</div>
+        <div class="profile-card-value">${escHtml(data.active_view_zone_label || data.active_view_zone || '—')}</div>
         <div class="profile-card-sub">${data.is_super ? 'Super-zone view access' : 'Assigned zone access'}</div>
       </div>
       <div class="profile-card">
         <div class="profile-card-label">Login Time</div>
-        <div class="profile-card-value">${escHtml(data.login_time || 'â€”')}</div>
+        <div class="profile-card-value">${escHtml(data.login_time || '—')}</div>
         <div class="profile-card-sub">Session: ${escHtml(formatDuration(Number(data.login_duration_seconds)))}</div>
       </div>
     </div>
@@ -272,7 +272,7 @@ function submitProfilePasswordChange() {
     status.className = 'profile-pw-status err';
     return;
   }
-  status.textContent = 'Savingâ€¦';
+  status.textContent = 'Saving...';
   status.className = 'profile-pw-status';
   fetch('/api/profile/change-password', {
     method: 'POST',
@@ -386,10 +386,10 @@ function toggleSidebar() {
 function openPrintModal() {
   const table = document.querySelector('.data-table');
   if (!table) { toast('No data to print', false); return; }
-  document.getElementById('printInfoFile').textContent = state.selectedFile || 'â€”';
-  document.getElementById('printInfoSheet').textContent = state.selectedSheet || 'â€”';
-  document.getElementById('printInfoPeriod').textContent = (state.selectedMonth && state.selectedYear) ? `${state.selectedMonth} ${state.selectedYear}` : 'â€”';
-  document.getElementById('printInfoRecords').textContent = state.allRows.length ? `${state.allRows.length} rows` : 'â€”';
+  document.getElementById('printInfoFile').textContent = state.selectedFile || '—';
+  document.getElementById('printInfoSheet').textContent = state.selectedSheet || '—';
+  document.getElementById('printInfoPeriod').textContent = (state.selectedMonth && state.selectedYear) ? `${state.selectedMonth} ${state.selectedYear}` : '—';
+  document.getElementById('printInfoRecords').textContent = state.allRows.length ? `${state.allRows.length} rows` : '—';
   document.getElementById('printModal').style.display = 'flex';
 }
 function closePrintModal() {
@@ -459,8 +459,8 @@ function goHome() {
   // deactivate month pills
   document.querySelectorAll('.month-pill').forEach(p => p.classList.remove('active'));
   showEmptyState('Select a month to begin');
-  updateHeader('Select a month to begin', `${state.selectedYear} â†’ ...`);
-  document.getElementById('pathInfo').textContent = 'â€”';
+  updateHeader('Select a month to begin', `${state.selectedYear} → ...`);
+  document.getElementById('pathInfo').textContent = '—';
   setStatus('Ready');
 }
 
@@ -539,8 +539,8 @@ function selectYear(year) {
   document.getElementById('fileSection').style.display = 'none';
   document.getElementById('sheetSection').style.display = 'none';
   showEmptyState('Select a month to begin');
-  updateHeader('Select a month to begin', `${year} â†’ ...`);
-  document.getElementById('pathInfo').textContent = 'â€”';
+  updateHeader('Select a month to begin', `${year} → ...`);
+  document.getElementById('pathInfo').textContent = '—';
   buildMonthGrid();
 }
 
@@ -571,7 +571,7 @@ function selectMonth(month) {
   document.getElementById('fileSection').style.display = '';
   document.getElementById('sheetSection').style.display = 'none';
   showEmptyState(`Select a file from ${month} files`);
-  updateHeader('Select a file', `${state.selectedYear} â†’ ${month}`);
+  updateHeader('Select a file', `${state.selectedYear} → ${month}`);
   document.getElementById('pathInfo').textContent = `${state.selectedYear} / ${month}`;
 }
 
@@ -584,7 +584,7 @@ function buildFileList(files) {
     item.className = 'file-item';
     item.dataset.name = fname;
     item.dataset.path = fpath;
-    item.innerHTML = `<span class="fi-icon">${FILE_ICONS[fname] || 'ðŸ“„'}</span>${FILE_LABELS[fname] || fname}`;
+    item.innerHTML = `<span class="fi-icon">${FILE_ICONS[fname] || '📄'}</span>${FILE_LABELS[fname] || fname}`;
     item.onclick = () => selectFile(fname, fpath);
     list.appendChild(item);
   });
@@ -603,7 +603,7 @@ async function selectFile(fname, fpath) {
   buildSheetList(data.sheets);
   document.getElementById('sheetSection').style.display = '';
   if (data.sheets.length > 0) selectSheet(data.sheets[0]);
-  updateHeader(fname, `${state.selectedYear} â†’ ${state.selectedMonth} â†’ ${fname}`);
+  updateHeader(fname, `${state.selectedYear} → ${state.selectedMonth} → ${fname}`);
 }
 
 // â”€â”€ BUILD SHEET LIST â”€â”€
@@ -655,7 +655,7 @@ async function selectSheet(sheet) {
   }
 
   renderTable(state.headers, state.allRows);
-  updateHeader(sheet, `${state.selectedYear} â†’ ${state.selectedMonth} â†’ ${state.selectedFile} â†’ ${sheet}`);
+  updateHeader(sheet, `${state.selectedYear} → ${state.selectedMonth} → ${state.selectedFile} → ${sheet}`);
   document.getElementById('recordCount').textContent = `${data.count} Records`;
   setStatus(`Loaded ${state.selectedFile} / ${sheet}`);
   document.getElementById('pathInfo').textContent = `${state.selectedYear} / ${state.selectedMonth} / ${state.selectedFile}.xlsm / ${sheet}`;
@@ -674,14 +674,14 @@ async function selectSheet(sheet) {
 function toggleEditMode() {
   const toggle = document.getElementById('editToggle');
   if (toggle.checked) {
-    // Turning ON â€” require password
+    // Turning ON — require password
     toggle.checked = false; // revert visually until password confirmed
     document.getElementById('pwdInput').value = '';
     document.getElementById('pwdError').textContent = '';
     document.getElementById('pwdModal').classList.add('open');
     setTimeout(() => document.getElementById('pwdInput').focus(), 120);
   } else {
-    // Turning OFF â€” no password needed
+    // Turning OFF — no password needed
     state.editMode = false;
     document.getElementById('editBadge').style.display = 'none';
     renderTable(state.headers, state.allRows);
@@ -704,14 +704,14 @@ async function confirmPwd() {
       document.getElementById('editToggle').checked = true;
       document.getElementById('editBadge').style.display = '';
       renderTable(state.headers, state.allRows);
-      toast('âœŽ Edit mode ON â€” click any cell or use IN/OUT buttons', true);
+      toast('Edit mode ON — click any cell or use IN/OUT buttons', true);
     } else {
-      document.getElementById('pwdError').textContent = 'âœ— Incorrect password';
+      document.getElementById('pwdError').textContent = '✗ Incorrect password';
       document.getElementById('pwdInput').value = '';
       document.getElementById('pwdInput').focus();
     }
   } catch (e) {
-    document.getElementById('pwdError').textContent = 'âœ— Connection error';
+    document.getElementById('pwdError').textContent = '✗ Connection error';
   }
 }
 function cancelPwdModal() {
@@ -754,7 +754,7 @@ function renderTable(headers, rows) {
         else if (hLower.includes('balance')) cls = 'cell-balance';
 
         const display = (val === null || val === undefined || val === '') ?
-          `<span class="cell-null">â€”</span>` : escHtml(String(val));
+          `<span class=”cell-null”>—</span>` : escHtml(String(val));
 
         const isReadOnly = READ_ONLY_COLS.some(ro => hLower.includes(ro.toLowerCase()));
         const editable   = state.editMode && !isReadOnly;
@@ -770,7 +770,7 @@ function renderTable(headers, rows) {
         html += `<td class="action-cell">
           <button class="btn-in"  onclick="openTxModal(${excelRow}, 'IN')">+IN</button>
           <button class="btn-out" onclick="openTxModal(${excelRow}, 'OUT')">-OUT</button>
-          <button class="btn-del" onclick="confirmClearRow(${excelRow})" title="Clear row data">ðŸ—‘</button>
+          <button class="btn-del" onclick="confirmClearRow(${excelRow})" title="Clear row data"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
         </td>`;
       }
       html += `</tr>`;
@@ -782,7 +782,7 @@ function renderTable(headers, rows) {
 
 // â”€â”€ INLINE CELL EDIT â”€â”€
 function _buildDropdown(options, currentText, excelRow, colName) {
-  let optHtml = `<option value="">â€” Ø§Ø®ØªØ± â€”</option>`;
+  let optHtml = `<option value=””>— Select —</option>`;
   let found = false;
   options.forEach(o => {
     const sel = o === currentText ? ' selected' : '';
@@ -792,7 +792,7 @@ function _buildDropdown(options, currentText, excelRow, colName) {
   if (currentText && !found) {
     optHtml += `<option value="${escAttr(currentText)}" selected>${escHtml(currentText)}</option>`;
   }
-  optHtml += `<option value="__new__">âœï¸ Ø¥Ø¶Ø§ÙØ© Ù‚ÙŠÙ…Ø© Ø¬Ø¯ÙŠØ¯Ø©â€¦</option>`;
+  optHtml += `<option value="__new__">+ Add new value...</option>`;
   return `<select
     onchange="handleDDChange(this,${excelRow},'${escAttr(colName)}')"
     onblur="handleDDBlur(this,${excelRow},'${escAttr(colName)}')"
@@ -802,7 +802,7 @@ function _buildDropdown(options, currentText, excelRow, colName) {
 
 function startEdit(td, excelRow, colName) {
   if (td.querySelector('input') || td.querySelector('select')) return;
-  const currentText = td.innerText.trim() === 'â€”' ? '' : td.innerText.trim();
+  const currentText = td.innerText.trim() === '—' ? '' : td.innerText.trim();
   const colLower = colName.toLowerCase();
 
   const ddMap = {
@@ -834,7 +834,7 @@ function handleDDChange(select, excelRow, colName) {
   if (select.value !== '__new__') return;
   // Prevent blur from firing during prompt
   select._prompting = true;
-  const newVal = prompt(`Ø£Ø¶Ù Ù‚ÙŠÙ…Ø© Ø¬Ø¯ÙŠØ¯Ø© Ù„Ù€ ${colName}:`);
+  const newVal = prompt(`Add new value for ${colName}:`);
   select._prompting = false;
   if (newVal && newVal.trim()) {
     const v = newVal.trim();
@@ -897,13 +897,13 @@ async function _applyAutoBalance(excelRow, colorValue) {
           if (basicKey)   rowObj[basicKey]   = data.balance;
           if (currentKey) rowObj[currentKey] = data.balance;
         }
-        toast(`âœ“ Color: ${colorValue} â€” Ø±ØµÙŠØ¯ Ø§ÙØªØªØ§Ø­ÙŠ: ${data.balance}`, true);
+        toast(`Color: ${colorValue} — Opening balance: ${data.balance}`, true);
         renderTable(state.headers, state.allRows);
         return;
       }
     }
-    // No previous balance found â€” just toast color saved, leave Basic/Current empty
-    toast(`âœ“ Color: ${colorValue} â€” Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ø±ØµÙŠØ¯ Ø³Ø§Ø¨Ù‚ Ù„Ù‡Ø°Ø§ Ø§Ù„ØµÙ†Ù`, true);
+    // No previous balance found — just toast color saved, leave Basic/Current empty
+    toast(`Color: ${colorValue} — no previous balance for this item`, true);
   } catch(e) {
     // silently ignore
   }
@@ -931,14 +931,14 @@ async function commitEditSelect(select, excelRow, colName) {
     const rowObj = state.allRows.find(r => r['__row__'] === excelRow);
     if (rowObj) rowObj[colName] = newValue;
 
-    // If Color was just set â†’ auto-fill Basic + Current from last balance
+    // If Color was just set → auto-fill Basic + Current from last balance
     if (colName.toLowerCase() === 'color') {
       await _applyAutoBalance(excelRow, newValue);
     } else {
-      toast(`âœ“ Saved: ${colName} = ${newValue}`);
+      toast(`Saved: ${colName} = ${newValue}`);
     }
   } else {
-    toast(`âœ— Error: ${d.error}`, false);
+    toast(`✗ Error: ${d.error}`, false);
     renderTable(state.headers, state.allRows);
   }
 }
@@ -948,7 +948,7 @@ async function commitEdit(input, excelRow, colName) {
   const td = input.parentElement;
 
   // Optimistic UI
-  td.textContent = newValue || 'â€”';
+  td.textContent = newValue || '—';
 
   const res = await fetch('/api/update_cell', {
     method: 'POST',
@@ -963,12 +963,12 @@ async function commitEdit(input, excelRow, colName) {
   });
   const data = await res.json();
   if (data.success) {
-    toast(`âœ“ Saved: ${colName} = ${newValue}`);
+    toast(`Saved: ${colName} = ${newValue}`);
     // Update local state so re-render is correct
     const rowObj = state.allRows.find(r => r['__row__'] === excelRow);
     if (rowObj) rowObj[colName] = newValue;
   } else {
-    toast(`âœ— Error: ${data.error}`, false);
+    toast(`✗ Error: ${data.error}`, false);
     renderTable(state.headers, state.allRows); // revert
   }
 }
@@ -978,7 +978,7 @@ async function confirmClearRow(excelRow) {
   const rowObj = state.allRows.find(r => r['__row__'] === excelRow) || {};
   const colorVal = Object.entries(rowObj).find(([k]) => k.toLowerCase() === 'color')?.[1];
   const label = colorVal ? `(Color: ${colorVal})` : `(Row ${excelRow})`;
-  if (!confirm(`Ø­Ø°Ù Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„ØµÙ ${label}ØŸ\nÙ‡Ø°Ø§ Ø³ÙŠÙ…Ø³Ø­ Ø¬Ù…ÙŠØ¹ Ø§Ù„Ù‚ÙŠÙ… â€” Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ØŸ`)) return;
+  if (!confirm(`Clear row data ${label}?\nThis will clear all values. Are you sure?`)) return;
 
   const res = await fetch('/api/clear_row', {
     method: 'POST',
@@ -987,10 +987,10 @@ async function confirmClearRow(excelRow) {
   });
   const d = await res.json();
   if (d.success) {
-    toast('âœ“ ØªÙ… Ù…Ø³Ø­ Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„ØµÙ');
+    toast('Row data cleared');
     await selectSheet(state.selectedSheet);
   } else {
-    toast(`âœ— ${d.error}`, false);
+    toast(`✗ ${d.error}`, false);
   }
 }
 
@@ -1008,12 +1008,12 @@ function openTxModal(excelRow, operation) {
   const colorKey = Object.keys(rowObj).find(k => k.toLowerCase() === 'color');
   const colorVal = colorKey ? rowObj[colorKey] : null;
   if (!colorVal || String(colorVal).trim() === '' || String(colorVal).trim().toLowerCase() === 'null') {
-    toast('âš ï¸ ÙŠØ¬Ø¨ ØªØ­Ø¯ÙŠØ¯ Ø§Ù„Ù„ÙˆÙ† (Color) Ø£ÙˆÙ„Ø§Ù‹ Ù‚Ø¨Ù„ Ø¥Ø¬Ø±Ø§Ø¡ Ø£ÙŠ Ø¹Ù…Ù„ÙŠØ©', false);
+    toast('⚠ Color must be set before performing any operation', false);
     return;
   }
 
-  document.getElementById('txTitle').textContent    = operation === 'IN' ? 'âž• IN â€” Add Stock' : 'âž– OUT â€” Remove Stock';
-  document.getElementById('txSubtitle').textContent = `${state.selectedFile} / ${state.selectedSheet} â€” Row ${excelRow}`;
+  document.getElementById('txTitle').textContent    = operation === 'IN' ? '+ IN — Add Stock' : '− OUT — Remove Stock';
+  document.getElementById('txSubtitle').textContent = `${state.selectedFile} / ${state.selectedSheet} — Row ${excelRow}`;
 
   // Info grid
   const infoFields = ['Color', 'Size', 'Type', 'Category', 'Current Balance', 'Basic'];
@@ -1031,7 +1031,7 @@ function openTxModal(excelRow, operation) {
 
   const btn = document.getElementById('txConfirmBtn');
   btn.className = `btn ${operation === 'IN' ? 'btn-in-modal' : 'btn-out-modal'}`;
-  btn.textContent = operation === 'IN' ? 'âœ“ Add Stock' : 'âœ“ Remove Stock';
+  btn.textContent = operation === 'IN' ? 'Add Stock' : 'Remove Stock';
 
   document.getElementById('txQty').value = '';
   document.getElementById('txModal').classList.add('open');
@@ -1045,7 +1045,7 @@ function closeTxModal() {
 
 async function submitTx() {
   const qty = parseFloat(document.getElementById('txQty').value);
-  if (isNaN(qty) || qty < 0) { toast('Ø£Ø¯Ø®Ù„ ÙƒÙ…ÙŠØ© ØµØ­ÙŠØ­Ø© (0 Ø£Ùˆ Ø£ÙƒØ«Ø±)', false); return; }
+  if (isNaN(qty) || qty < 0) { toast('Enter a valid quantity (0 or more)', false); return; }
   if (!_txRow || !_txOp) return;
 
   const btn = document.getElementById('txConfirmBtn');
@@ -1066,15 +1066,15 @@ async function submitTx() {
   const data = await res.json();
 
   btn.disabled = false;
-  btn.textContent = _txOp === 'IN' ? 'âœ“ Add Stock' : 'âœ“ Remove Stock';
+  btn.textContent = _txOp === 'IN' ? 'Add Stock' : 'Remove Stock';
 
   if (data.success) {
-    toast(`âœ“ ${_txOp} ${qty} â€” New balance: ${data.new_balance}`);
+    toast(`${_txOp} ${qty} — New balance: ${data.new_balance}`);
     closeTxModal();
     // Refresh to show updated Current Balance across all rows with same Color
     await selectSheet(state.selectedSheet);
   } else {
-    toast(`âœ— ${data.error}`, false);
+    toast(`✗ ${data.error}`, false);
   }
 }
 
@@ -1096,7 +1096,7 @@ function filterTable(query) {
 function showEmptyState(msg) {
   document.getElementById('tableWrap').innerHTML = `
     <div class="empty-state">
-      <div class="es-icon">ðŸ“‚</div>
+      <div class="es-icon">📂</div>
       <h3>${msg}</h3>
       <p>Select a month, file and sheet from the sidebar</p>
     </div>`;
@@ -1134,7 +1134,7 @@ function printTable() {
       tr:nth-child(even) { background: #f5f5f5; }
       .action-cell { display: none; }
     </style></head><body>`);
-  win.document.write(`<h2>${state.selectedFile} / ${state.selectedSheet} â€” ${state.selectedMonth} ${state.selectedYear}</h2>`);
+  win.document.write(`<h2>${state.selectedFile} / ${state.selectedSheet} — ${state.selectedMonth} ${state.selectedYear}</h2>`);
   win.document.write(table.outerHTML);
   win.document.write('</body></html>');
   win.document.close();
@@ -1143,7 +1143,7 @@ function printTable() {
 
 function exportCSV() {
   if (!state.headers.length || !state.allRows.length) {
-    toast('âš ï¸ No data to export', false);
+    toast('⚠ No data to export', false);
     return;
   }
   openCsvModal();
@@ -1152,15 +1152,15 @@ function exportCSV() {
 function openCsvModal() {
   const filename = state.headers.length
     ? `${state.selectedFile || 'data'}_${state.selectedSheet || 'sheet'}_${state.selectedMonth || ''}_${state.selectedYear || ''}.csv`
-    : 'â€”';
-  document.getElementById('csvInfoFile').textContent    = state.selectedFile  || 'â€”';
-  document.getElementById('csvInfoSheet').textContent   = state.selectedSheet || 'â€”';
-  document.getElementById('csvInfoPeriod').textContent  = (state.selectedMonth && state.selectedYear) ? `${state.selectedMonth} ${state.selectedYear}` : 'â€”';
-  document.getElementById('csvInfoRecords').textContent = state.allRows.length ? `${state.allRows.length} rows` : 'â€”';
+    : '—';
+  document.getElementById('csvInfoFile').textContent    = state.selectedFile  || '—';
+  document.getElementById('csvInfoSheet').textContent   = state.selectedSheet || '—';
+  document.getElementById('csvInfoPeriod').textContent  = (state.selectedMonth && state.selectedYear) ? `${state.selectedMonth} ${state.selectedYear}` : '—';
+  document.getElementById('csvInfoRecords').textContent = state.allRows.length ? `${state.allRows.length} rows` : '—';
   document.getElementById('csvInfoFilename').textContent = filename;
   document.getElementById('csvModalSub').textContent = state.headers.length
     ? `Export: ${state.selectedFile || ''} / ${state.selectedSheet || ''}`
-    : 'No data loaded â€” please select a file and sheet first.';
+    : 'No data loaded — please select a file and sheet first.';
   document.getElementById('csvModal').classList.add('open');
 }
 
@@ -1255,13 +1255,13 @@ async function loadDashData() {
     if (!res.ok || _dashData.error) throw new Error(_dashData.error || 'Dashboard request failed');
     dashShow(_dashView);
   } catch(e) {
-    setDashContent('<div class="dash-loading">âš ï¸ Failed to load dashboard data</div>');
+    setDashContent('<div class="dash-loading">⚠ Failed to load dashboard data</div>');
   }
 }
 
 function setDashContent(html) {
   const c = document.getElementById('dashContent');
-  c.innerHTML = `<button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>` + html;
+  c.innerHTML = `<button class="dash-close-btn" onclick="closeDashboard()">✕</button>` + html;
 }
 
 function setDashContentSafe(html) {
@@ -1331,11 +1331,11 @@ async function dashExcelStatus() {
 /* â”€â”€ OVERVIEW â”€â”€ */
 function dashOverview(d) {
   const kpis = [
-    { label:'Total Items',     value: d.total_items   ?? 'â€”', sub:'across all sheets',   cls:'blue'  },
-    { label:'Total IN',        value: d.total_in      ?? 'â€”', sub:'all time',             cls:'green' },
-    { label:'Total OUT',       value: d.total_out     ?? 'â€”', sub:'all time',             cls:'red'   },
-    { label:'Low Stock Items', value: d.low_stock     ?? 'â€”', sub:'below threshold',      cls:'amber' },
-    { label:'Zero Stock',      value: d.zero_stock    ?? 'â€”', sub:'need restocking',      cls:'red'   },
+    { label:'Total Items',     value: d.total_items   ?? '—', sub:'across all sheets',   cls:'blue'  },
+    { label:'Total IN',        value: d.total_in      ?? '—', sub:'all time',             cls:'green' },
+    { label:'Total OUT',       value: d.total_out     ?? '—', sub:'all time',             cls:'red'   },
+    { label:'Low Stock Items', value: d.low_stock     ?? '—', sub:'below threshold',      cls:'amber' },
+    { label:'Zero Stock',      value: d.zero_stock    ?? '—', sub:'need restocking',      cls:'red'   },
   ];
   const kpiHtml = kpis.map(k => `
     <div class="dash-kpi-card ${k.cls}">
@@ -1345,12 +1345,12 @@ function dashOverview(d) {
     </div>`).join('');
 
   setDashContent(`
-    <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
-    <div class="dash-content-title">ðŸ“Š Overview</div>
+    <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
+    <div class="dash-content-title">Overview</div>
     <div class="dash-content-sub">Summary of current inventory status</div>
     <div class="dash-kpi-grid">${kpiHtml}</div>
     <div class="dash-chart-wrap">
-      <div class="dash-chart-title">IN vs OUT â€” Current Data</div>
+      <div class="dash-chart-title">IN vs OUT — Current Data</div>
       <canvas id="dashChartCanvas"></canvas>
     </div>`);
 
@@ -1367,8 +1367,8 @@ function dashOverview(d) {
 /* â”€â”€ MOVEMENT â”€â”€ */
 function dashMovement(d) {
   setDashContent(`
-    <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
-    <div class="dash-content-title">ðŸ“ˆ IN / OUT Movement</div>
+    <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
+    <div class="dash-content-title">IN / OUT Movement</div>
     <div class="dash-content-sub">Stock movement breakdown by zone</div>
     <div class="dash-chart-wrap">
       <div class="dash-chart-title">IN per Zone</div>
@@ -1401,19 +1401,19 @@ function dashAlerts(d) {
   const rows = items.length
     ? items.map(a => `
         <div class="dash-alert-item ${a.level}">
-          <div class="dash-alert-icon">${a.level==='danger'?'ðŸ”´':'ðŸŸ¡'}</div>
+          <div class="dash-alert-icon">${a.level==='danger'?'🔴':'🟡'}</div>
           <div class="dash-alert-text">
             <div class="dash-alert-name">${escHtml(a.name)}</div>
-            <div class="dash-alert-desc">${escHtml(a.sheet||'')} â€” Balance: ${a.balance}</div>
+            <div class="dash-alert-desc">${escHtml(a.sheet||'')} — Balance: ${a.balance}</div>
           </div>
           <div class="dash-alert-badge ${a.level==='danger'?'red':'amber'}">${a.level==='danger'?'ZERO':'LOW'}</div>
         </div>`)
       .join('')
-    : '<div class="dash-loading">âœ… All items have sufficient stock</div>';
+    : '<div class="dash-loading"> All items have sufficient stock</div>';
 
   setDashContent(`
-    <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
-    <div class="dash-content-title">âš ï¸ Stock Alerts</div>
+    <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
+    <div class="dash-content-title">Stock Alerts</div>
     <div class="dash-content-sub">${items.length} item(s) need attention</div>
     <div class="dash-alert-list">${rows}</div>`);
 }
@@ -1425,8 +1425,8 @@ function dashTop(d) {
   const vals   = items.map(i => i.out);
 
   setDashContent(`
-    <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
-    <div class="dash-content-title">ðŸ† Top Items by Consumption</div>
+    <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
+    <div class="dash-content-title">Top Items by Consumption</div>
     <div class="dash-content-sub">Items with highest OUT quantity</div>
     <div class="dash-chart-wrap">
       <div class="dash-chart-title">Top 10 Most Consumed Items</div>
@@ -1443,15 +1443,15 @@ function dashZones(d) {
   const zones  = Object.keys(d.zone_in || {});
   const rows   = zones.map(z => `
     <tr>
-      <td>ðŸ­ ${escHtml(z)}</td>
+      <td>${escHtml(z)}</td>
       <td style="color:var(--accent-green);font-weight:600;">${d.zone_in[z]  || 0}</td>
       <td style="color:var(--accent-red);font-weight:600;">${d.zone_out[z] || 0}</td>
       <td style="color:var(--accent-cyan);font-weight:600;">${(d.zone_in[z]||0) - (d.zone_out[z]||0)}</td>
     </tr>`).join('');
 
   setDashContent(`
-    <button class="dash-close-btn" onclick="closeDashboard()">âœ•</button>
-    <div class="dash-content-title">ðŸ­ Zones Summary</div>
+    <button class="dash-close-btn" onclick="closeDashboard()">✕</button>
+    <div class="dash-content-title">Zones Summary</div>
     <div class="dash-content-sub">IN / OUT breakdown per zone</div>
     <div class="dash-chart-wrap" style="padding:0;overflow:hidden;">
       <table class="dash-zone-table">
@@ -1770,7 +1770,7 @@ async function loadDashData(silent=false, isAuto=false) {
   }
 }
 
-// View switch does NOT reset the countdown â€” timer continues
+// View switch does NOT reset the countdown — timer continues
 const _origDashShow_wrapped = dashShow;
 
 function onDashZoneChange(value) {
@@ -1906,8 +1906,8 @@ function dashZones(d) {
     const m = Math.floor((s % 3600) / 60);
     const sec = s % 60;
     el.textContent = h > 0
-      ? `â± ${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
-      : `â± ${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+      ? `± ${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
+      : `± ${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
   }
   tick();
   setInterval(tick, 1000);
@@ -1975,7 +1975,7 @@ async function loadAdminMessages() {
       const bgColor = isNew ? 'rgba(239,68,68,0.06)' : 'rgba(16,185,129,0.05)';
       return `<div style="border:1px solid ${borderColor};background:${bgColor};border-radius:12px;padding:14px 16px;margin:12px;transition:border-color 0.3s;">
         <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start;">
-          <strong style="color:var(--text-main);">${escHtml(m.name || 'â€”')}</strong>
+          <strong style="color:var(--text-main);">${escHtml(m.name || '—')}</strong>
           <span style="color:var(--text-dim);font-size:11px;">${escHtml(m.created_at || '')}</span>
         </div>
         <div style="color:var(--text-muted);font-size:12px;margin-top:5px;">${escHtml(m.phone || '')}${m.email ? ' | ' + escHtml(m.email) : ''}${m.department ? ' | ' + escHtml(m.department) : ''}</div>
@@ -2038,8 +2038,8 @@ setInterval(() => { if (document.getElementById('forMoreMessagesBadge')) fetch('
     // Show browser notification if page hidden/minimized
     if (document.hidden || !document.hasFocus()) {
       showBrowserNotif(
-        'ðŸ’¬ Ø±Ø³Ø§Ø¦Ù„ Ø¬Ø¯ÙŠØ¯Ø© - For More Messages',
-        `ÙˆØµÙ„ ${newCount - prevCount} Ø±Ø³Ø§Ù„Ø© Ø¬Ø¯ÙŠØ¯Ø©`,
+        'New Messages - For More',
+        `${newCount - prevCount} new message(s)`,
         '/static/icons/low.ico'
       );
     }
@@ -2054,8 +2054,8 @@ setInterval(() => { if (document.getElementById('forMoreMessagesBadge')) fetch('
     } catch(e) {}
     if (document.hidden || !document.hasFocus()) {
       showBrowserNotif(
-        'ðŸŸ£ Ø·Ù„Ø¨ ØªØ³Ø¬ÙŠÙ„ Ø¬Ø¯ÙŠØ¯',
-        `ÙˆØµÙ„ ${newCount - prevCount} Ø·Ù„Ø¨ Ø¬Ø¯ÙŠØ¯`,
+        'New Registration Request',
+        `${newCount - prevCount} new request(s)`,
         '/static/icons/low.ico'
       );
     }
@@ -2131,7 +2131,7 @@ async function loadLoginLogLegacy() {
     const data = await res.json();
     const entries = data.entries || [];
     if (!entries.length) {
-      body.innerHTML = '<div class="users-empty">ðŸ“­ No login records yet</div>';
+      body.innerHTML = '<div class=”users-empty”>No login records yet</div>';
       return;
     }
     const rows = entries.map((e, i) => `
@@ -2140,12 +2140,12 @@ async function loadLoginLogLegacy() {
         <td>
           <span style="display:inline-flex;align-items:center;gap:6px;">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <strong>${escHtml(e.username || 'â€”')}</strong>
+            <strong>${escHtml(e.username || '—')}</strong>
           </span>
         </td>
-        <td><span class="zone-badge" style="font-size:11px;padding:2px 10px;">${escHtml(e.zone_label || e.zone_id || 'â€”')}</span></td>
-        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);">${escHtml(e.time || 'â€”')}</td>
-        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);">${escHtml(e.ip || 'â€”')}</td>
+        <td><span class="zone-badge" style="font-size:11px;padding:2px 10px;">${escHtml(e.zone_label || e.zone_id || '—')}</span></td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);">${escHtml(e.time || '—')}</td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);">${escHtml(e.ip || '—')}</td>
       </tr>`).join('');
 
     body.innerHTML = `
@@ -2162,7 +2162,7 @@ async function loadLoginLogLegacy() {
         <tbody>${rows}</tbody>
       </table>`;
   } catch(e) {
-    body.innerHTML = '<div class="users-empty">âš ï¸ Failed to load log</div>';
+    body.innerHTML = '<div class="users-empty">⚠ Failed to load log</div>';
   }
 }
 
@@ -2246,7 +2246,7 @@ function closeAdminUsersModal() {
 
 function exportAdminUsers() {
   if (!adminUsersCache.length) {
-    toast('âš ï¸ No registered users to export', false);
+    toast('⚠ No registered users to export', false);
     return;
   }
   window.location.href = '/api/admin/registered_users/export.xlsx';
@@ -2263,7 +2263,7 @@ async function loadAdminRequests() {
     setAdminRequestBadge(data.count || 0);
     const items = data.requests || [];
     if (!items.length) {
-      body.innerHTML = '<div class="users-empty">Ù„Ø§ ØªÙˆØ¬Ø¯ Ø·Ù„Ø¨Ø§Øª ØªØ³Ø¬ÙŠÙ„ Ø­Ø§Ù„ÙŠØ§Ù‹</div>';
+      body.innerHTML = '<div class="users-empty">No pending registration requests</div>';
       return;
     }
     body.innerHTML = items.map((r) => {
@@ -2277,11 +2277,11 @@ async function loadAdminRequests() {
               <img src="${avatarSrc}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.textContent='${initial}'">
             </div>
             <div>
-              <div style="font-size:15px;font-weight:700;color:var(--text-main);">${escHtml(r.full_name || 'â€”')}</div>
-              <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">@${escHtml(r.username || 'â€”')} â€¢ ${escHtml(r.job_title || 'â€”')}</div>
-              <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">${escHtml(r.email || 'â€”')} â€¢ ${escHtml(r.phone || 'â€”')}</div>
-              <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Security Q: ${escHtml(r.security_question || 'â€”')}</div>
-              <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">${escHtml(r.created_at || 'â€”')}</div>
+              <div style="font-size:15px;font-weight:700;color:var(--text-main);">${escHtml(r.full_name || '—')}</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">@${escHtml(r.username || '—')} â€¢ ${escHtml(r.job_title || '—')}</div>
+              <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">${escHtml(r.email || '—')} â€¢ ${escHtml(r.phone || '—')}</div>
+              <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">Security Q: ${escHtml(r.security_question || '—')}</div>
+              <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">${escHtml(r.created_at || '—')}</div>
             </div>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -2292,7 +2292,7 @@ async function loadAdminRequests() {
       </div>`;
     }).join('');
   } catch (e) {
-    body.innerHTML = `<div class="users-empty">ÙØ´Ù„ ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ø·Ù„Ø¨Ø§Øª<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
+    body.innerHTML = `<div class="users-empty">Failed to load requests<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
   }
 }
 
@@ -2304,7 +2304,7 @@ async function approveRegistration(id) {
     await loadAdminRequests();
     await loadAdminUsers();
   } catch (e) {
-    alert(e.message || 'ØªØ¹Ø°Ø± Ø§Ù„Ù…ÙˆØ§ÙÙ‚Ø© Ø¹Ù„Ù‰ Ø§Ù„Ø·Ù„Ø¨');
+    alert(e.message || 'Failed to approve request');
   }
 }
 
@@ -2315,7 +2315,7 @@ async function rejectRegistration(id) {
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
     await loadAdminRequests();
   } catch (e) {
-    alert(e.message || 'ØªØ¹Ø°Ø± Ø±ÙØ¶ Ø§Ù„Ø·Ù„Ø¨');
+    alert(e.message || 'Failed to reject request');
   }
 }
 
@@ -2358,8 +2358,8 @@ async function loadAdminUsers() {
           <button class="admin-user-row" type="button" onclick="openAdminUserDetail(${Number(u.id)})">
             <img class="admin-user-avatar-img" src="/api/avatar/${escHtml(u.username)}" onerror="this.style.visibility='hidden'" alt="">
             <div class="admin-user-row-text">
-              <strong>${i + 1}. ${escHtml(u.username || 'â€”')}${u.full_name ? ' <span class="admin-user-fullname">Â· ' + escHtml(u.full_name) + '</span>' : ''}</strong>
-              <span>${u.suspended_until ? 'Ù…ÙˆÙ‚ÙˆÙ Ø­ØªÙ‰ ' + escHtml(u.suspended_until.slice(0,16)) : (u.job_title ? escHtml(u.job_title) : 'Ø¹Ø±Ø¶ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª')}</span>
+              <strong>${i + 1}. ${escHtml(u.username || '—')}${u.full_name ? ' <span class="admin-user-fullname">Â· ' + escHtml(u.full_name) + '</span>' : ''}</strong>
+              <span>${u.suspended_until ? 'Suspended until ' + escHtml(u.suspended_until.slice(0,16)) : (u.job_title ? escHtml(u.job_title) : 'Ø¹Ø±Ø¶ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª')}</span>
             </div>
             ${u.suspended_until ? '<span class="admin-user-suspended-badge">Ù…ÙˆÙ‚ÙˆÙ</span>' : ''}
           </button>
@@ -2377,9 +2377,9 @@ function openAdminUserDetail(id) {
   if (!body) return;
   const rows = [
     ['Full name', u.full_name], ['Username', u.username], ['Job title', u.job_title], ['Gender', u.gender], ['Birth date', u.birth_date], ['Privacy accepted', u.privacy_accepted ? 'Yes' : 'No'], ['Email', u.email],
-    ['Phone', u.phone], ['Security question', u.security_question], ['Password', u.password_stored_as ? 'Hidden (one-way hash)' : 'â€”'],
-    ['Security answer', u.security_answer_stored_as ? 'Hidden (one-way hash)' : 'â€”'],
-    ['Approved at', u.approved_at || u.created_at], ['Suspended until', u.suspended_until || 'â€”'], ['Suspended by', u.suspended_by || 'â€”']
+    ['Phone', u.phone], ['Security question', u.security_question], ['Password', u.password_stored_as ? 'Hidden (one-way hash)' : '—'],
+    ['Security answer', u.security_answer_stored_as ? 'Hidden (one-way hash)' : '—'],
+    ['Approved at', u.approved_at || u.created_at], ['Suspended until', u.suspended_until || '—'], ['Suspended by', u.suspended_by || '—']
   ];
   body.innerHTML = `
     <div class="admin-detail-header">
@@ -2389,12 +2389,12 @@ function openAdminUserDetail(id) {
         <div class="admin-detail-header-meta">
           <span class="admin-detail-header-user">@${escHtml(u.username)}</span>
           ${u.job_title ? `<span class="admin-detail-header-job">${escHtml(u.job_title)}</span>` : ''}
-          ${u.suspended_until ? `<span class="admin-user-suspended-badge">Ù…ÙˆÙ‚ÙˆÙ Ø­ØªÙ‰ ${escHtml(u.suspended_until.slice(0,16))}</span>` : ''}
+          ${u.suspended_until ? `<span class="admin-user-suspended-badge">Suspended until ${escHtml(u.suspended_until.slice(0,16))}</span>` : ''}
         </div>
       </div>
     </div>
     <div class="admin-detail-grid">
-      ${rows.map(([label, value]) => `<div class="admin-detail-item"><div class="admin-detail-label">${escHtml(label)}</div><div class="admin-detail-value">${escHtml(value || 'â€”')}</div></div>`).join('')}
+      ${rows.map(([label, value]) => `<div class="admin-detail-item"><div class="admin-detail-label">${escHtml(label)}</div><div class="admin-detail-value">${escHtml(value || '—')}</div></div>`).join('')}
     </div>
     <div class="admin-danger-zone">
       <div class="admin-dz-label">Suspend Account</div>
@@ -2564,17 +2564,17 @@ async function toggleReportsDropdown(e) {
       const data = await res.json();
       _reportsLoaded = true;
       if (!data.files || !data.files.length) {
-        menu.innerHTML = '<div class="reports-dropdown-empty">ðŸ“‚ No reports found</div>';
+        menu.innerHTML = '<div class="reports-dropdown-empty">📂 No reports found</div>';
       } else {
         menu.innerHTML = data.files.map(f =>
           `<div class="reports-dropdown-item" onclick="printReport('${escAttr(f)}')">
-             <span class="ri-icon">ðŸ“Š</span>
+             <span class="ri-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
              <span style="overflow:hidden;text-overflow:ellipsis;">${escHtml(f)}</span>
            </div>`
         ).join('');
       }
     } catch {
-      menu.innerHTML = '<div class="reports-dropdown-empty">âš ï¸ Failed to load</div>';
+      menu.innerHTML = '<div class="reports-dropdown-empty">⚠ Failed to load</div>';
     }
   } else {
     menu.classList.add('open');
@@ -2583,7 +2583,7 @@ async function toggleReportsDropdown(e) {
 
 function printReport(filename) {
   document.getElementById('reportsDropdownMenu').classList.remove('open');
-  // Open the server-rendered HTML print page directly â€” no download, no iframe tricks
+  // Open the server-rendered HTML print page directly — no download, no iframe tricks
   window.open('/reports/print/' + encodeURIComponent(filename), '_blank');
 }
 
