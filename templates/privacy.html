@@ -1,17 +1,75 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Privacy Policy - EST-iMs</title>
+<title>Privacy Policy — EST-iMs</title>
 <link rel="icon" type="image/x-icon" href="/static/icons/low1.ico">
+<link rel="stylesheet" href="/static/css/side-dock.css">
 <link rel="stylesheet" href="/static/css/privacy.css">
 </head>
 <body>
 <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="grid-overlay"></div>
-<header class="topbar"><div class="topbar-left"><a class="back-btn" href="/"><span>←</span><span id="backText">Back</span></a><div class="topbar-title" id="topTitle">Privacy Policy</div></div><div class="topbar-actions"><button class="icon-btn lang-btn" onclick="toggleLang()" id="langBtn">عربي</button><button class="icon-btn" onclick="toggleTheme()" title="Theme">◐</button></div></header>
-<main class="main"><section class="hero"><div class="hero-badge">EST-iMs</div><h1 class="hero-title" id="heroTitle">Privacy Policy</h1><p class="hero-sub" id="heroSub">How EST-iMs handles account requests and access data.</p></section><section class="section"><div class="section-title" id="sectionTitle">Data Use</div><div class="content-list" id="contentList"></div></section><div class="actions"><a class="btn" href="/register" id="registerBtn">Create Account</a><a class="btn" href="/login" id="loginBtn">Login</a></div></main>
+
+<div class="side-dock">
+  <div class="dock-item" onclick="toggleTheme()">
+    <div class="dock-icon">
+      <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </div>
+    <div class="dock-label">Light Mode</div>
+  </div>
+  <div class="dock-item" onclick="window.location.href='/'">
+    <div class="dock-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+    <div class="dock-label">Home</div>
+  </div>
+  <div class="dock-item dock-item-login" onclick="window.location.href='/login'">
+    <div class="dock-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg></div>
+    <div class="dock-label">Log In</div>
+  </div>
+  <div class="dock-item dock-item-scan" onclick="window.location.href='/qrscan'">
+    <div class="dock-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/><rect x="3" y="16" width="5" height="5" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M16 21v-3"/><path d="M21 21v.01"/><path d="M3 10h5"/><path d="M10 3v5"/><path d="M10 10h.01"/></svg></div>
+    <div class="dock-label">QR Scan</div>
+  </div>
+  <div class="dock-item" onclick="window.location.href='/contact'">
+    <div class="dock-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+    <div class="dock-label">Contact Us</div>
+  </div>
+  <div class="dock-item" onclick="window.location.href='/about'">
+    <div class="dock-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+    <div class="dock-label">About Us</div>
+  </div>
+  <div class="dock-item" onclick="window.location.href='/terms'">
+    <div class="dock-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+    <div class="dock-label">Terms of Use</div>
+  </div>
+  <div class="dock-item" onclick="window.location.href='/help'">
+    <div class="dock-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+    <div class="dock-label">Help</div>
+  </div>
+  <div class="dock-item" onclick="toggleLang()">
+    <div class="dock-icon"><span class="lang-switch-text" id="langDockText">AR</span></div>
+    <div class="dock-label" id="langDockLabel">Language</div>
+  </div>
+</div>
+
+<main class="main">
+  <section class="hero">
+    <div class="hero-logo"><img src="/static/icons/low.ico" alt="EST-iMs"></div>
+    <div class="hero-badge">EST-iMs</div>
+    <h1 class="hero-title" id="heroTitle">Privacy Policy</h1>
+    <p class="hero-sub" id="heroSub">How EST-iMs handles account requests and access data.</p>
+  </section>
+  <section class="section">
+    <div class="section-title" id="sectionTitle">Data Use</div>
+    <div class="content-list" id="contentList"></div>
+  </section>
+  <div class="actions">
+    <a class="btn" href="/register" id="registerBtn">Create Account</a>
+    <a class="btn" href="/login" id="loginBtn">Login</a>
+  </div>
+</main>
+
 <script src="/static/js/privacy.js"></script>
 </body>
 </html>
-

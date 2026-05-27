@@ -6,6 +6,7 @@
 <title>EST-iMs | QR Scan</title>
 <link rel="icon" type="image/x-icon" href="/static/icons/low1.ico">
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<link rel="stylesheet" href="/static/css/side-dock.css">
 <link rel="stylesheet" href="/static/css/qrscan.css">
 </head>
 <body>
@@ -14,20 +15,45 @@
 <div class="blob blob-2"></div>
 <div class="grid-overlay"></div>
 
-<div class="topbar">
-  <div class="topbar-left">
-    <a href="/" class="back-btn" id="backBtn">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-      <span id="backText">Back</span>
-    </a>
-    <span class="topbar-title" id="topbarTitle">QR Scan</span>
+<div class="side-dock">
+  <div class="dock-item" onclick="toggleTheme()">
+    <div class="dock-icon">
+      <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </div>
+    <div class="dock-label">Light Mode</div>
   </div>
-  <div class="topbar-actions">
-    <button class="icon-btn lang-btn" onclick="toggleScanLang()" id="langBtn">عربي</button>
-    <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle theme">
-      <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-      <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    </button>
+  <div class="dock-item" onclick="window.location.href='/'">
+    <div class="dock-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+    <div class="dock-label">Home</div>
+  </div>
+  <div class="dock-item dock-item-login" onclick="window.location.href='/login'">
+    <div class="dock-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg></div>
+    <div class="dock-label">Log In</div>
+  </div>
+  <div class="dock-item" onclick="window.location.href='/contact'">
+    <div class="dock-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+    <div class="dock-label">Contact Us</div>
+  </div>
+  <div class="dock-item" onclick="window.location.href='/about'">
+    <div class="dock-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+    <div class="dock-label">About Us</div>
+  </div>
+  <div class="dock-item" onclick="window.location.href='/privacy'">
+    <div class="dock-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <div class="dock-label">Privacy Policy</div>
+  </div>
+  <div class="dock-item" onclick="window.location.href='/terms'">
+    <div class="dock-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+    <div class="dock-label">Terms of Use</div>
+  </div>
+  <div class="dock-item" onclick="window.location.href='/help'">
+    <div class="dock-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+    <div class="dock-label">Help</div>
+  </div>
+  <div class="dock-item" onclick="toggleScanLang()">
+    <div class="dock-icon"><span class="lang-switch-text" id="langDockText">AR</span></div>
+    <div class="dock-label" id="langDockLabel">Language</div>
   </div>
 </div>
 
@@ -48,17 +74,14 @@
         </button>
         <p class="hint" id="hintText">Tap to open the camera and scan a stock code.</p>
       </div>
-
       <div id="state-scanning">
         <div id="reader"></div>
         <button class="cancel-btn" onclick="stopCamera()" id="cancelBtn">Cancel</button>
       </div>
-
       <div id="state-loading">
         <div class="spinner"></div>
         <p class="loading-text" id="loadingText">Retrieving live data...</p>
       </div>
-
       <div id="state-result">
         <div class="result-card">
           <div class="result-color-bar" id="resBar"></div>
@@ -74,7 +97,6 @@
         </div>
         <button class="scan-again-btn" onclick="reset()" id="scanAgainBtn">Scan another code</button>
       </div>
-
       <div id="state-error">
         <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         <p class="error-msg" id="errMsg"></p>
