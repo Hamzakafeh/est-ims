@@ -277,14 +277,28 @@ applyLang(currentLang);
   setInterval(() => fetch('/api/zones/ping', { method: 'POST' }).catch(() => {}), 10000);
 })();
 
-// Load avatar in user-corner
-(function() {
+// Load avatar in user-corner (with gender fallback)
+let _ucGender = '';
+(async function() {
   const username = document.getElementById('userCorner')?.dataset.username || '';
   if (!username) return;
   const img = document.getElementById('ucAvatarImg');
   const icon = document.getElementById('ucAvatarIcon');
+  // Try real avatar first
   img.src = '/api/avatar/' + encodeURIComponent(username);
+  img.style.width = img.style.height = '100%';
+  img.style.objectFit = 'cover';
   img.onload = () => { img.style.display = 'block'; if (icon) icon.style.display = 'none'; };
+  img.onerror = async () => {
+    // Load gender then show default
+    if (!_ucGender) {
+      try { const r = await fetch('/api/zones/me'); const d = await r.json(); _ucGender = d.gender || ''; } catch(e) {}
+    }
+    img.onerror = null;
+    img.src = '/static/images/profile_' + (_ucGender === 'female' ? 'female' : 'male') + '.png';
+    img.style.display = 'block';
+    if (icon) icon.style.display = 'none';
+  };
 })();
 
 // ── PROFILE MODAL ──
@@ -305,11 +319,16 @@ async function openZoneProfile() {
   const avatarEl = document.getElementById('zpAvatar');
   if (username) {
     avatarEl.textContent = (username[0] || '?').toUpperCase();
+    const gender = d.gender || '';
     const img = new Image();
     img.onload = () => {
       img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
       avatarEl.textContent = '';
       avatarEl.appendChild(img);
+    };
+    img.onerror = () => {
+      img.onerror = null;
+      img.src = '/static/images/profile_' + (gender === 'female' ? 'female' : 'male') + '.png';
     };
     img.src = '/api/avatar/' + encodeURIComponent(username);
   }
@@ -338,34 +357,54 @@ async function openOnlineUsers() {
   const list = document.getElementById('zuList');
   list.innerHTML = '<div class="zu-loading">Loading...</div>';
   try {
-    const res = await fetch('/api/zones/presence');
+    const res = await fetch('/api/zones/users');
     const data = await res.json();
     const users = data.users || [];
     if (!users.length) {
-      list.innerHTML = '<div class="zu-empty">No users online</div>';
+      list.innerHTML = '<div class="zu-empty">No registered users</div>';
       return;
     }
     list.innerHTML = '';
     users.forEach(u => {
       const row = document.createElement('div');
       row.className = 'zu-user';
+
       const avDiv = document.createElement('div');
       avDiv.className = 'zu-user-av';
-      avDiv.textContent = (u[0] || '?').toUpperCase();
+      avDiv.textContent = ((u.username || u)[0] || '?').toUpperCase();
       const img = new Image();
       img.onload = () => {
         img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
         avDiv.textContent = '';
         avDiv.appendChild(img);
       };
-      img.src = '/api/avatar/' + encodeURIComponent(u);
-      const nameEl = document.createElement('span');
+      img.onerror = () => {
+        img.onerror = null;
+        img.src = '/static/images/profile_' + (u.gender === 'female' ? 'female' : 'male') + '.png';
+      };
+      img.src = '/api/avatar/' + encodeURIComponent(u.username || u);
+
+      const infoEl = document.createElement('div');
+      infoEl.style.cssText = 'flex:1;min-width:0;';
+      const nameEl = document.createElement('div');
       nameEl.className = 'zu-user-name';
-      nameEl.textContent = u;
+      nameEl.textContent = u.full_name || u.username || u;
+      infoEl.appendChild(nameEl);
+      if (u.job_title) {
+        const jobEl = document.createElement('div');
+        jobEl.style.cssText = 'font-size:10px;color:var(--text-dim);margin-top:1px;';
+        jobEl.textContent = u.job_title;
+        infoEl.appendChild(jobEl);
+      }
+
       const dot = document.createElement('span');
       dot.className = 'zu-user-dot';
+      dot.style.background = u.online ? '#10b981' : '#4a5568';
+      dot.style.boxShadow = u.online ? '0 0 6px #10b981' : 'none';
+      dot.title = u.online ? 'Online' : 'Offline';
+
       row.appendChild(avDiv);
-      row.appendChild(nameEl);
+      row.appendChild(infoEl);
       row.appendChild(dot);
       list.appendChild(row);
     });

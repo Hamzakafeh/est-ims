@@ -267,10 +267,12 @@ def api_profile():
         if str(e.get('username', '')).lower() == str(username).lower()
     ][:8]
 
+    user_row = _approved_db_user(username)
+    is_verified_db = bool((user_row or {}).get('is_verified', 0))
     return jsonify({
         'username': username,
         'avatar_url': _avatar_url(username),
-        'is_verified': str(username).lower() in VERIFIED_USERS,
+        'is_verified': str(username).lower() in VERIFIED_USERS or is_verified_db,
         'zone': zone_id,
         'zone_name': session.get('zone_name', ''),
         'zone_label': session.get('zone_label', ''),
@@ -332,6 +334,30 @@ def api_profile_change_password():
         conn.execute('UPDATE users SET password_hash = ? WHERE lower(username) = lower(?)', (new_hash, username))
 
     return jsonify({'success': True, 'message': 'تم تغيير كلمة المرور بنجاح'})
+
+
+@zone_bp.route('/api/zones/users')
+@login_required
+def api_zones_users():
+    now = _time.time()
+    with _zones_presence_lock:
+        online_set = {u.lower() for u, d in _zones_presence.items() if now - d['ts'] < _ZONES_PRESENCE_TTL}
+    with _db_connect() as conn:
+        rows = conn.execute(
+            "SELECT username, full_name, job_title, gender FROM users WHERE approved = 1 ORDER BY full_name, username"
+        ).fetchall()
+    return jsonify({
+        'users': [
+            {
+                'username': r['username'],
+                'full_name': r['full_name'] or '',
+                'job_title': r['job_title'] or '',
+                'gender': r['gender'] or '',
+                'online': r['username'].lower() in online_set,
+            }
+            for r in rows
+        ]
+    })
 
 
 @zone_bp.route('/api/zones/ping', methods=['POST'])

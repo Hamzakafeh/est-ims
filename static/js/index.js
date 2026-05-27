@@ -2352,7 +2352,7 @@ async function loadAdminUsers() {
       <div class="admin-user-list">
         ${adminUsersCache.map((u, i) => `
           <button class="admin-user-row" type="button" onclick="openAdminUserDetail(${Number(u.id)})">
-            <img class="admin-user-avatar-img" src="/api/avatar/${escHtml(u.username)}" onerror="this.style.visibility='hidden'" alt="">
+            <img class="admin-user-avatar-img" src="/api/avatar/${escHtml(u.username)}" onerror="this.onerror=null;this.src='/static/images/profile_${u.gender==='female'?'female':'male'}.png'" alt="">
             <div class="admin-user-row-text">
               <strong>${i + 1}. ${escHtml(u.username || '—')}${u.full_name ? ' <span class="admin-user-fullname">· ' + escHtml(u.full_name) + '</span>' : ''}</strong>
               <span>${u.suspended_until ? 'Suspended until ' + escHtml(u.suspended_until.slice(0,16)) : (u.job_title ? escHtml(u.job_title) : 'View details')}</span>
@@ -2379,7 +2379,7 @@ function openAdminUserDetail(id) {
   ];
   body.innerHTML = `
     <div class="admin-detail-header">
-      <img class="admin-detail-avatar-img" src="/api/avatar/${escHtml(u.username)}" onerror="this.style.display='none'" alt="Avatar">
+      <img class="admin-detail-avatar-img" src="/api/avatar/${escHtml(u.username)}" onerror="this.onerror=null;this.src='/static/images/profile_${u.gender==='female'?'female':'male'}.png'" alt="Avatar">
       <div class="admin-detail-header-info">
         <div class="admin-detail-header-name">${escHtml(u.full_name || u.username)}</div>
         <div class="admin-detail-header-meta">
@@ -2438,7 +2438,7 @@ function openAdminUserDetail(id) {
           Manage Permissions
         </label>
       </div>
-      <button class="btn" style="padding:8px 14px;font-size:12px;background:#6366f1;color:#fff;border:none;" onclick="saveAdminUserPerms(${Number(u.id)})">Save Permissions</button>
+      <button class="btn" style="padding:8px 14px;font-size:12px;background:#3b82f6;color:#fff;border:none;" onclick="saveAdminUserPerms(${Number(u.id)})">Save Permissions</button>
     </div>
     <div class="admin-danger-zone">
       <div class="admin-dz-label">Verified Badge</div>

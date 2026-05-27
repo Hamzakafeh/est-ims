@@ -153,8 +153,9 @@ def api_admin_registered_users():
         return jsonify({'error': 'غير مصرح'}), 403
     with _db_connect() as conn:
         rows = conn.execute(
-            "SELECT id, full_name, username, email, phone, job_title, gender, birth_date, privacy_accepted, security_question, password_hash, security_answer_hash, approved_at, created_at, suspended_until, suspended_by, suspended_at FROM users WHERE approved = 1 ORDER BY approved_at DESC, id DESC"
+            "SELECT id, full_name, username, email, phone, job_title, gender, birth_date, privacy_accepted, security_question, password_hash, security_answer_hash, approved_at, created_at, suspended_until, suspended_by, suspended_at, is_verified, perm_switch_zones, perm_manage_permissions, perm_can_edit FROM users WHERE approved = 1 ORDER BY approved_at DESC, id DESC"
         ).fetchall()
+    keys = lambda row, k, default=None: row[k] if k in row.keys() else default
     return jsonify({
         'count': len(rows),
         'db_file': AUTH_DB_FILE,
@@ -166,17 +167,21 @@ def api_admin_registered_users():
                 'email': row['email'],
                 'phone': row['phone'],
                 'job_title': row['job_title'],
-                'gender': row['gender'] if 'gender' in row.keys() else '',
-                'birth_date': row['birth_date'] if 'birth_date' in row.keys() else '',
-                'privacy_accepted': bool(row['privacy_accepted'] if 'privacy_accepted' in row.keys() else 0),
+                'gender': keys(row, 'gender', ''),
+                'birth_date': keys(row, 'birth_date', ''),
+                'privacy_accepted': bool(keys(row, 'privacy_accepted', 0)),
                 'security_question': row['security_question'],
                 'password_stored_as': 'one_way_hash' if row['password_hash'] else '',
                 'security_answer_stored_as': 'one_way_hash' if row['security_answer_hash'] else '',
                 'approved_at': row['approved_at'],
                 'created_at': row['created_at'],
-                'suspended_until': row['suspended_until'],
-                'suspended_by': row['suspended_by'],
-                'suspended_at': row['suspended_at'],
+                'suspended_until': keys(row, 'suspended_until'),
+                'suspended_by': keys(row, 'suspended_by'),
+                'suspended_at': keys(row, 'suspended_at'),
+                'is_verified': bool(keys(row, 'is_verified', 0)),
+                'perm_switch_zones': bool(keys(row, 'perm_switch_zones', 0)),
+                'perm_manage_permissions': bool(keys(row, 'perm_manage_permissions', 0)),
+                'can_edit': bool(keys(row, 'perm_can_edit', 0)),
             }
             for row in rows
         ],
@@ -375,6 +380,41 @@ def api_admin_contact_message_delete(msg_id):
         messages = _read_json_list(CONTACT_MESSAGES_FILE)
         messages = [m for m in messages if int(m.get('id', -1)) != msg_id]
         _write_json_list(CONTACT_MESSAGES_FILE, messages)
+    return jsonify({'success': True})
+
+
+@admin_bp.route('/api/admin/registered_users/<int:user_id>/permissions', methods=['POST'])
+@zone_required
+def api_admin_set_user_permissions(user_id):
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    data = request.get_json(silent=True) or {}
+    switch_zones = int(bool(data.get('switch_zones', False)))
+    can_edit = int(bool(data.get('can_edit', False)))
+    manage_perms = int(bool(data.get('manage_permissions', False)))
+    with _db_connect() as conn:
+        row = conn.execute("SELECT id FROM users WHERE id = ? AND approved = 1", (user_id,)).fetchone()
+        if not row:
+            return jsonify({'success': False, 'message': 'المستخدم غير موجود'}), 404
+        conn.execute(
+            "UPDATE users SET perm_switch_zones=?, perm_can_edit=?, perm_manage_permissions=? WHERE id=?",
+            (switch_zones, can_edit, manage_perms, user_id)
+        )
+    return jsonify({'success': True})
+
+
+@admin_bp.route('/api/admin/registered_users/<int:user_id>/toggle_verified', methods=['POST'])
+@zone_required
+def api_admin_toggle_user_verified(user_id):
+    if session.get('zone') != 'dev':
+        return jsonify({'error': 'غير مصرح'}), 403
+    data = request.get_json(silent=True) or {}
+    is_verified = int(bool(data.get('is_verified', False)))
+    with _db_connect() as conn:
+        row = conn.execute("SELECT id FROM users WHERE id = ? AND approved = 1", (user_id,)).fetchone()
+        if not row:
+            return jsonify({'success': False, 'message': 'المستخدم غير موجود'}), 404
+        conn.execute("UPDATE users SET is_verified=? WHERE id=?", (is_verified, user_id))
     return jsonify({'success': True})
 
 
