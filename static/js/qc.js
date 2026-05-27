@@ -749,23 +749,38 @@ function loadChat(){
   // no-op — Firebase handles initial load in _initFirebaseChat
 }
 
-function renderChatMessages(msgs){
-  const box = document.getElementById('chatMessages');
-  if(!box) return;
-  if(!msgs.length){ box.innerHTML = '<div class="chat-loading">No messages yet. Say hi! 👋</div>'; return; }
-  box.innerHTML = msgs.map(m => {
-    const mine = m.username === CURRENT_USER;
-    const roleClass = m.role === 'qc' ? 'cm-role-qc' : 'cm-role-lab';
-    const roleLabel = m.role === 'qc' ? 'QC' : 'Label';
-    return `<div class="chat-msg ${mine ? 'mine' : 'theirs'}">
+function _chatAvatarHtml(username) {
+  const initial = esc(username.charAt(0).toUpperCase());
+  const src = username.toLowerCase() === 'mlo5'
+    ? '/static/images/me.jpg'
+    : '/api/avatar/' + esc(username);
+  return `<div class="chat-msg-avatar">${initial}<img src="${src}" onload="this.style.display='block'" onerror="this.style.display='none'"></div>`;
+}
+
+function _chatMsgHtml(m) {
+  const mine      = m.username === CURRENT_USER;
+  const roleClass = m.role === 'qc' ? 'cm-role-qc' : 'cm-role-lab';
+  const roleLabel = m.role === 'qc' ? 'QC' : 'Label';
+  const avatar    = _chatAvatarHtml(m.username);
+  return `<div class="chat-msg-row ${mine ? 'mine' : 'theirs'}">
+    ${mine ? '' : avatar}
+    <div class="chat-msg ${mine ? 'mine' : 'theirs'}">
       <div class="chat-msg-meta">
         <span class="cm-user">${esc(m.username)}</span>
         <span class="${roleClass}">${roleLabel}</span>
         <span>${esc(m.sent_at)}</span>
       </div>
       <div class="chat-msg-bubble">${esc(m.text)}</div>
-    </div>`;
-  }).join('');
+    </div>
+    ${mine ? avatar : ''}
+  </div>`;
+}
+
+function renderChatMessages(msgs){
+  const box = document.getElementById('chatMessages');
+  if(!box) return;
+  if(!msgs.length){ box.innerHTML = '<div class="chat-loading">No messages yet. Say hi! 👋</div>'; return; }
+  box.innerHTML = msgs.map(_chatMsgHtml).join('');
   scrollChatBottom();
 }
 
@@ -802,14 +817,8 @@ function _appendChatMsg(msg){
   const roleClass = msg.role === 'qc' ? 'cm-role-qc' : 'cm-role-lab';
   const roleLabel = msg.role === 'qc' ? 'QC' : 'Label';
   const el = document.createElement('div');
-  el.className = `chat-msg ${mine ? 'mine' : 'theirs'}`;
-  el.innerHTML = `<div class="chat-msg-meta">
-    <span class="cm-user">${esc(msg.username)}</span>
-    <span class="${roleClass}">${roleLabel}</span>
-    <span>${esc(msg.sent_at)}</span>
-  </div>
-  <div class="chat-msg-bubble">${esc(msg.text)}</div>`;
-  box.appendChild(el);
+  el.innerHTML = _chatMsgHtml(msg);
+  box.appendChild(el.firstElementChild);
   scrollChatBottom();
   if(!_chatOpen && !mine){
     _chatUnread++;
