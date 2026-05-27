@@ -2349,17 +2349,17 @@ async function loadAdminUsers() {
     if (!res.ok || data.error) throw new Error(data.error || 'Failed');
     adminUsersCache = data.users || [];
     if (!adminUsersCache.length) {
-      body.innerHTML = '<div class="users-empty">Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ù…Ø³ØªØ®Ø¯Ù…ÙˆÙ† Ù…Ø³Ø¬Ù„ÙˆÙ† Ø¨Ø¹Ø¯</div>';
+      body.innerHTML = '<div class="users-empty">No registered users yet</div>';
       return;
     }
     body.innerHTML = `
-      <div class="users-empty" style="padding:10px 16px;text-align:start;font-size:11px;">Database: ${escHtml(data.db_file || 'auth.sqlite3')} Â· ${adminUsersCache.length} users</div>
+      <div class="users-empty" style="padding:10px 16px;text-align:start;font-size:11px;">Database: ${escHtml(data.db_file || 'auth.sqlite3')} · ${adminUsersCache.length} users</div>
       <div class="admin-user-list">
         ${adminUsersCache.map((u, i) => `
           <button class="admin-user-row" type="button" onclick="openAdminUserDetail(${Number(u.id)})">
             <img class="admin-user-avatar-img" src="/api/avatar/${escHtml(u.username)}" onerror="this.style.visibility='hidden'" alt="">
             <div class="admin-user-row-text">
-              <strong>${i + 1}. ${escHtml(u.username || '—')}${u.full_name ? ' <span class="admin-user-fullname">Â· ' + escHtml(u.full_name) + '</span>' : ''}</strong>
+              <strong>${i + 1}. ${escHtml(u.username || '—')}${u.full_name ? ' <span class="admin-user-fullname">· ' + escHtml(u.full_name) + '</span>' : ''}</strong>
               <span>${u.suspended_until ? 'Suspended until ' + escHtml(u.suspended_until.slice(0,16)) : (u.job_title ? escHtml(u.job_title) : 'Ø¹Ø±Ø¶ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª')}</span>
             </div>
             ${u.suspended_until ? '<span class="admin-user-suspended-badge">Ù…ÙˆÙ‚ÙˆÙ</span>' : ''}
@@ -2486,10 +2486,10 @@ async function suspendAdminUser(id) {
     const res = await fetch(`/api/admin/registered_users/${id}/suspend`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ minutes }) });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
-    toast(data.message || 'ØªÙ… Ø§Ù„Ø¥ÙŠÙ‚Ø§Ù', true);
+    toast(data.message || 'Account suspended', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'ØªØ¹Ø°Ø± Ø¥ÙŠÙ‚Ø§Ù Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…'); }
+  } catch(e) { alert(e.message || 'Failed to suspend user'); }
 }
 
 async function unsuspendAdminUser(id) {
@@ -2497,10 +2497,10 @@ async function unsuspendAdminUser(id) {
     const res = await fetch(`/api/admin/registered_users/${id}/unsuspend`, { method:'POST' });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
-    toast(data.message || 'ØªÙ… Ø¥Ù„ØºØ§Ø¡ Ø§Ù„Ø¥ÙŠÙ‚Ø§Ù', true);
+    toast(data.message || 'Account unsuspended', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'ØªØ¹Ø°Ø± Ø¥Ù„ØºØ§Ø¡ Ø§Ù„Ø¥ÙŠÙ‚Ø§Ù'); }
+  } catch(e) { alert(e.message || 'Failed to unsuspend user'); }
 }
 
 async function resetAdminUserPassword(id) {
@@ -2510,10 +2510,10 @@ async function resetAdminUserPassword(id) {
     const res = await fetch(`/api/admin/registered_users/${id}/password`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ new_password, confirm_password }) });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
-    toast(data.message || 'ØªÙ… ØªØºÙŠÙŠØ± ÙƒÙ„Ù…Ø© Ø§Ù„Ø³Ø±', true);
+    toast(data.message || 'Password updated', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'ØªØ¹Ø°Ø± ØªØºÙŠÙŠØ± ÙƒÙ„Ù…Ø© Ø§Ù„Ø³Ø±'); }
+  } catch(e) { alert(e.message || 'Failed to update password'); }
 }
 
 async function resetAdminUserSecurity(id) {
@@ -2523,10 +2523,10 @@ async function resetAdminUserSecurity(id) {
     const res = await fetch(`/api/admin/registered_users/${id}/security`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ security_question, security_answer }) });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
-    toast(data.message || 'ØªÙ… ØªØºÙŠÙŠØ± Ø§Ù„Ø³Ø¤Ø§Ù„ Ø§Ù„Ø£Ù…Ù†ÙŠ', true);
+    toast(data.message || 'Security question updated', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'ØªØ¹Ø°Ø± ØªØºÙŠÙŠØ± Ø§Ù„Ø³Ø¤Ø§Ù„ Ø§Ù„Ø£Ù…Ù†ÙŠ'); }
+  } catch(e) { alert(e.message || 'Failed to update security question'); }
 }
 
 async function deleteAdminUser(id, username) {
