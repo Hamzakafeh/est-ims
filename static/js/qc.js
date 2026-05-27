@@ -14,6 +14,23 @@ const role           = window.QC_CONFIG.qc_role;
 const CURRENT_USER   = window.QC_CONFIG.username;
 const VERIFIED_USERS = new Set((window.QC_CONFIG.verified_users || []).map(u => u.toLowerCase()));
 
+// ── Chat FAB avatar ──
+(function () {
+  if (!CURRENT_USER) return;
+  const img = document.getElementById('chatFabAvatar');
+  const icon = document.getElementById('chatFabIcon');
+  if (!img) return;
+  img.onload = function () {
+    img.style.display = 'block';
+    if (icon) icon.style.display = 'none';
+  };
+  img.onerror = function () {
+    img.style.display = 'none';
+    if (icon) icon.style.display = '';
+  };
+  img.src = '/api/avatar/' + CURRENT_USER;
+})();
+
 // ══════════════════════════════════════════════════════
 // THEME
 // ══════════════════════════════════════════════════════
