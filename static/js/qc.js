@@ -819,16 +819,25 @@ function _initFirebaseChat(){
   const chatRef = _db.ref('qc_chat').limitToLast(100);
   let _initialDone = false;
   const _buf = [];
+  let _fallbackTimer = null;
+
+  const _markDone = () => {
+    if(_initialDone) return;
+    _initialDone = true;
+    _chatLoaded  = true;
+    if(_fallbackTimer){ clearTimeout(_fallbackTimer); _fallbackTimer = null; }
+    renderChatMessages(_buf);
+    _buf.length = 0;
+  };
 
   chatRef.on('child_added', snap => {
     if(!_initialDone){ _buf.push(snap.val()); return; }
     _appendChatMsg(snap.val());
   });
 
-  chatRef.once('value', () => {
-    _initialDone = true;
-    _chatLoaded  = true;
-    renderChatMessages(_buf);
-    _buf.length = 0;
-  });
+  // error callback handles permission-denied or network errors silently
+  chatRef.once('value', _markDone, _markDone);
+
+  // fallback: if once('value') never fires within 6s, show whatever is buffered
+  _fallbackTimer = setTimeout(_markDone, 6000);
 }
