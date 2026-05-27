@@ -279,26 +279,30 @@ applyLang(currentLang);
 
 // Load avatar in user-corner (with gender fallback)
 let _ucGender = '';
+function _devAvatarSrc(username) {
+  return username.toLowerCase() === 'mlo5' ? '/static/images/me.jpg' : null;
+}
 (async function() {
   const username = document.getElementById('userCorner')?.dataset.username || '';
   if (!username) return;
   const img = document.getElementById('ucAvatarImg');
   const icon = document.getElementById('ucAvatarIcon');
-  // Try real avatar first
-  img.src = '/api/avatar/' + encodeURIComponent(username);
   img.style.width = img.style.height = '100%';
   img.style.objectFit = 'cover';
+  const devSrc = _devAvatarSrc(username);
+  img.src = devSrc || '/api/avatar/' + encodeURIComponent(username);
   img.onload = () => { img.style.display = 'block'; if (icon) icon.style.display = 'none'; };
-  img.onerror = async () => {
-    // Load gender then show default
-    if (!_ucGender) {
-      try { const r = await fetch('/api/zones/me'); const d = await r.json(); _ucGender = d.gender || ''; } catch(e) {}
-    }
-    img.onerror = null;
-    img.src = '/static/images/profile_' + (_ucGender === 'female' ? 'female' : 'male') + '.png';
-    img.style.display = 'block';
-    if (icon) icon.style.display = 'none';
-  };
+  if (!devSrc) {
+    img.onerror = async () => {
+      if (!_ucGender) {
+        try { const r = await fetch('/api/zones/me'); const d = await r.json(); _ucGender = d.gender || ''; } catch(e) {}
+      }
+      img.onerror = null;
+      img.src = '/static/images/profile_' + (_ucGender === 'female' ? 'female' : 'male') + '.png';
+      img.style.display = 'block';
+      if (icon) icon.style.display = 'none';
+    };
+  }
 })();
 
 // ── PROFILE MODAL ──
@@ -320,17 +324,20 @@ async function openZoneProfile() {
   if (username) {
     avatarEl.textContent = (username[0] || '?').toUpperCase();
     const gender = d.gender || '';
+    const devSrc = _devAvatarSrc(username);
     const img = new Image();
     img.onload = () => {
       img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
       avatarEl.textContent = '';
       avatarEl.appendChild(img);
     };
-    img.onerror = () => {
-      img.onerror = null;
-      img.src = '/static/images/profile_' + (gender === 'female' ? 'female' : 'male') + '.png';
-    };
-    img.src = '/api/avatar/' + encodeURIComponent(username);
+    if (!devSrc) {
+      img.onerror = () => {
+        img.onerror = null;
+        img.src = '/static/images/profile_' + (gender === 'female' ? 'female' : 'male') + '.png';
+      };
+    }
+    img.src = devSrc || '/api/avatar/' + encodeURIComponent(username);
   }
 
   document.getElementById('zpName').textContent = d.full_name || username || '—';
@@ -393,11 +400,14 @@ async function openOnlineUsers() {
         avDiv.textContent = '';
         avDiv.appendChild(img);
       };
-      img.onerror = () => {
-        img.onerror = null;
-        img.src = '/static/images/profile_' + (u.gender === 'female' ? 'female' : 'male') + '.png';
-      };
-      img.src = '/api/avatar/' + encodeURIComponent(u.username || u);
+      const uDevSrc = _devAvatarSrc(u.username || u);
+      if (!uDevSrc) {
+        img.onerror = () => {
+          img.onerror = null;
+          img.src = '/static/images/profile_' + (u.gender === 'female' ? 'female' : 'male') + '.png';
+        };
+      }
+      img.src = uDevSrc || '/api/avatar/' + encodeURIComponent(u.username || u);
 
       const infoEl = document.createElement('div');
       infoEl.style.cssText = 'flex:1;min-width:0;';
