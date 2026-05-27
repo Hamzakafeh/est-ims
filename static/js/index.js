@@ -2360,14 +2360,14 @@ async function loadAdminUsers() {
             <img class="admin-user-avatar-img" src="/api/avatar/${escHtml(u.username)}" onerror="this.style.visibility='hidden'" alt="">
             <div class="admin-user-row-text">
               <strong>${i + 1}. ${escHtml(u.username || '—')}${u.full_name ? ' <span class="admin-user-fullname">· ' + escHtml(u.full_name) + '</span>' : ''}</strong>
-              <span>${u.suspended_until ? 'Suspended until ' + escHtml(u.suspended_until.slice(0,16)) : (u.job_title ? escHtml(u.job_title) : 'Ø¹Ø±Ø¶ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª')}</span>
+              <span>${u.suspended_until ? 'Suspended until ' + escHtml(u.suspended_until.slice(0,16)) : (u.job_title ? escHtml(u.job_title) : 'View details')}</span>
             </div>
-            ${u.suspended_until ? '<span class="admin-user-suspended-badge">Ù…ÙˆÙ‚ÙˆÙ</span>' : ''}
+            ${u.suspended_until ? '<span class="admin-user-suspended-badge">Suspended</span>' : ''}
           </button>
         `).join('')}
       </div>`;
   } catch (e) {
-    body.innerHTML = `<div class="users-empty">ÙØ´Ù„ ØªØ­Ù…ÙŠÙ„ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙŠÙ†<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
+    body.innerHTML = `<div class="users-empty">Failed to load users<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
   }
 }
 
