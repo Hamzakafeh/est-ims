@@ -53,33 +53,6 @@ function _showForceLogout(status, message) {
 }
 
 
-// ── ACCOUNT STATUS POLLING — DB-based fallback, runs every 15 seconds ──
-// Catches cases where Firebase is unavailable or DB_SECRET is not configured
-(function _initStatusPolling() {
-  const cfgEl = document.getElementById('index-fb-cfg');
-  if (!cfgEl) return;
-  let cfg;
-  try { cfg = JSON.parse(cfgEl.textContent); } catch(e) { return; }
-  if (!cfg.username) return;
-
-  let _alreadyTriggered = false;
-  function _poll() {
-    if (_alreadyTriggered) return;
-    fetch('/api/me/status', { credentials: 'same-origin' })
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        if (!data || _alreadyTriggered) return;
-        if (data.status === 'deleted' || data.status === 'suspended') {
-          _alreadyTriggered = true;
-          _showForceLogout(data.status, data.message || '');
-        }
-      })
-      .catch(() => {});
-  }
-  _poll();
-  setInterval(_poll, 15000);
-})();
-
 
 // ── BETA POPUP (show only once per session) ──
 function closeBetaOverlay() {
