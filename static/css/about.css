@@ -99,7 +99,7 @@
   .main {
     position: relative; z-index: 10;
     max-width: 820px; margin: 0 auto;
-    padding: 48px 24px 80px;
+    padding: 48px 24px 80px 60px;
   }
 
   /* HERO */
@@ -141,7 +141,7 @@
     display: grid; grid-template-columns: repeat(2, 1fr);
     gap: 16px; margin-bottom: 32px;
   }
-  @media (max-width: 560px) { .cards-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) { .cards-grid { grid-template-columns: 1fr; } .main { padding: 34px 16px 90px; } }
 
   .info-card {
     background: rgba(255,255,255,0.04);

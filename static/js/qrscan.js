@@ -8,7 +8,7 @@ function toggleTheme() {
 
 const SCAN_LANG = {
   en: {
-    back: 'Back', topbar: 'QR Scan', lang: 'عربي', badge: 'Live Inventory Lookup',
+    lang: 'AR', badge: 'Live Inventory Lookup',
     heroTitle: 'QR SCAN',
     heroSub: 'Scan an inventory QR code to retrieve the latest stock balance directly from EST-iMs.',
     scan: 'Scan QR', hint: 'Tap to open the camera and scan a stock code.', cancel: 'Cancel',
@@ -19,7 +19,7 @@ const SCAN_LANG = {
     lastUpdate: 'Last update: '
   },
   ar: {
-    back: 'رجوع', topbar: 'مسح QR', lang: 'English', badge: 'بحث مباشر في المخزون',
+    lang: 'EN', badge: 'بحث مباشر في المخزون',
     heroTitle: 'مسح QR',
     heroSub: 'افحص كود المخزون لعرض آخر رصيد مباشرة من نظام EST-iMs.',
     scan: 'افحص QR', hint: 'اضغط لفتح الكاميرا وفحص كود الصنف.', cancel: 'إلغاء',
@@ -40,9 +40,7 @@ function applyScanLang(lang) {
   const isAr = lang === 'ar';
   document.documentElement.lang = lang;
   document.documentElement.dir = isAr ? 'rtl' : 'ltr';
-  document.getElementById('backText').textContent = t('back');
-  document.getElementById('topbarTitle').textContent = t('topbar');
-  document.getElementById('langBtn').textContent = t('lang');
+  document.getElementById('langDockText').textContent = t('lang');
   document.getElementById('badgeText').textContent = t('badge');
   document.getElementById('heroTitle').textContent = t('heroTitle');
   document.getElementById('heroSub').textContent = t('heroSub');

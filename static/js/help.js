@@ -8,7 +8,7 @@ function toggleTheme() {
 
 const HELP_LANG = {
   en: {
-    back: 'Back', topbar: 'Help & FAQ', lang: 'عربي', badge: 'EST-iMs Support Center',
+    lang: 'AR', badge: 'EST-iMs Support Center',
     heroTitle: 'HELP & FAQ', heroSub: 'Find quick answers for accounts, inventory, reports, and supported devices.',
     search: 'Search for help topics...', tabAll: 'All Topics', tabAccount: 'Account', tabInventory: 'Inventory', tabReports: 'Reports', tabSystem: 'System',
     emailSupport: 'Email Support', phoneSupport: 'Phone Support',
@@ -16,7 +16,7 @@ const HELP_LANG = {
     copy: 'Copyright 2026 | All Rights Reserved'
   },
   ar: {
-    back: 'رجوع', topbar: 'المساعدة والأسئلة', lang: 'English', badge: 'مركز دعم EST-iMs',
+    lang: 'EN', badge: 'مركز دعم EST-iMs',
     heroTitle: 'المساعدة', heroSub: 'اعثر بسرعة على إجابات تخص الحسابات والمخزون والتقارير والأجهزة المدعومة.',
     search: 'ابحث في مواضيع المساعدة...', tabAll: 'الكل', tabAccount: 'الحساب', tabInventory: 'المخزون', tabReports: 'التقارير', tabSystem: 'النظام',
     emailSupport: 'الدعم عبر البريد', phoneSupport: 'الدعم عبر الهاتف',
@@ -32,9 +32,7 @@ function applyHelpLang(lang) {
   const isAr = lang === 'ar';
   document.documentElement.lang = lang;
   document.documentElement.dir = isAr ? 'rtl' : 'ltr';
-  document.getElementById('backText').textContent = ht('back');
-  document.getElementById('topbarTitle').textContent = ht('topbar');
-  document.getElementById('langBtn').textContent = ht('lang');
+  document.getElementById('langDockText').textContent = ht('lang');
   document.getElementById('badgeText').textContent = ht('badge');
   document.getElementById('heroTitle').textContent = ht('heroTitle');
   document.getElementById('heroSub').textContent = ht('heroSub');
@@ -47,7 +45,6 @@ function applyHelpLang(lang) {
   document.getElementById('emailSupportLabel').textContent = ht('emailSupport');
   document.getElementById('phoneSupportLabel').textContent = ht('phoneSupport');
   document.getElementById('tipText').innerHTML = ht('tip');
-  document.getElementById('copyText').textContent = ht('copy');
 }
 function toggleHelpLang() { applyHelpLang(helpLang === 'en' ? 'ar' : 'en'); }
 

@@ -8,11 +8,11 @@ function toggleTheme() {
 
 const MORE_LANG = {
   en: {
-    back: 'Back', topbar: 'For More', lang: 'عربي', badge: 'Contact & Support',
+    lang: 'AR', badge: 'Contact & Support',
     heroTitle: 'FOR MORE',
     heroSub: 'Have a question, request, or support need? Send us the details and the EST-iMs team will follow up with you.',
     formTitle: 'Send a Message',
-    name: 'Full Name', phone: 'Phone', email: 'Email (optional)', dept: 'Department', message: 'Message',
+    name: 'Full Name', phone: 'Phone', email: 'Email', dept: 'Department', message: 'Message',
     namePh: 'Your name', phonePh: '+962 ...', emailPh: 'you@example.com', msgPh: 'Describe your question or request...',
     deptPh: '— Select department —', submit: 'Send Message', sending: 'Sending...',
     successTitle: 'Message Sent!', successSub: "Thank you. We'll get back to you as soon as possible.", again: 'Send Another',
@@ -21,11 +21,11 @@ const MORE_LANG = {
     c3t: 'EST-iMs', c3: 'Built for Alestesharia Animal Nutrition to keep warehouse operations clear, fast, and organized.'
   },
   ar: {
-    back: 'رجوع', topbar: 'للمزيد', lang: 'English', badge: 'تواصل ودعم',
+    lang: 'EN', badge: 'تواصل ودعم',
     heroTitle: 'للمزيد',
     heroSub: 'عندك سؤال أو طلب أو تحتاج دعم؟ ارسل التفاصيل وفريق EST-iMs بتابع معك.',
     formTitle: 'إرسال رسالة',
-    name: 'الاسم الكامل', phone: 'رقم الهاتف', email: 'البريد الإلكتروني (اختياري)', dept: 'القسم', message: 'الرسالة',
+    name: 'الاسم الكامل', phone: 'رقم الهاتف', email: 'البريد الإلكتروني', dept: 'القسم', message: 'الرسالة',
     namePh: 'اسمك', phonePh: '+962 ...', emailPh: 'you@example.com', msgPh: 'اكتب سؤالك أو طلبك...',
     deptPh: '— اختر القسم —', submit: 'إرسال الرسالة', sending: 'جاري الإرسال...',
     successTitle: 'تم إرسال الرسالة!', successSub: 'شكراً لك. سيتم التواصل معك بأقرب وقت ممكن.', again: 'إرسال رسالة أخرى',
@@ -44,9 +44,7 @@ function applyForMoreLang(lang) {
   document.documentElement.lang = lang;
   document.documentElement.dir = isAr ? 'rtl' : 'ltr';
 
-  document.getElementById('backText').textContent = text.back;
-  document.getElementById('topbarTitle').textContent = text.topbar;
-  document.getElementById('langBtn').textContent = text.lang;
+  document.getElementById('langDockText').textContent = text.lang;
   document.getElementById('badgeText').textContent = text.badge;
   document.getElementById('heroTitle').textContent = text.heroTitle;
   document.getElementById('heroSub').textContent = text.heroSub;
@@ -95,11 +93,19 @@ function renderSubmitButton() {
 function submitForm() {
   const name = document.getElementById('fname').value.trim();
   const phone = document.getElementById('fphone').value.trim();
+  const email = document.getElementById('femail').value.trim();
+  const dept = document.getElementById('fdept').value;
   const msg = document.getElementById('fmsg').value.trim();
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  if (!name || !phone || !msg) {
-    [['fname', name], ['fphone', phone], ['fmsg', msg]].forEach(([id, value]) => {
-      if (!value) {
+  const invalid = [
+    ['fname', !name], ['fphone', !phone],
+    ['femail', !email || !emailValid], ['fdept', !dept], ['fmsg', !msg]
+  ];
+  const hasError = invalid.some(([, bad]) => bad);
+  if (hasError) {
+    invalid.forEach(([id, bad]) => {
+      if (bad) {
         const el = document.getElementById(id);
         el.style.borderColor = 'var(--accent-red)';
         el.style.animation = 'shake 0.3s ease';
@@ -120,13 +126,7 @@ function submitForm() {
   fetch('/api/contact', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      name,
-      phone,
-      email: document.getElementById('femail').value.trim(),
-      department: document.getElementById('fdept').value,
-      message: msg
-    })
+    body: JSON.stringify({ name, phone, email, department: dept, message: msg })
   })
   .then(response => response.ok ? response.json() : Promise.reject())
   .catch(() => ({ ok: true }))

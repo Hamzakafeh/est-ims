@@ -97,7 +97,7 @@
   .main {
     position: relative; z-index: 10;
     max-width: 880px; margin: 0 auto;
-    padding: 48px 24px 80px;
+    padding: 48px 24px 80px 60px;
   }
 
   .hero { text-align: center; margin-bottom: 36px; animation: fadeUp 0.5s ease both; }
@@ -259,7 +259,7 @@
   .copy-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); animation: pulse 2.2s ease-in-out infinite; }
 
   @media (max-width: 680px) {
-    .main { padding: 34px 16px 56px; }
+    .main { padding: 34px 16px 90px; }
     .help-card { padding: 18px; }
     .support-section { grid-template-columns: 1fr; }
     .tabs-row { gap: 7px; }
