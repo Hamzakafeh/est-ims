@@ -1,15 +1,9 @@
 (function() {
-  const _t = localStorage.getItem('est-theme');
-  if (_t === 'light') document.documentElement.classList.add('light');
-  else if (_t === 'classic') document.documentElement.classList.add('classic');
+  if (localStorage.getItem('est-theme') === 'light') document.documentElement.classList.add('light');
 })();
 function toggleTheme() {
-  const h = document.documentElement;
-  const cur = h.classList.contains('classic') ? 'classic' : h.classList.contains('light') ? 'light' : 'dark';
-  const next = cur === 'dark' ? 'classic' : cur === 'classic' ? 'light' : 'dark';
-  h.classList.remove('light', 'classic');
-  if (next !== 'dark') h.classList.add(next);
-  localStorage.setItem('est-theme', next);
+  const isLight = document.documentElement.classList.toggle('light');
+  localStorage.setItem('est-theme', isLight ? 'light' : 'dark');
 }
 
 const CONTACT_LANG = {

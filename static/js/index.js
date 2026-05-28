@@ -427,19 +427,12 @@ const NON_INVENTORY_SHEETS = ['Stocktaking'];
 
 // â”€â”€ THEME â”€â”€
 (function() {
-  const _t = localStorage.getItem('est-theme');
-  if (_t === 'light') document.documentElement.classList.add('light');
-  else if (_t === 'classic') document.documentElement.classList.add('classic');
+  const saved = localStorage.getItem('est-theme');
+  if (saved === 'light') document.documentElement.classList.add('light');
 })();
 function toggleTheme() {
-  const h = document.documentElement;
-  const cur = h.classList.contains('classic') ? 'classic' : h.classList.contains('light') ? 'light' : 'dark';
-  const next = cur === 'dark' ? 'classic' : cur === 'classic' ? 'light' : 'dark';
-  h.classList.remove('light', 'classic');
-  if (next !== 'dark') h.classList.add(next);
-  localStorage.setItem('est-theme', next);
-  const btn = document.getElementById('themeBtn');
-  if (btn) btn.title = next === 'dark' ? 'Classic Mode' : next === 'classic' ? 'Light Mode' : 'Dark Mode';
+  const isLight = document.documentElement.classList.toggle('light');
+  localStorage.setItem('est-theme', isLight ? 'light' : 'dark');
 }
 document.getElementById('themeBtn').addEventListener('click', toggleTheme);
 
