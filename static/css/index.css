@@ -1480,11 +1480,13 @@
     z-index: 10; pointer-events: none;
   }
 
-  /* LEFT SIDEBAR — dark navy */
+  /* LEFT SIDEBAR — same as index sidebar */
   .dash-sidebar {
     width: 220px; flex-shrink: 0;
-    background: #0F2137;
-    border-right: 1px solid rgba(0,194,181,0.18);
+    background: rgba(13,17,23,0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(59,130,246,0.15);
     display: flex; flex-direction: column;
     padding: 20px 12px; gap: 4px;
     overflow-y: auto;
@@ -1509,11 +1511,11 @@
   .dash-nav-item.active {
     background: #00C2B5;
     border-color: transparent;
-    color: #ffffff; font-weight: 700;
+    color: #0F2137; font-weight: 700;
   }
   .dash-nav-item.active:hover {
     background: #00C2B5;
-    color: #ffffff;
+    color: #0F2137;
   }
   /* Dot indicator */
   .dn-dot {
@@ -1522,7 +1524,7 @@
     background: rgba(255,255,255,0.25);
     transition: background 0.15s;
   }
-  .dash-nav-item.active .dn-dot { background: #ffffff; box-shadow: none; }
+  .dash-nav-item.active .dn-dot { background: #0F2137; box-shadow: none; }
   .dash-nav-item:hover .dn-dot { background: rgba(255,255,255,0.65); }
   .dash-nav-sep {
     height: 1px; background: rgba(255,255,255,0.10);
