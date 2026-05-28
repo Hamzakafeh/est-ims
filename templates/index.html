@@ -155,7 +155,7 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
 <div id="aboutModal" onclick="if(event.target===this)closeAbout()" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);align-items:center;justify-content:center;">
   <div class="beta-card" style="max-width:380px;">
     <div style="position:absolute;top:14px;right:14px;display:flex;gap:6px;z-index:20;">
-      <button class="modal-hdr-btn modal-hdr-close" onclick="closeAbout()" title="Close">✕</button>
+      <button class="modal-hdr-btn modal-hdr-close" onclick="closeAbout()" title="Close"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="beta-badge">
       <span class="beta-dot"></span>
@@ -175,7 +175,7 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
 <!-- ══ PRINT MODAL ══ -->
 <div id="printModal" onclick="if(event.target===this)closePrintModal()" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
   <div class="beta-card" style="max-width:400px;">
-    <div style="position:absolute;top:14px;right:14px;"><button class="modal-hdr-btn modal-hdr-close" onclick="closePrintModal()" title="Close">✕</button></div>
+    <div style="position:absolute;top:14px;right:14px;"><button class="modal-hdr-btn modal-hdr-close" onclick="closePrintModal()" title="Close"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
     <div class="beta-badge"><span class="beta-dot"></span>Print</div>
     <div class="beta-title">Print Data</div>
     <div style="height:1px;background:var(--border);margin-bottom:16px;"></div>
@@ -203,7 +203,7 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
           <div class="csv-modal-sub" id="csvModalSub">Export the current sheet as a CSV file</div>
         </div>
       </div>
-      <button class="csv-modal-close" onclick="closeCsvModal()">✕</button>
+      <button class="csv-modal-close" onclick="closeCsvModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="csv-modal-body">
       <div class="csv-modal-info">
@@ -247,7 +247,7 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
 <!-- ══ DELETE CONFIRM MODAL ══ -->
 <div id="deleteConfirmModal" onclick="if(event.target===this)closeDeleteConfirm()" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
   <div class="beta-card" style="max-width:360px;">
-    <div style="position:absolute;top:14px;right:14px;"><button class="modal-hdr-btn modal-hdr-close" onclick="closeDeleteConfirm()" title="Close">✕</button></div>
+    <div style="position:absolute;top:14px;right:14px;"><button class="modal-hdr-btn modal-hdr-close" onclick="closeDeleteConfirm()" title="Close"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
     <div class="beta-badge" style="background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.35);color:#ef4444;"><span class="beta-dot" style="background:#ef4444;"></span>Delete</div>
     <div class="beta-title" id="deleteConfirmTitle">Delete Account?</div>
     <div style="font-size:13px;color:var(--text-muted);margin-bottom:24px;" id="deleteConfirmMsg">This action cannot be undone.</div>
@@ -261,7 +261,7 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
 <!-- ══ TRANSACTION MODAL (IN / OUT) ══ -->
 <div class="modal-overlay" id="txModal" onclick="if(event.target===this)closeTxModal()">
   <div class="modal-box">
-    <button class="modal-close" onclick="closeTxModal()">✕</button>
+    <button class="modal-close" onclick="closeTxModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     <div class="modal-title" id="txTitle">Transaction</div>
     <div class="modal-subtitle" id="txSubtitle">Enter quantity</div>
     <div class="modal-info-grid" id="txInfoGrid"></div>
@@ -415,7 +415,7 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
     <div class="users-header">
       <h3>Login History</h3>
       <div class="modal-hdr-actions">
-        <button class="modal-hdr-btn modal-hdr-close" onclick="closeUsersModal()" title="Close">✕</button>
+        <button class="modal-hdr-btn modal-hdr-close" onclick="closeUsersModal()" title="Close"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
     </div>
     <div class="users-body" id="usersBody">
@@ -432,7 +432,7 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
       <h3 data-en="Registration Requests" data-ar="طلبات التسجيل">Registration Requests</h3>
       <div class="modal-hdr-actions">
         <button class="dash-refresh-btn" onclick="loadAdminRequests()" style="padding:6px 10px;font-size:11px;" data-en="Refresh" data-ar="تحديث">Refresh</button>
-        <button class="modal-hdr-btn modal-hdr-close" onclick="closeAdminRequestsModal()" title="Close">✕</button>
+        <button class="modal-hdr-btn modal-hdr-close" onclick="closeAdminRequestsModal()" title="Close"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
     </div>
     <div class="users-body" id="adminRequestsBody">
@@ -447,7 +447,7 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
       <h3>For More Messages</h3>
       <div class="modal-hdr-actions">
         <button class="dash-refresh-btn" onclick="loadAdminMessages()" style="padding:6px 10px;font-size:11px;">Refresh</button>
-        <button class="modal-hdr-btn modal-hdr-close" onclick="closeAdminMessagesModal()" title="Close">✕</button>
+        <button class="modal-hdr-btn modal-hdr-close" onclick="closeAdminMessagesModal()" title="Close"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
     </div>
     <div class="users-body" id="adminMessagesBody"><div class="users-empty">Loading...</div></div>
@@ -460,7 +460,7 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
       <div class="modal-hdr-actions">
         <button class="dash-refresh-btn" onclick="exportAdminUsers()" style="padding:6px 10px;font-size:11px;" data-en="Export Excel" data-ar="تصدير Excel">Export Excel</button>
         <button class="dash-refresh-btn" onclick="loadAdminUsers()" style="padding:6px 10px;font-size:11px;" data-en="Refresh" data-ar="تحديث">Refresh</button>
-        <button class="modal-hdr-btn modal-hdr-close" onclick="closeAdminUsersModal()" title="Close">✕</button>
+        <button class="modal-hdr-btn modal-hdr-close" onclick="closeAdminUsersModal()" title="Close"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
     </div>
     <div class="users-body" id="adminUsersBody">
@@ -473,7 +473,7 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
     <div class="users-header">
       <h3 data-en="User Details" data-ar="بيانات المستخدم">User Details</h3>
       <div class="modal-hdr-actions">
-        <button class="modal-hdr-btn modal-hdr-close" onclick="closeAdminUserDetailModal()" title="Close">✕</button>
+        <button class="modal-hdr-btn modal-hdr-close" onclick="closeAdminUserDetailModal()" title="Close"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
     </div>
     <div class="users-body" id="adminUserDetailBody"></div>
@@ -507,7 +507,7 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
-        <button class="profile-close modal-hdr-close" onclick="closeProfileModal()">✕</button>
+        <button class="profile-close modal-hdr-close" onclick="closeProfileModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
     </div>
     <div class="profile-body" id="profileBody">

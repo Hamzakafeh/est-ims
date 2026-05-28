@@ -1443,8 +1443,8 @@
      Cards inside: #FFFFFF · Text: #0F2137
      ══════════════════════════════════════════════ */
 
-  /* Box backgrounds */
-  .modal-box, .pwd-box, .print-modal-box, .soon-box {
+  /* Box backgrounds — includes beta-card used by About/Print/Delete modals */
+  .modal-box, .pwd-box, .print-modal-box, .soon-box, .beta-card {
     background: #F0F4F8 !important;
     border: 2px solid #0F2137 !important;
     box-shadow: 0 24px 72px rgba(15,33,55,0.28) !important;
@@ -1459,19 +1459,28 @@
   }
   /* Light mode — keep same style */
   html.light .modal-box, html.light .pwd-box, html.light .print-modal-box, html.light .soon-box,
-  html.light .logout-box, html.light .csv-modal-box, html.light .users-box, html.light .profile-box {
+  html.light .logout-box, html.light .csv-modal-box, html.light .users-box, html.light .profile-box,
+  html.light .beta-card {
     background: #F0F4F8 !important;
     border: 2px solid #0F2137 !important;
     box-shadow: 0 24px 72px rgba(15,33,55,0.18) !important;
   }
+  /* beta-card text in modal context */
+  .beta-card .beta-title, .beta-card .beta-credit { color: #0F2137 !important; }
+  .beta-card .beta-badge { background: rgba(15,33,55,0.08) !important; border-color: rgba(15,33,55,0.18) !important; color: #0F2137 !important; }
+  .beta-card .beta-dot { background: #00C2B5 !important; box-shadow: 0 0 6px #00C2B5 !important; }
+  .beta-card [style*="var(--border)"] { border-color: #E2E8F0 !important; }
+  .beta-card [style*="var(--bg-card)"] { background: #FFFFFF !important; }
+  .beta-card [style*="var(--text-dim)"] { color: #94A3B8 !important; }
+  .beta-card [style*="var(--text-main)"] { color: #0F2137 !important; }
 
   /* Top glow lines */
   .logout-box::before, .csv-modal-box::before, .users-box::before, .profile-box::before {
     background: linear-gradient(90deg, transparent, #00C2B5, #0F2137, transparent) !important;
   }
 
-  /* Add glow line to plain boxes */
-  .modal-box::before, .pwd-box::before, .print-modal-box::before, .soon-box::before {
+  /* Add glow line to plain boxes and beta-card */
+  .modal-box::before, .pwd-box::before, .print-modal-box::before, .soon-box::before, .beta-card::before {
     content: '';
     position: absolute; top: 0; left: 10%; right: 10%; height: 2px;
     background: linear-gradient(90deg, transparent, #00C2B5, #0F2137, transparent);
@@ -1506,10 +1515,15 @@
     background: #0F2137 !important;
     border-bottom-color: rgba(0,194,181,0.20) !important;
   }
-  .logout-header * { color: #fff !important; }
-  .users-header * { color: #fff !important; }
+  .logout-header > *, .logout-title, .logout-msg { color: #fff !important; }
+  .users-header h3, .users-header h3 * { color: #fff !important; }
   .csv-modal-title, .csv-modal-subtitle { color: #fff !important; }
   .profile-name, .profile-name-line span { color: #fff !important; }
+  /* Refresh / Export buttons in modal headers — keep dark text on white bg */
+  .dash-refresh-btn { color: #0F2137 !important; background: #FFFFFF !important; border-color: #E2E8F0 !important; }
+  .dash-refresh-btn:hover { background: #F1F5F9 !important; border-color: #00C2B5 !important; color: #0F2137 !important; }
+  /* Export/action buttons inside modal body */
+  .btn-success { background: #10B981 !important; color: #fff !important; }
 
   /* Table headers */
   .users-table th {
@@ -1567,6 +1581,78 @@
     color: #ef4444 !important;
     border-color: rgba(239,68,68,0.35) !important;
   }
+
+  /* Universal border override — ALL modal boxes use #0F2137 */
+  .modal-box, .pwd-box, .print-modal-box, .soon-box, .beta-card,
+  .logout-box, .csv-modal-box, .users-box, .profile-box {
+    border-color: #0F2137 !important;
+    box-shadow: 0 24px 72px rgba(15,33,55,0.28) !important;
+  }
+
+  /* ── PROFILE MODAL — Full Dashboard Style ── */
+  /* Chips in header */
+  .profile-chip {
+    background: rgba(15,33,55,0.07) !important;
+    border-color: rgba(15,33,55,0.18) !important;
+    color: #0F2137 !important;
+    backdrop-filter: none !important;
+  }
+  .profile-chip.blue  { color: #1A4A7A !important; border-color: rgba(26,74,122,0.35) !important; background: rgba(26,74,122,0.09) !important; }
+  .profile-chip.cyan  { color: #0E7C86 !important; border-color: rgba(14,124,134,0.35) !important; background: rgba(14,124,134,0.09) !important; }
+  .profile-chip.amber { color: #92400E !important; border-color: rgba(245,158,11,0.35) !important; background: rgba(245,158,11,0.09) !important; }
+  /* Stats cards */
+  .profile-card {
+    background: #FFFFFF !important;
+    border-color: #E2E8F0 !important;
+  }
+  .profile-card:hover { background: #F8FAFC !important; border-color: #00C2B5 !important; }
+  .profile-card::before { background: linear-gradient(90deg, #00C2B5, #0F2137) !important; }
+  html.light .profile-card { background: #FFFFFF !important; border-color: #E2E8F0 !important; }
+  .profile-card-label { color: #94A3B8 !important; }
+  .profile-card-value { color: #0F2137 !important; }
+  .profile-card-sub   { color: #64748B !important; }
+  /* Profile body */
+  .profile-body { background: #F0F4F8; }
+  /* Sections */
+  .profile-section {
+    background: #FFFFFF !important;
+    border-color: #E2E8F0 !important;
+  }
+  html.light .profile-section { background: #FFFFFF !important; border-color: #E2E8F0 !important; }
+  .profile-section-title { color: #0E7C86 !important; }
+  .profile-section-title::after { background: linear-gradient(90deg, rgba(14,124,134,0.3), transparent) !important; }
+  /* Permission items */
+  .permission-item {
+    background: #FFFFFF !important;
+    border-color: #E2E8F0 !important;
+    color: #0F2137 !important;
+  }
+  .permission-item:hover { background: #F1F5F9 !important; }
+  .permission-dot.off { background: #CBD5E1 !important; }
+  /* Zone pills */
+  .profile-zone-pill {
+    color: #0E7C86 !important;
+    background: rgba(14,124,134,0.08) !important;
+    border-color: rgba(14,124,134,0.25) !important;
+    backdrop-filter: none !important;
+  }
+  /* Log items */
+  .profile-log-item {
+    background: #FFFFFF !important;
+    border-color: #E2E8F0 !important;
+  }
+  .profile-log-item:hover { background: #F8FAFC !important; }
+  .profile-log-main { color: #0F2137 !important; }
+  .profile-log-sub  { color: #94A3B8 !important; }
+  .profile-log-time { color: #64748B !important; }
+  /* Change password inputs */
+  .profile-change-pw input {
+    background: #FFFFFF !important;
+    border-color: #E2E8F0 !important;
+    color: #0F2137 !important;
+  }
+  .profile-change-pw input:focus { border-color: #00C2B5 !important; }
+  html.light .profile-change-pw input { background: #FFFFFF !important; border-color: #E2E8F0 !important; color: #0F2137 !important; }
 
   /* ── DASHBOARD MODAL ── */
   #dashModal {
