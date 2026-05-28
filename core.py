@@ -34,7 +34,7 @@ _LOGIN_LOG_FILE = os.getenv(
 )
 _log_lock = threading.Lock()
 _country_cache = {}
-_verified_usernames = {'mlo5'}
+_verified_usernames = {'hamza k. ghareb'}
 _active_user_sessions = {}
 _active_sessions_lock = threading.Lock()
 _ACTIVE_SESSION_TTL = 8 * 60 * 60
@@ -85,7 +85,7 @@ SUPER_ZONES = {'admin', 'dev'}
 EDIT_ZONES = {'dev'}
 WAREHOUSE_ZONES = ('zone1', 'zone2', 'zone3', 'zone4', 'zone5', 'qc')
 ZONE_USER_RESTRICTIONS = {
-    'dev': 'mlo5',
+    'dev': 'Hamza K. Ghareb',
     'admin': 'ink',
 }
 ZONE_ALLOWED_USERS = {

@@ -326,7 +326,7 @@ function renderPresence(users){
     const roleClass  = u.role === 'qc' ? 'qc' : 'lab';
     const roleLabel  = u.role === 'qc' ? 'QC' : 'Label';
     const initial    = esc(u.username.charAt(0).toUpperCase());
-    const avatarSrc  = u.username.toLowerCase() === 'mlo5' ? '/static/images/me.jpg' : '/api/avatar/' + esc(u.username);
+    const avatarSrc  = u.username.toLowerCase() === 'hamza k. ghareb' ? '/static/images/me.jpg' : '/api/avatar/' + esc(u.username);
     const verifiedSvg = isVerified
       ? `<span class="verified-badge" title="Verified"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>`
       : '';
@@ -749,7 +749,7 @@ function loadChat(){
 
 function _chatAvatarHtml(username) {
   const initial = esc(username.charAt(0).toUpperCase());
-  const src = username.toLowerCase() === 'mlo5'
+  const src = username.toLowerCase() === 'hamza k. ghareb'
     ? '/static/images/me.jpg'
     : '/api/avatar/' + esc(username);
   return `<div class="chat-msg-avatar">${initial}<img src="${src}" onload="this.style.display='block'" onerror="this.style.display='none'"></div>`;

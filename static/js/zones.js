@@ -280,7 +280,7 @@ applyLang(currentLang);
 // Load avatar in user-corner + verified badge
 let _ucGender = '';
 function _devAvatarSrc(username) {
-  return username.toLowerCase() === 'mlo5' ? '/static/images/me.jpg' : null;
+  return username.toLowerCase() === 'hamza k. ghareb' ? '/static/images/me.jpg' : null;
 }
 (async function() {
   const username = document.getElementById('userCorner')?.dataset.username || '';

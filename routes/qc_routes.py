@@ -26,7 +26,7 @@ _QC_PRESENCE_TTL = 45
 QC_CHAT_FILE = os.path.join(DATA_STORE_DIR, 'qc_chat.json')
 _QC_CHAT_MAX = 200
 
-VERIFIED_QC_USERS = {'mlo5'}
+VERIFIED_QC_USERS = {'hamza k. ghareb'}
 
 
 # ── Push notification helpers ────────────────────────────────────────────────
@@ -93,7 +93,7 @@ def api_qc_presence_ping():
             _qc_presence[username] = {'role': role, 'ts': _time.time()}
             now = _time.time()
             active = {u: d for u, d in _qc_presence.items() if now - d['ts'] < _QC_PRESENCE_TTL}
-            users_payload = [{'username': u, 'role': d['role'], 'verified': u in VERIFIED_QC_USERS} for u, d in active.items()]
+            users_payload = [{'username': u, 'role': d['role'], 'verified': u.lower() in VERIFIED_QC_USERS} for u, d in active.items()]
         sse_payload = 'event: presence_update\ndata: ' + json.dumps({'users': users_payload}, ensure_ascii=False) + '\n\n'
         try:
             from app import _broadcast_qc_event
@@ -112,7 +112,7 @@ def api_qc_presence_leave():
             _qc_presence.pop(username, None)
             now = _time.time()
             active = {u: d for u, d in _qc_presence.items() if now - d['ts'] < _QC_PRESENCE_TTL}
-            users_payload = [{'username': u, 'role': d['role'], 'verified': u in VERIFIED_QC_USERS} for u, d in active.items()]
+            users_payload = [{'username': u, 'role': d['role'], 'verified': u.lower() in VERIFIED_QC_USERS} for u, d in active.items()]
         sse_payload = 'event: presence_update\ndata: ' + json.dumps({'users': users_payload}, ensure_ascii=False) + '\n\n'
         try:
             from app import _broadcast_qc_event
@@ -134,7 +134,7 @@ def api_qc_presence():
         _qc_presence.update(active)
     return jsonify({
         'users': [
-            {'username': u, 'role': d['role'], 'verified': u in VERIFIED_QC_USERS}
+            {'username': u, 'role': d['role'], 'verified': u.lower() in VERIFIED_QC_USERS}
             for u, d in active.items()
         ]
     })

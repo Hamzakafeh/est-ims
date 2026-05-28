@@ -158,10 +158,10 @@ async function loadProfile() {
 
 function renderProfile(data) {
   const role = data.is_super ? 'Super User' : 'Zone User';
-  const verified = data.is_verified || String(data.username || '').toUpperCase() === 'MLO5';
+  const verified = data.is_verified || String(data.username || '').toLowerCase() === 'hamza k. ghareb';
   const avatarEl = document.getElementById('profileAvatar');
-  const isMlo5 = String(data.username || '').toLowerCase() === 'mlo5';
-  const avatarSrc = isMlo5 ? '/static/images/me.jpg' : (data.avatar_url || null);
+  const isDevUser = String(data.username || '').toLowerCase() === 'hamza k. ghareb';
+  const avatarSrc = isDevUser ? '/static/images/me.jpg' : (data.avatar_url || null);
   if (avatarSrc) {
     avatarEl.innerHTML = `<img src="${escAttr(avatarSrc)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${escAttr(profileInitials(data.username))}'">`;
   } else {
