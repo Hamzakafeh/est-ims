@@ -1,0 +1,168 @@
+/* ══════════════════════════════════════════════
+   EST-iMs — Classic Theme
+   Navy / Teal / Mint  ·  60-30-10 palette
+   ══════════════════════════════════════════════ */
+
+html.classic {
+  /* ── Backgrounds ── */
+  --bg-deep:       #F0F4F8;
+  --bg-main:       #FFFFFF;
+  --bg-panel:      #FFFFFF;
+  --bg-card:       #F8FAFC;
+  --bg-hover:      #E2E8F0;
+
+  /* ── Borders ── */
+  --border:        #CBD5E1;
+  --border-light:  #94A3B8;
+
+  /* ── Brand accents (classic palette) ── */
+  --accent-blue:   #1A4A7A;
+  --accent-cyan:   #00C2B5;
+  --accent-green:  #10B981;
+  --accent-red:    #EF4444;
+
+  /* ── Text ── */
+  --text-main:     #0F2137;
+  --text-muted:    #475569;
+  --text-dim:      #94A3B8;
+
+  /* ── Shadows ── */
+  --card-shadow:   0 4px 20px rgba(15,33,55,0.10);
+}
+
+/* ── Body & Blobs ── */
+html.classic body { background: #F0F4F8; color: #0F2137; }
+html.classic .blob { opacity: 0.07; }
+html.classic .blob-1 { background: radial-gradient(circle, #1A4A7A, transparent 70%); }
+html.classic .blob-2 { background: radial-gradient(circle, #00C2B5, transparent 70%); }
+html.classic .blob-3 { background: radial-gradient(circle, #0E7C86, transparent 70%); }
+html.classic .grid-overlay {
+  background-image:
+    linear-gradient(rgba(15,33,55,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15,33,55,0.04) 1px, transparent 1px);
+}
+
+/* ── Side Dock ── */
+html.classic .dock-icon {
+  background: rgba(15,33,55,0.07);
+  border-color: rgba(15,33,55,0.18);
+  color: #0F2137;
+}
+html.classic .dock-item:hover .dock-icon {
+  background: #0F2137;
+  color: #00C2B5;
+  border-color: #0F2137;
+}
+html.classic .dock-label {
+  background: rgba(255,255,255,0.92);
+  color: #0F2137;
+  border-color: rgba(15,33,55,0.15);
+}
+html.classic .lang-switch-text { color: #0E7C86; }
+
+/* Dock icons: classic uses sun icon (light bg), moon is for light mode */
+html.classic .dock-icon .icon-sun  { display: block; }
+html.classic .dock-icon .icon-moon { display: none;  }
+
+/* ── Copy line ── */
+html.classic .copy-line { color: #475569; }
+html.classic .copy-dot  { background: #00C2B5; box-shadow: 0 0 6px #00C2B5; }
+
+/* ── Zones page ── */
+html.classic .zone-card {
+  background: rgba(255,255,255,0.75);
+  border-color: rgba(15,33,55,0.10);
+}
+html.classic .zone-card:hover {
+  background: rgba(255,255,255,0.95);
+  border-color: rgba(26,74,122,0.35);
+  box-shadow: 0 20px 48px rgba(15,33,55,0.14);
+}
+html.classic .zone-card .zone-name { color: #0F2137; }
+html.classic .zone-card .zone-label { color: #475569; }
+html.classic .zone-card.active { border-color: #00C2B5; box-shadow: 0 0 0 2px rgba(0,194,181,0.3); }
+html.classic .zones-title { color: #0F2137; }
+html.classic .zones-sub   { color: #475569; }
+html.classic .zones-divider { border-color: rgba(15,33,55,0.12); }
+html.classic .zones-divider-text { color: #94A3B8; background: #F0F4F8; }
+html.classic .user-corner {
+  background: rgba(255,255,255,0.88);
+  border-color: rgba(15,33,55,0.16);
+}
+html.classic .user-corner-name { color: #0F2137; }
+html.classic .pw-panel {
+  background: rgba(248,250,252,0.98);
+  border-color: rgba(15,33,55,0.14);
+}
+html.classic .pw-panel-title { color: #0F2137; }
+html.classic .pw-field-wrap input {
+  background: #F8FAFC;
+  border-color: #CBD5E1;
+  color: #0F2137;
+}
+html.classic .btn-enter {
+  background: linear-gradient(135deg, #1A4A7A, #0E7C86);
+}
+html.classic .zu-fab-btn {
+  background: rgba(255,255,255,0.85);
+  border-color: rgba(15,33,55,0.18);
+  color: #0F2137;
+}
+html.classic .zu-fab-btn:hover { background: #0F2137; color: #00C2B5; border-color: #0F2137; }
+html.classic .zp-panel, html.classic .zu-panel {
+  background: rgba(248,250,252,0.98);
+  border-color: rgba(15,33,55,0.12);
+}
+
+/* ── Index / Inventory page ── */
+html.classic .navbar          { background: #0F2137; border-color: rgba(0,194,181,0.25); }
+html.classic .navbar-logo span { color: #00C2B5; }
+html.classic .nav-zone-badge  { background: rgba(0,194,181,0.15); color: #00C2B5; border-color: rgba(0,194,181,0.3); }
+html.classic .sheet-btn       { background: rgba(15,33,55,0.06); border-color: rgba(15,33,55,0.15); color: #0F2137; }
+html.classic .sheet-btn:hover, html.classic .sheet-btn.active {
+  background: #1A4A7A; color: #fff; border-color: #1A4A7A;
+}
+html.classic .data-table thead th { background: #0F2137; color: rgba(255,255,255,0.85); }
+html.classic .data-table tbody tr:hover td { background: #EBF4FF; }
+html.classic .data-table td { border-color: #CBD5E1; }
+html.classic .btn            { border-color: rgba(26,74,122,0.3); color: #1A4A7A; }
+html.classic .btn:hover      { background: #1A4A7A; color: #fff; }
+html.classic .modal-overlay  { background: rgba(15,33,55,0.5); }
+html.classic .modal-panel    { background: #fff; border-color: rgba(15,33,55,0.14); }
+
+/* ── QC page ── */
+html.classic .qc-header       { background: #0F2137; }
+html.classic .qc-title        { color: #00C2B5; }
+html.classic .qc-sub          { color: rgba(255,255,255,0.65); }
+html.classic .panel-card      { background: #fff; border-color: rgba(15,33,55,0.10); }
+html.classic .chat-panel      { background: #fff; border-color: rgba(15,33,55,0.12); }
+html.classic .chat-input-wrap { background: #F8FAFC; border-color: rgba(15,33,55,0.14); }
+html.classic .chat-send-btn   { background: #1A4A7A; }
+html.classic .chat-send-btn:hover { background: #0E7C86; }
+
+/* ── About / Help / Formore / Contact pages ── */
+html.classic .hero-title {
+  background: linear-gradient(135deg, #0F2137, #1A4A7A, #0E7C86);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+html.classic .hero-badge {
+  background: rgba(0,194,181,0.1);
+  border-color: rgba(0,194,181,0.3);
+  color: #0E7C86;
+}
+html.classic .hero-dot { background: #00C2B5; box-shadow: 0 0 6px #00C2B5; }
+html.classic .section, html.classic .card-item {
+  background: rgba(255,255,255,0.75);
+  border-color: rgba(15,33,55,0.09);
+}
+html.classic .section:hover, html.classic .card-item:hover {
+  border-color: rgba(26,74,122,0.25);
+}
+
+/* ── Beta/version card (index) ── */
+html.classic .beta-card {
+  background: rgba(255,255,255,0.72);
+  border-color: rgba(26,74,122,0.22);
+}
