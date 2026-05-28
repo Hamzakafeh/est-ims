@@ -90,13 +90,26 @@ function renderSubmitButton() {
     </svg>`;
 }
 
+const _KNOWN_EMAIL_DOMAINS = new Set([
+  'gmail.com','yahoo.com','hotmail.com','outlook.com','live.com','live.co.uk',
+  'icloud.com','me.com','mac.com','proton.me','protonmail.com','msn.com',
+  'aol.com','mail.com','yandex.com','yandex.ru','ymail.com','zoho.com',
+  'alestesharia.com.jo','alestesharia.com',
+]);
+function _emailDomainOk(email) {
+  const d = (email.split('@')[1] || '').toLowerCase();
+  if (_KNOWN_EMAIL_DOMAINS.has(d)) return true;
+  if (/\.(jo|edu|gov|org|net)$/.test(d)) return true;
+  return false;
+}
+
 function submitForm() {
   const name = document.getElementById('fname').value.trim();
   const phone = document.getElementById('fphone').value.trim();
   const email = document.getElementById('femail').value.trim();
   const dept = document.getElementById('fdept').value;
   const msg = document.getElementById('fmsg').value.trim();
-  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && _emailDomainOk(email);
 
   const invalid = [
     ['fname', !name], ['fphone', !phone],

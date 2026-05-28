@@ -52,7 +52,7 @@ def register_page():
 def forgot_password_page():
     if session.get('logged_in'):
         return redirect(url_for('pages.index') if session.get('zone') else url_for('zones.zones_page'))
-    return render_template('forgot_password.html')
+    return render_template('forgot_password.html', recaptcha_site_key=os.getenv('RECAPTCHA_SITE_KEY', ''))
 
 
 @auth_bp.route('/api/captcha')
@@ -198,6 +198,12 @@ def api_password_reset_verify():
     username = _normalize_username(data.get('username', ''))
     security_question = str(data.get('security_question', '')).strip()
     security_answer = str(data.get('security_answer', '')).strip()
+    recaptcha_token = data.get('recaptcha_token', '')
+
+    if os.getenv('RECAPTCHA_SITE_KEY') and recaptcha_token:
+        rc_ok, _ = _verify_recaptcha(recaptcha_token)
+        if not rc_ok:
+            return jsonify({'success': False, 'message': 'فشل التحقق من كابتشا — حاول مجدداً'}), 400
 
     user = _approved_db_user(username)
     if not user:

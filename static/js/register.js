@@ -46,8 +46,10 @@ function validateRegisterForm(){
   else if (uname.length < 5) { markInvalid(username); setHint('hintUsername', t.hintUsernameMin); ok = false; }
   else if (['admin','administrator','dev','developer','root','superadmin'].includes(uname.toLowerCase())) { markInvalid(username); setHint('hintUsername', t.hintUsernameReserved); ok = false; }
   // Email
+  const _emailDomains = new Set(['gmail.com','yahoo.com','hotmail.com','outlook.com','live.com','live.co.uk','icloud.com','me.com','mac.com','proton.me','protonmail.com','msn.com','aol.com','mail.com','yandex.com','yandex.ru','ymail.com','zoho.com','alestesharia.com.jo','alestesharia.com']);
+  const _emailDomainOk2 = (e) => { const d = (e.split('@')[1] || '').toLowerCase(); return _emailDomains.has(d) || /\.(jo|edu|gov|org|net)$/.test(d); };
   if (!email.value.trim()) { markInvalid(email); setHint('hintEmail', t.hintRequired); ok = false; }
-  else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.value.trim())) { markInvalid(email); setHint('hintEmail', t.hintEmailInvalid); ok = false; }
+  else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.value.trim()) || !_emailDomainOk2(email.value.trim())) { markInvalid(email); setHint('hintEmail', t.hintEmailInvalid); ok = false; }
   // Phone
   if (!phone.value.trim()) { markInvalid(phone); setHint('hintPhone', t.hintRequired); ok = false; }
   // Job title

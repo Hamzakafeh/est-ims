@@ -492,14 +492,19 @@
     }
 
     .side-dock {
-      top: auto;
-      bottom: 16px;
-      left: 50%;
-      transform: translateX(-50%);
+      left: 0; right: 0; bottom: 0; top: auto;
+      transform: none;
       flex-direction: row;
-      padding: 0;
-      gap: 10px;
+      justify-content: center;
+      padding: 6px;
+      gap: 4px;
+      background: rgba(13,17,23,0.88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-top: 1px solid var(--border-light);
+      border-radius: 0;
     }
+    html.light .side-dock { background: rgba(255,255,255,0.92); border-top-color: var(--border); }
 
     .dock-icon {
       width: 44px;
@@ -508,9 +513,7 @@
       border-radius: 12px;
     }
 
-    .dock-label {
-      display: none;
-    }
+    .dock-label { display: none; }
   }
 
   @media (max-width: 360px) {

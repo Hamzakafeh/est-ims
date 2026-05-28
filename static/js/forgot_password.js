@@ -26,9 +26,23 @@ function applyAuthLang(lang){
 function toggleAuthLang(){ applyAuthLang(authLang === 'en' ? 'ar' : 'en'); }
 function setStatus(id, msg, ok){ const box = document.getElementById(id); box.className = 'status ' + (ok ? 'ok' : 'err'); box.textContent = msg; }
 document.getElementById('verifyBtn').addEventListener('click', async () => {
-  const payload = { username: username.value.trim(), old_password: oldPassword.value, security_question: securityQuestion.value, security_answer: securityAnswer.value.trim() };
-  try { const res = await fetch('/api/password_reset/verify', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }); const data = await res.json(); if(!res.ok || !data.success) throw new Error(data.message || AUTH_LANG[authLang].verifyError); setStatus('statusBox', AUTH_LANG[authLang].verifyOk, true); step2Box.classList.remove('hidden'); step2Box.scrollIntoView({behavior:'smooth', block:'start'}); }
-  catch(err){ setStatus('statusBox', err.message || AUTH_LANG[authLang].verifyError, false); }
+  const rcToken = (typeof grecaptcha !== 'undefined' && document.getElementById('recaptchaWidgetFp'))
+    ? grecaptcha.getResponse(grecaptcha.render ? undefined : 0)
+    : '';
+  const payload = { username: username.value.trim(), old_password: oldPassword.value, security_question: securityQuestion.value, security_answer: securityAnswer.value.trim(), recaptcha_token: rcToken };
+  try {
+    const res = await fetch('/api/password_reset/verify', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    const data = await res.json();
+    if(!res.ok || !data.success) throw new Error(data.message || AUTH_LANG[authLang].verifyError);
+    setStatus('statusBox', AUTH_LANG[authLang].verifyOk, true);
+    step2Box.classList.remove('hidden');
+    step2Box.scrollIntoView({behavior:'smooth', block:'start'});
+    if(typeof grecaptcha !== 'undefined') grecaptcha.reset();
+  }
+  catch(err){
+    setStatus('statusBox', err.message || AUTH_LANG[authLang].verifyError, false);
+    if(typeof grecaptcha !== 'undefined') grecaptcha.reset();
+  }
 });
 document.getElementById('saveBtn').addEventListener('click', async () => {
   const payload = { new_password: newPassword.value, confirm_password: confirmPassword.value };

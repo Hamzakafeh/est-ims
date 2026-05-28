@@ -912,14 +912,21 @@ html.light .chat-input { background: rgba(0,0,0,0.03); }
   .hero-actions { flex-wrap: wrap; gap: 6px; }
   .delete-card { padding: 28px 20px 22px; }
 
-  /* Chat panel full-width on mobile */
+  /* Chat panel — full bottom sheet on mobile */
   .chat-panel {
-    left: 10px;
-    right: 10px;
-    width: auto;
-    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
-    height: min(420px, calc(100dvh - 180px));
-    border-radius: 16px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: min(72vh, calc(100dvh - 80px));
+    border-radius: 20px 20px 0 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+  }
+  .chat-panel.open {
+    bottom: 0;
+    top: auto;
   }
 
   /* FAB safe area */
@@ -929,6 +936,19 @@ html.light .chat-input { background: rgba(0,0,0,0.03); }
     width: 50px;
     height: 50px;
     border-radius: 16px;
+  }
+
+  /* User corner — truncate long username on mobile */
+  .user-corner {
+    max-width: min(180px, 45vw);
+    overflow: hidden;
+  }
+  .user-corner span[style*="font-size:11px"] {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 110px;
+    display: inline-block;
   }
 }
 

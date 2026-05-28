@@ -154,9 +154,9 @@ const _isStandalone = window.navigator.standalone === true
 
 function requestNotifPermission(){
   const t = QC_LANG[qcLang];
-  // iOS in browser (not PWA): show add-to-home-screen instructions
+  // iOS in browser: notifications not available — skip silently
   if(_isIOS && !_isStandalone){
-    _showIosInstallBanner();
+    toast('Notifications require iOS home screen app', false);
     return;
   }
   if(!('Notification' in window)) { toast(t.notifsNone, false); return; }
@@ -249,15 +249,12 @@ function showBrowserNotif(title, body){
 }
 
 (function initNotifications(){
-  // Always register SW first so it's ready for background push
   if('serviceWorker' in navigator){
     if(Notification.permission === 'granted'){
       registerServiceWorker();
     } else if(Notification.permission === 'default'){
-      // iOS in browser → show custom install banner
-      if(_isIOS && !_isStandalone){
-        document.getElementById('notifBanner').classList.add('show');
-      } else {
+      // iOS in browser: skip notification banner (can't get push without PWA)
+      if(!_isIOS || _isStandalone){
         document.getElementById('notifBanner').classList.add('show');
       }
     }
