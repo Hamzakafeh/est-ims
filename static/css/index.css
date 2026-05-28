@@ -1519,12 +1519,6 @@
   .users-header h3, .users-header h3 * { color: #fff !important; }
   .csv-modal-title, .csv-modal-subtitle { color: #fff !important; }
   .profile-name, .profile-name-line span { color: #fff !important; }
-  /* Refresh / Export buttons in modal headers — keep dark text on white bg */
-  .dash-refresh-btn { color: #0F2137 !important; background: #FFFFFF !important; border-color: #E2E8F0 !important; }
-  .dash-refresh-btn:hover { background: #F1F5F9 !important; border-color: #00C2B5 !important; color: #0F2137 !important; }
-  /* Export/action buttons inside modal body */
-  .btn-success { background: #10B981 !important; color: #fff !important; }
-
   /* Table headers */
   .users-table th {
     background: #0F2137 !important;
@@ -1551,35 +1545,66 @@
   .admin-detail-header-name { color: #0F2137 !important; }
   .admin-detail-header-user, .admin-detail-header-job { color: #64748B !important; }
 
-  /* Close buttons — unified style */
-  .modal-close, .csv-modal-close, .profile-close {
-    position: absolute !important; top: 12px !important; right: 12px !important;
-    width: 28px !important; height: 28px !important;
+  /* ── ALL CLOSE BUTTONS — exact dashboard style ── */
+  .modal-close,
+  .csv-modal-close,
+  .profile-close,
+  .modal-hdr-btn.modal-hdr-close,
+  .modal-hdr-close {
+    width: 28px !important; height: 28px !important; min-width: 28px !important;
     background: rgba(15,33,55,0.07) !important;
     border: 1px solid rgba(15,33,55,0.18) !important;
     color: #0F2137 !important;
-    border-radius: 8px !important; cursor: pointer !important;
+    border-radius: 8px !important; cursor: pointer !important; padding: 0 !important;
     display: flex !important; align-items: center !important; justify-content: center !important;
-    font-size: 14px !important;
     transition: all 0.18s !important;
+    font-size: 0 !important; /* hide any text fallback */
   }
-  .modal-close:hover, .csv-modal-close:hover, .profile-close:hover {
+  .modal-close:hover,
+  .csv-modal-close:hover,
+  .profile-close:hover,
+  .modal-hdr-btn.modal-hdr-close:hover,
+  .modal-hdr-close:hover {
     background: rgba(239,68,68,0.12) !important;
     color: #ef4444 !important;
     border-color: rgba(239,68,68,0.35) !important;
     transform: rotate(90deg) scale(1.1) !important;
   }
-  /* modal-hdr-btn (used in some modals) */
-  .modal-hdr-btn {
+  /* Non-close header buttons (refresh, lang) */
+  .modal-hdr-btn:not(.modal-hdr-close) {
     background: rgba(15,33,55,0.07) !important;
     border-color: rgba(15,33,55,0.18) !important;
     color: #0F2137 !important;
+    font-size: 12px !important;
   }
-  .modal-hdr-btn:hover { background: rgba(15,33,55,0.13) !important; color: #0F2137 !important; }
-  .modal-hdr-close:hover {
-    background: rgba(239,68,68,0.12) !important;
-    color: #ef4444 !important;
-    border-color: rgba(239,68,68,0.35) !important;
+  .modal-hdr-btn:not(.modal-hdr-close):hover {
+    background: rgba(15,33,55,0.13) !important;
+    transform: scale(1.06) !important;
+  }
+  /* Refresh / Export in header */
+  .dash-refresh-btn { color: #0F2137 !important; background: #FFFFFF !important; border-color: #E2E8F0 !important; }
+  .dash-refresh-btn:hover { background: #F1F5F9 !important; border-color: #00C2B5 !important; color: #0F2137 !important; }
+
+  /* ── MODAL BUTTONS — flat colors, no neon ── */
+  .btn-logout {
+    background: #EF4444 !important; color: #fff !important;
+    border-color: #EF4444 !important; box-shadow: none !important;
+  }
+  .btn-logout:hover { background: #DC2626 !important; box-shadow: none !important; border-color: #DC2626 !important; }
+  .btn-out-modal {
+    background: #EF4444 !important; color: #fff !important; box-shadow: none !important;
+  }
+  .btn-out-modal:hover { background: #DC2626 !important; box-shadow: none !important; }
+  .btn-in-modal, .btn-success {
+    background: #10B981 !important; color: #fff !important;
+    border-color: #10B981 !important; box-shadow: none !important;
+  }
+  .btn-in-modal:hover, .btn-success:hover { background: #059669 !important; box-shadow: none !important; }
+  /* Strip neon box-shadow from ALL buttons inside modals */
+  .modal-box .btn:hover, .logout-box .btn:hover, .pwd-box .btn:hover,
+  .csv-modal-box .btn:hover, .users-box .btn:hover, .profile-box .btn:hover,
+  .beta-card .btn:hover, .soon-box .btn:hover {
+    box-shadow: none !important;
   }
 
   /* Universal border override — ALL modal boxes use #0F2137 */
