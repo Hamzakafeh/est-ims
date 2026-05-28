@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EST-iMs — System Tour</title>
+<link rel="icon" type="image/x-icon" href="/static/icons/low1.ico">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & BASE ── */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#1c2230;--bg4:#21283a;
+  --border:rgba(255,255,255,0.08);--border2:rgba(59,130,246,0.22);
+  --blue:#3b82f6;--cyan:#06b6d4;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--purple:#8b5cf6;
+  --text:#e2e8f0;--muted:#8b9db8;--dim:#4a5568;
+  --mono:'JetBrains Mono',monospace;
+}
+html.light{
+  --bg:#f0f4f8;--bg2:#fff;--bg3:#f8fafc;--bg4:#eef2f7;
+  --border:rgba(0,0,0,0.07);--border2:rgba(37,99,235,0.18);
+  --text:#1a2332;--muted:#4a6080;--dim:#8fa3be;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;transition:background .25s,color .25s;}
+
+/* ── BLOBS ── */
+.blob{position:fixed;border-radius:50%;filter:blur(90px);opacity:.06;pointer-events:none;z-index:0;}
+html.light .blob{opacity:.08;}
+.blob-1{width:700px;height:700px;background:radial-gradient(#3b82f6,transparent 70%);top:-200px;left:-200px;animation:b1 20s ease-in-out infinite;}
+.blob-2{width:600px;height:600px;background:radial-gradient(#06b6d4,transparent 70%);bottom:-160px;right:-160px;animation:b2 24s ease-in-out infinite;}
+@keyframes b1{0%,100%{transform:translate(0,0)scale(1);}50%{transform:translate(70px,50px)scale(1.1);}}
+@keyframes b2{0%,100%{transform:translate(0,0)scale(1);}50%{transform:translate(-60px,-40px)scale(1.08);}}
+.grid-overlay{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(59,130,246,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.035) 1px,transparent 1px);background-size:52px 52px;mask-image:radial-gradient(ellipse 75% 75% at 50% 50%,black 30%,transparent 100%);}
+
+/* ── LAYOUT ── */
+.demo-wrap{position:relative;z-index:10;width:100%;height:100vh;display:flex;flex-direction:column;}
+
+/* ── TOP BAR ── */
+.top-bar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 20px;
+  background:rgba(13,17,23,.7);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+}
+html.light .top-bar{background:rgba(255,255,255,.8);}
+.top-bar-logo{display:flex;align-items:center;gap:10px;}
+.top-bar-logo img{width:22px;height:22px;}
+.top-bar-title{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--cyan);}
+.top-bar-right{display:flex;align-items:center;gap:10px;}
+.slide-counter{font-family:var(--mono);font-size:11px;color:var(--muted);}
+.tb-btn{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;padding:6px 12px;color:var(--muted);font-family:'Inter',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;}
+.tb-btn:hover{background:rgba(59,130,246,.18);color:var(--blue);border-color:rgba(59,130,246,.35);}
+
+/* ── PROGRESS BAR ── */
+.progress-bar{position:fixed;top:46px;left:0;right:0;z-index:100;height:2px;background:rgba(255,255,255,.06);}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width .5s cubic-bezier(.4,0,.2,1);}
+
+/* ── SLIDES TRACK ── */
+.slides-track{flex:1;position:relative;margin-top:48px;}
+.slide{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px 40px;gap:60px;
+  opacity:0;pointer-events:none;
+  transition:opacity .45s ease,transform .45s cubic-bezier(.4,0,.2,1);
+  transform:translateX(60px);
+}
+.slide.active{opacity:1;pointer-events:auto;transform:translateX(0);}
+.slide.exit-left{opacity:0;transform:translateX(-60px);}
+.slide.exit-right{opacity:0;transform:translateX(60px);}
+
+/* ── VISUAL SIDE ── */
+.slide-visual{
+  flex-shrink:0;width:420px;height:320px;
+  background:rgba(255,255,255,.025);
+  border:1px solid var(--border2);border-radius:20px;
+  position:relative;overflow:hidden;
+  box-shadow:0 24px 64px rgba(0,0,0,.4);
+}
+html.light .slide-visual{background:rgba(255,255,255,.6);}
+.slide-visual::before{content:'';position:absolute;top:0;left:15%;right:15%;height:2px;background:linear-gradient(90deg,transparent,var(--blue),var(--cyan),transparent);border-radius:2px;}
+
+/* ── CONTENT SIDE ── */
+.slide-content{flex:1;max-width:420px;}
+.slide-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);
+  border-radius:50px;padding:4px 12px;margin-bottom:16px;
+  font-family:var(--mono);font-size:10px;font-weight:700;color:var(--blue);letter-spacing:1px;text-transform:uppercase;
+}
+.slide-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--blue);animation:bpulse 2s ease-in-out infinite;flex-shrink:0;}
+@keyframes bpulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.3;transform:scale(.7);}}
+.slide-num{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:var(--dim);margin-bottom:6px;}
+.slide-title{font-size:28px;font-weight:800;color:var(--text);line-height:1.15;margin-bottom:8px;}
+.slide-sub{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:20px;}
+.feature-list{display:flex;flex-direction:column;gap:9px;}
+.feat{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--muted);line-height:1.5;}
+.feat-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.feat-dot.blue{background:var(--blue);}
+.feat-dot.cyan{background:var(--cyan);}
+.feat-dot.green{background:var(--green);}
+.feat-dot.amber{background:var(--amber);}
+.feat-dot.red{background:var(--red);}
+.feat-dot.purple{background:var(--purple);}
+.feat strong{color:var(--text);}
+
+/* ── NAV ── */
+.demo-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 32px;
+  background:rgba(13,17,23,.7);backdrop-filter:blur(18px);
+  border-top:1px solid var(--border);
+}
+html.light .demo-nav{background:rgba(255,255,255,.8);}
+.nav-btn{
+  display:flex;align-items:center;gap:7px;
+  background:rgba(255,255,255,.06);border:1px solid var(--border);
+  border-radius:10px;padding:8px 18px;cursor:pointer;
+  color:var(--muted);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;
+  transition:all .2s;
+}
+.nav-btn:hover:not(:disabled){background:var(--blue);color:#fff;border-color:var(--blue);}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed;}
+.nav-btn.primary{background:var(--blue);color:#fff;border-color:var(--blue);}
+.nav-btn.primary:hover:not(:disabled){background:#1d4ed8;}
+.dots{display:flex;align-items:center;gap:8px;}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15);cursor:pointer;transition:all .25s;}
+.dot.active{width:22px;border-radius:4px;background:var(--blue);}
+.dot:hover:not(.active){background:rgba(59,130,246,.5);}
+.nav-hint{font-family:var(--mono);font-size:10px;color:var(--dim);}
+
+/* ══════════════════════════════
+   MOCKUP: SLIDE 1 — OVERVIEW
+══════════════════════════════ */
+.m-overview{padding:28px 24px;display:flex;flex-direction:column;gap:14px;height:100%;}
+.m-ov-logo{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.m-ov-logo img{width:28px;height:28px;}
+.m-ov-brand{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--text);}
+.m-ov-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;flex:1;}
+.m-ov-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;}
+html.light .m-ov-card{background:rgba(255,255,255,.6);}
+.m-ov-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;}
+.m-ov-label{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.5px;}
+.m-ov-bar{height:3px;border-radius:2px;width:80%;margin-top:2px;}
+
+/* ══════════════════════════════
+   MOCKUP: SLIDE 2 — LOGIN
+══════════════════════════════ */
+.m-login{display:flex;align-items:center;justify-content:center;height:100%;padding:20px;}
+.m-login-card{width:100%;max-width:240px;background:rgba(13,17,23,.55);backdrop-filter:blur(28px);border:1px solid rgba(59,130,246,.22);border-radius:16px;padding:24px 20px;position:relative;}
+.m-login-card::before{content:'';position:absolute;top:0;left:15%;right:15%;height:2px;background:linear-gradient(90deg,transparent,var(--blue),var(--cyan),transparent);border-radius:2px;}
+html.light .m-login-card{background:rgba(248,250,252,.55);}
+.m-login-logo{text-align:center;margin-bottom:14px;}
+.m-login-logo img{width:24px;height:24px;}
+.m-lbl{font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--dim);margin-bottom:4px;}
+.m-inp{width:100%;height:28px;background:var(--bg4);border:1px solid var(--border);border-radius:7px;margin-bottom:8px;}
+html.light .m-inp{background:rgba(0,0,0,.04);}
+.m-btn{width:100%;height:30px;background:var(--blue);border-radius:7px;margin-top:4px;display:flex;align-items:center;justify-content:center;}
+.m-btn-txt{font-size:10px;font-weight:700;color:#fff;letter-spacing:.5px;}
+.m-security{display:flex;align-items:center;gap:5px;margin-top:10px;justify-content:center;}
+.m-sec-dot{width:5px;height:5px;border-radius:50%;background:var(--green);}
+.m-sec-txt{font-family:var(--mono);font-size:9px;color:var(--muted);}
+
+/* ══════════════════════════════
+   MOCKUP: SLIDE 3 — ZONES
+══════════════════════════════ */
+.m-zones{padding:20px;display:flex;flex-direction:column;gap:10px;height:100%;}
+.m-zones-title{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:2px;}
+.m-zone-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex:1;}
+.m-zone{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;transition:all .2s;min-height:62px;}
+html.light .m-zone{background:rgba(255,255,255,.6);}
+.m-zone:hover{transform:translateY(-3px);border-color:rgba(59,130,246,.4);}
+.m-zone-name{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--text);}
+.m-zone-label{font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:1px;}
+.m-zone.qc{border-color:rgba(6,182,212,.25);}.m-zone.qc .m-zone-name{color:var(--cyan);}
+.m-zone.admin{border-color:rgba(16,185,129,.25);}.m-zone.admin .m-zone-name{color:var(--green);}
+.m-zone.dev{border-color:rgba(251,191,36,.25);}.m-zone.dev .m-zone-name{color:#fbbf24;}
+
+/* ══════════════════════════════
+   MOCKUP: SLIDE 4 — INVENTORY
+══════════════════════════════ */
+.m-inv{display:flex;height:100%;padding:14px;}
+.m-inv-sidebar{width:100px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px 0 0 10px;padding:10px 8px;display:flex;flex-direction:column;gap:6px;}
+html.light .m-inv-sidebar{background:rgba(0,0,0,.03);}
+.m-inv-year{font-family:var(--mono);font-size:9px;color:var(--blue);font-weight:700;padding:3px 6px;background:rgba(59,130,246,.12);border-radius:5px;cursor:pointer;}
+.m-inv-month{font-size:9px;color:var(--muted);padding:2px 6px;cursor:pointer;}
+.m-inv-month:hover{color:var(--text);}
+.m-inv-month.active{color:var(--cyan);font-weight:600;}
+.m-inv-main{flex:1;border:1px solid var(--border);border-left:none;border-radius:0 10px 10px 0;overflow:hidden;display:flex;flex-direction:column;}
+.m-inv-topbar{height:28px;background:rgba(59,130,246,.08);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 10px;gap:8px;}
+.m-inv-badge{height:14px;border-radius:4px;padding:0 7px;font-size:8px;font-weight:600;display:flex;align-items:center;}
+.m-inv-table{flex:1;display:flex;flex-direction:column;}
+.m-inv-thead{display:flex;border-bottom:1px solid var(--border);padding:4px 8px;gap:4px;}
+.m-inv-th{height:12px;border-radius:2px;background:rgba(255,255,255,.06);}
+html.light .m-inv-th{background:rgba(0,0,0,.07);}
+.m-inv-rows{display:flex;flex-direction:column;padding:4px 0;}
+.m-inv-row{display:flex;padding:3px 8px;gap:4px;align-items:center;}
+.m-inv-row:nth-child(even){background:rgba(255,255,255,.02);}
+.m-inv-cell{height:10px;border-radius:2px;background:rgba(255,255,255,.08);}
+html.light .m-inv-cell{background:rgba(0,0,0,.06);}
+.m-inv-cell.hi{background:rgba(16,185,129,.25);}
+.m-inv-cell.warn{background:rgba(245,158,11,.25);}
+
+/* ══════════════════════════════
+   MOCKUP: SLIDE 5 — EDIT MODE
+══════════════════════════════ */
+.m-edit{padding:16px;display:flex;flex-direction:column;gap:10px;height:100%;}
+.m-edit-bar{display:flex;align-items:center;gap:8px;padding:6px 10px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:9px;}
+.m-edit-toggle{width:28px;height:14px;border-radius:7px;background:var(--blue);position:relative;flex-shrink:0;}
+.m-edit-toggle::after{content:'';position:absolute;width:10px;height:10px;border-radius:50%;background:#fff;right:2px;top:2px;}
+.m-edit-lbl{font-family:var(--mono);font-size:9px;color:var(--blue);font-weight:700;}
+.m-edit-badge{margin-left:auto;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);border-radius:4px;padding:2px 7px;font-size:8px;font-weight:700;color:var(--green);}
+.m-edit-table{flex:1;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;}
+.m-edit-thead{display:flex;border-bottom:1px solid var(--border);padding:5px 10px;gap:4px;background:rgba(255,255,255,.03);}
+.m-edit-th{height:11px;border-radius:2px;background:rgba(255,255,255,.06);}
+html.light .m-edit-th{background:rgba(0,0,0,.07);}
+.m-edit-rows{display:flex;flex-direction:column;}
+.m-edit-row{display:flex;padding:4px 10px;gap:4px;align-items:center;border-bottom:1px solid var(--border);}
+.m-edit-row:last-child{border-bottom:none;}
+.m-edit-cell{height:11px;border-radius:2px;background:rgba(255,255,255,.07);}
+html.light .m-edit-cell{background:rgba(0,0,0,.05);}
+.m-edit-cell.editable{border:1px solid rgba(59,130,246,.5);background:rgba(59,130,246,.08);}
+.m-edit-cell.in{background:rgba(16,185,129,.25);}
+.m-edit-cell.out{background:rgba(239,68,68,.2);}
+.m-edit-btns{display:flex;gap:6px;margin-top:6px;}
+.m-edit-btn{height:22px;border-radius:6px;padding:0 12px;font-size:9px;font-weight:700;display:flex;align-items:center;cursor:pointer;}
+.m-edit-btn.in{background:rgba(16,185,129,.2);color:var(--green);border:1px solid rgba(16,185,129,.35);}
+.m-edit-btn.out{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3);}
+
+/* ══════════════════════════════
+   MOCKUP: SLIDE 6 — QC
+══════════════════════════════ */
+.m-qc{display:flex;height:100%;padding:14px;gap:10px;}
+.m-qc-left{flex:1;display:flex;flex-direction:column;gap:8px;}
+.m-qc-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:7px;}
+html.light .m-qc-card{background:rgba(255,255,255,.6);}
+.m-qc-img{height:60px;background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(6,182,212,.1));border-radius:7px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
+.m-qc-tag{font-family:var(--mono);font-size:8px;color:var(--muted);}
+.m-qc-actions{display:flex;gap:5px;}
+.m-qc-btn{flex:1;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;}
+.m-qc-btn.approve{background:rgba(16,185,129,.2);color:var(--green);border:1px solid rgba(16,185,129,.3);}
+.m-qc-btn.reject{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.25);}
+.m-qc-right{width:110px;display:flex;flex-direction:column;gap:8px;}
+.m-qc-chat{flex:1;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:5px;overflow:hidden;}
+html.light .m-qc-chat{background:rgba(255,255,255,.6);}
+.m-qc-chat-title{font-family:var(--mono);font-size:8px;color:var(--cyan);font-weight:600;}
+.m-msg{height:14px;border-radius:5px;background:rgba(59,130,246,.15);}
+.m-msg.me{background:rgba(16,185,129,.15);align-self:flex-end;width:80%;}
+.m-msg.other{width:85%;}
+.m-presence{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:8px;}
+html.light .m-presence{background:rgba(255,255,255,.6);}
+.m-presence-title{font-family:var(--mono);font-size:8px;color:var(--green);font-weight:600;margin-bottom:5px;}
+.m-user{display:flex;align-items:center;gap:4px;margin-bottom:3px;}
+.m-user-av{width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,rgba(59,130,246,.3),rgba(6,182,212,.2));}
+.m-user-name{height:8px;border-radius:2px;background:rgba(255,255,255,.1);flex:1;}
+html.light .m-user-name{background:rgba(0,0,0,.08);}
+.m-user-dot{width:4px;height:4px;border-radius:50%;background:var(--green);}
+
+/* ══════════════════════════════
+   MOCKUP: SLIDE 7 — DASHBOARD
+══════════════════════════════ */
+.m-dash{padding:16px;display:flex;flex-direction:column;gap:10px;height:100%;}
+.m-dash-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.m-stat{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;padding:10px;text-align:center;}
+html.light .m-stat{background:rgba(255,255,255,.6);}
+.m-stat-val{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;}
+.m-stat-lbl{font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.5px;}
+.m-chart{flex:1;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;align-items:flex-end;gap:8px;}
+html.light .m-chart{background:rgba(255,255,255,.6);}
+.m-bar{border-radius:4px 4px 0 0;flex:1;position:relative;min-height:8px;transition:height .5s;}
+.m-chart-x{display:flex;gap:8px;padding:0 12px;margin-top:4px;}
+.m-chart-xl{font-family:var(--mono);font-size:7px;color:var(--dim);flex:1;text-align:center;}
+
+/* ══════════════════════════════
+   MOCKUP: SLIDE 8 — ADMIN
+══════════════════════════════ */
+.m-admin{padding:14px;display:flex;flex-direction:column;gap:8px;height:100%;}
+.m-admin-head{display:flex;align-items:center;gap:8px;}
+.m-admin-title{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--text);}
+.m-admin-badge{background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);border-radius:4px;padding:2px 8px;font-size:8px;font-weight:700;color:var(--purple);}
+.m-admin-tabs{display:flex;gap:4px;}
+.m-tab{height:20px;border-radius:5px;padding:0 8px;font-size:8px;font-weight:600;display:flex;align-items:center;cursor:pointer;color:var(--muted);}
+.m-tab.active{background:rgba(59,130,246,.15);color:var(--blue);}
+.m-user-list{flex:1;display:flex;flex-direction:column;gap:5px;overflow:hidden;}
+.m-admin-row{display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;}
+html.light .m-admin-row{background:rgba(255,255,255,.6);}
+.m-admin-av{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,rgba(59,130,246,.3),rgba(6,182,212,.2));flex-shrink:0;}
+.m-admin-info{flex:1;display:flex;flex-direction:column;gap:2px;}
+.m-admin-name{height:9px;border-radius:2px;background:rgba(255,255,255,.12);}
+html.light .m-admin-name{background:rgba(0,0,0,.08);}
+.m-admin-role{height:7px;width:60%;border-radius:2px;background:rgba(255,255,255,.06);}
+html.light .m-admin-role{background:rgba(0,0,0,.05);}
+.m-admin-chip{height:16px;border-radius:4px;padding:0 6px;font-size:7px;font-weight:700;display:flex;align-items:center;flex-shrink:0;}
+.m-admin-chip.approved{background:rgba(16,185,129,.15);color:var(--green);}
+.m-admin-chip.pending{background:rgba(245,158,11,.15);color:var(--amber);}
+.m-admin-chip.verified{background:rgba(59,130,246,.15);color:var(--blue);}
+
+/* ══════════════════════════════
+   MOCKUP: SLIDE 9 — PROFILE
+══════════════════════════════ */
+.m-profile{display:flex;align-items:center;justify-content:center;height:100%;padding:20px;}
+.m-profile-card{width:220px;background:rgba(13,17,23,.55);backdrop-filter:blur(28px);border:1px solid rgba(59,130,246,.22);border-radius:16px;padding:20px;position:relative;text-align:center;}
+.m-profile-card::before{content:'';position:absolute;top:0;left:15%;right:15%;height:2px;background:linear-gradient(90deg,transparent,#10b981,#3b82f6,transparent);border-radius:2px;}
+html.light .m-profile-card{background:rgba(248,250,252,.55);}
+.m-pav{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,rgba(59,130,246,.3),rgba(6,182,212,.2));border:2px solid rgba(59,130,246,.35);margin:0 auto 10px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.m-pname{height:12px;border-radius:3px;background:rgba(255,255,255,.15);margin-bottom:5px;}
+html.light .m-pname{background:rgba(0,0,0,.1);}
+.m-pusername{height:9px;width:70%;border-radius:2px;background:rgba(59,130,246,.25);margin:0 auto 12px;}
+.m-verified-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.3);border-radius:50px;padding:3px 10px;font-size:8px;font-weight:700;color:#60a5fa;margin-bottom:12px;}
+.m-pfields{display:flex;flex-direction:column;gap:5px;text-align:left;}
+.m-pfield{height:18px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;}
+html.light .m-pfield{background:rgba(0,0,0,.04);}
+.m-ppwdbtn{width:100%;height:24px;background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);border-radius:6px;margin-top:10px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:var(--blue);}
+
+/* ── INTRO SLIDE ── */
+.slide-0-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:20px;text-align:center;}
+.intro-logo{width:56px;height:56px;margin:0 auto;}
+.intro-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);border-radius:50px;padding:5px 16px;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--green);letter-spacing:1.5px;text-transform:uppercase;}
+.intro-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:bpulse 1.5s ease-in-out infinite;}
+.intro-title{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:4px;color:var(--text);line-height:1;}
+.intro-sub{font-size:14px;color:var(--muted);max-width:340px;line-height:1.6;}
+.intro-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
+.ichip{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:11px;color:var(--muted);}
+.ichip-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+
+/* ── FINISH SLIDE ── */
+.slide-fin-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:16px;text-align:center;}
+.fin-icon{width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,rgba(16,185,129,.25),rgba(59,130,246,.2));border:1px solid rgba(16,185,129,.35);display:flex;align-items:center;justify-content:center;margin:0 auto;}
+.fin-title{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:3px;color:var(--text);}
+.fin-sub{font-size:13px;color:var(--muted);max-width:360px;line-height:1.7;}
+.fin-btn{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;border:none;border-radius:12px;padding:12px 28px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-top:8px;text-decoration:none;transition:background .2s;}
+.fin-btn:hover{background:#1d4ed8;}
+
+/* ── ANIMATIONS ── */
+.slide.active .feat{animation:featIn .4s ease both;}
+.slide.active .feat:nth-child(1){animation-delay:.1s;}
+.slide.active .feat:nth-child(2){animation-delay:.2s;}
+.slide.active .feat:nth-child(3){animation-delay:.3s;}
+.slide.active .feat:nth-child(4){animation-delay:.4s;}
+.slide.active .feat:nth-child(5){animation-delay:.5s;}
+@keyframes featIn{from{opacity:0;transform:translateX(12px);}to{opacity:1;transform:translateX(0);}}
+
+/* ── KEYBOARD HINT ── */
+.kbd-hint{font-family:var(--mono);font-size:9px;color:var(--dim);display:flex;align-items:center;gap:5px;}
+.kbd{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:4px;padding:2px 5px;}
+html.light .kbd{background:rgba(0,0,0,.04);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:860px){
+  .slide{flex-direction:column;gap:20px;padding:16px;}
+  .slide-visual{width:100%;height:180px;}
+  .slide-title{font-size:22px;}
+}
+@media(max-width:540px){
+  .slide-visual{height:150px;}
+  .top-bar{padding:8px 14px;}
+  .demo-nav{padding:10px 14px;}
+  .nav-hint,.kbd-hint{display:none;}
+  .intro-title{font-size:36px;}
+}
+</style>
+</head>
+<body>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="grid-overlay"></div>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-logo">
+    <img src="/static/icons/low.ico" alt="EST-iMs">
+    <span class="top-bar-title">EST-iMs · SYSTEM TOUR</span>
+  </div>
+  <div class="top-bar-right">
+    <span class="slide-counter" id="slideCounter">1 / 10</span>
+    <button class="tb-btn" onclick="toggleTheme()">Theme</button>
+    <a class="tb-btn" href="/zones">← Exit Tour</a>
+  </div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:10%"></div></div>
+
+<!-- SLIDES -->
+<div class="slides-track" id="slidesTrack">
+
+  <!-- SLIDE 0: INTRO -->
+  <div class="slide active" data-index="0">
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+      <div class="slide-0-inner">
+        <img class="intro-logo" src="/static/icons/low.ico" alt="EST-iMs">
+        <div class="intro-badge"><span class="intro-badge-dot"></span>EST-iMs TOUR</div>
+        <div class="intro-title">SYSTEM GUIDE</div>
+        <p class="intro-sub">دليل شامل لاستخدام نظام EST-iMs لإدارة المخزون ومراقبة الجودة</p>
+        <div class="intro-chips">
+          <div class="ichip"><span class="ichip-dot" style="background:var(--blue)"></span>Inventory</div>
+          <div class="ichip"><span class="ichip-dot" style="background:var(--cyan)"></span>QC Workflow</div>
+          <div class="ichip"><span class="ichip-dot" style="background:var(--green)"></span>Admin Panel</div>
+          <div class="ichip"><span class="ichip-dot" style="background:var(--amber)"></span>Reports</div>
+          <div class="ichip"><span class="ichip-dot" style="background:var(--purple)"></span>Real-time Chat</div>
+        </div>
+        <p style="font-family:var(--mono);font-size:11px;color:var(--dim);">10 slides · press → or click Next</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 1: LOGIN -->
+  <div class="slide" data-index="1">
+    <div class="slide-visual">
+      <div class="m-login">
+        <div class="m-login-card">
+          <div class="m-login-logo"><img src="/static/icons/low.ico" style="width:24px;height:24px;" alt=""></div>
+          <div class="m-lbl">Username</div>
+          <div class="m-inp"></div>
+          <div class="m-lbl">Password</div>
+          <div class="m-inp"></div>
+          <div class="m-btn"><span class="m-btn-txt">SIGN IN</span></div>
+          <div class="m-security">
+            <span class="m-sec-dot"></span>
+            <span class="m-sec-txt">Secure · Encrypted</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-num">01 / 09</div>
+      <div class="slide-badge"><span class="slide-badge-dot"></span>Authentication</div>
+      <h2 class="slide-title">Login &amp; Security</h2>
+      <p class="slide-sub">الدخول للنظام يتم عبر بيانات يوفرها المدير. يوجد حماية متعددة الطبقات لمنع الوصول غير المصرح.</p>
+      <div class="feature-list">
+        <div class="feat"><span class="feat-dot blue"></span><span><strong>Username &amp; Password</strong> — بيانات فريدة لكل موظف</span></div>
+        <div class="feat"><span class="feat-dot red"></span><span><strong>Lockout Protection</strong> — قفل تلقائي بعد محاولات خاطئة متعددة</span></div>
+        <div class="feat"><span class="feat-dot green"></span><span><strong>Single Session</strong> — جلسة نشطة واحدة في نفس الوقت</span></div>
+        <div class="feat"><span class="feat-dot amber"></span><span><strong>Forgot Password</strong> — استعادة كلمة المرور بسؤال الأمان</span></div>
+        <div class="feat"><span class="feat-dot cyan"></span><span><strong>Force Logout</strong> — إمكانية تسجيل الخروج من جهاز آخر</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: ZONES -->
+  <div class="slide" data-index="2">
+    <div class="slide-visual">
+      <div class="m-zones">
+        <div class="m-zones-title">SELECT YOUR ZONE</div>
+        <div class="m-zone-grid">
+          <div class="m-zone"><div class="m-zone-name">Zone 1</div><div class="m-zone-label">زون 1</div></div>
+          <div class="m-zone"><div class="m-zone-name">Zone 2</div><div class="m-zone-label">زون 2</div></div>
+          <div class="m-zone"><div class="m-zone-name">Zone 3</div><div class="m-zone-label">PACKAGING</div></div>
+          <div class="m-zone"><div class="m-zone-name">Zone 4</div><div class="m-zone-label">زون 4</div></div>
+          <div class="m-zone"><div class="m-zone-name">Zone 5</div><div class="m-zone-label">زون 5</div></div>
+          <div class="m-zone qc"><div class="m-zone-name">QC</div><div class="m-zone-label">QUALITY</div></div>
+          <div class="m-zone admin" style="grid-column:span 1"><div class="m-zone-name" style="font-size:13px">EST</div><div class="m-zone-label">ADMIN</div></div>
+          <div class="m-zone dev" style="grid-column:span 2"><div class="m-zone-name" style="color:#fbbf24">Dev</div><div class="m-zone-label">DEVELOPER</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-num">02 / 09</div>
+      <div class="slide-badge"><span class="slide-badge-dot" style="background:var(--cyan)"></span>Zone Selection</div>
+      <h2 class="slide-title">Zone Access Control</h2>
+      <p class="slide-sub">بعد تسجيل الدخول تختار الزون المخصص لك. كل زون محمي بكلمة مرور منفصلة وصلاحيات مختلفة.</p>
+      <div class="feature-list">
+        <div class="feat"><span class="feat-dot blue"></span><span><strong>5 Warehouse Zones</strong> — زونات المستودع 1 إلى 5</span></div>
+        <div class="feat"><span class="feat-dot cyan"></span><span><strong>QC Zone</strong> — مراقبة الجودة بأدوارين: Reviewer و Labeling</span></div>
+        <div class="feat"><span class="feat-dot green"></span><span><strong>Admin Zone</strong> — إدارة المستخدمين والطلبات</span></div>
+        <div class="feat"><span class="feat-dot amber"></span><span><strong>Zone Password</strong> — كلمة مرور مستقلة لكل زون</span></div>
+        <div class="feat"><span class="feat-dot purple"></span><span><strong>Access Restriction</strong> — تحديد من يُسمح له بدخول كل زون</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: INVENTORY -->
+  <div class="slide" data-index="3">
+    <div class="slide-visual">
+      <div class="m-inv">
+        <div class="m-inv-sidebar">
+          <div class="m-inv-year">2026</div>
+          <div class="m-inv-month active">يناير</div>
+          <div class="m-inv-month">فبراير</div>
+          <div class="m-inv-month">مارس</div>
+          <div class="m-inv-month">أبريل</div>
+          <div class="m-inv-month">مايو</div>
+        </div>
+        <div class="m-inv-main">
+          <div class="m-inv-topbar">
+            <div class="m-inv-badge" style="background:rgba(59,130,246,.15);color:var(--blue);">Zone 1</div>
+            <div class="m-inv-badge" style="background:rgba(16,185,129,.12);color:var(--green);">142 Records</div>
+          </div>
+          <div class="m-inv-table">
+            <div class="m-inv-thead">
+              <div class="m-inv-th" style="width:30px"></div>
+              <div class="m-inv-th" style="flex:2"></div>
+              <div class="m-inv-th" style="width:40px"></div>
+              <div class="m-inv-th" style="width:40px"></div>
+              <div class="m-inv-th" style="width:35px"></div>
+            </div>
+            <div class="m-inv-rows">
+              <div class="m-inv-row"><div class="m-inv-cell" style="width:30px"></div><div class="m-inv-cell" style="flex:2"></div><div class="m-inv-cell hi" style="width:40px"></div><div class="m-inv-cell" style="width:40px"></div><div class="m-inv-cell" style="width:35px"></div></div>
+              <div class="m-inv-row"><div class="m-inv-cell" style="width:30px"></div><div class="m-inv-cell" style="flex:2"></div><div class="m-inv-cell warn" style="width:40px"></div><div class="m-inv-cell" style="width:40px"></div><div class="m-inv-cell" style="width:35px"></div></div>
+              <div class="m-inv-row"><div class="m-inv-cell" style="width:30px"></div><div class="m-inv-cell" style="flex:2"></div><div class="m-inv-cell" style="width:40px"></div><div class="m-inv-cell hi" style="width:40px"></div><div class="m-inv-cell" style="width:35px"></div></div>
+              <div class="m-inv-row"><div class="m-inv-cell" style="width:30px"></div><div class="m-inv-cell" style="flex:2"></div><div class="m-inv-cell" style="width:40px"></div><div class="m-inv-cell" style="width:40px"></div><div class="m-inv-cell warn" style="width:35px"></div></div>
+              <div class="m-inv-row"><div class="m-inv-cell" style="width:30px"></div><div class="m-inv-cell" style="flex:2"></div><div class="m-inv-cell hi" style="width:40px"></div><div class="m-inv-cell" style="width:40px"></div><div class="m-inv-cell" style="width:35px"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-num">03 / 09</div>
+      <div class="slide-badge"><span class="slide-badge-dot" style="background:var(--green)"></span>Inventory</div>
+      <h2 class="slide-title">Inventory Browser</h2>
+      <p class="slide-sub">تصفح ملفات المخزون حسب السنة والشهر والزون. البيانات مستوردة من Excel ويمكن البحث والفلترة.</p>
+      <div class="feature-list">
+        <div class="feat"><span class="feat-dot blue"></span><span><strong>Year / Month Navigation</strong> — تصفح هرمي بالسنة والشهر</span></div>
+        <div class="feat"><span class="feat-dot green"></span><span><strong>Excel Integration</strong> — قراءة مباشرة من ملفات .xlsm</span></div>
+        <div class="feat"><span class="feat-dot cyan"></span><span><strong>Search &amp; Filter</strong> — بحث فوري وفلترة متعددة الأعمدة</span></div>
+        <div class="feat"><span class="feat-dot amber"></span><span><strong>Low Stock Alerts</strong> — تلوين تلقائي للكميات المنخفضة</span></div>
+        <div class="feat"><span class="feat-dot purple"></span><span><strong>Export</strong> — تصدير البيانات PDF أو Excel</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: EDIT MODE -->
+  <div class="slide" data-index="4">
+    <div class="slide-visual">
+      <div class="m-edit">
+        <div class="m-edit-bar">
+          <div class="m-edit-toggle"></div>
+          <span class="m-edit-lbl">EDIT MODE</span>
+          <div class="m-edit-badge">✎ Active</div>
+        </div>
+        <div class="m-edit-table">
+          <div class="m-edit-thead">
+            <div class="m-edit-th" style="width:35px"></div>
+            <div class="m-edit-th" style="flex:2"></div>
+            <div class="m-edit-th" style="width:50px"></div>
+            <div class="m-edit-th" style="width:50px"></div>
+            <div class="m-edit-th" style="width:45px"></div>
+          </div>
+          <div class="m-edit-row"><div class="m-edit-cell" style="width:35px"></div><div class="m-edit-cell" style="flex:2"></div><div class="m-edit-cell in" style="width:50px"></div><div class="m-edit-cell editable" style="width:50px"></div><div class="m-edit-cell" style="width:45px"></div></div>
+          <div class="m-edit-row"><div class="m-edit-cell" style="width:35px"></div><div class="m-edit-cell" style="flex:2"></div><div class="m-edit-cell editable" style="width:50px"></div><div class="m-edit-cell out" style="width:50px"></div><div class="m-edit-cell" style="width:45px"></div></div>
+          <div class="m-edit-row"><div class="m-edit-cell" style="width:35px"></div><div class="m-edit-cell" style="flex:2"></div><div class="m-edit-cell" style="width:50px"></div><div class="m-edit-cell in" style="width:50px"></div><div class="m-edit-cell editable" style="width:45px"></div></div>
+          <div class="m-edit-row"><div class="m-edit-cell" style="width:35px"></div><div class="m-edit-cell" style="flex:2"></div><div class="m-edit-cell out" style="width:50px"></div><div class="m-edit-cell" style="width:50px"></div><div class="m-edit-cell" style="width:45px"></div></div>
+        </div>
+        <div class="m-edit-btns">
+          <div class="m-edit-btn in">+ IN</div>
+          <div class="m-edit-btn out">− OUT</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-num">04 / 09</div>
+      <div class="slide-badge"><span class="slide-badge-dot" style="background:var(--amber)"></span>Edit Mode</div>
+      <h2 class="slide-title">Inventory Editing</h2>
+      <p class="slide-sub">تعديل بيانات المخزون محمي بكلمة مرور ومتاح فقط للمستخدمين المصرح لهم. يمكن إدخال حركات الوارد والصادر.</p>
+      <div class="feature-list">
+        <div class="feat"><span class="feat-dot amber"></span><span><strong>Password Protected</strong> — وضع التعديل يتطلب كلمة مرور منفصلة</span></div>
+        <div class="feat"><span class="feat-dot green"></span><span><strong>IN / OUT Transactions</strong> — تسجيل الوارد والصادر مباشرة</span></div>
+        <div class="feat"><span class="feat-dot blue"></span><span><strong>Inline Cell Editing</strong> — تعديل الخلايا مباشرة في الجدول</span></div>
+        <div class="feat"><span class="feat-dot cyan"></span><span><strong>Permission Control</strong> — تخصيص صلاحية التعديل لكل مستخدم</span></div>
+        <div class="feat"><span class="feat-dot red"></span><span><strong>Zone Restricted</strong> — كل مستخدم يعدل في زونه فقط</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: QC WORKFLOW -->
+  <div class="slide" data-index="5">
+    <div class="slide-visual">
+      <div class="m-qc">
+        <div class="m-qc-left">
+          <div class="m-qc-card">
+            <div class="m-qc-img">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(59,130,246,.5)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+            <div class="m-qc-tag">Zone 3 · Labeling · 09:42 AM</div>
+            <div class="m-qc-actions">
+              <div class="m-qc-btn approve">✓ Approve</div>
+              <div class="m-qc-btn reject">✗ Reject</div>
+            </div>
+          </div>
+          <div class="m-qc-card">
+            <div class="m-qc-img" style="background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(6,182,212,.08));">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(16,185,129,.5)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+            <div class="m-qc-tag">Zone 1 · Labeling · 09:38 AM</div>
+            <div class="m-qc-actions">
+              <div class="m-qc-btn approve" style="opacity:.5;">✓ Done</div>
+              <div class="m-qc-btn reject" style="opacity:.3;">✗</div>
+            </div>
+          </div>
+        </div>
+        <div class="m-qc-right">
+          <div class="m-qc-chat">
+            <div class="m-qc-chat-title">QC CHAT</div>
+            <div class="m-msg other"></div>
+            <div class="m-msg me"></div>
+            <div class="m-msg other" style="width:65%"></div>
+            <div class="m-msg me" style="width:70%"></div>
+          </div>
+          <div class="m-presence">
+            <div class="m-presence-title">ONLINE</div>
+            <div class="m-user"><div class="m-user-av"></div><div class="m-user-name"></div><div class="m-user-dot"></div></div>
+            <div class="m-user"><div class="m-user-av" style="background:linear-gradient(135deg,rgba(16,185,129,.3),rgba(6,182,212,.2))"></div><div class="m-user-name"></div><div class="m-user-dot"></div></div>
+            <div class="m-user"><div class="m-user-av" style="background:linear-gradient(135deg,rgba(139,92,246,.3),rgba(59,130,246,.2))"></div><div class="m-user-name"></div><div class="m-user-dot"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-num">05 / 09</div>
+      <div class="slide-badge"><span class="slide-badge-dot" style="background:var(--cyan)"></span>QC Workflow</div>
+      <h2 class="slide-title">Quality Control</h2>
+      <p class="slide-sub">نظام مراقبة الجودة يتيح لفريق الـ Labeling إرسال صور العمل، ولفريق QC مراجعتها والموافقة عليها أو ردها.</p>
+      <div class="feature-list">
+        <div class="feat"><span class="feat-dot cyan"></span><span><strong>Photo Submission</strong> — إرسال صور العمل من الكاميرا أو المعرض</span></div>
+        <div class="feat"><span class="feat-dot green"></span><span><strong>Approve / Reject</strong> — مراجعة وإضافة ملاحظة لكل طلب</span></div>
+        <div class="feat"><span class="feat-dot purple"></span><span><strong>Real-time Chat</strong> — دردشة مباشرة بين فريق QC</span></div>
+        <div class="feat"><span class="feat-dot blue"></span><span><strong>Presence List</strong> — معرفة من هو متصل الآن</span></div>
+        <div class="feat"><span class="feat-dot amber"></span><span><strong>Push Notifications</strong> — إشعارات فورية حتى في الخلفية</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: DASHBOARD -->
+  <div class="slide" data-index="6">
+    <div class="slide-visual">
+      <div class="m-dash">
+        <div class="m-dash-stats">
+          <div class="m-stat"><div class="m-stat-val" style="color:var(--blue)">2.4K</div><div class="m-stat-lbl">ITEMS</div></div>
+          <div class="m-stat"><div class="m-stat-val" style="color:var(--green)">98%</div><div class="m-stat-lbl">IN STOCK</div></div>
+          <div class="m-stat"><div class="m-stat-val" style="color:var(--amber)">14</div><div class="m-stat-lbl">LOW STOCK</div></div>
+        </div>
+        <div class="m-chart" id="chartBars">
+          <div class="m-bar" style="background:linear-gradient(to top,rgba(59,130,246,.6),rgba(6,182,212,.4));height:55%"></div>
+          <div class="m-bar" style="background:linear-gradient(to top,rgba(59,130,246,.6),rgba(6,182,212,.4));height:70%"></div>
+          <div class="m-bar" style="background:linear-gradient(to top,rgba(59,130,246,.6),rgba(6,182,212,.4));height:45%"></div>
+          <div class="m-bar" style="background:linear-gradient(to top,rgba(59,130,246,.8),rgba(6,182,212,.6));height:85%"></div>
+          <div class="m-bar" style="background:linear-gradient(to top,rgba(59,130,246,.6),rgba(6,182,212,.4));height:62%"></div>
+          <div class="m-bar" style="background:linear-gradient(to top,rgba(16,185,129,.7),rgba(6,182,212,.5));height:78%"></div>
+        </div>
+        <div class="m-chart-x">
+          <div class="m-chart-xl">Jan</div><div class="m-chart-xl">Feb</div><div class="m-chart-xl">Mar</div>
+          <div class="m-chart-xl">Apr</div><div class="m-chart-xl">May</div><div class="m-chart-xl">Jun</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-num">06 / 09</div>
+      <div class="slide-badge"><span class="slide-badge-dot" style="background:var(--amber)"></span>Analytics</div>
+      <h2 class="slide-title">Dashboard &amp; Reports</h2>
+      <p class="slide-sub">لوحة تحكم تعرض إحصائيات المخزون بالرسوم البيانية، مع إمكانية تصدير التقارير.</p>
+      <div class="feature-list">
+        <div class="feat"><span class="feat-dot amber"></span><span><strong>Stock Overview</strong> — نظرة عامة على حالة المخزون</span></div>
+        <div class="feat"><span class="feat-dot blue"></span><span><strong>Monthly Charts</strong> — رسوم بيانية للحركة الشهرية</span></div>
+        <div class="feat"><span class="feat-dot green"></span><span><strong>Low Stock Reports</strong> — تقرير المنتجات المنخفضة</span></div>
+        <div class="feat"><span class="feat-dot cyan"></span><span><strong>Zone Filter</strong> — فلترة التقارير حسب الزون</span></div>
+        <div class="feat"><span class="feat-dot purple"></span><span><strong>Export PDF / Excel</strong> — تصدير بصيغ متعددة</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: ADMIN -->
+  <div class="slide" data-index="7">
+    <div class="slide-visual">
+      <div class="m-admin">
+        <div class="m-admin-head">
+          <span class="m-admin-title">ADMIN PANEL</span>
+          <span class="m-admin-badge">Dev Zone</span>
+        </div>
+        <div class="m-admin-tabs">
+          <div class="m-tab active">Registered</div>
+          <div class="m-tab">Requests</div>
+          <div class="m-tab">Contacts</div>
+        </div>
+        <div class="m-user-list">
+          <div class="m-admin-row">
+            <div class="m-admin-av"></div>
+            <div class="m-admin-info"><div class="m-admin-name"></div><div class="m-admin-role"></div></div>
+            <div class="m-admin-chip approved">Active</div>
+            <div class="m-admin-chip verified">✓</div>
+          </div>
+          <div class="m-admin-row">
+            <div class="m-admin-av" style="background:linear-gradient(135deg,rgba(16,185,129,.3),rgba(6,182,212,.2))"></div>
+            <div class="m-admin-info"><div class="m-admin-name"></div><div class="m-admin-role"></div></div>
+            <div class="m-admin-chip approved">Active</div>
+          </div>
+          <div class="m-admin-row">
+            <div class="m-admin-av" style="background:linear-gradient(135deg,rgba(245,158,11,.25),rgba(239,68,68,.15))"></div>
+            <div class="m-admin-info"><div class="m-admin-name"></div><div class="m-admin-role"></div></div>
+            <div class="m-admin-chip pending">Pending</div>
+          </div>
+          <div class="m-admin-row">
+            <div class="m-admin-av" style="background:linear-gradient(135deg,rgba(139,92,246,.3),rgba(59,130,246,.2))"></div>
+            <div class="m-admin-info"><div class="m-admin-name"></div><div class="m-admin-role"></div></div>
+            <div class="m-admin-chip approved">Active</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-num">07 / 09</div>
+      <div class="slide-badge"><span class="slide-badge-dot" style="background:var(--purple)"></span>Administration</div>
+      <h2 class="slide-title">Admin Panel</h2>
+      <p class="slide-sub">لوحة إدارة متكاملة للتحكم الكامل في المستخدمين والصلاحيات وطلبات التسجيل والزونات.</p>
+      <div class="feature-list">
+        <div class="feat"><span class="feat-dot purple"></span><span><strong>User Management</strong> — قبول / رفض / تعليق الحسابات</span></div>
+        <div class="feat"><span class="feat-dot blue"></span><span><strong>Zone Access</strong> — تحديد الزونات المسموح لكل مستخدم</span></div>
+        <div class="feat"><span class="feat-dot green"></span><span><strong>Permissions</strong> — منح صلاحية التعديل أو تبديل الزونات</span></div>
+        <div class="feat"><span class="feat-dot cyan"></span><span><strong>Verified Badge</strong> — منح علامة التوثيق ✓ للمستخدمين</span></div>
+        <div class="feat"><span class="feat-dot amber"></span><span><strong>Registration Requests</strong> — مراجعة طلبات التسجيل الجديدة</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: PROFILE -->
+  <div class="slide" data-index="8">
+    <div class="slide-visual">
+      <div class="m-profile">
+        <div class="m-profile-card">
+          <div class="m-pav">
+            <img src="/static/images/me.jpg" onerror="this.src='/static/images/profile_male.png';this.onerror=null;" alt="Avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+          </div>
+          <div class="m-pname"></div>
+          <div class="m-pusername"></div>
+          <div class="m-verified-badge">
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Verified
+          </div>
+          <div class="m-pfields">
+            <div class="m-pfield"></div>
+            <div class="m-pfield"></div>
+            <div class="m-pfield"></div>
+          </div>
+          <div class="m-ppwdbtn">Change Password</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-content">
+      <div class="slide-num">08 / 09</div>
+      <div class="slide-badge"><span class="slide-badge-dot" style="background:var(--green)"></span>Profile</div>
+      <h2 class="slide-title">Profile &amp; Settings</h2>
+      <p class="slide-sub">كل مستخدم يملك صفحة ملف شخصي يمكنه من خلالها إدارة حسابه وتغيير كلمة المرور وإضافة صورة شخصية.</p>
+      <div class="feature-list">
+        <div class="feat"><span class="feat-dot green"></span><span><strong>Profile Photo</strong> — رفع وتغيير الصورة الشخصية</span></div>
+        <div class="feat"><span class="feat-dot blue"></span><span><strong>Change Password</strong> — تغيير كلمة المرور بشكل آمن</span></div>
+        <div class="feat"><span class="feat-dot cyan"></span><span><strong>Login History</strong> — سجل آخر عمليات الدخول</span></div>
+        <div class="feat"><span class="feat-dot amber"></span><span><strong>Verified Badge</strong> — علامة ✓ تظهر في كل مكان</span></div>
+        <div class="feat"><span class="feat-dot purple"></span><span><strong>Personal Info</strong> — الاسم، الوظيفة، الإيميل، الهاتف</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: FINISH -->
+  <div class="slide" data-index="9">
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+      <div class="slide-fin-inner">
+        <div class="fin-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="fin-title">YOU'RE READY!</div>
+        <p class="fin-sub">أتقنت أساسيات نظام EST-iMs. ابدأ الآن بتسجيل الدخول واختيار الزون المخصص لك.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+          <a class="fin-btn" href="/zones">ابدأ الآن →</a>
+          <button class="fin-btn" style="background:rgba(255,255,255,.08);border:1px solid var(--border);" onclick="goTo(0)">إعادة التشغيل ↺</button>
+        </div>
+        <p style="font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:8px;">EST-iMs · All Rights Reserved</p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end slides-track -->
+
+<!-- BOTTOM NAV -->
+<div class="demo-nav">
+  <button class="nav-btn" id="prevBtn" onclick="prev()" disabled>
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    Previous
+  </button>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+    <div class="dots" id="dots"></div>
+    <div class="kbd-hint">
+      <span class="kbd">←</span><span class="kbd">→</span> Navigate &nbsp;·&nbsp; <span class="kbd">ESC</span> Exit
+    </div>
+  </div>
+  <button class="nav-btn primary" id="nextBtn" onclick="next()">
+    Next
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+</div>
+
+<script>
+const TOTAL = 10;
+let current = 0;
+let animating = false;
+
+// Build dots
+const dotsEl = document.getElementById('dots');
+for (let i = 0; i < TOTAL; i++) {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.onclick = () => goTo(i);
+  dotsEl.appendChild(d);
+}
+
+function getSlides() { return document.querySelectorAll('.slide'); }
+
+function goTo(idx, dir) {
+  if (animating || idx === current || idx < 0 || idx >= TOTAL) return;
+  animating = true;
+  const slides = getSlides();
+  const outDir = dir === 'prev' ? 'exit-right' : 'exit-left';
+
+  slides[current].classList.remove('active');
+  slides[current].classList.add(outDir);
+
+  setTimeout(() => {
+    slides[current].classList.remove(outDir);
+    current = idx;
+    slides[current].classList.add('active');
+    update();
+    setTimeout(() => { animating = false; }, 460);
+  }, 10);
+}
+
+function next() { goTo(current + 1, 'next'); }
+function prev() { goTo(current - 1, 'prev'); }
+
+function update() {
+  document.getElementById('slideCounter').textContent = (current + 1) + ' / ' + TOTAL;
+  document.getElementById('progressFill').style.width = ((current + 1) / TOTAL * 100) + '%';
+  document.getElementById('prevBtn').disabled = current === 0;
+  const nextBtn = document.getElementById('nextBtn');
+  if (current === TOTAL - 1) {
+    nextBtn.textContent = '';
+    nextBtn.innerHTML = '<a href="/zones" style="color:#fff;text-decoration:none">Go to App →</a>';
+    nextBtn.onclick = null;
+  } else {
+    nextBtn.innerHTML = 'Next <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+    nextBtn.onclick = next;
+  }
+  document.querySelectorAll('.dot').forEach((d, i) => {
+    d.className = 'dot' + (i === current ? ' active' : '');
+  });
+}
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+  if (e.key === 'Escape') window.location.href = '/zones';
+});
+
+// Theme
+(function() {
+  if (localStorage.getItem('est-theme') === 'light') document.documentElement.classList.add('light');
+})();
+function toggleTheme() {
+  const l = document.documentElement.classList.toggle('light');
+  localStorage.setItem('est-theme', l ? 'light' : 'dark');
+}
+
+// Touch swipe
+let touchX = 0;
+document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchX;
+  if (Math.abs(dx) > 50) { dx < 0 ? next() : prev(); }
+}, { passive: true });
+
+// Auto-animate chart bars on slide enter
+const observer = new MutationObserver(mutations => {
+  mutations.forEach(m => {
+    if (m.target.dataset.index === '6' && m.target.classList.contains('active')) {
+      const bars = m.target.querySelectorAll('.m-bar');
+      bars.forEach((b, i) => {
+        const h = b.style.height;
+        b.style.height = '0%';
+        setTimeout(() => { b.style.height = h; }, 100 + i * 80);
+      });
+    }
+  });
+});
+document.querySelectorAll('.slide').forEach(s => observer.observe(s, { attributes: true, attributeFilter: ['class'] }));
+</script>
+</body>
+</html>

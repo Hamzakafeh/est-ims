@@ -272,8 +272,10 @@ let _db = null;
 function initFirebase(){
   if(!window.firebase || !window.QC_FIREBASE_CONFIG) return;
   try {
-    firebase.initializeApp(window.QC_FIREBASE_CONFIG);
-    _db = firebase.database();
+    const app = (firebase.apps && firebase.apps.length)
+      ? firebase.app()
+      : firebase.initializeApp(window.QC_FIREBASE_CONFIG);
+    _db = firebase.database(app);
     _initFirebasePresence();
     _initFirebaseChat();
   } catch(e){ console.warn('Firebase init failed', e); }
@@ -730,7 +732,13 @@ function updateChatBadge(){
 }
 
 function loadChat(){
-  // no-op — Firebase handles initial load in _initFirebaseChat
+  // Firebase handles initial load in _initFirebaseChat
+  // If Firebase failed to init, clear the Loading... state
+  if(!_db){
+    const box = document.getElementById('chatMessages');
+    if(box) box.innerHTML = '<div class="chat-loading">Chat unavailable</div>';
+    _chatLoaded = true;
+  }
 }
 
 function _chatAvatarHtml(username) {

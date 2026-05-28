@@ -114,3 +114,8 @@ def terms_page():
 @pages_bp.route('/for-more')
 def for_more_page():
     return render_template('formore.html')
+
+
+@pages_bp.route('/demo')
+def demo_page():
+    return render_template('demo.html')

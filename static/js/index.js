@@ -2426,16 +2426,8 @@ function openAdminUserDetail(id) {
       <div class="admin-dz-label">Permissions</div>
       <div style="display:flex;flex-wrap:wrap;gap:8px 20px;margin-bottom:10px;">
         <label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;color:var(--text-muted);">
-          <input type="checkbox" id="perm_switch_${Number(u.id)}" ${u.perm_switch_zones ? 'checked' : ''} style="accent-color:#3b82f6;">
-          Switch Zones
-        </label>
-        <label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;color:var(--text-muted);">
           <input type="checkbox" id="perm_edit_${Number(u.id)}" ${u.can_edit ? 'checked' : ''} style="accent-color:#3b82f6;">
-          Edit Inventory
-        </label>
-        <label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;color:var(--text-muted);">
-          <input type="checkbox" id="perm_manage_${Number(u.id)}" ${u.perm_manage_permissions ? 'checked' : ''} style="accent-color:#3b82f6;">
-          Manage Permissions
+          Edit Mode
         </label>
       </div>
       <button class="btn" style="padding:8px 14px;font-size:12px;background:#3b82f6;color:#fff;border:none;" onclick="saveAdminUserPerms(${Number(u.id)})">Save Permissions</button>
@@ -2503,13 +2495,11 @@ async function clearAdminUserZones(id) {
 }
 
 async function saveAdminUserPerms(id) {
-  const switchZones = document.getElementById(`perm_switch_${id}`)?.checked || false;
   const canEdit = document.getElementById(`perm_edit_${id}`)?.checked || false;
-  const managePerms = document.getElementById(`perm_manage_${id}`)?.checked || false;
   try {
     const res = await fetch(`/api/admin/registered_users/${id}/permissions`, {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ switch_zones: switchZones, can_edit: canEdit, manage_permissions: managePerms })
+      body: JSON.stringify({ switch_zones: false, can_edit: canEdit, manage_permissions: false })
     });
     let data = {};
     try { data = await res.json(); } catch(_) {}

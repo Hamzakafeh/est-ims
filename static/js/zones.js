@@ -277,7 +277,7 @@ applyLang(currentLang);
   setInterval(() => fetch('/api/zones/ping', { method: 'POST' }).catch(() => {}), 10000);
 })();
 
-// Load avatar in user-corner (with gender fallback)
+// Load avatar in user-corner + verified badge
 let _ucGender = '';
 function _devAvatarSrc(username) {
   return username.toLowerCase() === 'mlo5' ? '/static/images/me.jpg' : null;
@@ -287,21 +287,32 @@ function _devAvatarSrc(username) {
   if (!username) return;
   const img = document.getElementById('ucAvatarImg');
   const icon = document.getElementById('ucAvatarIcon');
-  img.style.width = img.style.height = '100%';
-  img.style.objectFit = 'cover';
+
+  // Always fetch /api/zones/me to get full data (gender + verified)
+  let userData = {};
+  try {
+    const r = await fetch('/api/zones/me');
+    userData = await r.json();
+    if (!_zpData) _zpData = userData;
+  } catch(e) {}
+  _ucGender = userData.gender || '';
+
+  // Show verified badge
+  if (userData.is_verified) {
+    const badge = document.getElementById('ucVerifiedBadge');
+    if (badge) badge.style.display = '';
+  }
+
+  // Show gender default immediately, then try custom avatar
   const devSrc = _devAvatarSrc(username);
-  img.src = devSrc || '/api/avatar/' + encodeURIComponent(username);
+  const genderSrc = '/static/images/profile_' + (_ucGender === 'female' ? 'female' : 'male') + '.png';
+  img.src = devSrc || genderSrc;
   img.onload = () => { img.style.display = 'block'; if (icon) icon.style.display = 'none'; };
+
   if (!devSrc) {
-    img.onerror = async () => {
-      if (!_ucGender) {
-        try { const r = await fetch('/api/zones/me'); const d = await r.json(); _ucGender = d.gender || ''; } catch(e) {}
-      }
-      img.onerror = null;
-      img.src = '/static/images/profile_' + (_ucGender === 'female' ? 'female' : 'male') + '.png';
-      img.style.display = 'block';
-      if (icon) icon.style.display = 'none';
-    };
+    const customImg = new Image();
+    customImg.onload = () => { img.src = customImg.src; };
+    customImg.src = '/api/avatar/' + encodeURIComponent(username);
   }
 })();
 
@@ -319,25 +330,25 @@ async function openZoneProfile() {
   const d = _zpData;
   const username = d.username || '';
 
-  // Avatar
+  // Avatar — show gender default immediately, replace with custom if available
   const avatarEl = document.getElementById('zpAvatar');
   if (username) {
-    avatarEl.textContent = (username[0] || '?').toUpperCase();
     const gender = d.gender || '';
     const devSrc = _devAvatarSrc(username);
-    const img = new Image();
-    img.onload = () => {
-      img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
-      avatarEl.textContent = '';
-      avatarEl.appendChild(img);
+    const genderSrc = '/static/images/profile_' + (gender === 'female' ? 'female' : 'male') + '.png';
+    const _showAv = (src) => {
+      const i = document.createElement('img');
+      i.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
+      i.src = src;
+      avatarEl.innerHTML = '';
+      avatarEl.appendChild(i);
     };
+    _showAv(devSrc || genderSrc);
     if (!devSrc) {
-      img.onerror = () => {
-        img.onerror = null;
-        img.src = '/static/images/profile_' + (gender === 'female' ? 'female' : 'male') + '.png';
-      };
+      const customImg = new Image();
+      customImg.onload = () => _showAv(customImg.src);
+      customImg.src = '/api/avatar/' + encodeURIComponent(username);
     }
-    img.src = devSrc || '/api/avatar/' + encodeURIComponent(username);
   }
 
   document.getElementById('zpName').textContent = d.full_name || username || '—';
@@ -393,21 +404,17 @@ async function openOnlineUsers() {
 
       const avDiv = document.createElement('div');
       avDiv.className = 'zu-user-av';
-      avDiv.textContent = ((u.username || u)[0] || '?').toUpperCase();
-      const img = new Image();
-      img.onload = () => {
-        img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
-        avDiv.textContent = '';
-        avDiv.appendChild(img);
-      };
       const uDevSrc = _devAvatarSrc(u.username || u);
+      const uGenderSrc = '/static/images/profile_' + (u.gender === 'female' ? 'female' : 'male') + '.png';
+      const avImg = document.createElement('img');
+      avImg.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
+      avImg.src = uDevSrc || uGenderSrc;
+      avDiv.appendChild(avImg);
       if (!uDevSrc) {
-        img.onerror = () => {
-          img.onerror = null;
-          img.src = '/static/images/profile_' + (u.gender === 'female' ? 'female' : 'male') + '.png';
-        };
+        const customImg = new Image();
+        customImg.onload = () => { avImg.src = customImg.src; };
+        customImg.src = '/api/avatar/' + encodeURIComponent(u.username || u);
       }
-      img.src = uDevSrc || '/api/avatar/' + encodeURIComponent(u.username || u);
 
       const infoEl = document.createElement('div');
       infoEl.style.cssText = 'flex:1;min-width:0;';
