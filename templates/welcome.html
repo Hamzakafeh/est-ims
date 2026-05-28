@@ -436,59 +436,6 @@
 
   <div class="sec-divider"></div>
 
-  <!-- ABOUT DEVELOPER -->
-  <section class="sec" id="secDev">
-    <div class="sec-inner">
-      <div class="sec-badge" data-en="Developer" data-ar="المطور">Developer</div>
-      <h2 class="sec-title" data-en="Built by Hamza K. Ghareb" data-ar="بناه حمزة خ. غريب">Built by Hamza K. Ghareb</h2>
-      <p class="sec-sub" data-en="From warehouse floors to full-stack systems." data-ar="من أرضية المستودع إلى أنظمة متكاملة.">From warehouse floors to full-stack systems.</p>
-
-      <div class="dev-profile-card reveal">
-        <div class="dev-profile-photo-side">
-          <div class="dev-profile-photo-frame">
-            <img src="/static/images/me.jpg" alt="Hamza K. Ghareb">
-          </div>
-          <div class="dev-profile-name-mobile">Hamza K. Ghareb</div>
-          <div class="dev-role-tags">
-            <span class="dev-role-tag" data-en="Warehouse Keeper" data-ar="أمين مستودع">Warehouse Keeper</span>
-            <span class="dev-role-tag tag-cyan" data-en="IT &amp; Development" data-ar="تقنية المعلومات">IT &amp; Development</span>
-            <span class="dev-role-tag tag-purple">MBA</span>
-          </div>
-        </div>
-        <div class="dev-profile-content">
-          <div class="dev-profile-name">Hamza K. Ghareb</div>
-          <div class="dev-profile-subtitle" id="devProfileSubtitle">Warehouse Keeper – IT &nbsp;·&nbsp; Master of Business Administration</div>
-          <p class="dev-profile-bio" id="devProfileBio">Designed and built EST-iMs entirely from scratch — combining hands-on warehouse expertise with self-taught full-stack development. The system was created to solve real operational challenges faced daily at Alestesharia Animal Nutrition, transforming manual spreadsheet processes into a live, connected digital platform.</p>
-
-          <div class="dev-highlights">
-            <div class="dev-highlight">
-              <div class="dev-highlight-icon">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-              </div>
-              <span id="devHighlight1">Real-time SSE for live QC updates across all connected devices</span>
-            </div>
-            <div class="dev-highlight">
-              <div class="dev-highlight-icon">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              </div>
-              <span id="devHighlight2">Zone-based access control with single-session enforcement per user</span>
-            </div>
-            <div class="dev-highlight">
-              <div class="dev-highlight-icon">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
-              </div>
-              <span id="devHighlight3">Excel-based inventory engine with openpyxl for data persistence and export</span>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <div class="sec-divider"></div>
-
   <!-- FOOTER -->
   <footer class="site-footer">
     <div class="footer-inner">
@@ -499,10 +446,6 @@
       <div class="version-tag footer-static">
         <span class="v-dot"></span>
         <span id="footerCopyText">Copyright 2026 &nbsp;|&nbsp; EST-iMs © &nbsp;|&nbsp; All Rights Reserved &copy;</span>
-      </div>
-      <div class="dev-credit footer-static">
-        <span class="dev-dot"></span>
-        <span><span id="footerDevText">Developed By</span> <span class="dev-name" onclick="openDevModal()">Hamza K. Ghareb</span></span>
       </div>
     </div>
   </footer>
@@ -527,40 +470,6 @@
   </div>
 </div>
 
-<!-- DEVELOPER MODAL -->
-<div class="dev-overlay" id="devOverlay" onclick="closeDevModalOutside(event)">
-  <div class="dev-modal" id="devModal">
-    <div class="dev-modal-bar"></div>
-    <button class="dev-modal-close" onclick="closeDevModal()">✕</button>
-    <div class="dev-modal-body">
-      <div class="dev-photo-wrap">
-        <img src="/static/images/me.jpg" alt="Hamza K. Ghareb">
-      </div>
-      <div class="dev-info">
-        <div class="dev-info-name">Hamza K. Ghareb</div>
-        <div class="dev-divider"></div>
-        <div class="dev-info-row">
-          <svg class="dev-info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
-          </svg>
-          <div>
-            <div class="dev-info-label" data-en="Specialization" data-ar="التخصص">Specialization</div>
-            <div class="dev-info-value" data-en="Master of Business Administration" data-ar="ماجستير إدارة الأعمال">Master of Business Administration</div>
-          </div>
-        </div>
-        <div class="dev-info-row">
-          <svg class="dev-info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
-          </svg>
-          <div>
-            <div class="dev-info-label" data-en="Position" data-ar="المنصب">Position</div>
-            <div class="dev-info-value" data-en="Warehouse Keeper - IT" data-ar="أمين مستودع - تقنية المعلومات">Warehouse Keeper - IT</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- AI AGENT FAB -->
 <button class="ai-fab" id="aiFab" onclick="toggleAI()" title="AI Assistant">
