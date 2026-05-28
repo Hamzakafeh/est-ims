@@ -528,45 +528,46 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
 <!-- ══ DASHBOARD MODAL ══ -->
 <div id="dashModal" onclick="if(event.target===this)closeDashboard()">
   <div class="dash-box">
+    <!-- CLOSE BUTTON -->
+    <button class="dash-close-btn" onclick="closeDashboard()" title="Close">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
     <!-- LEFT NAV -->
     <div class="dash-sidebar">
       <div class="dash-sidebar-title">Dashboard</div>
 
       <div class="dash-nav-item active" onclick="dashShow('overview')" id="dnav-overview">
-        <span class="dn-icon">OV</span> Overview
+        <span class="dn-dot"></span> Overview
       </div>
       <div class="dash-nav-item" onclick="dashShow('movement')" id="dnav-movement">
-        <span class="dn-icon">IO</span> IN / OUT Movement
+        <span class="dn-dot"></span> IN / OUT Movement
       </div>
       <div class="dash-nav-item" onclick="dashShow('summary')" id="dnav-summary">
-        <span class="dn-icon">S</span> Consumption Summary
+        <span class="dn-dot"></span> Consumption Summary
       </div>
       <div class="dash-nav-sep"></div>
       <div class="dash-nav-item" onclick="dashShow('alerts')" id="dnav-alerts">
-        <span class="dn-icon">AL</span> Stock Alerts
+        <span class="dn-dot"></span> Stock Alerts
       </div>
       <div class="dash-nav-item" onclick="dashShow('top')" id="dnav-top">
-        <span class="dn-icon">TOP</span> Top Items
+        <span class="dn-dot"></span> Top Items
       </div>
       <div class="dash-nav-sep"></div>
       <div class="dash-nav-item" onclick="dashShow('stocktaking')" id="dnav-stocktaking">
-        <span class="dn-icon">INV</span> Inventory Count
+        <span class="dn-dot"></span> Inventory Count
       </div>
       <div class="dash-nav-item" onclick="dashShow('excelstatus')" id="dnav-excelstatus">
-        <span class="dn-icon">XL</span> Excel Link Status
+        <span class="dn-dot"></span> Excel Link Status
       </div>
-
       <div class="dash-nav-sep"></div>
       <div class="dash-nav-item" onclick="dashShow('zones')" id="dnav-zones">
-        <span class="dn-icon">ZN</span> Zones Summary
+        <span class="dn-dot"></span> Zones Summary
       </div>
     </div>
 
     <!-- RIGHT CONTENT -->
-    <div class="dash-content" id="dashContent" style="position:relative;">
-      <div style="position:absolute;top:14px;right:14px;display:flex;gap:6px;z-index:20;">
-        <button class="modal-hdr-btn modal-hdr-close" onclick="closeDashboard()" title="Close">✕</button>
-      </div>
+    <div class="dash-content" id="dashContent">
       <div class="dash-loading"><div class="spinner"></div><span>Loading dashboard...</span></div>
     </div>
   </div>

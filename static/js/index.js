@@ -1688,7 +1688,7 @@ function drawDashChart(canvasId, type, labels, datasets, extra={}, yLabel='') {
 // DASHBOARD FINAL OVERRIDES
 let _dashSelectedZone = 'all';
 let _dashAutoTimer = null;
-let _dashRefreshRemaining = 60;
+let _dashRefreshRemaining = 1800;
 let _dashLastSignature = '';
 let _dashSoundArmed = false;
 
@@ -1698,14 +1698,14 @@ function dashboardSignature(d) {
 
 function startDashboardAutoRefresh() {
   clearInterval(_dashAutoTimer);
-  _dashRefreshRemaining = 60;
+  _dashRefreshRemaining = 1800;
   updateDashCountdown();
   _dashAutoTimer = setInterval(() => {
     const modal = document.getElementById('dashModal');
     if (!modal || !modal.classList.contains('open')) return;
     _dashRefreshRemaining -= 1;
     if (_dashRefreshRemaining <= 0) {
-      _dashRefreshRemaining = 60;
+      _dashRefreshRemaining = 1800;
       loadDashData(false, true);
     }
     updateDashCountdown();
@@ -1759,7 +1759,7 @@ async function loadDashData(silent=false, isAuto=false) {
     _dashLastSignature = nextSignature;
     _dashData = data;
     // Only reset countdown on actual data fetch (not view switches)
-    _dashRefreshRemaining = 60;
+    _dashRefreshRemaining = 1800;
     dashShow(_dashView);
     updateDashCountdown();
     if (!silent || changed) playDashboardAlertSound(data);
