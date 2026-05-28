@@ -1,5 +1,14 @@
-(function(){ if(localStorage.getItem('est-theme') === 'light') document.documentElement.classList.add('light'); })();
-function toggleTheme(){ const isLight = document.documentElement.classList.toggle('light'); localStorage.setItem('est-theme', isLight ? 'light' : 'dark'); }
+(function(){
+  if(localStorage.getItem('est-theme') === 'light') document.documentElement.classList.add('light');
+  const lbl = document.getElementById('dockThemeLabel');
+  if(lbl) lbl.textContent = document.documentElement.classList.contains('light') ? 'Dark Mode' : 'Light Mode';
+})();
+function toggleTheme(){
+  const isLight = document.documentElement.classList.toggle('light');
+  localStorage.setItem('est-theme', isLight ? 'light' : 'dark');
+  const lbl = document.getElementById('dockThemeLabel');
+  if(lbl) lbl.textContent = isLight ? 'Dark Mode' : 'Light Mode';
+}
 const questions = { en:['What was the name of your first school?','What is your mother\'s maiden name?','What city were you born in?','What is the name of your favorite teacher?','What was your first phone number?'], ar:['ما اسم أول مدرسة التحقت بها؟','ما اسم عائلة والدتك قبل الزواج؟','في أي مدينة ولدت؟','ما اسم معلمك المفضل؟','ما هو أول رقم هاتف استخدمته؟'] };
 const AUTH_LANG = {
   en:{lang:'عربي',back:'Back',topbar:'Password Recovery',badge:'EST-iMs Access',heroTitle:'RECOVERY',heroSub:'Verify your security answer, then set a new password.',c1t:'Verify Account',c1:'Use your username and the security question saved during registration.',c2t:'Reset Password',c2:'After verification, enter a new password and return to login.',verifyTitle:'Verify Account',username:'Username',oldPassword:'Old password',securityQuestion:'Security question',securityAnswer:'Security answer',verify:'Verify',loginBack:'Back to login',changeTitle:'Change Password',newPassword:'New password',confirmPassword:'Confirm new password',save:'Save password',verifyOk:'Verified successfully. Continue to the second step.',verifyError:'Could not verify account',saveOk:'Password changed successfully. You can login now.',saveError:'Could not save password'},

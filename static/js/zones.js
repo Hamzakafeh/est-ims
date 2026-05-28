@@ -277,6 +277,17 @@ applyLang(currentLang);
   setInterval(() => fetch('/api/zones/ping', { method: 'POST' }).catch(() => {}), 10000);
 })();
 
+// ── USER COUNT ON FAB BUTTON ──
+(async function loadUserCount() {
+  try {
+    const res = await fetch('/api/zones/users');
+    const data = await res.json();
+    const count = (data.users || []).length;
+    const lbl = document.getElementById('zuFabLabel');
+    if (lbl && count > 0) lbl.textContent = `Users (${count})`;
+  } catch(e) {}
+})();
+
 // Load avatar in user-corner + verified badge
 let _ucGender = '';
 function _devAvatarSrc(username) {
@@ -337,11 +348,13 @@ async function openZoneProfile() {
     const devSrc = _devAvatarSrc(username);
     const genderSrc = '/static/images/profile_' + (gender === 'female' ? 'female' : 'male') + '.png';
     const _showAv = (src) => {
+      avatarEl.innerHTML = '';
       const i = document.createElement('img');
       i.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
       i.src = src;
-      avatarEl.innerHTML = '';
       avatarEl.appendChild(i);
+      // Re-attach camera overlay after img swap
+      if (!devSrc) _attachCamOverlay(avatarEl, username);
     };
     _showAv(devSrc || genderSrc);
     if (!devSrc) {
@@ -382,6 +395,57 @@ async function openZoneProfile() {
 
 function closeZoneProfile() {
   document.getElementById('zpOverlay').classList.remove('open');
+}
+
+function _attachCamOverlay(avatarEl, username) {
+  if (document.getElementById('zpCamOverlay')) return;
+  avatarEl.style.position = 'relative';
+  avatarEl.style.overflow = 'hidden';
+  const cam = document.createElement('label');
+  cam.id = 'zpCamOverlay';
+  cam.htmlFor = 'zpFileInput';
+  cam.title = 'Change photo';
+  cam.className = 'zp-cam-overlay';
+  cam.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>';
+  avatarEl.appendChild(cam);
+  // Hidden file input (once)
+  if (!document.getElementById('zpFileInput')) {
+    const fi = document.createElement('input');
+    fi.id = 'zpFileInput'; fi.type = 'file'; fi.accept = 'image/*';
+    fi.style.display = 'none';
+    fi.onchange = (e) => _uploadZoneAvatar(e, username);
+    document.body.appendChild(fi);
+  }
+}
+
+async function _uploadZoneAvatar(e, username) {
+  const file = e.target.files[0];
+  if (!file) return;
+  e.target.value = '';
+  const fd = new FormData();
+  fd.append('avatar', file);
+  try {
+    const res = await fetch('/api/profile/avatar', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.success) {
+      const bust = '?v=' + Date.now();
+      const src  = '/api/avatar/' + encodeURIComponent(username) + bust;
+      // Refresh profile modal avatar
+      const avatarEl = document.getElementById('zpAvatar');
+      if (avatarEl) {
+        avatarEl.innerHTML = '';
+        const i = document.createElement('img');
+        i.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
+        i.src = src;
+        avatarEl.appendChild(i);
+        _attachCamOverlay(avatarEl, username);
+      }
+      // Refresh user corner avatar
+      const ucImg = document.getElementById('ucAvatarImg');
+      if (ucImg) ucImg.src = src;
+      _zpData = null; // clear cache so next open re-fetches
+    }
+  } catch(e) {}
 }
 
 // ── ONLINE USERS MODAL ──

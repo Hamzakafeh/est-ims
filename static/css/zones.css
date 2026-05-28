@@ -714,7 +714,17 @@
     display:flex;align-items:center;justify-content:center;
     color:var(--accent-blue);font-size:28px;font-weight:700;
     font-family:'JetBrains Mono',monospace;overflow:hidden;
+    position:relative;
   }
+  .zp-cam-overlay {
+    position:absolute;inset:0;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(0,0,0,0);cursor:pointer;
+    transition:background 0.2s;
+  }
+  .zp-cam-overlay svg { opacity:0;transition:opacity 0.2s; }
+  .zp-cam-overlay:hover { background:rgba(0,0,0,0.45); }
+  .zp-cam-overlay:hover svg { opacity:1; }
   .zp-name { font-size:16px;font-weight:700;color:var(--text-main);margin-bottom:2px; }
   .zp-username { font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent-blue);margin-bottom:14px; }
   .zp-divider { height:1px;background:rgba(255,255,255,0.07);margin-bottom:14px; }

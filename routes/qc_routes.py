@@ -89,11 +89,20 @@ def api_qc_presence_ping():
     username = session.get('username', '')
     role = session.get('qc_role', 'qc')
     if username:
+        # Get gender for avatar fallback (cached in presence)
+        _gender = 'male'
+        try:
+            from core import _db_connect
+            with _db_connect() as _c:
+                _row = _c.execute("SELECT gender FROM users WHERE lower(username)=lower(?)", (username,)).fetchone()
+                if _row and _row[0]: _gender = _row[0].lower()
+        except Exception:
+            pass
         with _qc_presence_lock:
-            _qc_presence[username] = {'role': role, 'ts': _time.time()}
+            _qc_presence[username] = {'role': role, 'ts': _time.time(), 'gender': _gender}
             now = _time.time()
             active = {u: d for u, d in _qc_presence.items() if now - d['ts'] < _QC_PRESENCE_TTL}
-            users_payload = [{'username': u, 'role': d['role'], 'verified': u.lower() in VERIFIED_QC_USERS} for u, d in active.items()]
+            users_payload = [{'username': u, 'role': d['role'], 'verified': u.lower() in VERIFIED_QC_USERS, 'gender': d.get('gender', 'male')} for u, d in active.items()]
         sse_payload = 'event: presence_update\ndata: ' + json.dumps({'users': users_payload}, ensure_ascii=False) + '\n\n'
         try:
             from app import _broadcast_qc_event
@@ -112,7 +121,7 @@ def api_qc_presence_leave():
             _qc_presence.pop(username, None)
             now = _time.time()
             active = {u: d for u, d in _qc_presence.items() if now - d['ts'] < _QC_PRESENCE_TTL}
-            users_payload = [{'username': u, 'role': d['role'], 'verified': u.lower() in VERIFIED_QC_USERS} for u, d in active.items()]
+            users_payload = [{'username': u, 'role': d['role'], 'verified': u.lower() in VERIFIED_QC_USERS, 'gender': d.get('gender', 'male')} for u, d in active.items()]
         sse_payload = 'event: presence_update\ndata: ' + json.dumps({'users': users_payload}, ensure_ascii=False) + '\n\n'
         try:
             from app import _broadcast_qc_event

@@ -327,11 +327,12 @@ function renderPresence(users){
     const roleLabel  = u.role === 'qc' ? 'QC' : 'Label';
     const initial    = esc(u.username.charAt(0).toUpperCase());
     const avatarSrc  = u.username.toLowerCase() === 'hamza k. ghareb' ? '/static/images/me.jpg' : '/api/avatar/' + esc(u.username);
+    const genderDefault = '/static/images/profile_' + (u.gender === 'female' ? 'female' : 'male') + '.png';
     const verifiedSvg = isVerified
       ? `<span class="verified-badge" title="Verified"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>`
       : '';
     return `<div class="presence-item${isMe?' me':''}">
-      <div class="presence-avatar">${initial}<img class="presence-avatar-img" src="${avatarSrc}" onload="this.style.display='block'" onerror="this.style.display='none'"></div>
+      <div class="presence-avatar">${initial}<img class="presence-avatar-img" src="${avatarSrc}" onload="this.style.display='block'" onerror="this.onerror=null;this.src='${genderDefault}';this.style.display='block'"></div>
       <span class="presence-dot ${roleClass}"></span>
       <span class="presence-name">${esc(u.username)}${verifiedSvg}${isMe ? `<span style="font-size:9px;color:var(--dim);margin-left:2px">${t.me}</span>` : ''}</span>
       <span class="presence-role">${roleLabel}</span>
@@ -752,7 +753,7 @@ function _chatAvatarHtml(username) {
   const src = username.toLowerCase() === 'hamza k. ghareb'
     ? '/static/images/me.jpg'
     : '/api/avatar/' + esc(username);
-  return `<div class="chat-msg-avatar">${initial}<img src="${src}" onload="this.style.display='block'" onerror="this.style.display='none'"></div>`;
+  return `<div class="chat-msg-avatar">${initial}<img src="${src}" onload="this.style.display='block'" onerror="this.onerror=null;this.src='/static/images/profile_male.png';this.style.display='block'"></div>`;
 }
 
 function _chatMsgHtml(m) {

@@ -123,9 +123,16 @@ def api_register():
     if not all(required):
         return jsonify({'success': False, 'message': 'يرجى تعبئة جميع الحقول وإتمام التحقق من الكابتشا'}), 400
 
-    reserved_usernames = {'admin', 'administrator', 'dev', 'developer', 'root', 'superadmin'}
-    if username in reserved_usernames:
-        return jsonify({'success': False, 'message': 'اسم المستخدم محجوز ولا يمكن التسجيل به'}), 400
+    reserved_usernames = {
+        'admin', 'administrator', 'dev', 'developer', 'root', 'superadmin',
+        # Protected owner names (case-insensitive check below)
+        'hamza kafeh ahmad ghareb', 'hamza kafeh ghareb', 'hamza ghareb',
+        'hamza k. ghareb', 'hamza k ghareb', 'hamza kafeh', 'ghareb',
+        'حمزة غريب', 'حمزة كافح احمد غريب', 'حمزة كافح غريب',
+    }
+    _uname_lower = username.strip().lower()
+    if _uname_lower in {r.lower() for r in reserved_usernames}:
+        return jsonify({'success': False, 'message': 'اسم المستخدم محمي ولا يمكن التسجيل به'}), 400
     if len(username) < 5:
         return jsonify({'success': False, 'message': 'اسم المستخدم يجب أن يكون 5 أحرف على الأقل'}), 400
     if not re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', email):
