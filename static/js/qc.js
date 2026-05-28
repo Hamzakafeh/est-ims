@@ -281,22 +281,28 @@ function initFirebase(){
   } catch(e){ console.warn('Firebase init failed', e); }
 }
 
+function _safeFirebaseKey(s){
+  return s.replace(/[.#$[\]/\s]/g, '_');
+}
+
 function _initFirebasePresence(){
   const username = CURRENT_USER;
+  const safeKey  = _safeFirebaseKey(username);
   const role     = window.QC_CONFIG.qc_role;
-  const myRef    = _db.ref('qc_presence/' + username);
+  const myRef    = _db.ref('qc_presence/' + safeKey);
 
   _db.ref('.info/connected').on('value', snap => {
     if(!snap.val()) return;
     myRef.onDisconnect().remove();
-    myRef.set({ role, ts: firebase.database.ServerValue.TIMESTAMP });
+    myRef.set({ role, ts: firebase.database.ServerValue.TIMESTAMP, username });
   });
 
   _db.ref('qc_presence').on('value', snap => {
     const users = [];
     snap.forEach(child => {
       const d = child.val();
-      users.push({ username: child.key, role: d.role, verified: VERIFIED_USERS.has(child.key.toLowerCase()) });
+      const uname = d.username || child.key;
+      users.push({ username: uname, role: d.role, verified: VERIFIED_USERS.has(uname.toLowerCase()) });
     });
     renderPresence(users);
   });
