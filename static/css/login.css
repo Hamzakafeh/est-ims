@@ -171,8 +171,10 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px; font-weight: 700; letter-spacing: 1px;
     text-transform: uppercase; color: var(--accent-cyan);
-    pointer-events: none;
+    pointer-events: none; transition: color 0.2s;
   }
+  html.light .lang-switch-text { color: #374151 !important; }
+  .dock-item:hover .lang-switch-text { color: #ffffff !important; }
 
   /* CENTER LOGIN CARD */
   .login-wrapper {

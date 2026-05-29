@@ -916,7 +916,8 @@ html.light .dock-label {
 }
 html.light .dock-item-login .dock-icon { background: var(--mlo5-bg-active) !important; color: var(--mlo5-accent-primary) !important; border-color: var(--mlo5-blue-200) !important; }
 html.light .dock-item-scan  .dock-icon { background: var(--mlo5-bg-surface) !important; color: var(--mlo5-accent-cyan) !important; border-color: var(--mlo5-border) !important; }
-html.light .lang-switch-text { color: var(--mlo5-accent-cyan) !important; }
+html.light .lang-switch-text { color: #374151 !important; }
+html.light .dock-item:hover .lang-switch-text { color: #ffffff !important; }
 /* Copy-line footer */
 html.light .copy-line { color: var(--mlo5-text-dim) !important; }
 html.light .copy-dot  { background: var(--mlo5-accent-teal) !important; box-shadow: 0 0 5px rgba(0,194,181,0.35) !important; }

@@ -68,7 +68,9 @@ html.light .dock-label { background:rgba(255,255,255,0.9);color:#1a2332; }
 .dock-icon .icon-moon { display:none; }
 html.light .dock-icon .icon-sun  { display:none; }
 html.light .dock-icon .icon-moon { display:block; }
-.lang-switch-text { font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--cyan,#06b6d4);pointer-events:none; }
+.lang-switch-text { font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--cyan,#06b6d4);pointer-events:none;transition:color 0.2s; }
+html.light .lang-switch-text { color: #374151 !important; }
+.dock-item:hover .lang-switch-text { color: #ffffff !important; }
 
 /* Mobile dock */
 @media (max-width: 640px) {

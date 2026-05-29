@@ -221,11 +221,11 @@ const ZONES_LANG = {
     enterPwd: 'Enter Zone Password',
     enterPwdSub: 'Enter the password for this zone',
     zoneNames: { zone1:'Zone 1', zone2:'Zone 2', zone3:'Zone 3', zone4:'Zone 4', zone5:'Zone 5', qc:'QC', admin:'EST', dev:'Dev' },
-    zoneLabels: { zone1:'Zone 1', zone2:'Zone 2', zone3:'Packaging', zone4:'Zone 4', zone5:'Zone 5', qc:'Quality Control', admin:'Administration', dev:'' },
+    zoneLabels: { zone1:'', zone2:'', zone3:'Packaging', zone4:'', zone5:'', qc:'Quality Control', admin:'Administration', dev:'' },
   },
   ar: {
-    title: 'اختر الزون',
-    sub: 'اختر زون المستودع الذي تريد الدخول إليه',
+    title: 'اختر المنطقة',
+    sub: 'اختر منطقة المستودع التي تريد الدخول إليها',
     mgmt: 'الإدارة',
     welcome: 'الرئيسية',
     logout: 'تسجيل الخروج',
@@ -235,9 +235,9 @@ const ZONES_LANG = {
     accessGranted: '✓ تم الدخول',
     incorrectPwd: 'كلمة المرور غير صحيحة',
     connErr: 'خطأ في الاتصال. حاول مرة أخرى.',
-    enterPwd: 'أدخل كلمة مرور الزون',
-    enterPwdSub: 'أدخل كلمة المرور للدخول إلى هذا الزون',
-    zoneNames: { zone1:'زون 1', zone2:'زون 2', zone3:'زون 3', zone4:'زون 4', zone5:'زون 5', qc:'جودة', admin:'EST', dev:'Dev' },
+    enterPwd: 'أدخل كلمة مرور المنطقة',
+    enterPwdSub: 'أدخل كلمة المرور للدخول إلى هذه المنطقة',
+    zoneNames: { zone1:'منطقة 1', zone2:'منطقة 2', zone3:'منطقة 3', zone4:'منطقة 4', zone5:'منطقة 5', qc:'جودة', admin:'EST', dev:'Dev' },
     zoneLabels: { zone1:'', zone2:'', zone3:'التعبئة', zone4:'', zone5:'', qc:'مراقبة الجودة', admin:'الإدارة', dev:'' },
   }
 };
