@@ -2064,18 +2064,24 @@ function dashOverview(d) {
     dashKpi('Top Consumed', topName, 'Most withdrawn item', 'amber'),
     dashKpi('Zero Stock',   fmtDashNum(d.zero_stock), 'Items with zero current balance', 'red'),
   ].join('');
+  // Item-level chart: IN vs OUT per item (from Log), top 15 by OUT
+  const itemStats  = (d.log_item_stats || []).slice(0, 15);
+  const hasItems   = itemStats.length > 0;
+  // Shorten long item names for chart labels
+  const itemLabels = itemStats.map(i => i.name.length > 20 ? i.name.slice(0, 18) + '…' : i.name);
+
   setDashContent(`
     ${dashHeader('Dashboard Overview', 'Live summary based on current Excel files')}
     <div class="dash-kpi-grid">${kpis}</div>
     ${dashLeaderCards(d)}
     ${dashRiskCards(d)}
     <div class="dash-chart-wrap">
-      <div class="dash-chart-title">IN vs OUT by Zone</div>
-      ${allZones.length ? '<canvas id="dashChartCanvas"></canvas>' : '<div class="dash-empty">No movement data found yet.</div>'}
+      <div class="dash-chart-title">IN vs OUT per Item (from Log — Top 15 by OUT)</div>
+      ${hasItems ? '<canvas id="dashChartCanvas" style="max-height:320px;"></canvas>' : '<div class="dash-empty">No Log data found yet.</div>'}
     </div>`);
-  if (allZones.length) drawDashChart('dashChartCanvas', 'bar', allZones, [
-    { label:'IN',  data: allZones.map(z => (hasLogZone ? logZoneIn[z]  : (d.zone_in  || {})[z]) || 0), backgroundColor:'rgba(16,185,129,0.7)' },
-    { label:'OUT', data: allZones.map(z => (hasLogZone ? logZoneOut[z] : (d.zone_out || {})[z]) || 0), backgroundColor:'rgba(239,68,68,0.7)'   },
+  if (hasItems) drawDashChart('dashChartCanvas', 'bar', itemLabels, [
+    { label:'IN',  data: itemStats.map(i => i.in),  backgroundColor:'rgba(16,185,129,0.75)' },
+    { label:'OUT', data: itemStats.map(i => i.out), backgroundColor:'rgba(239,68,68,0.75)'  },
   ]);
 }
 

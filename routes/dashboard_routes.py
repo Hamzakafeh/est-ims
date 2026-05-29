@@ -87,6 +87,7 @@ def api_dashboard():
     # Log sheet data: IN/OUT operations
     log_in_ops  = []
     log_out_ops = []
+    log_item_in       = {}   # item_label -> total IN  qty
     log_item_out      = {}   # item_label -> total OUT qty
     log_zone_in       = {}   # zone_label -> total IN qty  (from Log)
     log_zone_out      = {}   # zone_label -> total OUT qty (from Log)
@@ -208,6 +209,7 @@ def api_dashboard():
                     if op == 'IN' and qty:
                         log_in_ops.append({'qty': qty, 'item': item_label, 'zone': zone_label})
                         log_zone_in[zone_label] = log_zone_in.get(zone_label, 0) + qty
+                        log_item_in[item_label] = log_item_in.get(item_label, 0) + qty
                         log_recent_ops.append({'time': time_str, 'op': 'IN',  'qty': qty, 'item': item_label, 'zone': zone_label})
                     elif op == 'OUT' and qty:
                         log_out_ops.append({'qty': qty, 'item': item_label, 'zone': zone_label})
@@ -340,6 +342,15 @@ def api_dashboard():
         [{'name': k, 'out': round(v, 2)} for k, v in log_item_out.items()],
         key=lambda x: x['out'], reverse=True
     )[:15]
+    # Combined per-item IN+OUT stats for chart, sorted by OUT desc, top 15
+    all_item_names = set(list(log_item_out.keys()) + list(log_item_in.keys()))
+    log_item_stats = sorted(
+        [{'name': k,
+          'in':  round(log_item_in.get(k,  0), 2),
+          'out': round(log_item_out.get(k, 0), 2)}
+         for k in all_item_names],
+        key=lambda x: x['out'], reverse=True
+    )[:15]
     log_total_in  = round(sum(op['qty'] for op in log_in_ops), 2)
     log_total_out = round(sum(op['qty'] for op in log_out_ops), 2)
     log_recent_ops_sorted = sorted(log_recent_ops, key=lambda x: x.get('time', ''), reverse=True)[:40]
@@ -414,6 +425,7 @@ def api_dashboard():
         'log_ops_count':        len(log_in_ops) + len(log_out_ops),
         'log_daily_out':        log_daily_out_sorted,
         'log_recent_ops':       log_recent_ops_sorted,
+        'log_item_stats':        log_item_stats,
         'log_zone_in':           {k: round(v, 2) for k, v in log_zone_in.items()},
         'log_zone_out':          {k: round(v, 2) for k, v in log_zone_out.items()},
         'log_zone_consumption':  log_zone_consumption,
