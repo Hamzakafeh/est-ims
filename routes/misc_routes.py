@@ -148,49 +148,44 @@ def push_test():
 @misc_bp.route('/api/ai-chat', methods=['POST'])
 def ai_chat():
     data = request.get_json(silent=True) or {}
-    api_key = os.getenv('GROQ_API_KEY')
+    api_key = os.getenv('GEMINI_API_KEY')
     if not api_key:
         return jsonify({'error': 'AI not configured'}), 503
 
-    messages = data.get('messages', [])
+    messages   = data.get('messages', [])[-16:]
     system_prompt = data.get('system', '')
 
-    # Cap to last 16 messages to prevent recursion/token overflow
-    messages = messages[-16:] if len(messages) > 16 else messages
+    # Build Gemini contents array
+    contents = []
+    for m in messages:
+        role = 'user' if m.get('role') == 'user' else 'model'
+        contents.append({'role': role, 'parts': [{'text': m.get('content', '')}]})
 
-    groq_messages = []
-    if system_prompt:
-        groq_messages.append({'role': 'system', 'content': system_prompt})
-    groq_messages.extend(messages)
-
-    groq_payload = {
-        'model': 'llama-3.1-8b-instant',
-        'max_tokens': data.get('max_tokens', 1000),
-        'messages': groq_messages,
+    gemini_payload = {
+        'system_instruction': {'parts': [{'text': system_prompt}]} if system_prompt else None,
+        'contents': contents,
+        'generationConfig': {
+            'maxOutputTokens': 800,
+            'temperature': 0.7,
+        },
     }
+    if gemini_payload['system_instruction'] is None:
+        del gemini_payload['system_instruction']
+
+    url = (
+        'https://generativelanguage.googleapis.com/v1beta/models/'
+        f'gemini-1.5-flash:generateContent?key={api_key}'
+    )
 
     try:
-        _old_limit = sys.getrecursionlimit()
-        sys.setrecursionlimit(5000)
-        try:
-            res = http_requests.post(
-                'https://api.groq.com/openai/v1/chat/completions',
-                headers={
-                    'Authorization': f'Bearer {api_key}',
-                    'Content-Type': 'application/json',
-                },
-                data=json.dumps(groq_payload),
-                timeout=30,
-            )
-            groq_data = json.loads(res.text)
-        finally:
-            sys.setrecursionlimit(_old_limit)
-
-        if 'choices' in groq_data:
-            reply_text = groq_data['choices'][0]['message']['content']
+        res = http_requests.post(url, json=gemini_payload, timeout=30)
+        result = res.json()
+        candidates = result.get('candidates', [])
+        if candidates:
+            parts = candidates[0].get('content', {}).get('parts', [])
+            reply_text = ''.join(p.get('text', '') for p in parts).strip()
             return jsonify({'content': [{'type': 'text', 'text': reply_text}]}), 200
-        return jsonify(groq_data), res.status_code
-    except RecursionError:
-        return jsonify({'error': 'Something went wrong. Please try again.'}), 500
+        error_msg = result.get('error', {}).get('message', 'No response from AI.')
+        return jsonify({'error': error_msg}), 500
     except Exception as e:
         return jsonify({'error': str(e)}), 500
