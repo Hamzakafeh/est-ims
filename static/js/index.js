@@ -1965,7 +1965,9 @@ function dashLeaderCards(d) {
 }
 
 function dashRiskCards(d) {
-  const high = d.high_usage_items || [];
+  const lowZero = Object.entries(d.zone_low_zero || {});
+  const high    = d.high_usage_items || [];
+  const latest  = d.latest_files || [];
   const activeZone = d.most_active_zone;
   const activeMovement = activeZone ? fmtDashNum(activeZone.movement) : '—';
   const activeLabel   = activeZone ? escHtml(activeZone.zone) : 'N/A';
