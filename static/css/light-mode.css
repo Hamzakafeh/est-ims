@@ -1,0 +1,880 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   MLO5 STYLE LIGHT — Global Light Theme Design System
+   Version  : 1.0.0
+   Scope    : html.light  (dark mode untouched)
+   Inspired : Linear · Notion · Stripe · Vercel
+   ═══════════════════════════════════════════════════════════════════════
+
+   TABLE OF CONTENTS
+   ─────────────────────────────────────────────────────────────────────
+    §1  Design Tokens
+         1.1  Color Primitives
+         1.2  Semantic Color Tokens
+         1.3  Typography
+         1.4  Spacing
+         1.5  Border Radius
+         1.6  Shadows
+         1.7  Transitions & Animations
+         1.8  Focus States
+         1.9  Z-Index
+    §2  Base Resets
+    §3  Components
+         3.1  Scrollbar
+         3.2  Buttons
+         3.3  Inputs & Form Controls
+         3.4  Cards
+         3.5  Tables
+         3.6  Modals & Overlays
+         3.7  Dropdowns & Menus
+         3.8  Navigation / Sidebar
+         3.9  Badges & Tags
+         3.10 Alerts
+         3.11 Toasts
+         3.12 Loading & Empty States
+         3.13 Tooltips
+    §4  Layout Tokens
+         4.1  Topbar
+         4.2  Sidebar
+         4.3  Content Area
+         4.4  Status Bar
+   ═══════════════════════════════════════════════════════════════════════ */
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §1  DESIGN TOKENS
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light {
+
+  /* ── §1.1  Color Primitives ─────────────────────────────────────── */
+  /* Slate */
+  --mlo5-slate-50:  #f8fafc;
+  --mlo5-slate-100: #f1f5f9;
+  --mlo5-slate-200: #e2e8f0;
+  --mlo5-slate-300: #cbd5e1;
+  --mlo5-slate-400: #94a3b8;
+  --mlo5-slate-500: #64748b;
+  --mlo5-slate-600: #475569;
+  --mlo5-slate-700: #334155;
+  --mlo5-slate-800: #1e293b;
+  --mlo5-slate-900: #0f172a;
+
+  /* Blue */
+  --mlo5-blue-50:  #eff6ff;
+  --mlo5-blue-100: #dbeafe;
+  --mlo5-blue-200: #bfdbfe;
+  --mlo5-blue-300: #93c5fd;
+  --mlo5-blue-400: #60a5fa;
+  --mlo5-blue-500: #3b82f6;
+  --mlo5-blue-600: #2563eb;
+  --mlo5-blue-700: #1d4ed8;
+  --mlo5-blue-800: #1e40af;
+  --mlo5-blue-900: #1e3a8a;
+
+  /* Green */
+  --mlo5-green-50:  #f0fdf4;
+  --mlo5-green-100: #dcfce7;
+  --mlo5-green-500: #22c55e;
+  --mlo5-green-600: #16a34a;
+  --mlo5-green-700: #15803d;
+  --mlo5-green-800: #166534;
+
+  /* Red */
+  --mlo5-red-50:   #fff5f5;
+  --mlo5-red-100:  #fee2e2;
+  --mlo5-red-200:  #fecaca;
+  --mlo5-red-400:  #f87171;
+  --mlo5-red-500:  #ef4444;
+  --mlo5-red-600:  #dc2626;
+  --mlo5-red-700:  #b91c1c;
+  --mlo5-red-900:  #7f1d1d;
+
+  /* Amber */
+  --mlo5-amber-50:  #fffbeb;
+  --mlo5-amber-100: #fef3c7;
+  --mlo5-amber-200: #fde68a;
+  --mlo5-amber-500: #f59e0b;
+  --mlo5-amber-600: #d97706;
+  --mlo5-amber-700: #b45309;
+  --mlo5-amber-900: #92400e;
+
+  /* Cyan */
+  --mlo5-cyan-50:  #ecfeff;
+  --mlo5-cyan-500: #06b6d4;
+  --mlo5-cyan-600: #0891b2;
+  --mlo5-cyan-700: #0e7279;
+
+  /* Teal */
+  --mlo5-teal-500: #14b8a6;
+  --mlo5-teal-600: #0d9488;
+
+  /* ── §1.2  Semantic Color Tokens ────────────────────────────────── */
+
+  /* Backgrounds */
+  --mlo5-bg-page:        var(--mlo5-slate-100);  /* #f1f5f9 — page canvas */
+  --mlo5-bg-surface:     var(--mlo5-slate-50);   /* #f8fafc — elevated panels */
+  --mlo5-bg-elevated:    #ffffff;                /* Pure white — cards, modals */
+  --mlo5-bg-overlay:     rgba(15,23,42,0.45);    /* Modal backdrop */
+  --mlo5-bg-hover:       var(--mlo5-slate-100);  /* #f1f5f9 */
+  --mlo5-bg-active:      var(--mlo5-blue-50);    /* #eff6ff */
+  --mlo5-bg-selected:    var(--mlo5-blue-50);    /* Selected row/item */
+  --mlo5-bg-input:       #ffffff;
+  --mlo5-bg-input-hover: var(--mlo5-slate-50);
+
+  /* Borders */
+  --mlo5-border:          var(--mlo5-slate-200); /* #e2e8f0 — default */
+  --mlo5-border-strong:   var(--mlo5-slate-300); /* #cbd5e1 — prominent */
+  --mlo5-border-subtle:   var(--mlo5-slate-100); /* #f1f5f9 — hairline */
+  --mlo5-border-focus:    var(--mlo5-blue-300);  /* #93c5fd — focus ring border */
+  --mlo5-border-error:    var(--mlo5-red-400);
+
+  /* Text */
+  --mlo5-text-primary:   var(--mlo5-slate-900);  /* #0f172a — headings */
+  --mlo5-text-secondary: var(--mlo5-slate-700);  /* #334155 — body */
+  --mlo5-text-muted:     var(--mlo5-slate-500);  /* #64748b — captions */
+  --mlo5-text-dim:       var(--mlo5-slate-400);  /* #94a3b8 — placeholders */
+  --mlo5-text-inverted:  #ffffff;
+  --mlo5-text-link:      var(--mlo5-blue-600);
+  --mlo5-text-link-hover:var(--mlo5-blue-700);
+
+  /* Accent / Brand */
+  --mlo5-accent-primary:  var(--mlo5-blue-600);  /* #2563eb */
+  --mlo5-accent-hover:    var(--mlo5-blue-700);  /* #1d4ed8 */
+  --mlo5-accent-subtle:   var(--mlo5-blue-50);   /* #eff6ff */
+  --mlo5-accent-green:    var(--mlo5-green-600);
+  --mlo5-accent-red:      var(--mlo5-red-600);
+  --mlo5-accent-amber:    var(--mlo5-amber-600);
+  --mlo5-accent-cyan:     var(--mlo5-cyan-600);
+  --mlo5-accent-teal:     #00c2b5;               /* Brand teal */
+
+  /* Status */
+  --mlo5-status-success-bg:   var(--mlo5-green-50);
+  --mlo5-status-success-text: var(--mlo5-green-800);
+  --mlo5-status-success-border:var(--mlo5-green-100);
+  --mlo5-status-error-bg:     var(--mlo5-red-50);
+  --mlo5-status-error-text:   var(--mlo5-red-700);
+  --mlo5-status-error-border: var(--mlo5-red-200);
+  --mlo5-status-warning-bg:   var(--mlo5-amber-50);
+  --mlo5-status-warning-text: var(--mlo5-amber-900);
+  --mlo5-status-warning-border:var(--mlo5-amber-200);
+  --mlo5-status-info-bg:      var(--mlo5-blue-50);
+  --mlo5-status-info-text:    var(--mlo5-blue-700);
+  --mlo5-status-info-border:  var(--mlo5-blue-200);
+
+  /* ── §1.3  Typography ───────────────────────────────────────────── */
+  --mlo5-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mlo5-font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+
+  --mlo5-text-2xs: 10px;
+  --mlo5-text-xs:  11px;
+  --mlo5-text-sm:  12px;
+  --mlo5-text-base:13px;
+  --mlo5-text-md:  14px;
+  --mlo5-text-lg:  16px;
+  --mlo5-text-xl:  18px;
+  --mlo5-text-2xl: 20px;
+  --mlo5-text-3xl: 24px;
+  --mlo5-text-4xl: 28px;
+
+  --mlo5-weight-regular:   400;
+  --mlo5-weight-medium:    500;
+  --mlo5-weight-semibold:  600;
+  --mlo5-weight-bold:      700;
+  --mlo5-weight-extrabold: 800;
+
+  --mlo5-leading-tight:  1.25;
+  --mlo5-leading-snug:   1.375;
+  --mlo5-leading-normal: 1.5;
+  --mlo5-leading-relaxed:1.625;
+
+  --mlo5-tracking-tight:  -0.01em;
+  --mlo5-tracking-normal:  0;
+  --mlo5-tracking-wide:    0.03em;
+  --mlo5-tracking-wider:   0.06em;
+  --mlo5-tracking-widest:  0.12em;
+
+  /* ── §1.4  Spacing System (4px base grid) ───────────────────────── */
+  --mlo5-space-1:   4px;
+  --mlo5-space-2:   8px;
+  --mlo5-space-3:   12px;
+  --mlo5-space-4:   16px;
+  --mlo5-space-5:   20px;
+  --mlo5-space-6:   24px;
+  --mlo5-space-8:   32px;
+  --mlo5-space-10:  40px;
+  --mlo5-space-12:  48px;
+  --mlo5-space-16:  64px;
+
+  /* ── §1.5  Border Radius ────────────────────────────────────────── */
+  --mlo5-radius-xs:   4px;
+  --mlo5-radius-sm:   6px;
+  --mlo5-radius-md:   8px;
+  --mlo5-radius-lg:   10px;
+  --mlo5-radius-xl:   12px;
+  --mlo5-radius-2xl:  14px;
+  --mlo5-radius-3xl:  16px;
+  --mlo5-radius-4xl:  20px;
+  --mlo5-radius-full: 9999px;
+
+  /* ── §1.6  Shadow System ────────────────────────────────────────── */
+  --mlo5-shadow-xs:  0 1px 2px rgba(0,0,0,0.05);
+  --mlo5-shadow-sm:  0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --mlo5-shadow-md:  0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.04);
+  --mlo5-shadow-lg:  0 10px 15px rgba(0,0,0,0.06), 0 4px 6px rgba(0,0,0,0.04);
+  --mlo5-shadow-xl:  0 20px 40px rgba(15,23,42,0.10), 0 4px 8px rgba(15,23,42,0.05);
+  --mlo5-shadow-2xl: 0 24px 56px rgba(15,23,42,0.15), 0 6px 12px rgba(15,23,42,0.07);
+  --mlo5-shadow-modal: 0 24px 56px rgba(15,23,42,0.18), 0 6px 12px rgba(15,23,42,0.08);
+  --mlo5-shadow-inset: inset 0 1px 2px rgba(0,0,0,0.04);
+  --mlo5-shadow-card:  0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --mlo5-shadow-hover: 0 4px 12px rgba(37,99,235,0.12);
+
+  /* ── §1.7  Transitions ──────────────────────────────────────────── */
+  --mlo5-duration-fast:   100ms;
+  --mlo5-duration-base:   150ms;
+  --mlo5-duration-slow:   250ms;
+  --mlo5-duration-slower: 350ms;
+  --mlo5-ease-default: ease;
+  --mlo5-ease-in:      ease-in;
+  --mlo5-ease-out:     ease-out;
+  --mlo5-ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --mlo5-transition-fast:   all var(--mlo5-duration-fast)  var(--mlo5-ease-default);
+  --mlo5-transition-base:   all var(--mlo5-duration-base)  var(--mlo5-ease-default);
+  --mlo5-transition-slow:   all var(--mlo5-duration-slow)  var(--mlo5-ease-default);
+  --mlo5-transition-spring: all var(--mlo5-duration-base)  var(--mlo5-ease-spring);
+
+  /* ── §1.8  Focus States ─────────────────────────────────────────── */
+  --mlo5-focus-ring:          0 0 0 3px rgba(37,99,235,0.18);
+  --mlo5-focus-ring-error:    0 0 0 3px rgba(220,38,38,0.18);
+  --mlo5-focus-ring-success:  0 0 0 3px rgba(5,150,105,0.18);
+  --mlo5-focus-ring-color:    var(--mlo5-blue-300);
+
+  /* ── §1.9  Z-Index System ───────────────────────────────────────── */
+  --mlo5-z-base:     1;
+  --mlo5-z-sticky:   100;
+  --mlo5-z-overlay:  200;
+  --mlo5-z-modal:    500;
+  --mlo5-z-dropdown: 600;
+  --mlo5-z-tooltip:  700;
+  --mlo5-z-toast:    800;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §2  BASE RESETS
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light body {
+  background-color: var(--mlo5-bg-page);
+  color:            var(--mlo5-text-primary);
+  font-family:      var(--mlo5-font-sans);
+  font-size:        var(--mlo5-text-base);
+  line-height:      var(--mlo5-leading-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html.light *::selection {
+  background: var(--mlo5-blue-100);
+  color:      var(--mlo5-blue-800);
+}
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §3.1  SCROLLBAR
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light ::-webkit-scrollbar {
+  width:  6px;
+  height: 6px;
+}
+html.light ::-webkit-scrollbar-track {
+  background: var(--mlo5-bg-surface);
+  border-radius: var(--mlo5-radius-full);
+}
+html.light ::-webkit-scrollbar-thumb {
+  background:    var(--mlo5-slate-300);
+  border-radius: var(--mlo5-radius-full);
+  border:        2px solid transparent;
+  background-clip: content-box;
+}
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: var(--mlo5-slate-400);
+  background-clip: content-box;
+}
+html.light ::-webkit-scrollbar-corner { background: transparent; }
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §3.2  BUTTONS
+   ────────────────────────────────────────────────────────────────────── */
+/* All buttons inherit base transition */
+html.light .btn {
+  transition: var(--mlo5-transition-base) !important;
+  font-weight: var(--mlo5-weight-semibold) !important;
+}
+
+/* Primary — solid blue */
+html.light .btn-primary {
+  background: var(--mlo5-accent-primary) !important;
+  border-color: var(--mlo5-accent-primary) !important;
+  color: var(--mlo5-text-inverted) !important;
+  box-shadow: var(--mlo5-shadow-xs) !important;
+}
+html.light .btn-primary:hover {
+  background: var(--mlo5-accent-hover) !important;
+  border-color: var(--mlo5-accent-hover) !important;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.30) !important;
+  transform: translateY(-1px) scale(1.02) !important;
+}
+html.light .btn-primary:active { transform: translateY(0) scale(0.98) !important; }
+
+/* Success — green */
+html.light .btn-success {
+  background: var(--mlo5-accent-green) !important;
+  border-color: var(--mlo5-accent-green) !important;
+  color: var(--mlo5-text-inverted) !important;
+}
+html.light .btn-success:hover { background: var(--mlo5-green-700) !important; border-color: var(--mlo5-green-700) !important; }
+
+/* Warning — amber */
+html.light .btn-warning {
+  background: var(--mlo5-accent-amber) !important;
+  border-color: var(--mlo5-accent-amber) !important;
+  color: var(--mlo5-text-inverted) !important;
+}
+html.light .btn-warning:hover { background: var(--mlo5-amber-700) !important; }
+
+/* Danger — soft red */
+html.light .btn-danger {
+  background: var(--mlo5-red-50) !important;
+  border-color: var(--mlo5-red-200) !important;
+  color: var(--mlo5-red-700) !important;
+}
+html.light .btn-danger:hover {
+  background: var(--mlo5-red-100) !important;
+  border-color: var(--mlo5-red-400) !important;
+  color: var(--mlo5-red-900) !important;
+}
+
+/* Logout */
+html.light .btn-logout {
+  background: var(--mlo5-red-50) !important;
+  border-color: var(--mlo5-red-200) !important;
+  color: var(--mlo5-red-600) !important;
+}
+html.light .btn-logout:hover { background: var(--mlo5-red-100) !important; border-color: var(--mlo5-red-400) !important; color: var(--mlo5-red-700) !important; }
+
+/* Ghost — neutral outline */
+html.light .btn-ghost {
+  background: var(--mlo5-bg-elevated) !important;
+  border: 1px solid var(--mlo5-border) !important;
+  color: var(--mlo5-text-secondary) !important;
+  box-shadow: var(--mlo5-shadow-xs) !important;
+}
+html.light .btn-ghost:hover {
+  background: var(--mlo5-bg-hover) !important;
+  border-color: var(--mlo5-border-strong) !important;
+  color: var(--mlo5-text-primary) !important;
+}
+
+/* Destructive modal actions */
+html.light .btn-in-modal  { background: var(--mlo5-accent-green) !important; border-color: var(--mlo5-accent-green) !important; color: #fff !important; }
+html.light .btn-out-modal { background: var(--mlo5-accent-red) !important; border-color: var(--mlo5-accent-red) !important; color: #fff !important; }
+html.light .btn-in-modal:hover  { background: var(--mlo5-green-700) !important; }
+html.light .btn-out-modal:hover { background: var(--mlo5-red-700) !important; }
+
+/* Universal press effect */
+html.light .btn:active { transform: translateY(1px) scale(0.97) !important; box-shadow: none !important; transition: all 70ms !important; }
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §3.3  INPUTS & FORM CONTROLS
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html.light textarea,
+html.light select {
+  background:    var(--mlo5-bg-input) !important;
+  border:        1px solid var(--mlo5-slate-300) !important;
+  color:         var(--mlo5-text-primary) !important;
+  border-radius: var(--mlo5-radius-md) !important;
+  box-shadow:    var(--mlo5-shadow-inset) !important;
+  transition:    border-color var(--mlo5-duration-base) var(--mlo5-ease-default),
+                 box-shadow   var(--mlo5-duration-base) var(--mlo5-ease-default) !important;
+}
+html.light input::placeholder,
+html.light textarea::placeholder { color: var(--mlo5-text-dim) !important; }
+html.light input:hover,
+html.light textarea:hover { border-color: var(--mlo5-border-strong) !important; }
+html.light input:focus,
+html.light textarea:focus,
+html.light select:focus {
+  border-color: var(--mlo5-focus-ring-color) !important;
+  box-shadow:   var(--mlo5-focus-ring) !important;
+  outline:      none !important;
+}
+html.light input.error,
+html.light textarea.error { border-color: var(--mlo5-border-error) !important; box-shadow: var(--mlo5-focus-ring-error) !important; }
+
+/* Field hints */
+html.light .field-hint { color: var(--mlo5-accent-red) !important; font-size: var(--mlo5-text-xs) !important; }
+
+/* Toggle / switch */
+html.light input[type="checkbox"]:checked + .toggle-slider { background: var(--mlo5-accent-primary) !important; }
+html.light .toggle-slider { background: var(--mlo5-slate-300) !important; }
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §3.4  CARDS
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light .card,
+html.light .modal-info-item,
+html.light .beta-card,
+html.light .dash-kpi-card,
+html.light .dash-chart-wrap,
+html.light .dash-leader-card,
+html.light .dash-meta-card,
+html.light .dash-mini-card {
+  background:    var(--mlo5-bg-elevated) !important;
+  border:        1px solid var(--mlo5-border) !important;
+  border-radius: var(--mlo5-radius-2xl) !important;
+  box-shadow:    var(--mlo5-shadow-card) !important;
+}
+html.light .card:hover,
+html.light .dash-kpi-card:hover {
+  border-color: var(--mlo5-blue-300) !important;
+  box-shadow:   var(--mlo5-shadow-hover) !important;
+  transform:    translateY(-1px) !important;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §3.5  TABLES
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light .data-table { border: 1px solid var(--mlo5-border) !important; border-radius: var(--mlo5-radius-xl) !important; overflow: hidden !important; }
+html.light .data-table thead th {
+  background:    var(--mlo5-bg-surface) !important;
+  color:         var(--mlo5-text-secondary) !important;
+  border-bottom: 2px solid var(--mlo5-border) !important;
+  font-size:     var(--mlo5-text-xs) !important;
+  font-weight:   var(--mlo5-weight-bold) !important;
+  text-transform: uppercase !important;
+  letter-spacing: var(--mlo5-tracking-wide) !important;
+}
+html.light .data-table tbody td {
+  color:         var(--mlo5-text-primary) !important;
+  border-bottom: 1px solid var(--mlo5-bg-surface) !important;
+}
+html.light .data-table tbody tr:nth-child(even) td { background: var(--mlo5-bg-surface) !important; }
+html.light .data-table tbody tr:hover td { background: var(--mlo5-bg-active) !important; }
+
+/* Log sheet colors */
+html.light .row-in  { background: var(--mlo5-status-success-bg) !important; }
+html.light .row-out { background: var(--mlo5-status-error-bg) !important; }
+html.light .row-in  td:first-child { border-left: 3px solid var(--mlo5-green-500) !important; }
+html.light .row-out td:first-child { border-left: 3px solid var(--mlo5-red-500) !important; }
+html.light .row-in  td { color: var(--mlo5-green-800) !important; font-weight: var(--mlo5-weight-semibold) !important; }
+html.light .row-out td { color: var(--mlo5-red-700) !important;  font-weight: var(--mlo5-weight-semibold) !important; }
+
+/* Zone/dash tables */
+html.light .dash-zone-table th,
+html.light .users-table th {
+  background:     var(--mlo5-bg-surface) !important;
+  color:          var(--mlo5-text-secondary) !important;
+  border-bottom:  2px solid var(--mlo5-border) !important;
+  font-size:      var(--mlo5-text-xs) !important;
+  font-weight:    var(--mlo5-weight-bold) !important;
+  text-transform: uppercase !important;
+  letter-spacing: var(--mlo5-tracking-wide) !important;
+}
+html.light .dash-zone-table td,
+html.light .users-table td {
+  color:         var(--mlo5-text-primary) !important;
+  border-bottom: 1px solid var(--mlo5-bg-surface) !important;
+  background:    var(--mlo5-bg-elevated) !important;
+}
+html.light .dash-zone-table tr:hover td,
+html.light .users-table tr:hover td { background: var(--mlo5-bg-active) !important; }
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §3.6  MODALS & OVERLAYS
+   ────────────────────────────────────────────────────────────────────── */
+
+/* Overlay backdrop */
+html.light .modal-overlay,
+html.light #csvModal,
+html.light .logout-overlay,
+html.light #usersModal,
+html.light #profileModal,
+html.light #adminRequestsModal, html.light #adminMessagesModal,
+html.light #adminUsersModal, html.light #adminUserDetailModal,
+html.light #printModal, html.light #soonModal, html.light #dashModal {
+  background: var(--mlo5-bg-overlay) !important;
+  backdrop-filter: blur(6px) !important;
+}
+
+/* Modal panels */
+html.light .modal-box,
+html.light .csv-modal-box,
+html.light .logout-box,
+html.light .users-box,
+html.light .profile-box,
+html.light .pwd-box,
+html.light .soon-box {
+  background:    var(--mlo5-bg-elevated) !important;
+  border:        1px solid var(--mlo5-border) !important;
+  border-radius: var(--mlo5-radius-4xl) !important;
+  box-shadow:    var(--mlo5-shadow-modal) !important;
+  backdrop-filter: none !important;
+}
+
+/* ::before glow lines removed */
+html.light .modal-box::before, html.light .csv-modal-box::before,
+html.light .logout-box::before, html.light .users-box::before,
+html.light .profile-box::before { display: none !important; }
+
+/* Modal headers */
+html.light .csv-modal-header,
+html.light .users-header {
+  background:     var(--mlo5-bg-surface) !important;
+  border-bottom:  1px solid var(--mlo5-border) !important;
+}
+
+/* Close buttons */
+html.light .modal-close, html.light .csv-modal-close, html.light .profile-close,
+html.light .modal-hdr-btn.modal-hdr-close, html.light .modal-hdr-close,
+html.light .dash-close-btn {
+  background:    var(--mlo5-bg-surface) !important;
+  border:        1px solid var(--mlo5-border) !important;
+  color:         var(--mlo5-text-muted) !important;
+  border-radius: var(--mlo5-radius-md) !important;
+  width: 28px !important; height: 28px !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+  cursor: pointer !important;
+  transition: var(--mlo5-transition-base) !important;
+}
+html.light .modal-close:hover, html.light .csv-modal-close:hover, html.light .profile-close:hover,
+html.light .modal-hdr-btn.modal-hdr-close:hover, html.light .modal-hdr-close:hover,
+html.light .dash-close-btn:hover {
+  background:    var(--mlo5-red-100) !important;
+  border-color:  var(--mlo5-red-400) !important;
+  color:         var(--mlo5-red-600) !important;
+  transform:     scale(1.06) !important;
+}
+
+/* Modal text hierarchy */
+html.light .modal-title, html.light .csv-modal-title,
+html.light .beta-title, html.light .logout-title { color: var(--mlo5-text-primary) !important; font-weight: var(--mlo5-weight-bold) !important; }
+html.light .modal-subtitle, html.light .csv-modal-sub,
+html.light .beta-credit, html.light .logout-msg { color: var(--mlo5-text-muted) !important; }
+
+/* Info grids inside modals */
+html.light .modal-info-item, html.light .print-modal-info,
+html.light .csv-modal-info, html.light .admin-detail-item {
+  background:    var(--mlo5-bg-surface) !important;
+  border:        1px solid var(--mlo5-border) !important;
+  border-radius: var(--mlo5-radius-lg) !important;
+}
+
+/* Edit Mode pwd modal */
+html.light .pwd-overlay > div {
+  background:    var(--mlo5-bg-elevated) !important;
+  border:        1px solid var(--mlo5-border) !important;
+  border-radius: var(--mlo5-radius-4xl) !important;
+  box-shadow:    var(--mlo5-shadow-modal) !important;
+  backdrop-filter: none !important;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §3.7  DROPDOWNS & MENUS
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light .reports-dropdown-menu {
+  background:    var(--mlo5-bg-elevated) !important;
+  border:        1px solid var(--mlo5-border) !important;
+  border-radius: var(--mlo5-radius-2xl) !important;
+  box-shadow:    var(--mlo5-shadow-lg) !important;
+  backdrop-filter: none !important;
+}
+html.light .reports-dropdown-menu::before { display: none !important; }
+html.light .reports-dropdown-item {
+  color:         var(--mlo5-text-secondary) !important;
+  background:    transparent !important;
+  border-radius: var(--mlo5-radius-lg) !important;
+  transition:    var(--mlo5-transition-base) !important;
+}
+html.light .reports-dropdown-item:hover {
+  background: var(--mlo5-bg-hover) !important;
+  color:      var(--mlo5-text-primary) !important;
+  transform:  translateX(-2px) !important;
+}
+html.light .reports-dropdown-empty { color: var(--mlo5-text-dim) !important; }
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §3.8  NAVIGATION / SIDEBAR
+   ────────────────────────────────────────────────────────────────────── */
+
+/* Index page sidebar */
+html.light .sidebar {
+  background: var(--mlo5-bg-elevated) !important;
+  border-right: 1px solid var(--mlo5-border) !important;
+  backdrop-filter: none !important;
+}
+html.light .sidebar-label {
+  color:          var(--mlo5-text-muted) !important;
+  font-size:      var(--mlo5-text-xs) !important;
+  font-weight:    var(--mlo5-weight-bold) !important;
+  text-transform: uppercase !important;
+  letter-spacing: var(--mlo5-tracking-widest) !important;
+}
+html.light .sidebar-toggle-btn {
+  background:    var(--mlo5-bg-elevated) !important;
+  border:        1px solid var(--mlo5-border) !important;
+  border-left:   none !important;
+  color:         var(--mlo5-text-muted) !important;
+}
+html.light .sidebar-toggle-btn:hover { background: var(--mlo5-bg-hover) !important; color: var(--mlo5-text-primary) !important; }
+
+/* Sidebar nav items */
+html.light .file-item { color: var(--mlo5-text-muted) !important; border-color: transparent !important; background: transparent !important; }
+html.light .file-item:hover { background: var(--mlo5-bg-hover) !important; color: var(--mlo5-text-primary) !important; border-color: var(--mlo5-border) !important; }
+html.light .file-item.active { background: var(--mlo5-bg-active) !important; border-color: var(--mlo5-blue-200) !important; color: var(--mlo5-blue-700) !important; font-weight: var(--mlo5-weight-semibold) !important; }
+html.light .sheet-tab { color: var(--mlo5-text-muted) !important; }
+html.light .sheet-tab:hover { background: var(--mlo5-bg-hover) !important; color: var(--mlo5-text-primary) !important; }
+html.light .sheet-tab.active { background: var(--mlo5-bg-active) !important; border-color: var(--mlo5-blue-200) !important; color: var(--mlo5-blue-700) !important; font-weight: var(--mlo5-weight-semibold) !important; }
+html.light .month-pill { background: var(--mlo5-bg-elevated) !important; border: 1px solid var(--mlo5-border) !important; color: var(--mlo5-text-muted) !important; }
+html.light .month-pill:hover { border-color: var(--mlo5-blue-300) !important; color: var(--mlo5-blue-700) !important; background: var(--mlo5-bg-active) !important; }
+html.light .month-pill.active { background: var(--mlo5-accent-primary) !important; border-color: var(--mlo5-accent-primary) !important; color: var(--mlo5-text-inverted) !important; font-weight: var(--mlo5-weight-semibold) !important; }
+
+/* Dashboard sidebar */
+html.light .dash-sidebar {
+  background:    var(--mlo5-bg-elevated) !important;
+  border-right:  1px solid var(--mlo5-border) !important;
+  box-shadow:    1px 0 0 var(--mlo5-border) !important;
+}
+html.light .dash-sidebar-title {
+  color:          var(--mlo5-text-dim) !important;
+  font-size:      var(--mlo5-text-2xs) !important;
+  font-weight:    var(--mlo5-weight-extrabold) !important;
+  letter-spacing: var(--mlo5-tracking-widest) !important;
+  text-transform: uppercase !important;
+}
+html.light .dash-nav-sep    { background: var(--mlo5-border-subtle) !important; }
+html.light .dn-dot          { background: var(--mlo5-slate-300) !important; }
+html.light .dash-nav-item   { color: var(--mlo5-text-muted) !important; border-radius: var(--mlo5-radius-lg) !important; }
+html.light .dash-nav-item:hover  { background: var(--mlo5-bg-hover) !important; color: var(--mlo5-text-primary) !important; }
+html.light .dash-nav-item:hover .dn-dot { background: var(--mlo5-slate-400) !important; }
+html.light .dash-nav-item.active {
+  background:   var(--mlo5-bg-active) !important;
+  color:        var(--mlo5-blue-700) !important;
+  font-weight:  var(--mlo5-weight-bold) !important;
+  border-color: transparent !important;
+}
+html.light .dash-nav-item.active .dn-dot {
+  background:  var(--mlo5-accent-primary) !important;
+  box-shadow:  0 0 0 2px rgba(37,99,235,0.18) !important;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §3.9  BADGES & TAGS
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light .badge-blue   { background: var(--mlo5-status-info-bg)    !important; color: var(--mlo5-status-info-text)    !important; border-color: var(--mlo5-status-info-border)    !important; }
+html.light .badge-green  { background: var(--mlo5-status-success-bg) !important; color: var(--mlo5-status-success-text) !important; border-color: var(--mlo5-status-success-border) !important; }
+html.light .badge-edit   { background: var(--mlo5-status-warning-bg) !important; color: var(--mlo5-status-warning-text) !important; border-color: var(--mlo5-status-warning-border) !important; }
+html.light .user-badge   { background: var(--mlo5-status-info-bg)    !important; border: 1px solid var(--mlo5-status-info-border) !important; color: var(--mlo5-blue-700) !important; font-weight: var(--mlo5-weight-semibold) !important; }
+html.light .zone-badge   { background: var(--mlo5-bg-surface) !important; border: 1px solid var(--mlo5-border) !important; color: var(--mlo5-text-secondary) !important; }
+
+/* Alert item badges */
+html.light .dash-alert-badge.amber { background: var(--mlo5-status-warning-bg) !important; color: var(--mlo5-status-warning-text) !important; }
+html.light .dash-alert-badge.red   { background: var(--mlo5-status-error-bg)   !important; color: var(--mlo5-status-error-text)   !important; }
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §3.10 ALERTS
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light .dash-alert-item {
+  background:    var(--mlo5-bg-elevated) !important;
+  border:        1px solid var(--mlo5-border) !important;
+  border-radius: var(--mlo5-radius-lg) !important;
+  box-shadow:    var(--mlo5-shadow-xs) !important;
+}
+html.light .dash-alert-item.warn   { border-left: 3px solid var(--mlo5-amber-600) !important; }
+html.light .dash-alert-item.danger { border-left: 3px solid var(--mlo5-red-600)   !important; }
+html.light .dash-alert-item.info   { border-left: 3px solid var(--mlo5-accent-primary) !important; }
+html.light .dash-alert-name { color: var(--mlo5-text-primary) !important; font-weight: var(--mlo5-weight-semibold) !important; }
+html.light .dash-alert-desc { color: var(--mlo5-text-muted) !important; }
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §3.11 TOASTS
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light #toast {
+  background:    var(--mlo5-slate-900) !important;
+  color:         var(--mlo5-bg-surface) !important;
+  border:        none !important;
+  border-radius: var(--mlo5-radius-2xl) !important;
+  box-shadow:    0 8px 24px rgba(15,23,42,0.22) !important;
+  font-size:     var(--mlo5-text-sm) !important;
+  font-weight:   var(--mlo5-weight-medium) !important;
+}
+html.light #toast.toast-ok  { border-left: 3px solid var(--mlo5-green-500) !important; }
+html.light #toast.toast-err { border-left: 3px solid var(--mlo5-red-500) !important; }
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §3.12 LOADING & EMPTY STATES
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light .dash-empty {
+  background:    var(--mlo5-bg-surface) !important;
+  border:        1px dashed var(--mlo5-border-strong) !important;
+  border-radius: var(--mlo5-radius-2xl) !important;
+  color:         var(--mlo5-text-dim) !important;
+}
+html.light .dash-loading { color: var(--mlo5-text-muted) !important; }
+html.light .dash-loading .spinner {
+  border-color:     var(--mlo5-border) !important;
+  border-top-color: var(--mlo5-accent-primary) !important;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §3.13 TOOLTIPS
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light .tooltip {
+  background:    var(--mlo5-slate-900) !important;
+  color:         var(--mlo5-bg-surface) !important;
+  border:        none !important;
+  box-shadow:    var(--mlo5-shadow-md) !important;
+  border-radius: var(--mlo5-radius-md) !important;
+  font-size:     var(--mlo5-text-xs) !important;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §4.1  LAYOUT — TOPBAR
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light .topbar {
+  background:   var(--mlo5-bg-elevated) !important;
+  border-bottom: 1px solid var(--mlo5-border) !important;
+  box-shadow:    0 1px 0 var(--mlo5-border) !important;
+  backdrop-filter: none !important;
+}
+html.light .topbar::after { display: none !important; }
+html.light .topbar-blob   { display: none !important; }
+html.light .brand-text h1 { color: var(--mlo5-text-primary) !important; font-weight: var(--mlo5-weight-bold) !important; }
+html.light .brand-text p  { color: var(--mlo5-text-muted) !important; }
+html.light .clock         { color: var(--mlo5-text-muted) !important; font-size: var(--mlo5-text-sm) !important; }
+
+/* Topbar buttons — unified flat style */
+html.light .theme-btn,
+html.light #homeBtn, html.light #dashBtn, html.light #refreshBtn,
+html.light #printBtn, html.light #csvBtn, html.light #aboutBtn,
+html.light #logoutBtn, html.light #logoutThemeBtn,
+html.light #reportsBtn, html.light #adminRequestsBtn, html.light #adminUsersBtn,
+html.light #forMoreMessagesBtn, html.light #buttonsToggleBtn {
+  background: var(--mlo5-bg-surface) !important;
+  border:     1px solid var(--mlo5-border) !important;
+  color:      var(--mlo5-text-secondary) !important;
+  box-shadow: var(--mlo5-shadow-xs) !important;
+  transition: var(--mlo5-transition-base) !important;
+}
+html.light .theme-btn:hover,
+html.light #homeBtn:hover, html.light #dashBtn:hover, html.light #refreshBtn:hover,
+html.light #printBtn:hover, html.light #csvBtn:hover, html.light #aboutBtn:hover,
+html.light #reportsBtn:hover, html.light #adminRequestsBtn:hover,
+html.light #adminUsersBtn:hover, html.light #forMoreMessagesBtn:hover,
+html.light #buttonsToggleBtn:hover {
+  background:    var(--mlo5-bg-hover) !important;
+  border-color:  var(--mlo5-border-strong) !important;
+  color:         var(--mlo5-text-primary) !important;
+  box-shadow:    var(--mlo5-shadow-sm) !important;
+  transform:     none !important;
+}
+html.light #logoutBtn, html.light #logoutThemeBtn {
+  color:        var(--mlo5-red-600) !important;
+  border-color: var(--mlo5-red-200) !important;
+  background:   var(--mlo5-red-50) !important;
+}
+html.light #logoutBtn:hover, html.light #logoutThemeBtn:hover {
+  background:   var(--mlo5-red-100) !important;
+  border-color: var(--mlo5-red-400) !important;
+  color:        var(--mlo5-red-700) !important;
+}
+html.light #buttonsToggleBtn.active {
+  background:   var(--mlo5-bg-active) !important;
+  border-color: var(--mlo5-blue-200) !important;
+  color:        var(--mlo5-accent-primary) !important;
+}
+html.light .theme-btn.login-history-btn {
+  background:   var(--mlo5-bg-surface) !important;
+  border:       1px solid var(--mlo5-border) !important;
+  color:        var(--mlo5-text-secondary) !important;
+  box-shadow:   var(--mlo5-shadow-xs) !important;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §4.2  LAYOUT — CONTENT AREA
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light .main           { background: var(--mlo5-bg-page) !important; }
+html.light .content-header {
+  background:    var(--mlo5-bg-elevated) !important;
+  border-bottom: 1px solid var(--mlo5-border) !important;
+  box-shadow:    0 1px 0 var(--mlo5-border) !important;
+}
+html.light .content-title h2 { color: var(--mlo5-text-primary) !important; }
+html.light .toolbar {
+  background:    var(--mlo5-bg-surface) !important;
+  border-bottom: 1px solid var(--mlo5-border) !important;
+}
+html.light .sheet-btn {
+  background:    var(--mlo5-bg-surface) !important;
+  border:        1px solid var(--mlo5-border) !important;
+  color:         var(--mlo5-text-muted) !important;
+  box-shadow:    var(--mlo5-shadow-xs) !important;
+}
+html.light .sheet-btn:hover  { background: var(--mlo5-bg-hover) !important; border-color: var(--mlo5-border-strong) !important; color: var(--mlo5-text-primary) !important; }
+html.light .sheet-btn.active { background: var(--mlo5-bg-active) !important; border-color: var(--mlo5-blue-300) !important; color: var(--mlo5-blue-700) !important; font-weight: var(--mlo5-weight-semibold) !important; }
+
+html.light .ct-icon {
+  background: linear-gradient(135deg, var(--mlo5-blue-50), var(--mlo5-bg-active)) !important;
+  border:     1px solid var(--mlo5-blue-200) !important;
+  color:      var(--mlo5-accent-primary) !important;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §4.3  LAYOUT — STATUS BAR
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light .statusbar {
+  background:  var(--mlo5-bg-elevated) !important;
+  border-top:  1px solid var(--mlo5-border) !important;
+  color:       var(--mlo5-text-muted) !important;
+}
+html.light .status-dot {
+  background:  var(--mlo5-green-500) !important;
+  box-shadow:  0 0 0 2px rgba(34,197,94,0.18) !important;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §4.4  BACKGROUND DECORATIONS — removed in light mode
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light .bg-blob { opacity: 0.03; }
+html.light .bg-grid { display: none !important; }
