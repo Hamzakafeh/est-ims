@@ -1286,12 +1286,13 @@ function dashShow(view) {
   const d = _dashData;
   if (!d) return;
 
-  if (view === 'overview')  dashOverview(d);
-  if (view === 'movement')  dashMovement(d);
-  if (view === 'alerts')    dashAlerts(d);
-  if (view === 'top')       dashTop(d);
-  if (view === 'summary')   dashConsumptionSummary(d);
-  if (view === 'zones')     dashZones(d);
+  if (view === 'overview')    dashOverview(d);
+  if (view === 'movement')    dashMovement(d);
+  if (view === 'alerts')      dashAlerts(d);
+  if (view === 'top')         dashTop(d);
+  if (view === 'summary')     dashConsumptionSummary(d);
+  if (view === 'zones')       dashZones(d);
+  if (view === 'logactivity') dashLogActivity(d);
   if (view === 'stocktaking') dashStocktaking();
   if (view === 'excelstatus') dashExcelStatus();
 
@@ -1720,6 +1721,95 @@ function dashZones(d) {
     { label:'IN', data: zones.map(z => (d.zone_in || {})[z] || 0), backgroundColor:'rgba(16,185,129,0.7)' },
     { label:'OUT', data: zones.map(z => (d.zone_out || {})[z] || 0), backgroundColor:'rgba(239,68,68,0.7)' },
   ]);
+}
+
+/* ── LOG ACTIVITY ── */
+function dashLogActivity(d) {
+  const logItems = (d.log_top_items || []).slice(0, 12);
+  const daily    = d.log_daily_out || {};
+  const recent   = (d.log_recent_ops || []).slice(0, 25);
+  const dailyKeys = Object.keys(daily).sort();
+
+  const topRows = logItems.map((item, i) => {
+    const pct = logItems[0]?.out > 0 ? Math.round((item.out / logItems[0].out) * 100) : 0;
+    return `<tr>
+      <td style="color:var(--text-dim);font-size:11px;">${i + 1}</td>
+      <td><strong>${escHtml(item.name)}</strong></td>
+      <td style="color:var(--accent-red);font-weight:700;font-family:'JetBrains Mono',monospace;">${fmtDashNum(item.out)}</td>
+      <td style="min-width:80px;">
+        <div style="background:rgba(239,68,68,0.15);border-radius:4px;overflow:hidden;height:8px;">
+          <div style="background:rgba(239,68,68,0.75);height:100%;width:${pct}%;border-radius:4px;"></div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const recentRows = recent.map(op => {
+    const isOut = op.op === 'OUT';
+    return `<div class="dash-alert-item" style="padding:8px 12px;gap:10px;">
+      <div style="font-size:10px;font-weight:800;color:${isOut ? 'var(--accent-red)' : 'var(--accent-green)'};min-width:30px;text-align:center;">${escHtml(op.op)}</div>
+      <div class="dash-alert-text">
+        <div class="dash-alert-name" style="font-size:12px;">${escHtml(op.item)}</div>
+        <div class="dash-alert-desc">${escHtml(op.time)} · ${escHtml(op.zone)}</div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:${isOut ? 'var(--accent-red)' : 'var(--accent-green)'};">${fmtDashNum(op.qty)}</div>
+    </div>`;
+  }).join('');
+
+  const hasItems  = logItems.length > 0;
+  const hasDaily  = dailyKeys.length > 0;
+  const hasRecent = recent.length > 0;
+  const noData = !hasItems && !hasRecent;
+
+  setDashContent(`
+    ${dashHeader('Log Activity', 'Actual IN/OUT operations read from Log sheets')}
+    <div class="dash-kpi-grid">
+      ${dashKpi('Operations', fmtDashNum(d.log_ops_count), 'Total log records', 'blue')}
+      ${dashKpi('Total OUT', fmtDashNum(d.log_total_out), 'Issued from Log', 'red')}
+      ${dashKpi('Total IN',  fmtDashNum(d.log_total_in),  'Received from Log', 'green')}
+      ${dashKpi('Items Moving', fmtDashNum(logItems.length), 'Unique items with OUT', 'cyan')}
+    </div>
+    ${noData ? '<div class="dash-empty">No Log sheet data found. Make sure the Excel files have a sheet named "Log" with IN/OUT operations.</div>' : `
+    <div class="dash-section-grid">
+      <div class="dash-chart-wrap">
+        <div class="dash-chart-title">Most Withdrawn Items (from Log)</div>
+        ${hasItems ? '<canvas id="dashChartCanvas" style="max-height:260px;"></canvas>' : '<div class="dash-empty">No OUT entries in Log yet.</div>'}
+      </div>
+      <div class="dash-chart-wrap">
+        <div class="dash-chart-title">Daily OUT Trend</div>
+        ${hasDaily ? '<canvas id="dashChartCanvas2" style="max-height:260px;"></canvas>' : '<div class="dash-empty">No date data in Log yet.</div>'}
+      </div>
+    </div>
+    ${hasItems ? `
+    <div class="dash-chart-wrap dash-zone-table-wrap" style="padding:0;overflow:hidden;">
+      <table class="dash-zone-table">
+        <thead><tr><th>#</th><th>Item</th><th>Total OUT</th><th>Share</th></tr></thead>
+        <tbody>${topRows}</tbody>
+      </table>
+    </div>` : ''}
+    ${hasRecent ? `
+    <div class="dash-chart-wrap">
+      <div class="dash-chart-title">Recent Operations (latest ${recent.length})</div>
+      <div style="max-height:220px;overflow-y:auto;padding:4px 0;">${recentRows}</div>
+    </div>` : ''}`}
+  `);
+
+  if (hasItems) {
+    drawDashChart('dashChartCanvas', 'bar',
+      logItems.map(i => i.name.length > 22 ? i.name.slice(0, 20) + '…' : i.name),
+      [{ label: 'OUT Qty', data: logItems.map(i => i.out), backgroundColor: 'rgba(239,68,68,0.75)' }],
+      { indexAxis: 'y' }
+    );
+  }
+  if (hasDaily) {
+    drawDashChart('dashChartCanvas2', 'line', dailyKeys, [{
+      label: 'OUT / Day',
+      data: dailyKeys.map(k => daily[k]),
+      borderColor: 'rgba(239,68,68,0.9)',
+      backgroundColor: 'rgba(239,68,68,0.12)',
+      fill: true, tension: 0.35, pointRadius: 4,
+    }]);
+  }
 }
 
 function drawDashChart(canvasId, type, labels, datasets, extra={}, yLabel='') {

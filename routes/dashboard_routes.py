@@ -75,9 +75,11 @@ def api_dashboard():
     unreadable  = 0
     latest_mtime = None
     # Log sheet data: IN/OUT operations
-    log_in_ops  = []   # list of {'time','qty','item','category','file','zone'}
+    log_in_ops  = []
     log_out_ops = []
-    log_item_out = {}  # item_name -> total out from Log
+    log_item_out  = {}   # item_label -> total OUT qty
+    log_daily_out = {}   # date_str  -> total OUT qty (for trend chart)
+    log_recent_ops = []  # latest operations for activity feed
 
     def to_number(value):
         if value in (None, ''):
@@ -148,32 +150,56 @@ def api_dashboard():
                 if not log_rows_all:
                     continue
                 log_headers = [str(v).strip() if v else '' for v in log_rows_all[0]]
-                # Find column indices: Time(0), Type(1), Qty(2), Balance(3), Color(4/name), Size(5), ItemType(6), Category(7)
-                # Based on LOG_COL_* constants
                 lh = {h.lower(): i for i, h in enumerate(log_headers) if h}
-                # Try by position fallback or header name
-                ci_type = lh.get('type', lh.get('operation', 1))
-                ci_qty  = lh.get('qty', lh.get('quantity', 2))
-                ci_color = lh.get('color', lh.get('item', lh.get('name', 4)))
-                ci_cat  = lh.get('category', lh.get('item type', 7))
-                ci_size = lh.get('size', 5)
+                # Actual Log headers: Date-Time | Process | Quantity | QAA | Color | Size | Type | Category | Note
+                # ci_op  = the IN/OUT process column (header: "Process")
+                # ci_itype = the item type column   (header: "Type", e.g. "Chicken", "Wood")
+                ci_op    = lh.get('process', lh.get('operation', lh.get('in/out', 1)))
+                ci_qty   = lh.get('quantity', lh.get('qty', 2))
+                ci_color = lh.get('color', lh.get('colour', 4))
+                ci_size  = lh.get('size', 5)
+                ci_itype = lh.get('type', lh.get('item type', 6))
+                ci_cat   = lh.get('category', 7)
+                ci_time  = lh.get('date-time', lh.get('datetime', lh.get('date', 0)))
                 for lrow in log_rows_all[1:]:
                     if not lrow or all(v is None for v in lrow):
                         continue
                     def lget(idx):
                         try: return lrow[idx] if idx < len(lrow) else None
                         except: return None
-                    op  = str(lget(ci_type) or '').strip().upper()
-                    qty = to_number(lget(ci_qty))
-                    color = str(lget(ci_color) or '').strip()
-                    cat   = str(lget(ci_cat) or '').strip()
-                    size  = str(lget(ci_size) or '').strip()
-                    item_label = ' - '.join(p for p in [cat, color, size] if p) or color or '—'
+                    op        = str(lget(ci_op)    or '').strip().upper()
+                    qty       = to_number(lget(ci_qty))
+                    color     = str(lget(ci_color) or '').strip()
+                    size      = str(lget(ci_size)  or '').strip()
+                    item_type = str(lget(ci_itype) or '').strip()
+                    cat       = str(lget(ci_cat)   or '').strip()
+                    time_val  = lget(ci_time)
+                    # Build label: Type is most descriptive (Chicken, Wood, Koptimix…)
+                    parts = [p for p in [item_type, color, size] if p and p not in ('', 'None', 'none')]
+                    item_label = ' - '.join(parts) if parts else (color or cat or '—')
+                    # Parse timestamp for daily trend
+                    date_str = ''
+                    time_str = ''
+                    if time_val is not None:
+                        try:
+                            if hasattr(time_val, 'strftime'):
+                                date_str = time_val.strftime('%Y-%m-%d')
+                                time_str = time_val.strftime('%Y-%m-%d %H:%M')
+                            else:
+                                s = str(time_val)
+                                date_str = s[:10]
+                                time_str = s[:16]
+                        except Exception:
+                            pass
                     if op == 'IN' and qty:
                         log_in_ops.append({'qty': qty, 'item': item_label, 'zone': zone_label})
+                        log_recent_ops.append({'time': time_str, 'op': 'IN',  'qty': qty, 'item': item_label, 'zone': zone_label})
                     elif op == 'OUT' and qty:
                         log_out_ops.append({'qty': qty, 'item': item_label, 'zone': zone_label})
                         log_item_out[item_label] = log_item_out.get(item_label, 0) + qty
+                        log_recent_ops.append({'time': time_str, 'op': 'OUT', 'qty': qty, 'item': item_label, 'zone': zone_label})
+                        if date_str:
+                            log_daily_out[date_str] = log_daily_out.get(date_str, 0) + qty
             except Exception as _le:
                 pass
 
@@ -288,13 +314,15 @@ def api_dashboard():
     generated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     scope = 'All zones' if len(scan_zones) > 1 else (next((z['name'] for z in ZONES if z['id'] == scan_zones[0]), scan_zones[0]) if scan_zones else zone_id)
 
-    # Build log-based top items (from actual Log sheet operations)
     log_top_items = sorted(
         [{'name': k, 'out': round(v, 2)} for k, v in log_item_out.items()],
         key=lambda x: x['out'], reverse=True
-    )[:10]
+    )[:15]
     log_total_in  = round(sum(op['qty'] for op in log_in_ops), 2)
     log_total_out = round(sum(op['qty'] for op in log_out_ops), 2)
+    # Sort recent ops by time descending, keep latest 40
+    log_recent_ops_sorted = sorted(log_recent_ops, key=lambda x: x.get('time', ''), reverse=True)[:40]
+    log_daily_out_sorted  = {k: round(v, 2) for k, v in sorted(log_daily_out.items())}
 
     return jsonify({
         'total_items': total_items,
@@ -321,11 +349,12 @@ def api_dashboard():
         'scope': scope,
         'selected_zone': requested_zone if is_super and requested_zone else ('all' if is_super else zone_id),
         'dashboard_zones': [{'id': 'all', 'name': 'All zones'}] + [{'id': z['id'], 'name': z['name'], 'label': z['label']} for z in available_dashboard_zones] if is_super else [],
-        # Log sheet data
-        'log_top_items': log_top_items,
-        'log_total_in':  log_total_in,
-        'log_total_out': log_total_out,
-        'log_ops_count': len(log_in_ops) + len(log_out_ops),
+        'log_top_items':   log_top_items,
+        'log_total_in':    log_total_in,
+        'log_total_out':   log_total_out,
+        'log_ops_count':   len(log_in_ops) + len(log_out_ops),
+        'log_daily_out':   log_daily_out_sorted,
+        'log_recent_ops':  log_recent_ops_sorted,
     })
 
 @dashboard_bp.route('/api/login_log')
