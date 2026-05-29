@@ -2845,6 +2845,282 @@ html.light .sidebar-toggle-btn {
 }
 html.light .sidebar-toggle-btn:hover { background: #f1f5f9 !important; color: #0f172a !important; }
 
+/* ═══════════════════════════════════════════
+   DASHBOARD MODAL — Full Light Mode Redesign
+   ═══════════════════════════════════════════ */
+
+/* Overlay */
+html.light #dashModal {
+  background: rgba(15,23,42,0.45) !important;
+  backdrop-filter: blur(6px) !important;
+}
+
+/* Container */
+html.light .dash-box {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 24px 56px rgba(15,23,42,0.18), 0 6px 12px rgba(15,23,42,0.08) !important;
+}
+html.light .dash-box::before { display: none !important; }
+
+/* ── Left sidebar (dark nav panel) ── */
+html.light .dash-sidebar {
+  background: #1e293b !important;
+  border-right: 1px solid rgba(255,255,255,0.06) !important;
+}
+html.light .dash-sidebar-title {
+  color: rgba(255,255,255,0.35) !important;
+  font-size: 9px !important;
+  letter-spacing: 1.5px !important;
+}
+html.light .dn-dot { background: rgba(255,255,255,0.2) !important; }
+html.light .dash-nav-sep { background: rgba(255,255,255,0.07) !important; }
+html.light .dash-nav-item {
+  color: rgba(255,255,255,0.55) !important;
+  border-radius: 8px !important;
+}
+html.light .dash-nav-item:hover {
+  background: rgba(255,255,255,0.06) !important;
+  color: rgba(255,255,255,0.9) !important;
+  transform: none !important;
+}
+html.light .dash-nav-item.active {
+  background: #00c2b5 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  border-color: transparent !important;
+}
+html.light .dash-nav-item.active .dn-dot { background: #0f172a !important; box-shadow: none !important; }
+html.light .dash-nav-item:hover .dn-dot { background: rgba(255,255,255,0.5) !important; }
+
+/* Close button */
+html.light .dash-close-btn {
+  background: rgba(255,255,255,0.10) !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  color: rgba(255,255,255,0.6) !important;
+}
+html.light .dash-close-btn:hover {
+  background: rgba(239,68,68,0.75) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  transform: scale(1.06) !important;
+}
+
+/* ── Right content area ── */
+html.light .dash-content {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+}
+html.light .dash-content-title {
+  color: #0f172a !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+}
+html.light .dash-content-sub { color: #64748b !important; }
+
+/* Top row: title + zone select + actions */
+html.light .dash-top-row { padding-right: 48px !important; }
+html.light .dash-zone-select {
+  background: #ffffff !important;
+  border: 1px solid #d1d5db !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+  border-radius: 8px !important;
+}
+html.light .dash-zone-select:focus {
+  border-color: #93c5fd !important;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.12) !important;
+  outline: none !important;
+}
+html.light .dash-refresh-btn {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #334155 !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+}
+html.light .dash-refresh-btn:hover {
+  background: #f1f5f9 !important;
+  border-color: #93c5fd !important;
+  color: #0f172a !important;
+  transform: none !important;
+}
+html.light .dash-refresh-btn:disabled { opacity: 0.5 !important; }
+html.light .dash-countdown {
+  background: #eff6ff !important;
+  border: 1px solid #bfdbfe !important;
+  color: #1d4ed8 !important;
+}
+
+/* ── KPI cards ── */
+html.light .dash-kpi-grid { gap: 16px !important; }
+html.light .dash-kpi-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+  border-radius: 14px !important;
+}
+html.light .dash-kpi-card:hover {
+  border-color: #93c5fd !important;
+  box-shadow: 0 3px 12px rgba(37,99,235,0.1) !important;
+  transform: translateY(-1px) !important;
+}
+html.light .dash-kpi-label { color: #64748b !important; font-weight: 500 !important; }
+html.light .dash-kpi-value { color: #0f172a !important; font-weight: 800 !important; }
+html.light .dash-kpi-sub   { color: #94a3b8 !important; }
+/* KPI left border accent — keep vivid colors */
+html.light .dash-kpi-card.blue  { border-left: 3px solid #2563eb !important; }
+html.light .dash-kpi-card.green { border-left: 3px solid #059669 !important; }
+html.light .dash-kpi-card.red   { border-left: 3px solid #dc2626 !important; }
+html.light .dash-kpi-card.amber { border-left: 3px solid #d97706 !important; }
+html.light .dash-kpi-card.cyan  { border-left: 3px solid #0891b2 !important; }
+
+/* ── Chart containers ── */
+html.light .dash-chart-wrap {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+  border-radius: 14px !important;
+}
+html.light .dash-chart-title {
+  color: #334155 !important;
+  font-weight: 600 !important;
+}
+
+/* ── Alert list ── */
+html.light .dash-alert-item {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
+  border-radius: 10px !important;
+}
+html.light .dash-alert-item.warn   { border-left: 3px solid #d97706 !important; }
+html.light .dash-alert-item.danger { border-left: 3px solid #dc2626 !important; }
+html.light .dash-alert-item.info   { border-left: 3px solid #2563eb !important; }
+html.light .dash-alert-name { color: #0f172a !important; font-weight: 600 !important; }
+html.light .dash-alert-desc { color: #64748b !important; }
+html.light .dash-alert-badge.amber {
+  background: #fffbeb !important;
+  color: #92400e !important;
+  border-radius: 20px !important;
+  font-weight: 700 !important;
+}
+html.light .dash-alert-badge.red {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+  border-radius: 20px !important;
+  font-weight: 700 !important;
+}
+
+/* ── Zone / data tables ── */
+html.light .dash-zone-table-wrap { border-radius: 10px !important; overflow: hidden !important; border: 1px solid #e2e8f0 !important; }
+html.light .dash-zone-table { border-collapse: collapse !important; }
+html.light .dash-zone-table th {
+  background: #f1f5f9 !important;
+  color: #334155 !important;
+  border-bottom: 2px solid #e2e8f0 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  padding: 10px 14px !important;
+}
+html.light .dash-zone-table td {
+  color: #0f172a !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  background: #ffffff !important;
+  padding: 10px 14px !important;
+}
+html.light .dash-zone-table tr:last-child td { border-bottom: none !important; }
+html.light .dash-zone-table tr:hover td {
+  background: #f0f9ff !important;
+}
+html.light .dash-zone-table td.item-name-cell { color: #334155 !important; }
+
+/* ── Summary toolbar & print ── */
+html.light .dash-summary-toolbar { border-bottom: 1px solid #f1f5f9 !important; padding-bottom: 12px !important; }
+html.light .dash-print-btn {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #334155 !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+}
+html.light .dash-print-btn:hover {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  transform: none !important;
+}
+
+/* ── Section grid ── */
+html.light .dash-section-grid > * { border-radius: 14px !important; }
+
+/* ── Leader cards ── */
+html.light .dash-leader-grid { gap: 14px !important; }
+html.light .dash-leader-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+  border-radius: 14px !important;
+}
+html.light .dash-leader-zone {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  padding-bottom: 10px !important;
+  margin-bottom: 10px !important;
+}
+html.light .dash-leader-row { border-top: 1px solid #f1f5f9 !important; padding: 8px 0 !important; }
+html.light .dash-leader-label { color: #94a3b8 !important; font-size: 10px !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 0.6px !important; }
+html.light .dash-leader-name  { color: #334155 !important; font-weight: 600 !important; }
+html.light .dash-leader-value { color: #0891b2 !important; font-weight: 700 !important; font-family: 'JetBrains Mono', monospace !important; }
+
+/* ── Meta / risk cards ── */
+html.light .dash-meta-grid { gap: 12px !important; }
+html.light .dash-meta-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
+  border-radius: 12px !important;
+}
+html.light .dash-meta-label { color: #94a3b8 !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 0.6px !important; }
+html.light .dash-meta-value { color: #0f172a !important; font-weight: 600 !important; }
+
+/* ── Mini cards (risk section in overview) ── */
+html.light .dash-mini-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
+  border-radius: 12px !important;
+}
+html.light .dash-mini-title { color: #64748b !important; font-weight: 600 !important; text-transform: uppercase !important; letter-spacing: 0.5px !important; font-size: 10px !important; }
+html.light .dash-mini-value { color: #0f172a !important; font-weight: 700 !important; font-size: 15px !important; }
+
+/* ── File list (Excel status) ── */
+html.light .dash-file-list { gap: 8px !important; }
+html.light .dash-file-item {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
+}
+html.light .dash-file-name { color: #334155 !important; font-weight: 600 !important; }
+html.light .dash-file-date { color: #94a3b8 !important; }
+
+/* ── Empty & loading states ── */
+html.light .dash-empty {
+  background: #f8fafc !important;
+  border: 1px dashed #cbd5e1 !important;
+  color: #94a3b8 !important;
+  border-radius: 12px !important;
+}
+html.light .dash-loading { color: #64748b !important; }
+html.light .dash-loading .spinner {
+  border-color: #e2e8f0 !important;
+  border-top-color: #2563eb !important;
+}
+
 /* Mobile bottom dock in light mode */
 @media (max-width: 640px) {
   html.light .side-dock {
