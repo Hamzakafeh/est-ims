@@ -336,11 +336,11 @@
   }
   .login-no-account { color: var(--text-muted); }
   .login-link-signup {
-    color: var(--accent-cyan); text-decoration: none;
+    color: var(--text-muted); text-decoration: none;
     font-weight: 600; cursor: pointer;
     transition: color 0.15s;
   }
-  .login-link-signup:hover { color: var(--accent-blue); }
+  .login-link-signup:hover { color: var(--accent-cyan); }
   .field-wrap {
     position: relative;
     margin-bottom: 18px;
