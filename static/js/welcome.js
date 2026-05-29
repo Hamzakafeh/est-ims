@@ -131,11 +131,15 @@ function autoResize(el) {
 
 // ── DEVELOPER MODAL ──
 function openDevModal() {
-  document.getElementById('devOverlay').classList.add('open');
+  const ov = document.getElementById('devOverlay');
+  if (!ov) return;
+  ov.style.display = 'flex';
   document.body.style.overflow = 'hidden';
 }
 function closeDevModal() {
-  document.getElementById('devOverlay').classList.remove('open');
+  const ov = document.getElementById('devOverlay');
+  if (!ov) return;
+  ov.style.display = 'none';
   document.body.style.overflow = '';
 }
 function closeDevModalOutside(e) {
