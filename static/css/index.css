@@ -814,29 +814,6 @@
     box-shadow: none !important;
   }
 
-  /* ── All modals in light mode → same dark glass as Edit Mode modal ── */
-  html.light .beta-card,
-  html.light .logout-box,
-  html.light .csv-modal-box,
-  html.light .users-box,
-  html.light .profile-box,
-  html.light .modal-box,
-  html.light .pwd-box,
-  html.light .soon-box {
-    background: rgba(13,17,23,0.55) !important;
-    backdrop-filter: blur(28px) saturate(160%) !important;
-    -webkit-backdrop-filter: blur(28px) saturate(160%) !important;
-    border: 1px solid rgba(59,130,246,0.22) !important;
-    box-shadow: 0 24px 64px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.06) !important;
-  }
-  html.light .beta-card::before { background: linear-gradient(90deg, transparent, rgba(245,158,11,0.5), rgba(59,130,246,0.4), transparent) !important; }
-  html.light .pwd-overlay > div {
-    background: rgba(13,17,23,0.55) !important;
-    backdrop-filter: blur(28px) saturate(160%) !important;
-    -webkit-backdrop-filter: blur(28px) saturate(160%) !important;
-    border: 1px solid rgba(59,130,246,0.22) !important;
-    box-shadow: 0 24px 64px rgba(0,0,0,0.55) !important;
-  }
 
   /* ── CUSTOM LOGOUT MODAL ── */
   .logout-overlay {
