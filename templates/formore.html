@@ -49,14 +49,17 @@
           <div class="form-group">
             <label class="form-label" id="nameLabel" for="fname">Full Name</label>
             <input class="form-input" id="fname" type="text" placeholder="Your name" autocomplete="off" required>
+            <span class="field-hint" id="hintFname"></span>
           </div>
           <div class="form-group">
             <label class="form-label" id="phoneLabel" for="fphone">Phone</label>
             <input class="form-input" id="fphone" type="tel" placeholder="+962 ..." required>
+            <span class="field-hint" id="hintFphone"></span>
           </div>
           <div class="form-group full">
             <label class="form-label" id="emailLabel" for="femail">Email</label>
             <input class="form-input" id="femail" type="email" placeholder="you@example.com" required>
+            <span class="field-hint" id="hintFemail"></span>
           </div>
           <div class="form-group full">
             <label class="form-label" id="deptLabel" for="fdept">Department</label>
@@ -70,10 +73,12 @@
                 <option data-en="Other" data-ar="أخرى">Other</option>
               </select>
             </div>
+            <span class="field-hint" id="hintFdept"></span>
           </div>
           <div class="form-group full">
             <label class="form-label" id="messageLabel" for="fmsg">Message</label>
             <textarea class="form-textarea" id="fmsg" placeholder="Describe your question or request..." required></textarea>
+            <span class="field-hint" id="hintFmsg"></span>
           </div>
         </div>
 

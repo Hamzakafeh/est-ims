@@ -103,30 +103,69 @@ function _emailDomainOk(email) {
   return false;
 }
 
+const FORM_HINTS = {
+  en: {
+    fname:  'Full name is required',
+    fphone: 'Phone number is required',
+    femail_empty:  'Email address is required',
+    femail_format: 'Enter a valid email address',
+    femail_domain: 'Enter a valid email address (e.g. name@gmail.com)',
+    fdept:  'Please select a department',
+    fmsg:   'Message is required',
+  },
+  ar: {
+    fname:  'الاسم الكامل مطلوب',
+    fphone: 'رقم الهاتف مطلوب',
+    femail_empty:  'البريد الإلكتروني مطلوب',
+    femail_format: 'أدخل بريدًا إلكترونيًا صحيحًا',
+    femail_domain: 'أدخل بريدًا إلكترونيًا صحيحًا (مثال: name@gmail.com)',
+    fdept:  'يرجى اختيار القسم',
+    fmsg:   'الرسالة مطلوبة',
+  }
+};
+
+function _clearHints() {
+  ['hintFname','hintFphone','hintFemail','hintFdept','hintFmsg'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = ''; el.classList.remove('show'); }
+  });
+  ['fname','fphone','femail','fdept','fmsg'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('error');
+  });
+}
+
+function _showHint(fieldId, hintId, msg) {
+  const field = document.getElementById(fieldId);
+  const hint  = document.getElementById(hintId);
+  if (field) field.classList.add('error');
+  if (hint)  { hint.textContent = msg; hint.classList.add('show'); }
+}
+
 function submitForm() {
-  const name = document.getElementById('fname').value.trim();
+  _clearHints();
+  const lang = moreLang || 'en';
+  const H = FORM_HINTS[lang] || FORM_HINTS.en;
+
+  const name  = document.getElementById('fname').value.trim();
   const phone = document.getElementById('fphone').value.trim();
   const email = document.getElementById('femail').value.trim();
-  const dept = document.getElementById('fdept').value;
-  const msg = document.getElementById('fmsg').value.trim();
-  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && _emailDomainOk(email);
+  const dept  = document.getElementById('fdept').value;
+  const msg   = document.getElementById('fmsg').value.trim();
 
-  const invalid = [
-    ['fname', !name], ['fphone', !phone],
-    ['femail', !email || !emailValid], ['fdept', !dept], ['fmsg', !msg]
-  ];
-  const hasError = invalid.some(([, bad]) => bad);
-  if (hasError) {
-    invalid.forEach(([id, bad]) => {
-      if (bad) {
-        const el = document.getElementById(id);
-        el.style.borderColor = 'var(--accent-red)';
-        el.style.animation = 'shake 0.3s ease';
-        setTimeout(() => { el.style.animation = ''; el.style.borderColor = ''; }, 600);
-      }
-    });
-    return;
-  }
+  const emailFormatOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const emailDomainOk = emailFormatOk && _emailDomainOk(email);
+
+  let hasError = false;
+  if (!name)            { _showHint('fname',  'hintFname',  H.fname);           hasError = true; }
+  if (!phone)           { _showHint('fphone', 'hintFphone', H.fphone);          hasError = true; }
+  if (!email)           { _showHint('femail', 'hintFemail', H.femail_empty);    hasError = true; }
+  else if (!emailFormatOk) { _showHint('femail', 'hintFemail', H.femail_format); hasError = true; }
+  else if (!emailDomainOk) { _showHint('femail', 'hintFemail', H.femail_domain); hasError = true; }
+  if (!dept)            { _showHint('fdept',  'hintFdept',  H.fdept);           hasError = true; }
+  if (!msg)             { _showHint('fmsg',   'hintFmsg',   H.fmsg);            hasError = true; }
+
+  if (hasError) return;
 
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
@@ -149,9 +188,28 @@ function submitForm() {
   });
 }
 
+// Clear field hint + error border on input
+['fname','fphone','femail','fdept','fmsg'].forEach(fieldId => {
+  const el = document.getElementById(fieldId);
+  const hintId = 'hint' + fieldId.charAt(0).toUpperCase() + fieldId.slice(1);
+  if (el) {
+    el.addEventListener('input', () => {
+      el.classList.remove('error');
+      const hint = document.getElementById(hintId);
+      if (hint) { hint.textContent = ''; hint.classList.remove('show'); }
+    });
+    el.addEventListener('change', () => {
+      el.classList.remove('error');
+      const hint = document.getElementById(hintId);
+      if (hint) { hint.textContent = ''; hint.classList.remove('show'); }
+    });
+  }
+});
+
 function resetForm() {
   ['fname','fphone','femail','fmsg'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('fdept').value = '';
+  _clearHints();
   document.getElementById('contactForm').style.display = '';
   document.getElementById('successState').classList.remove('show');
   const btn = document.getElementById('submitBtn');

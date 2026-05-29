@@ -158,6 +158,19 @@
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   @media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
   .form-group { display: flex; flex-direction: column; gap: 7px; }
+  .field-hint {
+    font-size: 11px; font-weight: 500;
+    color: var(--accent-red, #ef4444);
+    min-height: 0; display: none;
+    align-items: center; gap: 4px;
+    padding-left: 2px;
+    animation: hintIn 0.2s ease both;
+  }
+  .field-hint.show { display: flex; }
+  @keyframes hintIn { from{opacity:0;transform:translateY(-4px);} to{opacity:1;transform:translateY(0);} }
+  .form-input.error, .form-select.error, .form-textarea.error {
+    border-color: var(--accent-red, #ef4444) !important;
+  }
   .form-group.full { grid-column: 1 / -1; }
   @media (max-width: 560px) { .form-group.full { grid-column: auto; } }
   .form-label {
