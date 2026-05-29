@@ -305,6 +305,8 @@ def api_dashboard():
             'top5': [{'name': name, 'out': round(value, 2)} for name, value in ranked[:5]],
             'moving_items': len(positive),
         }
+    # most_active_zone: built after log processing (needs log_zone_in/out)
+    # Placeholder — will be replaced below after log totals are computed
     most_active_zone = None
     for zname in set(list(zone_in.keys()) + list(zone_out.keys())):
         movement = zone_in.get(zname, 0) + zone_out.get(zname, 0)
@@ -340,6 +342,23 @@ def api_dashboard():
             'top5': [{'name': n, 'out': round(v, 2)} for n, v in ranked[:5]],
             'moving_items': len(positive),
         }
+    # Recalculate most_active_zone and high_usage from Log data (more accurate)
+    if log_zone_in or log_zone_out:
+        log_most_active = None
+        for zname in set(list(log_zone_in.keys()) + list(log_zone_out.keys())):
+            mv = log_zone_in.get(zname, 0) + log_zone_out.get(zname, 0)
+            if log_most_active is None or mv > log_most_active['movement']:
+                log_most_active = {'zone': zname, 'movement': round(mv, 2)}
+        if log_most_active:
+            most_active_zone = log_most_active
+    if log_item_out:
+        log_out_total_for_threshold = sum(log_item_out.values())
+        log_high_threshold = max(100, (log_out_total_for_threshold / max(len(log_item_out), 1)) * 2)
+        high_usage_items = [
+            {'name': item['name'], 'out': round(item['out'], 2)}
+            for item in log_top_items
+            if item.get('out', 0) >= log_high_threshold
+        ]
 
     return jsonify({
         'total_items': total_items,

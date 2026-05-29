@@ -1965,14 +1965,27 @@ function dashLeaderCards(d) {
 }
 
 function dashRiskCards(d) {
-  const lowZero = Object.entries(d.zone_low_zero || {});
   const high = d.high_usage_items || [];
-  const latest = d.latest_files || [];
+  const activeZone = d.most_active_zone;
+  const activeMovement = activeZone ? fmtDashNum(activeZone.movement) : '—';
+  const activeLabel   = activeZone ? escHtml(activeZone.zone) : 'N/A';
   return `
     <div class="dash-mini-grid">
-      <div class="dash-mini-card"><div class="dash-mini-title">Most active zone</div><div class="dash-mini-value">${escHtml(d.most_active_zone?.zone || 'N/A')} ${d.most_active_zone ? `(${fmtDashNum(d.most_active_zone.movement)})` : ''}</div></div>
-      <div class="dash-mini-card"><div class="dash-mini-title">High usage alerts</div><div class="dash-mini-value">${fmtDashNum(high.length)} item(s)</div></div>
-      <div class="dash-mini-card"><div class="dash-mini-title">Unreadable files</div><div class="dash-mini-value">${fmtDashNum(d.unreadable_files)}</div></div>
+      <div class="dash-mini-card">
+        <div class="dash-mini-title">Most Active Zone</div>
+        <div class="dash-mini-value">${activeLabel}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">${activeMovement} total movement</div>
+      </div>
+      <div class="dash-mini-card">
+        <div class="dash-mini-title">High Usage Alerts</div>
+        <div class="dash-mini-value">${fmtDashNum(high.length)} item(s)</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Items above 2× avg OUT</div>
+      </div>
+      <div class="dash-mini-card">
+        <div class="dash-mini-title">Unreadable Files</div>
+        <div class="dash-mini-value">${fmtDashNum(d.unreadable_files)}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Excel files that failed to open</div>
+      </div>
     </div>
     <div class="dash-section-grid">
       <div class="dash-chart-wrap">
