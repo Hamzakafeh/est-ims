@@ -294,14 +294,30 @@ def _ip_country(ip):
         return 'Local'
     if ip in _country_cache:
         return _country_cache[ip]
+    country = 'Unknown'
     try:
-        res = _requests.get(f'https://ipapi.co/{ip}/json/', timeout=2)
-        data = res.json() if res.ok else {}
-        country = data.get('country_name') or data.get('country') or ''
-        if not isinstance(country, str) or country.strip().lower() in ('nan', 'none', '', 'null'):
-            country = 'Unknown'
+        # Primary: ip-api.com (no key, 45 req/min free)
+        res = _requests.get(
+            f'http://ip-api.com/json/{ip}?fields=status,country',
+            timeout=3
+        )
+        if res.ok:
+            data = res.json()
+            if data.get('status') == 'success' and data.get('country'):
+                country = data['country']
     except Exception:
-        country = 'Unknown'
+        pass
+    if country == 'Unknown':
+        try:
+            # Fallback: ipapi.co
+            res2 = _requests.get(f'https://ipapi.co/{ip}/json/', timeout=3)
+            if res2.ok:
+                d2 = res2.json()
+                c = d2.get('country_name') or d2.get('country') or ''
+                if isinstance(c, str) and c.strip() and c.strip().lower() not in ('nan', 'none', 'null'):
+                    country = c.strip()
+        except Exception:
+            pass
     _country_cache[ip] = country
     return country
 
