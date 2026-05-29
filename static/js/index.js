@@ -153,12 +153,10 @@ function renderProfile(data) {
   const verified = data.is_verified || String(data.username || '').toLowerCase() === 'hamza k. ghareb';
   const avatarEl = document.getElementById('profileAvatar');
   const isDevUser = String(data.username || '').toLowerCase() === 'hamza k. ghareb';
-  const avatarSrc = isDevUser ? '/static/images/me.jpg' : (data.avatar_url || null);
-  if (avatarSrc) {
-    avatarEl.innerHTML = `<img src="${escAttr(avatarSrc)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${escAttr(profileInitials(data.username))}'">`;
-  } else {
-    avatarEl.textContent = profileInitials(data.username);
-  }
+  const defaultAvatar = `/static/images/profile_${data.gender === 'female' ? 'female' : 'male'}.png`;
+  const avatarSrc = isDevUser ? '/static/images/me.jpg' : (data.avatar_url || defaultAvatar);
+  avatarEl.innerHTML = `<img src="${escAttr(avatarSrc)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.onerror=null;this.src='${escAttr(defaultAvatar)}'">`;
+
   document.getElementById('profileName').textContent = data.username || 'User';
   const profileVerified = document.getElementById('profileVerifiedBadge');
   if (profileVerified) profileVerified.style.display = verified ? 'inline-flex' : 'none';

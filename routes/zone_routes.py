@@ -57,7 +57,9 @@ def zones_page():
         session.pop('qc_role', None)
     if session.get('zone'):
         return redirect(url_for('pages.index'))
-    return render_template('zones.html', username=session.get('username', ''), zones=ZONES)
+    uname = session.get('username', '')
+    show_management = uname.lower() in ('hamza k. ghareb', 'ink')
+    return render_template('zones.html', username=uname, zones=ZONES, show_management=show_management)
 
 
 @zone_bp.route('/zone3-qr')
@@ -293,9 +295,11 @@ def api_profile():
 
     user_row = _approved_db_user(username)
     is_verified_db = bool((user_row or {}).get('is_verified', 0))
+    gender = str((user_row or {}).get('gender', '') or '')
     return jsonify({
         'username': username,
         'avatar_url': _avatar_url(username),
+        'gender': gender,
         'is_verified': str(username).lower() in VERIFIED_USERS or is_verified_db,
         'zone': zone_id,
         'zone_name': session.get('zone_name', ''),

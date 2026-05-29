@@ -53,7 +53,10 @@
 
   /* ── BLOBS ── */
   .blob { position:fixed; border-radius:50%; filter:blur(90px); opacity:0.06; pointer-events:none; z-index:0; }
-  html.light .blob { opacity:0.08; }
+  html.light .blob { opacity:0 !important; }
+  html.light body { background: #f1f5f9 !important; }
+  html.light .grid-overlay { display: none !important; }
+  html.light #particleCanvas { display: none !important; }
   .blob-1 { width:700px;height:700px;background:radial-gradient(circle,#3b82f6,transparent 70%);top:-200px;left:-200px;animation:bd1 20s ease-in-out infinite; }
   .blob-2 { width:600px;height:600px;background:radial-gradient(circle,#06b6d4,transparent 70%);bottom:-160px;right:-160px;animation:bd2 24s ease-in-out infinite; }
   .blob-3 { width:450px;height:450px;background:radial-gradient(circle,#6366f1,transparent 70%);top:38%;left:52%;animation:bd3 18s ease-in-out infinite; }
