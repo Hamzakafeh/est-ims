@@ -281,9 +281,17 @@ def _write_login_log(entries):
         json.dump(entries[-500:], f, ensure_ascii=False)
 
 
+_PRIVATE_IP_PREFIXES = ('127.', '10.', '192.168.', '::1',
+    '172.16.', '172.17.', '172.18.', '172.19.', '172.20.',
+    '172.21.', '172.22.', '172.23.', '172.24.', '172.25.',
+    '172.26.', '172.27.', '172.28.', '172.29.', '172.30.', '172.31.')
+
+def _is_private_ip(ip):
+    return not ip or any(ip.startswith(p) for p in _PRIVATE_IP_PREFIXES)
+
 def _ip_country(ip):
-    if not ip or ip.startswith(('127.', '10.', '192.168.', '172.16.', '172.17.', '172.18.', '172.19.', '172.20.', '172.21.', '172.22.', '172.23.', '172.24.', '172.25.', '172.26.', '172.27.', '172.28.', '172.29.', '172.30.', '172.31.')):
-        return 'Local / Private'
+    if _is_private_ip(ip):
+        return 'Local'
     if ip in _country_cache:
         return _country_cache[ip]
     try:
@@ -299,6 +307,8 @@ def _ip_country(ip):
 
 
 def _record_login(username, zone_id, zone_label, ip):
+    if _is_private_ip(ip):
+        return
     with _log_lock:
         entries = _read_login_log()
         entries.append({
