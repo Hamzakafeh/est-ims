@@ -156,9 +156,11 @@
     display: inline-flex; align-items: center; gap: 6px;
     padding: 6px 14px; border: none; border-radius: 7px;
     font-family: inherit; font-size: 12px; font-weight: 500;
-    cursor: pointer; transition: all 0.18s;
+    cursor: pointer; transition: all 0.18s cubic-bezier(.34,1.56,.64,1);
     white-space: nowrap;
   }
+  /* Press-down effect on ALL buttons */
+  .btn:active { transform: translateY(1px) scale(0.97) !important; box-shadow: none !important; transition: all 0.07s !important; }
   .btn-primary  { background: var(--accent-blue); color: #fff; border: 1.5px solid var(--accent-blue); }
   .btn-primary:hover  { background: #2563eb; border-color: #2563eb; transform: translateY(-1px) scale(1.04); }
   .btn-success  { background: var(--accent-green); color: #fff; border: 1.5px solid var(--accent-green); }
@@ -844,6 +846,47 @@
     animation: betaShine 2.5s ease-in-out infinite;
     z-index: 10;
   }
+  /* ── Universal btn effect inside ALL modal windows ── */
+  /* Covers both .btn class AND raw <button> inline-styled (pwd modal, etc.) */
+  .modal-box button:not(.modal-close):not(.modal-hdr-close),
+  .logout-box button:not(.modal-hdr-close),
+  .pwd-overlay button,
+  .csv-modal-box button:not(.csv-modal-close),
+  .users-box button:not(.modal-hdr-close),
+  .profile-box button:not(.profile-close),
+  .beta-card button,
+  .soon-box button,
+  .admin-user-row,
+  .dash-content button:not(.dash-close-btn),
+  .dash-box .csv-modal-box button {
+    transition: all 0.18s cubic-bezier(.34,1.56,.64,1) !important;
+  }
+  .modal-box button:not(.modal-close):not(.modal-hdr-close):hover,
+  .logout-box button:not(.modal-hdr-close):hover,
+  .pwd-overlay button:hover,
+  .csv-modal-box button:not(.csv-modal-close):hover,
+  .users-box button:not(.modal-hdr-close):hover,
+  .profile-box button:not(.profile-close):hover,
+  .beta-card button:hover,
+  .soon-box button:hover,
+  .dash-content button:not(.dash-close-btn):hover {
+    transform: translateY(-2px) scale(1.05) !important;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.22) !important;
+  }
+  .modal-box button:not(.modal-close):not(.modal-hdr-close):active,
+  .logout-box button:not(.modal-hdr-close):active,
+  .pwd-overlay button:active,
+  .csv-modal-box button:not(.csv-modal-close):active,
+  .users-box button:not(.modal-hdr-close):active,
+  .profile-box button:not(.profile-close):active,
+  .beta-card button:active,
+  .soon-box button:active,
+  .dash-content button:not(.dash-close-btn):active {
+    transform: translateY(1px) scale(0.96) !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.15) !important;
+    transition: all 0.07s !important;
+  }
+
   html.light .logout-box {
     background: rgba(248,250,252,0.52);
     border-color: rgba(220,38,38,0.18);
