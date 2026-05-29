@@ -1,3 +1,11 @@
+// Intercept browser back button → redirect to zones page
+(function() {
+  history.pushState(null, '', window.location.href);
+  window.addEventListener('popstate', function() {
+    window.location.href = '/zones';
+  });
+})();
+
 // Bootstrap window.QC_CONFIG + window.QC_FIREBASE_CONFIG from JSON data island
 (function(){
   const el = document.getElementById('qc-cfg');
