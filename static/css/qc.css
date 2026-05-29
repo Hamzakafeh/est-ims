@@ -249,6 +249,67 @@ textarea {
 html.light textarea { background: rgba(0,0,0,.03); }
 textarea:focus { outline: none; border-color: var(--cyan); }
 
+/* ── Light mode button overrides ── */
+html.light .btn {
+  background: #ffffff;
+  border-color: #d1d5db;
+  color: #374151;
+}
+html.light .btn:hover { background: #f3f4f6; border-color: #9ca3af; }
+
+html.light .btn.green {
+  background: #059669;
+  border-color: #047857;
+  color: #ffffff;
+}
+html.light .btn.green:hover { background: #047857; }
+
+html.light .btn.red {
+  background: #dc2626;
+  border-color: #b91c1c;
+  color: #ffffff;
+}
+html.light .btn.red:hover { background: #b91c1c; }
+
+html.light .btn.amber {
+  background: #d97706;
+  border-color: #b45309;
+  color: #ffffff;
+}
+html.light .btn.amber:hover { background: #b45309; }
+
+html.light .btn.cyan {
+  background: #0891b2;
+  border-color: #0e7490;
+  color: #ffffff;
+}
+html.light .btn.cyan:hover { background: #0e7490; }
+
+html.light .btn.ghost {
+  background: transparent;
+  border-color: #d1d5db;
+  color: #6b7280;
+}
+html.light .btn.ghost:hover { background: #f3f4f6; color: #111827; }
+
+html.light .btn-delete {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+html.light .btn-delete:hover { background: #fecaca; border-color: #f87171; }
+
+html.light #notifBanner {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+}
+
+html.light .upload-area {
+  border-color: rgba(8,145,178,.4);
+  background: rgba(8,145,178,.05);
+}
+
 .submit-grid { display: grid; gap: 12px; }
 
 /* ── Items grid ── */
