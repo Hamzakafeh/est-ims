@@ -393,7 +393,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-muted);
+    color: rgba(255,255,255,0.75);
     font-size: 10px;
     transition: background 0.15s, color 0.15s;
     flex-shrink: 0;
@@ -776,7 +776,8 @@
   }
   html.light .sidebar-toggle-btn {
     background: rgba(241,245,249,0.92);
-    border-color: rgba(37,99,235,0.14);
+    border-color: rgba(0,0,0,0.18);
+    color: #0d1117;
   }
   html.light .statusbar { background: #f8fafc; border-top-color: #e2e8f0; }
   html.light .content-header { background: #f1f5f9; border-bottom-color: #e2e8f0; }
@@ -787,6 +788,64 @@
   html.light .data-table thead th { background: linear-gradient(180deg, #f1f5f9, #e8edf5); }
   html.light .theme-btn { background: #fff; border-color: #cbd5e1; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
   html.light .theme-btn:hover { background: #f1f5f9; box-shadow: 0 2px 8px rgba(37,99,235,0.12); }
+
+  /* ── Light mode: topbar-back-btn + Login History + all modals ── */
+  html.light .topbar-back-btn {
+    color: #0d1117;
+    border-color: rgba(0,0,0,0.2);
+    background: rgba(0,0,0,0.04);
+  }
+  html.light .topbar-back-btn:hover { background: #0d1117; color: #fff; border-color: #0d1117; }
+
+  html.light .theme-btn.login-history-btn {
+    background: rgba(0,0,0,0.07) !important;
+    border-color: rgba(0,0,0,0.18) !important;
+    color: #0d1117 !important;
+    box-shadow: none !important;
+  }
+  html.light .theme-btn.login-history-btn:hover {
+    background: #0d1117 !important;
+    color: #fff !important;
+    transform: scale(1.06) !important;
+    box-shadow: none !important;
+  }
+
+  /* ── All modals light mode ── */
+  html.light .beta-card::before { background: linear-gradient(90deg, transparent, rgba(245,158,11,0.5), rgba(59,130,246,0.4), transparent); }
+  html.light .beta-title { color: var(--text-main); }
+  html.light .beta-credit { color: var(--text-muted); }
+  html.light .beta-btn { background: var(--accent-blue); color: #fff; }
+
+  /* pwd modal (inline styles) */
+  html.light .pwd-overlay > div {
+    background: rgba(248,250,252,0.97) !important;
+    border-color: rgba(0,0,0,0.12) !important;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.9) !important;
+  }
+  html.light .pwd-overlay > div input {
+    background: rgba(0,0,0,0.05) !important;
+    border-color: rgba(0,0,0,0.14) !important;
+    color: var(--text-main) !important;
+  }
+
+  /* All modal close buttons light mode */
+  html.light .modal-close, html.light .csv-modal-close, html.light .profile-close,
+  html.light .modal-hdr-btn.modal-hdr-close, html.light .modal-hdr-close {
+    background: rgba(0,0,0,0.07) !important;
+    border-color: rgba(0,0,0,0.15) !important;
+    color: #0d1117 !important;
+  }
+  html.light .modal-close:hover, html.light .csv-modal-close:hover, html.light .profile-close:hover,
+  html.light .modal-hdr-btn.modal-hdr-close:hover, html.light .modal-hdr-close:hover {
+    background: rgba(239,68,68,0.12) !important;
+    color: #dc2626 !important;
+    border-color: rgba(239,68,68,0.3) !important;
+  }
+
+  /* Users/admin table in light mode */
+  html.light .users-table th { background: linear-gradient(180deg, #f1f5f9, #e8edf5); color: var(--header-col); }
+  html.light .admin-detail-header { border-bottom-color: var(--border); }
+  html.light .admin-detail-item { background: var(--bg-card); border-color: var(--border); }
   html.light .user-badge { background: rgba(37,99,235,0.08); box-shadow: 0 1px 4px rgba(37,99,235,0.1); }
   html.light .zone-badge { background: rgba(8,145,178,0.08); }
 
