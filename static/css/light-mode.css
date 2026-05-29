@@ -1221,3 +1221,272 @@ html.light .grid-overlay, html.light .bg-grid { display: none !important; }
 html.light .blob-1 { background: radial-gradient(circle, rgba(37,99,235,0.12), transparent 70%) !important; }
 html.light .blob-2 { background: radial-gradient(circle, rgba(8,145,178,0.10), transparent 70%) !important; }
 html.light .blob-3 { background: radial-gradient(circle, rgba(124,58,237,0.08), transparent 70%) !important; }
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   §6  ZONES PAGE — FULL LIGHT MODE
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── §6.1  Zones page base ── */
+html.light .zones-wrapper { background: transparent !important; }
+
+/* User corner chip */
+html.light .user-corner {
+  background:   rgba(255,255,255,0.92) !important;
+  border:       1px solid var(--mlo5-border) !important;
+  box-shadow:   var(--mlo5-shadow-sm) !important;
+}
+html.light .user-corner-name  { color: var(--mlo5-text-primary) !important; }
+html.light .user-corner-dot   { background: var(--mlo5-green-500) !important; box-shadow: 0 0 5px rgba(34,197,94,0.4) !important; }
+html.light .user-corner-avatar { background: var(--mlo5-bg-active) !important; border-color: var(--mlo5-blue-200) !important; color: var(--mlo5-accent-primary) !important; }
+
+/* FAB buttons */
+html.light .zu-fab-btn {
+  background:   rgba(255,255,255,0.92) !important;
+  border:       1px solid var(--mlo5-border) !important;
+  color:        var(--mlo5-text-secondary) !important;
+  box-shadow:   var(--mlo5-shadow-sm) !important;
+}
+html.light .zu-fab-btn:hover { background: var(--mlo5-accent-primary) !important; color: var(--mlo5-text-inverted) !important; border-color: var(--mlo5-accent-primary) !important; }
+
+/* ── §6.2  Zone cards ── */
+html.light .zone-card {
+  background:   rgba(255,255,255,0.85) !important;
+  border:       1px solid var(--mlo5-border) !important;
+  box-shadow:   var(--mlo5-shadow-card) !important;
+}
+html.light .zone-card:hover {
+  background:   var(--mlo5-bg-elevated) !important;
+  border-color: var(--mlo5-blue-300) !important;
+  box-shadow:   var(--mlo5-shadow-hover) !important;
+}
+html.light .zone-card.active  { border-color: var(--mlo5-accent-primary) !important; box-shadow: 0 0 0 2px rgba(37,99,235,0.18) !important; }
+html.light .zone-card .zone-name  { color: var(--mlo5-text-primary) !important; }
+html.light .zone-card .zone-label { color: var(--mlo5-text-muted) !important; }
+html.light .zone-card.qc-card { border-color: rgba(8,145,178,0.25) !important; background: rgba(240,249,255,0.7) !important; }
+html.light .zone-card.qc-card .zone-name { color: var(--mlo5-cyan-600) !important; }
+html.light .zone-card.super-card { border-color: var(--mlo5-border) !important; }
+html.light .zones-divider { border-color: var(--mlo5-border) !important; }
+html.light .zones-divider-text { color: var(--mlo5-text-dim) !important; background: var(--mlo5-bg-page) !important; }
+
+/* ── §6.3  Password modal (zone entry) ── */
+html.light .pw-overlay { background: rgba(15,23,42,0.45) !important; backdrop-filter: blur(6px) !important; }
+html.light .pw-panel {
+  background:    var(--mlo5-bg-elevated) !important;
+  border:        1px solid var(--mlo5-border) !important;
+  box-shadow:    var(--mlo5-shadow-modal) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html.light .pw-panel::before { display: none !important; }
+html.light .pw-panel-title { color: var(--mlo5-text-primary) !important; }
+html.light .pw-panel-sub   { color: var(--mlo5-text-muted) !important; }
+html.light .pw-field-wrap input {
+  background:   var(--mlo5-bg-input) !important;
+  border:       1px solid var(--mlo5-slate-300) !important;
+  color:        var(--mlo5-text-primary) !important;
+}
+html.light .pw-field-wrap input:focus { border-color: var(--mlo5-focus-ring-color) !important; box-shadow: var(--mlo5-focus-ring) !important; }
+html.light .pw-error { color: var(--mlo5-red-600) !important; }
+html.light .btn-enter {
+  background:   var(--mlo5-accent-primary) !important;
+  color:        var(--mlo5-text-inverted) !important;
+  border-color: var(--mlo5-accent-primary) !important;
+  box-shadow:   0 2px 8px rgba(37,99,235,0.25) !important;
+}
+html.light .btn-enter:hover { background: var(--mlo5-accent-hover) !important; }
+html.light .pw-close-btn, html.light .pw-toggle-btn {
+  background:   var(--mlo5-bg-surface) !important;
+  border-color: var(--mlo5-border) !important;
+  color:        var(--mlo5-text-muted) !important;
+}
+html.light .pw-close-btn:hover { background: var(--mlo5-red-50) !important; color: var(--mlo5-red-600) !important; border-color: var(--mlo5-red-200) !important; }
+html.light .qc-role-wrap select { background: var(--mlo5-bg-input) !important; border: 1px solid var(--mlo5-slate-300) !important; color: var(--mlo5-text-primary) !important; }
+html.light .pw-error-wrap { color: var(--mlo5-text-muted) !important; }
+
+/* ── §6.4  Profile modal (zp-panel) ── */
+html.light .zp-overlay { background: rgba(15,23,42,0.45) !important; backdrop-filter: blur(6px) !important; }
+html.light .zp-panel {
+  background:    var(--mlo5-bg-elevated) !important;
+  border:        1px solid var(--mlo5-border) !important;
+  box-shadow:    var(--mlo5-shadow-modal) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html.light .zp-panel::before { display: none !important; }
+html.light .zp-close-btn {
+  background:   var(--mlo5-bg-surface) !important;
+  border:       1px solid var(--mlo5-border) !important;
+  color:        var(--mlo5-text-muted) !important;
+}
+html.light .zp-close-btn:hover { background: var(--mlo5-red-50) !important; color: var(--mlo5-red-600) !important; border-color: var(--mlo5-red-200) !important; }
+html.light .zp-avatar {
+  background:   linear-gradient(135deg, var(--mlo5-blue-50), var(--mlo5-bg-active)) !important;
+  border:       2px solid var(--mlo5-blue-200) !important;
+  color:        var(--mlo5-accent-primary) !important;
+}
+html.light .zp-name      { color: var(--mlo5-text-primary) !important; }
+html.light .zp-username  { color: var(--mlo5-accent-primary) !important; }
+html.light .zp-divider   { background: var(--mlo5-border) !important; }
+html.light .zp-field-label { color: var(--mlo5-text-dim) !important; }
+html.light .zp-field-val   { color: var(--mlo5-text-primary) !important; }
+html.light .zp-verified-badge { background: var(--mlo5-bg-active) !important; border-color: var(--mlo5-blue-200) !important; color: var(--mlo5-blue-700) !important; }
+
+/* ── §6.5  Registered Users modal (zu-panel) ── */
+html.light .zu-overlay { background: rgba(15,23,42,0.45) !important; backdrop-filter: blur(6px) !important; }
+html.light .zu-panel {
+  background:    var(--mlo5-bg-elevated) !important;
+  border:        1px solid var(--mlo5-border) !important;
+  box-shadow:    var(--mlo5-shadow-modal) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html.light .zu-panel::before { display: none !important; }
+html.light .zu-title    { color: var(--mlo5-text-primary) !important; }
+html.light .zu-live-dot { background: var(--mlo5-green-500) !important; box-shadow: 0 0 5px rgba(34,197,94,0.4) !important; }
+html.light .zu-user { border-radius: var(--mlo5-radius-lg) !important; }
+html.light .zu-user:hover { background: var(--mlo5-bg-hover) !important; }
+html.light .zu-user-name { color: var(--mlo5-text-primary) !important; font-weight: var(--mlo5-weight-semibold) !important; }
+html.light .zu-loading, html.light .zu-empty { color: var(--mlo5-text-dim) !important; }
+html.light .zu-user-av { background: var(--mlo5-bg-active) !important; border: 1px solid var(--mlo5-blue-200) !important; color: var(--mlo5-accent-primary) !important; }
+html.light .zu-verified { background: var(--mlo5-accent-primary) !important; }
+
+/* ── §6.6  Denied overlay ── */
+html.light .denied-overlay { background: rgba(15,23,42,0.45) !important; backdrop-filter: blur(6px) !important; }
+html.light .denied-panel {
+  background:   var(--mlo5-bg-elevated) !important;
+  border:       1px solid var(--mlo5-red-200) !important;
+  box-shadow:   var(--mlo5-shadow-modal) !important;
+}
+html.light .denied-icon { color: var(--mlo5-red-500) !important; }
+html.light .denied-title { color: var(--mlo5-text-primary) !important; }
+html.light .denied-msg   { color: var(--mlo5-text-muted) !important; }
+html.light .denied-btn { background: var(--mlo5-red-50) !important; color: var(--mlo5-red-600) !important; border-color: var(--mlo5-red-200) !important; }
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   §7  TERMS · PRIVACY · ABOUT · HELP · CONTACT · FORMORE
+       — Full content page light mode
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Topbar for minified CSS pages (terms, privacy, about, help, formore) */
+html.light .topbar {
+  background:    var(--mlo5-bg-elevated) !important;
+  border-bottom: 1px solid var(--mlo5-border) !important;
+  box-shadow:    0 1px 0 var(--mlo5-border) !important;
+  backdrop-filter: none !important;
+}
+html.light .topbar-title   { color: var(--mlo5-text-primary) !important; }
+html.light .back-btn {
+  color:        var(--mlo5-accent-primary) !important;
+  border-color: rgba(37,99,235,0.25) !important;
+  background:   var(--mlo5-bg-active) !important;
+}
+html.light .back-btn:hover { background: var(--mlo5-bg-hover) !important; }
+html.light .icon-btn {
+  background:   var(--mlo5-bg-surface) !important;
+  border:       1px solid var(--mlo5-border) !important;
+  color:        var(--mlo5-text-muted) !important;
+}
+html.light .icon-btn:hover { background: var(--mlo5-bg-hover) !important; color: var(--mlo5-text-primary) !important; transform: none !important; }
+html.light .lang-btn { color: var(--mlo5-accent-cyan) !important; border-color: rgba(8,145,178,0.3) !important; background: rgba(8,145,178,0.08) !important; }
+
+/* Section containers */
+html.light .section {
+  background:    var(--mlo5-bg-elevated) !important;
+  border:        1px solid var(--mlo5-border) !important;
+  box-shadow:    var(--mlo5-shadow-card) !important;
+  backdrop-filter: none !important;
+}
+html.light .section-title  { color: var(--mlo5-text-dim) !important; }
+html.light .content-item   { color: var(--mlo5-text-secondary) !important; }
+html.light .dot            { background: var(--mlo5-accent-primary) !important; box-shadow: 0 0 6px rgba(37,99,235,0.3) !important; }
+
+/* ACTION BUTTONS in terms/privacy/about (the .btn link-buttons) */
+html.light .actions .btn,
+html.light .btn[href] {
+  background:   var(--mlo5-bg-elevated) !important;
+  border:       1px solid var(--mlo5-border) !important;
+  color:        var(--mlo5-accent-primary) !important;
+  box-shadow:   var(--mlo5-shadow-xs) !important;
+  font-weight:  var(--mlo5-weight-bold) !important;
+}
+html.light .actions .btn:hover,
+html.light .btn[href]:hover {
+  background:   var(--mlo5-accent-primary) !important;
+  border-color: var(--mlo5-accent-primary) !important;
+  color:        var(--mlo5-text-inverted) !important;
+  transform:    translateY(-1px) scale(1.02) !important;
+  box-shadow:   0 3px 10px rgba(37,99,235,0.25) !important;
+}
+
+/* Hero elements */
+html.light .hero-badge {
+  background:   var(--mlo5-bg-active) !important;
+  border:       1px solid var(--mlo5-blue-200) !important;
+  color:        var(--mlo5-accent-primary) !important;
+}
+html.light .hero-title {
+  background:   linear-gradient(135deg, #0f172a, #1d4ed8, #0891b2) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+html.light .hero-sub       { color: var(--mlo5-text-muted) !important; }
+html.light .hero-dot       { background: var(--mlo5-green-500) !important; box-shadow: 0 0 5px rgba(34,197,94,0.4) !important; }
+html.light .hero-logo {
+  background:   linear-gradient(135deg, var(--mlo5-blue-50), var(--mlo5-bg-active)) !important;
+  border:       1px solid var(--mlo5-blue-200) !important;
+  box-shadow:   0 4px 16px rgba(37,99,235,0.12) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   §8  USERNAME / USER CHIPS — all pages
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* QC page user badge */
+html.light .user-corner[style] {
+  background:   rgba(255,255,255,0.92) !important;
+  border:       1px solid var(--mlo5-border) !important;
+  backdrop-filter: none !important;
+}
+/* QC topbar brand */
+html.light .brand { color: var(--mlo5-text-primary) !important; }
+/* Badge chips (zone/role) */
+html.light .badge[class*="qc"], html.light .badge[class*="zone"] { background: var(--mlo5-bg-active) !important; border-color: var(--mlo5-blue-200) !important; color: var(--mlo5-blue-700) !important; }
+/* All user/role chips */
+html.light [class*="role-chip"], html.light [class*="user-chip"], html.light .cm-role-qc, html.light .cm-role-lab {
+  background: var(--mlo5-bg-surface) !important;
+  border-radius: var(--mlo5-radius-full) !important;
+  padding: 2px 8px !important;
+  font-size: 10px !important;
+}
+html.light .cm-role-qc  { background: var(--mlo5-bg-active) !important; color: var(--mlo5-blue-700) !important; }
+html.light .cm-role-lab { background: var(--mlo5-status-warning-bg) !important; color: var(--mlo5-amber-900) !important; }
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   §9  GLOBAL CATCH-ALL — ensures nothing is left behind
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Any panel with glassmorphism bg in light mode → white */
+html.light [style*="background:rgba(13,17,23"],
+html.light [style*="background: rgba(13,17,23"] {
+  background: var(--mlo5-bg-elevated) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+/* Any text that would be white on white */
+html.light [style*="color:rgba(255,255,255"],
+html.light [style*="color: rgba(255,255,255"] {
+  color: var(--mlo5-text-primary) !important;
+}
+/* Generic glassy borders → clean border */
+html.light [style*="border:1px solid rgba(59,130,246"],
+html.light [style*="border: 1px solid rgba(59,130,246"] {
+  border: 1px solid var(--mlo5-border) !important;
+}
+html.light .blob-1 { background: radial-gradient(circle, rgba(37,99,235,0.12), transparent 70%) !important; }
+html.light .blob-2 { background: radial-gradient(circle, rgba(8,145,178,0.10), transparent 70%) !important; }
+html.light .blob-3 { background: radial-gradient(circle, rgba(124,58,237,0.08), transparent 70%) !important; }
