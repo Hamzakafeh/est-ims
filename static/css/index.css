@@ -23,28 +23,28 @@
     --shadow: 0 4px 24px rgba(0,0,0,0.4);
   }
 
-  /* ── LIGHT MODE ── */
+  /* ── LIGHT MODE — monochrome (black & white only) ── */
   html.light {
-    --bg-deep:      #f0f4f8;
+    --bg-deep:      #f8f8f8;
     --bg-main:      #ffffff;
-    --bg-panel:     #f8fafc;
+    --bg-panel:     #f0f0f0;
     --bg-card:      #ffffff;
-    --bg-hover:     #e8edf5;
-    --bg-active:    #dbeafe;
-    --border:       #d1dae8;
-    --border-light: #b8c6da;
-    --accent-blue:  #2563eb;
-    --accent-cyan:  #0891b2;
-    --accent-green: #059669;
-    --accent-amber: #d97706;
-    --accent-red:   #dc2626;
-    --accent-purple:#7c3aed;
-    --text-main:    #1a2332;
-    --text-muted:   #4a6080;
-    --text-dim:     #8fa3be;
-    --header-col:   #2563eb;
-    --row-alt:      #f1f5fb;
-    --shadow:       0 4px 24px rgba(0,0,0,0.08);
+    --bg-hover:     #eeeeee;
+    --bg-active:    #e0e0e0;
+    --border:       #0d1117;
+    --border-light: #555555;
+    --accent-blue:  #0d1117;
+    --accent-cyan:  #0d1117;
+    --accent-green: #0d1117;
+    --accent-amber: #0d1117;
+    --accent-red:   #0d1117;
+    --accent-purple:#0d1117;
+    --text-main:    #0d1117;
+    --text-muted:   #444444;
+    --text-dim:     #777777;
+    --header-col:   #ffffff;
+    --row-alt:      #f5f5f5;
+    --shadow:       0 4px 24px rgba(0,0,0,0.12);
   }
 
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -393,12 +393,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255,255,255,0.75);
+    color: #ffffff;
     font-size: 10px;
     transition: background 0.15s, color 0.15s;
     flex-shrink: 0;
   }
-  .sidebar-toggle-btn:hover { background: var(--bg-hover); color: var(--text-main); }
+  .sidebar-toggle-btn:hover { background: rgba(255,255,255,0.2); color: #ffffff; }
   .sidebar.collapsed + .sidebar-toggle-btn {
     right: -14px;
     border-left: 1px solid var(--border);
@@ -775,9 +775,10 @@
     border-right: 1px solid rgba(37,99,235,0.14);
   }
   html.light .sidebar-toggle-btn {
-    background: rgba(241,245,249,0.92);
-    border-color: rgba(0,0,0,0.18);
-    color: #0d1117;
+    background: #0d1117 !important;
+    border-color: #0d1117 !important;
+    color: #ffffff !important;
+    border-radius: 0 8px 8px 0;
   }
   html.light .statusbar { background: #f8fafc; border-top-color: #e2e8f0; }
   html.light .content-header { background: #f1f5f9; border-bottom-color: #e2e8f0; }
@@ -842,12 +843,169 @@
     border-color: rgba(239,68,68,0.3) !important;
   }
 
-  /* Users/admin table in light mode */
-  html.light .users-table th { background: linear-gradient(180deg, #f1f5f9, #e8edf5); color: var(--header-col); }
-  html.light .admin-detail-header { border-bottom-color: var(--border); }
-  html.light .admin-detail-item { background: var(--bg-card); border-color: var(--border); }
-  html.light .user-badge { background: rgba(37,99,235,0.08); box-shadow: 0 1px 4px rgba(37,99,235,0.1); }
-  html.light .zone-badge { background: rgba(8,145,178,0.08); }
+  /* ══ MONOCHROME LIGHT MODE — everything black & white ══ */
+
+  /* Body & layout */
+  html.light body { background: #f8f8f8 !important; color: #0d1117 !important; }
+  html.light .main { background: #f8f8f8 !important; }
+
+  /* Topbar */
+  html.light .topbar { background: #ffffff !important; border-bottom: 2px solid #0d1117 !important; }
+  html.light .brand-text h1 { color: #0d1117 !important; }
+  html.light .brand-text p  { color: #444444 !important; }
+  html.light .clock         { color: #444444 !important; }
+  html.light .user-badge    { background: #0d1117 !important; color: #fff !important; border-color: #0d1117 !important; box-shadow: none !important; }
+  html.light .zone-badge    { background: #f0f0f0 !important; color: #0d1117 !important; border-color: #0d1117 !important; }
+  html.light .zone-badge.super { background: #0d1117 !important; color: #fff !important; border-color: #0d1117 !important; animation: none !important; }
+
+  /* Sidebar */
+  html.light .sidebar { background: #ffffff !important; border-right: 1px solid #0d1117 !important; backdrop-filter: none !important; }
+  html.light .sidebar-label { color: #0d1117 !important; font-weight: 700 !important; }
+  html.light .file-item { background: #f5f5f5 !important; border-color: #cccccc !important; color: #0d1117 !important; }
+  html.light .file-item:hover { background: #e8e8e8 !important; border-color: #0d1117 !important; }
+  html.light .file-item.active { background: #0d1117 !important; color: #fff !important; border-color: #0d1117 !important; }
+  html.light .sheet-tab { color: #0d1117 !important; }
+  html.light .sheet-tab:hover { background: #eeeeee !important; }
+  html.light .sheet-tab.active { background: #0d1117 !important; color: #fff !important; border-color: #0d1117 !important; }
+  html.light .month-pill { background: #fff !important; border-color: #0d1117 !important; color: #0d1117 !important; }
+  html.light .month-pill:hover { background: #eeeeee !important; }
+  html.light .month-pill.active { background: #0d1117 !important; color: #fff !important; box-shadow: none !important; }
+  html.light #zoneViewSelect, html.light #yearSelect { background: #fff !important; border-color: #0d1117 !important; color: #0d1117 !important; }
+
+  /* Content header & toolbar */
+  html.light .content-header { background: #ffffff !important; border-bottom: 1px solid #0d1117 !important; box-shadow: none !important; }
+  html.light .content-title h2 { color: #0d1117 !important; }
+  html.light .badge-blue, html.light .badge-green, html.light .badge-edit {
+    background: #f0f0f0 !important; color: #0d1117 !important; border-color: #0d1117 !important;
+  }
+  html.light .ct-icon { background: #0d1117 !important; border-color: #0d1117 !important; color: #fff !important; }
+  html.light .toolbar { background: #f0f0f0 !important; border-bottom: 1px solid #0d1117 !important; }
+  html.light .statusbar { background: #ffffff !important; border-top: 1px solid #0d1117 !important; color: #444444 !important; }
+  html.light .status-dot { background: #0d1117 !important; box-shadow: none !important; }
+
+  /* All buttons → black/white */
+  html.light .btn { background: #0d1117 !important; color: #fff !important; border-color: #0d1117 !important; box-shadow: none !important; }
+  html.light .btn:hover { background: #333333 !important; border-color: #333333 !important; box-shadow: none !important; }
+  html.light .btn-ghost { background: #fff !important; color: #0d1117 !important; border-color: #0d1117 !important; }
+  html.light .btn-ghost:hover { background: #0d1117 !important; color: #fff !important; }
+
+  /* All topbar icon buttons → black */
+  html.light .theme-btn { background: #0d1117 !important; color: #fff !important; border-color: #0d1117 !important; box-shadow: none !important; }
+  html.light .theme-btn:hover { background: #333333 !important; color: #fff !important; box-shadow: none !important; }
+
+  /* Data table */
+  html.light .data-table thead th { background: #0d1117 !important; color: #ffffff !important; border-color: #0d1117 !important; }
+  html.light .data-table tbody td { color: #0d1117 !important; border-bottom-color: #e0e0e0 !important; }
+  html.light .data-table tbody tr:nth-child(even) td { background: #f5f5f5 !important; }
+  html.light .data-table tbody tr:hover td { background: #eeeeee !important; }
+  html.light .row-in  td { color: #0d1117 !important; font-weight: 600 !important; }
+  html.light .row-out td { color: #0d1117 !important; font-weight: 600 !important; }
+
+  /* All modals → white with black borders */
+  html.light .beta-card,
+  html.light .logout-box,
+  html.light .csv-modal-box,
+  html.light .users-box,
+  html.light .profile-box,
+  html.light .modal-box,
+  html.light .pwd-box,
+  html.light .soon-box {
+    background: #ffffff !important;
+    border-color: #0d1117 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.18) !important;
+  }
+  html.light .beta-card::before, html.light .logout-box::before,
+  html.light .csv-modal-box::before, html.light .users-box::before, html.light .profile-box::before {
+    display: none !important;
+  }
+  html.light .pwd-overlay > div {
+    background: #ffffff !important;
+    border-color: #0d1117 !important;
+    backdrop-filter: none !important;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.18) !important;
+  }
+
+  /* Modal headers */
+  html.light .logout-header, html.light .csv-modal-header, html.light .users-header, html.light .profile-header {
+    background: #0d1117 !important;
+    border-bottom-color: #0d1117 !important;
+  }
+  html.light .logout-header *, html.light .csv-modal-header *,
+  html.light .users-header *, html.light .profile-header * { color: #ffffff !important; }
+  html.light .logout-icon { background: rgba(255,255,255,0.15) !important; border-color: rgba(255,255,255,0.3) !important; }
+
+  /* Modal text */
+  html.light .beta-title, html.light .modal-title { color: #0d1117 !important; }
+  html.light .beta-credit, html.light .modal-subtitle { color: #444444 !important; }
+  html.light .beta-badge { background: #f0f0f0 !important; border-color: #0d1117 !important; color: #0d1117 !important; }
+  html.light .beta-dot, html.light .logout-header .beta-dot { background: #0d1117 !important; box-shadow: none !important; }
+  html.light .beta-btn { background: #0d1117 !important; color: #fff !important; }
+  html.light .beta-btn:hover { background: #333333 !important; }
+
+  /* Modal inputs & info */
+  html.light .modal-info-item, html.light .print-modal-info, html.light .csv-modal-info {
+    background: #f5f5f5 !important; border-color: #cccccc !important;
+  }
+  html.light .modal-field input, html.light .pwd-field input,
+  html.light .pwd-overlay > div input {
+    background: #f5f5f5 !important; border-color: #0d1117 !important; color: #0d1117 !important;
+  }
+  html.light .pmi-label, html.light .cmi-label { color: #555555 !important; }
+  html.light .pmi-val, html.light .cmi-val { color: #0d1117 !important; }
+
+  /* Close buttons light mode */
+  html.light .modal-close, html.light .csv-modal-close, html.light .profile-close,
+  html.light .modal-hdr-btn.modal-hdr-close, html.light .modal-hdr-close, html.light .dash-close-btn {
+    background: #f0f0f0 !important; border-color: #0d1117 !important; color: #0d1117 !important;
+  }
+  html.light .modal-close:hover, html.light .csv-modal-close:hover, html.light .profile-close:hover,
+  html.light .modal-hdr-btn.modal-hdr-close:hover, html.light .modal-hdr-close:hover, html.light .dash-close-btn:hover {
+    background: #0d1117 !important; color: #fff !important; border-color: #0d1117 !important; transform: scale(1.06) !important;
+  }
+
+  /* Users table */
+  html.light .users-table th { background: #0d1117 !important; color: #ffffff !important; border-color: #0d1117 !important; }
+  html.light .users-table td { color: #0d1117 !important; border-bottom-color: #e0e0e0 !important; }
+  html.light .users-table tr:hover td { background: #eeeeee !important; }
+  html.light .users-body { background: #ffffff !important; }
+  html.light .admin-user-row { background: #f5f5f5 !important; border-color: #cccccc !important; color: #0d1117 !important; }
+  html.light .admin-user-row:hover { background: #eeeeee !important; border-color: #0d1117 !important; }
+  html.light .admin-detail-item { background: #f5f5f5 !important; border-color: #cccccc !important; }
+  html.light .admin-detail-header { border-bottom-color: #0d1117 !important; }
+
+  /* Profile modal */
+  html.light .profile-card { background: #f5f5f5 !important; border-color: #cccccc !important; }
+  html.light .profile-card:hover { background: #eeeeee !important; border-color: #0d1117 !important; }
+  html.light .profile-section { background: #f5f5f5 !important; border-color: #cccccc !important; }
+  html.light .permission-item { background: #f5f5f5 !important; border-color: #cccccc !important; color: #0d1117 !important; }
+  html.light .permission-dot { background: #0d1117 !important; box-shadow: none !important; }
+  html.light .permission-dot.off { background: #aaaaaa !important; }
+  html.light .profile-log-item { background: #f5f5f5 !important; border-color: #cccccc !important; }
+  html.light .profile-change-pw input { background: #f5f5f5 !important; border-color: #0d1117 !important; color: #0d1117 !important; }
+  html.light .profile-zone-pill { background: #f0f0f0 !important; border-color: #0d1117 !important; color: #0d1117 !important; }
+  html.light .profile-chip { background: #f0f0f0 !important; border-color: #0d1117 !important; color: #0d1117 !important; }
+
+  /* Dashboard modal */
+  html.light .dash-box { background: #ffffff !important; border: 1px solid #0d1117 !important; box-shadow: 0 12px 48px rgba(0,0,0,0.15) !important; }
+  html.light .dash-sidebar { background: #0d1117 !important; border-right-color: #333333 !important; }
+  html.light .dash-nav-item { color: rgba(255,255,255,0.7) !important; }
+  html.light .dash-nav-item:hover { background: rgba(255,255,255,0.08) !important; color: #fff !important; }
+  html.light .dash-nav-item.active { background: rgba(255,255,255,0.15) !important; color: #ffffff !important; }
+  html.light .dash-nav-item.active .dn-dot { background: #ffffff !important; }
+  html.light .dash-sidebar-title { color: rgba(255,255,255,0.5) !important; }
+  html.light .dash-content { background: #f8f8f8 !important; }
+  html.light .dash-kpi-card { background: #ffffff !important; border-color: #cccccc !important; box-shadow: 0 1px 4px rgba(0,0,0,0.08) !important; }
+  html.light .dash-chart-wrap { background: #ffffff !important; border-color: #cccccc !important; box-shadow: none !important; }
+  html.light .dash-zone-table th { background: #0d1117 !important; color: #ffffff !important; }
+  html.light .dash-zone-table td { background: #ffffff !important; color: #0d1117 !important; border-color: #e0e0e0 !important; }
+  html.light .dash-zone-table tr:hover td { background: #f5f5f5 !important; }
+  html.light .dash-alert-item { background: #f5f5f5 !important; border-color: #cccccc !important; }
+  html.light .dash-refresh-btn { background: #f0f0f0 !important; border-color: #0d1117 !important; color: #0d1117 !important; }
+  html.light .dash-refresh-btn:hover { background: #0d1117 !important; color: #fff !important; }
+  html.light .dash-close-btn { background: #f0f0f0 !important; border-color: #0d1117 !important; color: #0d1117 !important; }
+  html.light .dash-close-btn:hover { background: #0d1117 !important; color: #fff !important; transform: scale(1.06) !important; }
 
   /* ── CUSTOM LOGOUT MODAL ── */
   .logout-overlay {
