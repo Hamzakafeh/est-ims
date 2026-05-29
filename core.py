@@ -289,7 +289,9 @@ def _ip_country(ip):
     try:
         res = _requests.get(f'https://ipapi.co/{ip}/json/', timeout=2)
         data = res.json() if res.ok else {}
-        country = data.get('country_name') or data.get('country') or 'Unknown'
+        country = data.get('country_name') or data.get('country') or ''
+        if not isinstance(country, str) or country.strip().lower() in ('nan', 'none', '', 'null'):
+            country = 'Unknown'
     except Exception:
         country = 'Unknown'
     _country_cache[ip] = country

@@ -182,12 +182,13 @@ function renderProfile(data) {
     <span class="profile-zone-pill">${escHtml(z.label || z.name || z.id)}</span>
   `).join('') || '<span class="profile-zone-pill">—</span>';
 
+  const _cleanCountry = (c) => (!c || String(c).trim().toLowerCase() === 'nan' || String(c).trim() === '' ? '—' : String(c).trim());
   const logins = (data.recent_logins || []).length
     ? data.recent_logins.map(entry => `
         <div class="profile-log-item">
           <div>
             <div class="profile-log-main">${escHtml(entry.zone_label || entry.zone_id || 'Zone')}</div>
-            <div class="profile-log-sub">IP: ${escHtml(entry.ip || '—')}</div>
+            <div class="profile-log-sub">${escHtml(_cleanCountry(entry.country))} &nbsp;·&nbsp; ${escHtml(entry.ip || '—')}</div>
           </div>
           <div class="profile-log-time">${escHtml(entry.time || '—')}</div>
         </div>
@@ -2236,7 +2237,7 @@ async function loadLoginLog() {
         <td><strong>${escHtml(e.username || '-')}</strong></td>
         <td><span class="zone-badge" style="font-size:11px;padding:2px 10px;">${escHtml(e.zone_label || e.zone_id || '-')}</span></td>
         <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);">${escHtml(e.time || '-')}</td>
-        <td style="font-size:11px;color:var(--text-muted);">${escHtml(e.country || 'Unknown')}</td>
+        <td style="font-size:11px;color:var(--text-muted);">${escHtml((!e.country || e.country.toLowerCase() === 'nan') ? '—' : e.country)}</td>
         <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);">${escHtml(e.ip || '-')}</td>
       </tr>`).join('');
     body.innerHTML = `
