@@ -545,12 +545,12 @@
   /* ── LOGOUT MODAL — dashboard style ── */
   .logout-box {
     background: #F0F4F8 !important;
-    border: 2px solid #0F2137 !important;
+    border: 1.5px solid #F0F4F8 !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    box-shadow: 0 24px 72px rgba(15,33,55,0.28) !important;
+    box-shadow: 0 24px 72px rgba(15,33,55,0.30), 0 0 0 1px rgba(15,33,55,0.08) !important;
   }
-  html.light .logout-box { background: #F0F4F8 !important; border: 2px solid #0F2137 !important; }
+  html.light .logout-box { background: #F0F4F8 !important; border: 1.5px solid #F0F4F8 !important; }
   .logout-box::before {
     background: linear-gradient(90deg, transparent, #00C2B5, #0F2137, transparent) !important;
     animation: none !important;
@@ -614,15 +614,37 @@
   }
   .admin-badge { animation: none !important; box-shadow: none !important; }
 
-  /* Close button — NO rotation on hover */
+  /* Close button — NO rotation, NO neon */
+  .modal-close, .csv-modal-close, .profile-close,
+  .modal-hdr-btn.modal-hdr-close, .modal-hdr-close, .dash-close-btn {
+    transform: none !important;
+    transition: all 0.18s !important;
+  }
   .modal-close:hover, .csv-modal-close:hover, .profile-close:hover,
   .modal-hdr-btn.modal-hdr-close:hover, .modal-hdr-close:hover {
     transform: scale(1.06) !important;
+    background: #EF4444 !important;
+    color: #fff !important;
+    border-color: #EF4444 !important;
+  }
+  .dash-close-btn:hover {
+    transform: scale(1.06) !important;
+    background: #EF4444 !important;
+    color: #fff !important;
+    border-color: #EF4444 !important;
   }
 
-  /* Home button — same as dashBtn */
-  #homeBtn { background: rgba(255,255,255,0.10) !important; color: rgba(255,255,255,0.85) !important; border-color: rgba(255,255,255,0.20) !important; }
-  #homeBtn:hover { background: rgba(255,255,255,0.20) !important; color: #fff !important; }
+  /* Home button — same exact style as dashBtn */
+  #homeBtn {
+    background: rgba(255,255,255,0.10) !important;
+    color: #fff !important;
+    border-color: rgba(255,255,255,0.20) !important;
+  }
+  #homeBtn:hover {
+    background: rgba(255,255,255,0.22) !important;
+    color: #fff !important;
+    box-shadow: none !important;
+  }
 
   /* Zone/Year selects — options */
   #zoneViewSelect option, #yearSelect option { background: #0E7C86; color: #fff; }
@@ -631,12 +653,12 @@
   /* Remove status-dot neon */
   .status-dot { box-shadow: none !important; }
 
-  /* ── FORCE #F0F4F8 on ALL modal panels ── */
+  /* ── FORCE #F0F4F8 background + soft border on ALL modals ── */
   .modal-box, .pwd-box, .print-modal-box, .soon-box, .beta-card,
   .logout-box, .csv-modal-box, .users-box, .profile-box {
     background: #F0F4F8 !important;
-    border: 2px solid #0F2137 !important;
-    box-shadow: 0 24px 72px rgba(15,33,55,0.25) !important;
+    border: 1.5px solid #F0F4F8 !important;
+    box-shadow: 0 24px 72px rgba(15,33,55,0.30), 0 0 0 1px rgba(15,33,55,0.08) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
   }
@@ -1434,9 +1456,9 @@
     max-height: 300px;
     overflow-y: auto;
     background: #F0F4F8;
-    border: 2px solid #0F2137;
+    border: 1.5px solid #F0F4F8;
     border-radius: 14px;
-    box-shadow: 0 12px 36px rgba(15,33,55,0.18);
+    box-shadow: 0 12px 36px rgba(15,33,55,0.22), 0 0 0 1px rgba(15,33,55,0.06);
     z-index: 500;
     padding: 6px;
     animation: dropIn 0.18s cubic-bezier(.34,1.56,.64,1);
@@ -1477,26 +1499,22 @@
      ══════════════════════════════════════════════ */
 
   /* Box backgrounds — includes beta-card used by About/Print/Delete modals */
-  .modal-box, .pwd-box, .print-modal-box, .soon-box, .beta-card {
-    background: #F0F4F8 !important;
-    border: 2px solid #0F2137 !important;
-    box-shadow: 0 24px 72px rgba(15,33,55,0.28) !important;
-    position: relative;
-  }
+  .modal-box, .pwd-box, .print-modal-box, .soon-box, .beta-card,
   .logout-box, .csv-modal-box, .users-box, .profile-box {
     background: #F0F4F8 !important;
-    border: 2px solid #0F2137 !important;
+    border: 1.5px solid #F0F4F8 !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    box-shadow: 0 24px 72px rgba(15,33,55,0.28) !important;
+    box-shadow: 0 24px 72px rgba(15,33,55,0.30), 0 0 0 1px rgba(15,33,55,0.08) !important;
+    position: relative;
   }
   /* Light mode — keep same style */
   html.light .modal-box, html.light .pwd-box, html.light .print-modal-box, html.light .soon-box,
   html.light .logout-box, html.light .csv-modal-box, html.light .users-box, html.light .profile-box,
   html.light .beta-card {
     background: #F0F4F8 !important;
-    border: 2px solid #0F2137 !important;
-    box-shadow: 0 24px 72px rgba(15,33,55,0.18) !important;
+    border: 1.5px solid #F0F4F8 !important;
+    box-shadow: 0 24px 72px rgba(15,33,55,0.18), 0 0 0 1px rgba(15,33,55,0.06) !important;
   }
   /* beta-card text in modal context */
   .beta-card .beta-title { color: #0F2137 !important; }
@@ -1778,11 +1796,11 @@
 
   .dash-box {
     background: #F0F4F8;
-    border: 2px solid #0F2137;
+    border: 1.5px solid #F0F4F8;
     border-radius: 22px;
     width: 92vw; height: 86vh;
     display: flex; overflow: hidden;
-    box-shadow: 0 24px 72px rgba(15,33,55,0.28);
+    box-shadow: 0 24px 72px rgba(15,33,55,0.30), 0 0 0 1px rgba(15,33,55,0.08);
     animation: cardPop 0.4s cubic-bezier(.34,1.56,.64,1) both;
     position: relative;
   }
