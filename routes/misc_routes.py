@@ -154,6 +154,9 @@ def ai_chat():
     messages = data.get('messages', [])
     system_prompt = data.get('system', '')
 
+    # Cap to last 16 messages to prevent recursion/token overflow
+    messages = messages[-16:] if len(messages) > 16 else messages
+
     groq_messages = []
     if system_prompt:
         groq_messages.append({'role': 'system', 'content': system_prompt})
@@ -180,5 +183,7 @@ def ai_chat():
             reply_text = groq_data['choices'][0]['message']['content']
             return jsonify({'content': [{'type': 'text', 'text': reply_text}]}), 200
         return jsonify(groq_data), res.status_code
+    except RecursionError:
+        return jsonify({'error': 'Response too complex. Please start a new conversation.'}), 500
     except Exception as e:
         return jsonify({'error': str(e)}), 500

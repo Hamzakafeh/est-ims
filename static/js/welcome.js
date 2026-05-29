@@ -95,9 +95,9 @@ async function sendMessage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'llama-3.1-8b-instant',
-        max_tokens: 1000,
+        max_tokens: 800,
         system: SYSTEM_PROMPT,
-        messages: conversationHistory
+        messages: conversationHistory.slice(-16)
       })
     });
     const data = await response.json();
