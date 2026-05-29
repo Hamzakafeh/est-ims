@@ -488,7 +488,7 @@ html.light .welcome-user-chip { background: rgba(255,255,255,0.85); border-color
 .welcome-user-logout:hover { background: rgba(6,182,212,0.18); border-color: var(--accent-cyan); }
 @keyframes fadeDown { from{opacity:0;transform:translateY(-10px);} to{opacity:1;transform:translateY(0);} }
 
-.qr-scan-fab { position: fixed; bottom: 96px; right: 28px; z-index: 500; width: 56px; height: 56px; border-radius: 18px; background: linear-gradient(135deg, #06b6d4, #10b981); border: none; cursor: pointer; box-shadow: 0 8px 32px rgba(6,182,212,0.42), 0 0 0 1px rgba(6,182,212,0.22); display: flex; align-items: center; justify-content: center; color: #fff; transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s; animation: fadeUp 0.6s ease 1.25s both; }
+.qr-scan-fab { position: fixed; bottom: 28px; right: 28px; z-index: 500; width: 56px; height: 56px; border-radius: 18px; background: linear-gradient(135deg, #06b6d4, #10b981); border: none; cursor: pointer; box-shadow: 0 8px 32px rgba(6,182,212,0.42), 0 0 0 1px rgba(6,182,212,0.22); display: flex; align-items: center; justify-content: center; color: #fff; transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s; animation: fadeUp 0.6s ease 1.25s both; }
 .qr-scan-fab:hover { transform: translateY(-4px) scale(1.08); box-shadow: 0 16px 48px rgba(6,182,212,0.52), 0 0 0 1px rgba(6,182,212,0.32); }
 .qr-scan-fab:active { transform: scale(0.95); }
 .qr-scan-fab-pulse { position: absolute; inset: -4px; border-radius: 22px; border: 2px solid rgba(6,182,212,0.38); animation: fabRipple 2.5s ease-out infinite; pointer-events: none; }
@@ -626,9 +626,7 @@ html.light .back-to-top:hover { background: rgba(37,99,235,0.1); }
   .dock-item { height: 50px; flex-direction: column; gap: 3px; }
   .dock-icon { width: 40px; height: 40px; border-radius: 12px; border-left: 1px solid var(--border-light); }
   .dock-label { display: none; }
-  .ai-fab { bottom: 76px !important; right: 16px; }
-  .qr-scan-fab { bottom: 140px !important; right: 16px; width: 52px; height: 52px; border-radius: 16px; }
-  .ai-panel { bottom: 140px !important; max-height: 60vh !important; right: 10px; width: calc(100vw - 20px) !important; }
+  .qr-scan-fab { bottom: 76px !important; right: 16px; width: 52px; height: 52px; border-radius: 16px; }
   .back-to-top { bottom: 76px !important; right: 84px; width: 52px; height: 52px; border-radius: 16px; }
   .quick-scan-overlay { align-items: flex-start; padding: 14px; }
   .quick-scan-modal { max-height: calc(100vh - 96px); margin-top: 12px; }

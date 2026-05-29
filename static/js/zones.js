@@ -221,7 +221,7 @@ const ZONES_LANG = {
     enterPwd: 'Enter Zone Password',
     enterPwdSub: 'Enter the password for this zone',
     zoneNames: { zone1:'Zone 1', zone2:'Zone 2', zone3:'Zone 3', zone4:'Zone 4', zone5:'Zone 5', qc:'QC', admin:'EST', dev:'Dev' },
-    zoneLabels: { zone1:'زون 1', zone2:'زون 2', zone3:'Packaging', zone4:'زون 4', zone5:'زون 5', qc:'Quality Control', admin:'Administration', dev:'' },
+    zoneLabels: { zone1:'Zone 1', zone2:'Zone 2', zone3:'Packaging', zone4:'Zone 4', zone5:'Zone 5', qc:'Quality Control', admin:'Administration', dev:'' },
   },
   ar: {
     title: 'اختر الزون',

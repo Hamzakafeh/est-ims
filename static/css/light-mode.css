@@ -265,7 +265,8 @@ html.light {
    ────────────────────────────────────────────────────────────────────── */
 
 html.light body {
-  background-color: var(--mlo5-bg-page);
+  background-color: var(--mlo5-bg-page) !important;
+  background:       var(--mlo5-bg-page) !important;
   color:            var(--mlo5-text-primary);
   font-family:      var(--mlo5-font-sans);
   font-size:        var(--mlo5-text-base);
