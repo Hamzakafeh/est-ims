@@ -567,24 +567,79 @@
   .logout-msg   { color: #64748B !important; }
   .logout-body  { background: #F0F4F8 !important; }
 
-  /* ── STRIP ALL REMAINING NEON/ANIMATION EFFECTS ── */
-  /* betaBlink animation removed */
-  @keyframes betaBlink { 0%,100%{opacity:1;} 50%{opacity:0.7;} }
-  /* betaShine animation: static, no movement */
-  @keyframes betaShine { 0%,100%{opacity:1;transform:none;} }
-  /* Remove all box-shadow glows on hover except close btn */
-  .btn:hover:not(.modal-close):not(.modal-hdr-close):not(.dash-close-btn) {
-    box-shadow: 0 4px 14px rgba(15,33,55,0.15) !important;
+  /* ── COMPREHENSIVE NEON + ANIMATION REMOVAL ── */
+  @keyframes betaBlink { 0%,100%{opacity:1;} 50%{opacity:0.75;} }
+  @keyframes betaShine { 0%,100%{opacity:1;} }
+  @keyframes superPulse { 0%,100%{box-shadow:none;} }
+  @keyframes topbarLine { 0%,100%{opacity:1;} }
+
+  /* Remove all ::before glow lines from ALL modal boxes */
+  .modal-box::before, .logout-box::before, .pwd-box::before,
+  .print-modal-box::before, .soon-box::before, .beta-card::before,
+  .csv-modal-box::before, .users-box::before, .profile-box::before,
+  .dash-box::before {
+    display: none !important;
   }
-  /* Remove neon from specific topbar buttons */
-  #logoutBtn:hover, #logoutThemeBtn:hover,
-  #refreshBtn:hover, #csvBtn:hover, #printBtn:hover,
-  #aboutBtn:hover, #reportsBtn:hover, #homeBtn:hover,
-  #adminRequestsBtn:hover, #adminUsersBtn:hover, #forMoreMessagesBtn:hover {
+
+  /* Logout box — flat #F0F4F8, no dark header needed (HTML rewritten) */
+  .logout-box { background: #F0F4F8 !important; }
+  .logout-header, .logout-body { background: transparent !important; border: none !important; }
+
+  /* ── UNIVERSAL BUTTON STYLES — flat, clean, no neon ── */
+  /* All buttons: clean hover effect */
+  .btn { transition: all 0.18s cubic-bezier(.34,1.56,.64,1) !important; }
+  .btn:hover { transform: translateY(-2px) scale(1.04) !important; box-shadow: 0 4px 12px rgba(15,33,55,0.12) !important; }
+  .btn:active { transform: translateY(0) scale(0.98) !important; }
+  /* Colored button flat shades */
+  .btn-primary  { background: #1A4A7A !important; border-color: #1A4A7A !important; color: #fff !important; }
+  .btn-primary:hover  { background: #0F2137 !important; border-color: #0F2137 !important; }
+  .btn-success  { background: #10B981 !important; border-color: #10B981 !important; color: #fff !important; }
+  .btn-success:hover  { background: #059669 !important; border-color: #059669 !important; }
+  .btn-warning  { background: #F59E0B !important; border-color: #F59E0B !important; color: #0F2137 !important; }
+  .btn-warning:hover  { background: #D97706 !important; border-color: #D97706 !important; }
+  .btn-danger   { background: #EF4444 !important; border-color: #EF4444 !important; color: #fff !important; }
+  .btn-danger:hover   { background: #DC2626 !important; border-color: #DC2626 !important; }
+  .btn-ghost    { background: #FFFFFF !important; border-color: #E2E8F0 !important; color: #0F2137 !important; }
+  .btn-ghost:hover    { background: #EEF2F7 !important; border-color: #CBD5E1 !important; }
+  .btn-in-modal, .btn-success { background: #10B981 !important; border-color: #10B981 !important; color: #fff !important; }
+  .btn-out-modal, .btn-logout { background: #EF4444 !important; border-color: #EF4444 !important; color: #fff !important; }
+
+  /* Topbar buttons — flat, no neon glow on hover */
+  .theme-btn { transition: all 0.18s !important; }
+  .theme-btn:hover { box-shadow: none !important; }
+  #logoutBtn:hover, #logoutThemeBtn:hover, #refreshBtn:hover, #csvBtn:hover, #printBtn:hover,
+  #aboutBtn:hover, #reportsBtn:hover, #homeBtn:hover, #adminRequestsBtn:hover,
+  #adminUsersBtn:hover, #forMoreMessagesBtn:hover, #dashBtn:hover, #buttonsToggleBtn:hover {
     box-shadow: none !important;
   }
-  /* Remove animation from admin-badge glow */
   .admin-badge { animation: none !important; box-shadow: none !important; }
+
+  /* Close button — NO rotation on hover */
+  .modal-close:hover, .csv-modal-close:hover, .profile-close:hover,
+  .modal-hdr-btn.modal-hdr-close:hover, .modal-hdr-close:hover {
+    transform: scale(1.06) !important;
+  }
+
+  /* Home button — same as dashBtn */
+  #homeBtn { background: rgba(255,255,255,0.10) !important; color: rgba(255,255,255,0.85) !important; border-color: rgba(255,255,255,0.20) !important; }
+  #homeBtn:hover { background: rgba(255,255,255,0.20) !important; color: #fff !important; }
+
+  /* Zone/Year selects — options */
+  #zoneViewSelect option, #yearSelect option { background: #0E7C86; color: #fff; }
+  #zoneViewSelect:focus, #yearSelect:focus { border-color: #00A89D !important; outline: none; }
+
+  /* Remove status-dot neon */
+  .status-dot { box-shadow: none !important; }
+
+  /* ── FORCE #F0F4F8 on ALL modal panels ── */
+  .modal-box, .pwd-box, .print-modal-box, .soon-box, .beta-card,
+  .logout-box, .csv-modal-box, .users-box, .profile-box {
+    background: #F0F4F8 !important;
+    border: 2px solid #0F2137 !important;
+    box-shadow: 0 24px 72px rgba(15,33,55,0.25) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
 
   /* Status bar */
   .statusbar {

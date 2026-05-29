@@ -236,14 +236,20 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
 
 <!-- ══ LOGOUT CONFIRM MODAL ══ -->
 <div class="logout-overlay" id="logoutModal" onclick="if(event.target===this)closeLogout()">
-  <div class="logout-box">
-    <div class="logout-header">
-      <div class="logout-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-      <div class="logout-title">Logout</div>
-    </div>
-    <div class="logout-body">
-      <div class="logout-msg">Are you sure you want to logout?</div>
-      <div class="logout-actions">
+  <div class="logout-box" style="position:relative;padding:0;text-align:center;min-width:320px;max-width:380px;overflow:hidden;">
+    <button class="modal-hdr-btn modal-hdr-close" onclick="closeLogout()" title="Close" style="position:absolute;top:12px;right:12px;z-index:10;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <div style="padding:32px 36px 28px;">
+      <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(239,68,68,0.10);border:1px solid rgba(239,68,68,0.30);border-radius:50px;padding:5px 16px;margin-bottom:20px;font-size:11px;font-weight:700;color:#EF4444;letter-spacing:1.5px;text-transform:uppercase;">
+        <span style="width:6px;height:6px;border-radius:50%;background:#EF4444;flex-shrink:0;"></span>
+        Logout
+      </div>
+      <div style="width:54px;height:54px;border-radius:50%;background:rgba(239,68,68,0.10);border:1px solid rgba(239,68,68,0.28);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:#EF4444;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </div>
+      <div style="font-size:18px;font-weight:700;color:#0F2137;margin-bottom:6px;">Confirm Logout</div>
+      <div style="height:1px;background:#E2E8F0;margin-bottom:16px;"></div>
+      <div style="font-size:13px;color:#64748B;margin-bottom:24px;line-height:1.6;">Are you sure you want to logout?</div>
+      <div style="display:flex;gap:10px;justify-content:center;">
         <button class="btn btn-danger" onclick="doLogout()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
           Yes, Logout
@@ -298,8 +304,8 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
       <div class="sidebar-label">Zone View</div>
       <div style="padding:0 6px;margin-bottom:4px;">
         <select id="zoneViewSelect"
-          style="width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);border-radius:8px;
-                 padding:8px 12px;color:#fff;font-family:inherit;font-size:13px;font-weight:600;
+          style="width:100%;background:#00C2B5;border:1px solid #00C2B5;border-radius:8px;
+                 padding:8px 12px;color:#0F2137;font-family:inherit;font-size:13px;font-weight:700;
                  outline:none;cursor:pointer;transition:border-color 0.15s;"
           onchange="switchViewZone(this.value)">
           <option value="zone1">Zone 1</option>
@@ -316,8 +322,8 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
       <div class="sidebar-label">Year</div>
       <div style="padding: 0 6px; margin-bottom: 4px;">
         <select id="yearSelect"
-          style="width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);border-radius:8px;
-                 padding:8px 12px;color:#fff;font-family:inherit;font-size:13px;font-weight:600;
+          style="width:100%;background:#00C2B5;border:1px solid #00C2B5;border-radius:8px;
+                 padding:8px 12px;color:#0F2137;font-family:inherit;font-size:13px;font-weight:700;
                  outline:none;cursor:pointer;transition:border-color 0.15s;"
           onchange="selectYear(this.value)">
         </select>
