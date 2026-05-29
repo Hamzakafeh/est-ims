@@ -338,9 +338,15 @@
   .login-link-signup {
     color: var(--text-muted); text-decoration: none;
     font-weight: 600; cursor: pointer;
-    transition: color 0.15s;
+    transition: color 0.18s ease, text-decoration-color 0.18s ease;
+    text-decoration-color: transparent;
   }
-  .login-link-signup:hover { color: var(--accent-cyan); }
+  .login-link-signup:hover {
+    color: var(--accent-cyan);
+    text-decoration: underline;
+    text-decoration-color: var(--accent-cyan);
+    text-underline-offset: 3px;
+  }
   .field-wrap {
     position: relative;
     margin-bottom: 18px;
@@ -406,9 +412,16 @@
   .btn-login.success { background: var(--accent-green) !important; transform: none !important; box-shadow: 0 4px 20px rgba(16,185,129,0.4) !important; }
   .login-link-disabled {
     color: var(--text-muted); text-decoration: none; cursor: pointer;
-    font-size: 12px; transition: color 0.15s;
+    font-size: 12px;
+    transition: color 0.18s ease, text-decoration-color 0.18s ease;
+    text-decoration-color: transparent;
   }
-  .login-link-disabled:hover { color: var(--accent-cyan); }
+  .login-link-disabled:hover {
+    color: var(--accent-cyan);
+    text-decoration: underline;
+    text-decoration-color: var(--accent-cyan);
+    text-underline-offset: 3px;
+  }
 
   /* error box */
   .error-box {
