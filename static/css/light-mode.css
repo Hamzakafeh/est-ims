@@ -1223,6 +1223,42 @@ html.light .blob-2 { background: radial-gradient(circle, rgba(8,145,178,0.10), t
 html.light .blob-3 { background: radial-gradient(circle, rgba(124,58,237,0.08), transparent 70%) !important; }
 
 
+/* ── Dev Modal — light mode ── */
+html.light .dev-modal-box {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 24px 56px rgba(15,23,42,0.14), 0 4px 12px rgba(15,23,42,0.06) !important;
+}
+html.light .dev-modal-glow {
+  background: linear-gradient(90deg, transparent, #00C2B5, #2563eb, transparent) !important;
+}
+html.light .dev-modal-close {
+  background: rgba(15,33,55,0.06) !important;
+  border-color: #e2e8f0 !important;
+  color: #475569 !important;
+}
+html.light .dev-modal-header {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 70%, #e0f2fe 100%) !important;
+  border-bottom: 1px solid #bfdbfe !important;
+}
+html.light .dev-modal-photo-wrap {
+  border-color: rgba(37,99,235,0.35) !important;
+  box-shadow: 0 4px 16px rgba(37,99,235,0.16) !important;
+}
+html.light .dev-modal-name { color: #0f172a !important; }
+html.light .dev-modal-role { color: #64748b !important; }
+html.light .dev-modal-divider { background: #e2e8f0 !important; }
+html.light .dev-modal-label { color: #94a3b8 !important; }
+html.light .dev-modal-value { color: #0f172a !important; }
+html.light .dev-modal-icon.blue  { background: #eff6ff !important; border-color: #bfdbfe !important; color: #2563eb !important; }
+html.light .dev-modal-icon.green { background: #f0fdf4 !important; border-color: #bbf7d0 !important; color: #059669 !important; }
+html.light .dev-modal-bio-wrap {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+html.light .dev-modal-bio { color: #64748b !important; }
+
+
 /* ═══════════════════════════════════════════════════════════════════════
    §6  ZONES PAGE — FULL LIGHT MODE
    ═══════════════════════════════════════════════════════════════════════ */
