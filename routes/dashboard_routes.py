@@ -77,9 +77,12 @@ def api_dashboard():
     # Log sheet data: IN/OUT operations
     log_in_ops  = []
     log_out_ops = []
-    log_item_out  = {}   # item_label -> total OUT qty
-    log_daily_out = {}   # date_str  -> total OUT qty (for trend chart)
-    log_recent_ops = []  # latest operations for activity feed
+    log_item_out      = {}   # item_label -> total OUT qty
+    log_zone_in       = {}   # zone_label -> total IN qty  (from Log)
+    log_zone_out      = {}   # zone_label -> total OUT qty (from Log)
+    log_zone_item_out = {}   # zone_label -> item -> OUT qty
+    log_daily_out     = {}   # date_str  -> total OUT qty (for trend chart)
+    log_recent_ops    = []   # latest operations for activity feed
 
     def to_number(value):
         if value in (None, ''):
@@ -193,10 +196,14 @@ def api_dashboard():
                             pass
                     if op == 'IN' and qty:
                         log_in_ops.append({'qty': qty, 'item': item_label, 'zone': zone_label})
+                        log_zone_in[zone_label] = log_zone_in.get(zone_label, 0) + qty
                         log_recent_ops.append({'time': time_str, 'op': 'IN',  'qty': qty, 'item': item_label, 'zone': zone_label})
                     elif op == 'OUT' and qty:
                         log_out_ops.append({'qty': qty, 'item': item_label, 'zone': zone_label})
                         log_item_out[item_label] = log_item_out.get(item_label, 0) + qty
+                        log_zone_out[zone_label] = log_zone_out.get(zone_label, 0) + qty
+                        zb = log_zone_item_out.setdefault(zone_label, {})
+                        zb[item_label] = zb.get(item_label, 0) + qty
                         log_recent_ops.append({'time': time_str, 'op': 'OUT', 'qty': qty, 'item': item_label, 'zone': zone_label})
                         if date_str:
                             log_daily_out[date_str] = log_daily_out.get(date_str, 0) + qty
@@ -320,9 +327,19 @@ def api_dashboard():
     )[:15]
     log_total_in  = round(sum(op['qty'] for op in log_in_ops), 2)
     log_total_out = round(sum(op['qty'] for op in log_out_ops), 2)
-    # Sort recent ops by time descending, keep latest 40
     log_recent_ops_sorted = sorted(log_recent_ops, key=lambda x: x.get('time', ''), reverse=True)[:40]
     log_daily_out_sorted  = {k: round(v, 2) for k, v in sorted(log_daily_out.items())}
+    # Build zone consumption from Log data (mirrors zone_consumption but from Log)
+    log_zone_consumption = {}
+    for zname, items in log_zone_item_out.items():
+        ranked = sorted(items.items(), key=lambda kv: kv[1], reverse=True)
+        positive = [kv for kv in ranked if kv[1] > 0]
+        log_zone_consumption[zname] = {
+            'top': {'name': ranked[0][0], 'out': round(ranked[0][1], 2)} if ranked else None,
+            'lowest': {'name': positive[-1][0], 'out': round(positive[-1][1], 2)} if positive else None,
+            'top5': [{'name': n, 'out': round(v, 2)} for n, v in ranked[:5]],
+            'moving_items': len(positive),
+        }
 
     return jsonify({
         'total_items': total_items,
@@ -349,12 +366,15 @@ def api_dashboard():
         'scope': scope,
         'selected_zone': requested_zone if is_super and requested_zone else ('all' if is_super else zone_id),
         'dashboard_zones': [{'id': 'all', 'name': 'All zones'}] + [{'id': z['id'], 'name': z['name'], 'label': z['label']} for z in available_dashboard_zones] if is_super else [],
-        'log_top_items':   log_top_items,
-        'log_total_in':    log_total_in,
-        'log_total_out':   log_total_out,
-        'log_ops_count':   len(log_in_ops) + len(log_out_ops),
-        'log_daily_out':   log_daily_out_sorted,
-        'log_recent_ops':  log_recent_ops_sorted,
+        'log_top_items':        log_top_items,
+        'log_total_in':         log_total_in,
+        'log_total_out':        log_total_out,
+        'log_ops_count':        len(log_in_ops) + len(log_out_ops),
+        'log_daily_out':        log_daily_out_sorted,
+        'log_recent_ops':       log_recent_ops_sorted,
+        'log_zone_in':          {k: round(v, 2) for k, v in log_zone_in.items()},
+        'log_zone_out':         {k: round(v, 2) for k, v in log_zone_out.items()},
+        'log_zone_consumption': log_zone_consumption,
     })
 
 @dashboard_bp.route('/api/login_log')

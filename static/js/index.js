@@ -1258,14 +1258,8 @@ async function loadDashData() {
 
 function setDashContent(html) {
   const c = document.getElementById('dashContent');
-  c.innerHTML = `<button class="dash-close-btn" onclick="closeDashboard()">✕</button>` + html;
+  if (c) c.innerHTML = html;
 }
-
-function setDashContentSafe(html) {
-  const c = document.getElementById('dashContent');
-  c.innerHTML = '<button class="dash-close-btn" onclick="closeDashboard()">x</button>' + html;
-}
-setDashContent = setDashContentSafe;
 
 function destroyDashCharts() {
   _dashCharts.forEach(ch => {
@@ -1942,16 +1936,20 @@ function dashHeader(title, sub) {
     </div>
     <div class="dash-meta-grid">
       <div class="dash-meta-card"><div class="dash-meta-label">Scope</div><div class="dash-meta-value">${escHtml(String(d.scope || 'Current zone'))}</div></div>
-      <div class="dash-meta-card"><div class="dash-meta-label">Excel files</div><div class="dash-meta-value">${fmtDashNum(d.file_count)} scanned</div></div>
+      <div class="dash-meta-card"><div class="dash-meta-label">Files scanned</div><div class="dash-meta-value">${fmtDashNum(d.file_count)} Excel files</div><div class="dash-meta-sub" style="font-size:10px;color:var(--text-dim);">across all months</div></div>
       <div class="dash-meta-card"><div class="dash-meta-label">Last file update</div><div class="dash-meta-value">${escHtml(String(d.latest_file_update || 'N/A'))}</div></div>
-      <div class="dash-meta-card"><div class="dash-meta-label">Auto refresh</div><div class="dash-meta-value">Every 60 seconds</div></div>
+      <div class="dash-meta-card"><div class="dash-meta-label">Auto refresh</div><div class="dash-meta-value">Every 30 min</div></div>
       <div class="dash-meta-card"><div class="dash-meta-label">Dashboard refresh</div><div class="dash-meta-value">${escHtml(String(d.generated_at || 'N/A'))}</div></div>
     </div>`;
 }
 
 function dashLeaderCards(d) {
-  const entries = Object.entries(d.zone_consumption || {});
-  if (!entries.length) return '<div class="dash-empty">No consumption leaders found yet.</div>';
+  // Prefer Log-based consumption (accurate), fall back to item-sheet OUT columns
+  const consumption = (Object.keys(d.log_zone_consumption || {}).length > 0)
+    ? d.log_zone_consumption
+    : (d.zone_consumption || {});
+  const entries = Object.entries(consumption);
+  if (!entries.length) return '<div class="dash-empty">No consumption data found yet. Log sheet data will appear here once operations are recorded.</div>';
   return `<div class="dash-leader-grid">${entries.map(([zone, data]) => `
     <div class="dash-leader-card">
       <div class="dash-leader-zone">${escHtml(zone)}</div>
@@ -1989,21 +1987,27 @@ function dashRiskCards(d) {
 }
 
 function dashOverview(d) {
-  const labels = Object.keys(d.zone_in || {});
-  // Use Log sheet data when available for IN/OUT, fallback to inventory columns
   const hasLog = (d.log_ops_count || 0) > 0;
-  const displayIn  = hasLog ? (d.log_total_in  || d.total_in  || 0) : (d.total_in  || 0);
-  const displayOut = hasLog ? (d.log_total_out || d.total_out || 0) : (d.total_out || 0);
-  // Top item from Log sheet
+  const displayIn  = hasLog ? (d.log_total_in  || 0) : (d.total_in  || 0);
+  const displayOut = hasLog ? (d.log_total_out || 0) : (d.total_out || 0);
+  // Chart uses Log zone data when available, else item-sheet zone data
+  const logZoneIn  = d.log_zone_in  || {};
+  const logZoneOut = d.log_zone_out || {};
+  const hasLogZone = Object.keys(logZoneIn).length > 0 || Object.keys(logZoneOut).length > 0;
+  const allZones   = Array.from(new Set([
+    ...Object.keys(hasLogZone ? logZoneIn : (d.zone_in || {})),
+    ...Object.keys(hasLogZone ? logZoneOut : (d.zone_out || {})),
+  ]));
+  // Top item: name only (no OUT qty)
   const logTop = (d.log_top_items || [])[0];
-  const topFromLog = logTop ? `${escHtml(String(logTop.name))} (${fmtDashNum(logTop.out)} OUT)` : (d.top_items?.[0] ? `${escHtml(String(d.top_items[0].name))} (${fmtDashNum(d.top_items[0].out)} OUT)` : 'N/A');
+  const topName = logTop ? escHtml(String(logTop.name)) : (d.top_items?.[0] ? escHtml(String(d.top_items[0].name)) : 'N/A');
   const kpis = [
-    dashKpi('Total Items', fmtDashNum(d.total_items), 'Item rows in Other+ and Sacks sheets', 'blue'),
-    dashKpi('Total IN', fmtDashNum(displayIn), hasLog ? 'From Log sheet operations' : 'From IN columns', 'green'),
-    dashKpi('Total OUT', fmtDashNum(displayOut), hasLog ? 'From Log sheet operations' : 'From OUT columns', 'red'),
-    dashKpi('Net Movement', fmtDashNum(displayIn - displayOut), 'IN minus OUT', 'cyan'),
-    dashKpi('Top Consumption', topFromLog, 'Highest consumed item', 'amber'),
-    dashKpi('Zero Stock', fmtDashNum(d.zero_stock), 'Items with zero current balance', 'red'),
+    dashKpi('Total Items',  fmtDashNum(d.total_items), 'Rows in Other+ and Sacks sheets', 'blue'),
+    dashKpi('Total IN',     fmtDashNum(displayIn),  hasLog ? 'From Log sheet operations' : 'From IN columns', 'green'),
+    dashKpi('Total OUT',    fmtDashNum(displayOut), hasLog ? 'From Log sheet operations' : 'From OUT columns', 'red'),
+    dashKpi('Log Ops',      fmtDashNum(d.log_ops_count || 0), 'Total IN+OUT records in Log', 'cyan'),
+    dashKpi('Top Consumed', topName, 'Most withdrawn item', 'amber'),
+    dashKpi('Zero Stock',   fmtDashNum(d.zero_stock), 'Items with zero current balance', 'red'),
   ].join('');
   setDashContent(`
     ${dashHeader('Dashboard Overview', 'Live summary based on current Excel files')}
@@ -2012,11 +2016,11 @@ function dashOverview(d) {
     ${dashRiskCards(d)}
     <div class="dash-chart-wrap">
       <div class="dash-chart-title">IN vs OUT by Zone</div>
-      ${labels.length ? '<canvas id="dashChartCanvas"></canvas>' : '<div class="dash-empty">No movement data found yet.</div>'}
+      ${allZones.length ? '<canvas id="dashChartCanvas"></canvas>' : '<div class="dash-empty">No movement data found yet.</div>'}
     </div>`);
-  if (labels.length) drawDashChart('dashChartCanvas', 'bar', labels, [
-    { label:'IN', data: labels.map(z => d.zone_in[z] || 0), backgroundColor:'rgba(16,185,129,0.7)' },
-    { label:'OUT', data: labels.map(z => d.zone_out[z] || 0), backgroundColor:'rgba(239,68,68,0.7)' },
+  if (allZones.length) drawDashChart('dashChartCanvas', 'bar', allZones, [
+    { label:'IN',  data: allZones.map(z => (hasLogZone ? logZoneIn[z]  : (d.zone_in  || {})[z]) || 0), backgroundColor:'rgba(16,185,129,0.7)' },
+    { label:'OUT', data: allZones.map(z => (hasLogZone ? logZoneOut[z] : (d.zone_out || {})[z]) || 0), backgroundColor:'rgba(239,68,68,0.7)'   },
   ]);
 }
 

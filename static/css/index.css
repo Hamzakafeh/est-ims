@@ -1563,16 +1563,17 @@
   }
   #dashModal.open { display: flex; }
 
-  /* ── CLOSE BUTTON ── */
+  /* ── CLOSE BUTTON — absolute in .dash-box (non-scrolling) ── */
   .dash-close-btn {
-    position: absolute; top: 12px; right: 36px; z-index: 30;
-    width: 28px; height: 28px;
+    position: absolute; top: 12px; right: 14px; z-index: 500;
+    width: 30px; height: 30px;
     background: rgba(15,33,55,0.07);
     border: 1px solid rgba(15,33,55,0.18);
     border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer; color: #0F2137;
     transition: all 0.18s;
+    flex-shrink: 0;
   }
   .dash-close-btn:hover {
     background: rgba(239,68,68,0.12); color: #ef4444;
