@@ -1824,8 +1824,10 @@ function drawDashChart(canvasId, type, labels, datasets, extra={}, yLabel='') {
 }
 
 // DASHBOARD FINAL OVERRIDES
-let _dashSelectedZone = 'all';
-let _dashSelectedFile = 'both';  // 'both' | 'sacks' | 'others'
+let _dashSelectedZone   = 'all';
+let _dashSelectedFile   = 'both';    // 'both' | 'sacks' | 'others'
+let _dashSelectedSheet  = '';        // sheet name, e.g. 'Chicken'
+let _dashAvailableSheets = [];       // cached sheet list for current file
 let _dashAutoTimer = null;
 let _dashRefreshRemaining = 1800;
 let _dashLastSignature = '';
@@ -1892,6 +1894,7 @@ async function loadDashData(silent=false, isAuto=false) {
     const qp = new URLSearchParams();
     if (_dashSelectedZone && _dashSelectedZone !== 'all') qp.set('zone', _dashSelectedZone);
     if (_dashSelectedFile && _dashSelectedFile !== 'both') qp.set('file', _dashSelectedFile);
+    if (_dashSelectedSheet) qp.set('sheet', _dashSelectedSheet);
     const query = qp.toString() ? '?' + qp.toString() : '';
     const res = await fetch('/api/dashboard' + query, { cache: 'no-store' });
     const data = await res.json();
@@ -1921,8 +1924,22 @@ function onDashZoneChange(value) {
   _dashLastSignature = '';
   loadDashData();
 }
-function onDashFileChange(value) {
-  _dashSelectedFile = value || 'both';
+async function onDashFileChange(value) {
+  _dashSelectedFile    = value || 'both';
+  _dashSelectedSheet   = '';
+  _dashAvailableSheets = [];
+  _dashLastSignature   = '';
+  if (_dashSelectedFile !== 'both') {
+    try {
+      const r = await fetch(`/api/dashboard/sheets?file=${encodeURIComponent(_dashSelectedFile)}`, { cache: 'no-store' });
+      const d = await r.json();
+      _dashAvailableSheets = d.sheets || [];
+    } catch(e) { _dashAvailableSheets = []; }
+  }
+  loadDashData();
+}
+function onDashSheetChange(value) {
+  _dashSelectedSheet = value || '';
   _dashLastSignature = '';
   loadDashData();
 }
@@ -2064,11 +2081,28 @@ function dashOverview(d) {
     dashKpi('Top Consumed', topName, 'Most withdrawn item', 'amber'),
     dashKpi('Zero Stock',   fmtDashNum(d.zero_stock), 'Items with zero current balance', 'red'),
   ].join('');
-  // Item-level chart: IN vs OUT per item (from Log), top 15 by OUT
+  // Item-level chart: IN vs OUT per item from Log
   const itemStats  = (d.log_item_stats || []).slice(0, 15);
   const hasItems   = itemStats.length > 0;
-  // Shorten long item names for chart labels
-  const itemLabels = itemStats.map(i => i.name.length > 20 ? i.name.slice(0, 18) + '…' : i.name);
+  const itemLabels = itemStats.map(i => i.name.length > 22 ? i.name.slice(0, 20) + '…' : i.name);
+
+  // Sheet dropdown — only when a specific file is selected
+  const showSheetFilter = _dashSelectedFile !== 'both' && _dashAvailableSheets.length > 0;
+  const sheetDropdown = showSheetFilter
+    ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+         <span style="font-size:12px;color:var(--text-muted);font-weight:600;">Sheet:</span>
+         <select class="dash-zone-select" onchange="onDashSheetChange(this.value)">
+           <option value="">All Sheets</option>
+           ${_dashAvailableSheets.map(s => `<option value="${escHtml(s)}" ${s === _dashSelectedSheet ? 'selected' : ''}>${escHtml(s)}</option>`).join('')}
+         </select>
+       </div>`
+    : '';
+
+  const chartTitle = _dashSelectedSheet
+    ? `IN vs OUT — ${escHtml(_dashSelectedSheet)} (${_dashSelectedFile === 'sacks' ? 'Sacks' : 'Others+'})`
+    : (_dashSelectedFile !== 'both'
+        ? `IN vs OUT — ${_dashSelectedFile === 'sacks' ? 'Sacks' : 'Others+'} (All Sheets)`
+        : 'IN vs OUT per Item — Both Files (Top 15 by OUT)');
 
   setDashContent(`
     ${dashHeader('Dashboard Overview', 'Live summary based on current Excel files')}
@@ -2076,8 +2110,9 @@ function dashOverview(d) {
     ${dashLeaderCards(d)}
     ${dashRiskCards(d)}
     <div class="dash-chart-wrap">
-      <div class="dash-chart-title">IN vs OUT per Item (from Log — Top 15 by OUT)</div>
-      ${hasItems ? '<canvas id="dashChartCanvas" style="max-height:320px;"></canvas>' : '<div class="dash-empty">No Log data found yet.</div>'}
+      <div class="dash-chart-title">${chartTitle}</div>
+      ${sheetDropdown}
+      ${hasItems ? '<canvas id="dashChartCanvas" style="max-height:320px;"></canvas>' : '<div class="dash-empty">No Log data found for this selection.</div>'}
     </div>`);
   if (hasItems) drawDashChart('dashChartCanvas', 'bar', itemLabels, [
     { label:'IN',  data: itemStats.map(i => i.in),  backgroundColor:'rgba(16,185,129,0.75)' },

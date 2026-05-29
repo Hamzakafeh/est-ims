@@ -28,7 +28,8 @@ def api_dashboard():
     zone_id = session.get('active_view_zone') or session.get('zone', '')
     is_super = session.get('is_super', False)
     requested_zone = request.args.get('zone', '').strip()
-    requested_file = request.args.get('file', 'both').strip().lower()  # 'sacks' | 'others' | 'both'
+    requested_file  = request.args.get('file',  'both').strip().lower()  # 'sacks' | 'others' | 'both'
+    requested_sheet = request.args.get('sheet', '').strip()               # sheet name to filter, e.g. 'Chicken'
 
     FILE_DISPLAY = {'sacks.xlsm': 'Sacks', 'other+.xlsm': 'Others+'}
     # Determine which filenames to scan based on filter
@@ -189,6 +190,11 @@ def api_dashboard():
                     item_type = str(lget(ci_itype) or '').strip()
                     cat       = str(lget(ci_cat)   or '').strip()
                     time_val  = lget(ci_time)
+                    # Filter by sheet: match item_type (Sacks) or category (Others+)
+                    if requested_sheet:
+                        if (item_type.lower() != requested_sheet.lower()
+                                and cat.lower() != requested_sheet.lower()):
+                            continue
                     # Build label: Type is most descriptive (Chicken, Wood, Koptimix…)
                     parts = [p for p in [item_type, color, size] if p and p not in ('', 'None', 'none')]
                     item_label = ' - '.join(parts) if parts else (color or cat or '—')
@@ -431,6 +437,7 @@ def api_dashboard():
         'log_zone_consumption':  log_zone_consumption,
         'log_file_consumption':  log_file_consumption,
         'selected_file':         requested_file,
+        'selected_sheet':        requested_sheet,
     })
 
 @dashboard_bp.route('/api/login_log')
@@ -587,4 +594,44 @@ def api_dashboard_stocktaking():
 
     items.sort(key=lambda x: x['name'].lower())
     return jsonify({'items': items, 'total': len(items), 'files_scanned': files_scanned})
+
+
+@dashboard_bp.route('/api/dashboard/sheets')
+@zone_required
+def api_dashboard_sheets():
+    """Return sheet names for a specific Excel file (excludes Log and Stocktaking)."""
+    file_filter = request.args.get('file', '').strip().lower()
+    if file_filter == 'sacks':
+        target_fname = 'sacks.xlsm'
+    elif file_filter in ('others', 'other+', 'others+'):
+        target_fname = 'other+.xlsm'
+    else:
+        return jsonify({'sheets': [], 'file': file_filter})
+
+    root = get_years_root()
+    if not root:
+        return jsonify({'sheets': [], 'file': file_filter})
+
+    zone_id  = session.get('active_view_zone') or session.get('zone', '')
+    is_super = session.get('is_super', False)
+    scan_zones = [z['id'] for z in ZONES if z['id'] not in SUPER_ZONES] if is_super else [zone_id]
+
+    EXCLUDE = {'log', 'stocktaking'}
+    sheets = []
+    for zid in scan_zones:
+        zone_path = os.path.join(root, zid)
+        if not os.path.isdir(zone_path):
+            continue
+        for rdir, dirs, files in os.walk(zone_path):
+            for f in files:
+                if f.lower() == target_fname and not f.startswith('~$'):
+                    try:
+                        wb = openpyxl.load_workbook(
+                            os.path.join(rdir, f), read_only=True, data_only=True)
+                        sheets = [s for s in wb.sheetnames if s.lower() not in EXCLUDE]
+                        wb.close()
+                        return jsonify({'sheets': sheets, 'file': file_filter})
+                    except Exception:
+                        pass
+    return jsonify({'sheets': sheets, 'file': file_filter})
 
