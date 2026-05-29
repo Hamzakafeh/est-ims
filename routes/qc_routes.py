@@ -70,7 +70,7 @@ def _all_verified_usernames():
 @zone_required
 def qc_workflow_page():
     if session.get('zone') != 'qc':
-        return redirect(url_for('pages.index'))
+        return redirect(url_for('zones.zones_page'))
     all_verified = VERIFIED_QC_USERS | _all_verified_usernames()
     return render_template(
         'qc.html',
