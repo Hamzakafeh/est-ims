@@ -2736,35 +2736,42 @@ html.light .dash-box {
 }
 html.light .dash-box::before { display: none !important; }
 
-/* ── Left sidebar (dark nav panel) ── */
+/* ── Left sidebar — light panel for light mode ── */
 html.light .dash-sidebar {
-  background: #1e293b !important;
-  border-right: 1px solid rgba(255,255,255,0.06) !important;
+  background: #ffffff !important;
+  border-right: 1px solid #e2e8f0 !important;
+  box-shadow: 1px 0 0 #e2e8f0 !important;
 }
 html.light .dash-sidebar-title {
-  color: rgba(255,255,255,0.35) !important;
+  color: #94a3b8 !important;
   font-size: 9px !important;
+  font-weight: 800 !important;
   letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
 }
-html.light .dn-dot { background: rgba(255,255,255,0.2) !important; }
-html.light .dash-nav-sep { background: rgba(255,255,255,0.07) !important; }
+html.light .dn-dot { background: #cbd5e1 !important; }
+html.light .dash-nav-sep { background: #f1f5f9 !important; margin: 6px 4px !important; }
 html.light .dash-nav-item {
-  color: rgba(255,255,255,0.55) !important;
+  color: #64748b !important;
   border-radius: 8px !important;
+  font-weight: 500 !important;
 }
 html.light .dash-nav-item:hover {
-  background: rgba(255,255,255,0.06) !important;
-  color: rgba(255,255,255,0.9) !important;
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
   transform: none !important;
 }
+html.light .dash-nav-item:hover .dn-dot { background: #94a3b8 !important; }
 html.light .dash-nav-item.active {
-  background: #00c2b5 !important;
-  color: #0f172a !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
   font-weight: 700 !important;
   border-color: transparent !important;
 }
-html.light .dash-nav-item.active .dn-dot { background: #0f172a !important; box-shadow: none !important; }
-html.light .dash-nav-item:hover .dn-dot { background: rgba(255,255,255,0.5) !important; }
+html.light .dash-nav-item.active .dn-dot {
+  background: #2563eb !important;
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.15) !important;
+}
 
 /* Close button — on white content area, same as other modal close buttons */
 /* Handled by the grouped rule above (.dash-close-btn in the modal-close group) */
