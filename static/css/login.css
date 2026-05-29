@@ -336,17 +336,11 @@
   }
   .login-no-account { color: var(--text-muted); }
   .login-link-signup {
-    color: var(--text-muted); text-decoration: none;
+    color: var(--accent-blue); text-decoration: none;
     font-weight: 600; cursor: pointer;
-    transition: color 0.18s ease, text-decoration-color 0.18s ease;
-    text-decoration-color: transparent;
+    transition: opacity 0.15s ease;
   }
-  .login-link-signup:hover {
-    color: var(--accent-cyan);
-    text-decoration: underline;
-    text-decoration-color: var(--accent-cyan);
-    text-underline-offset: 3px;
-  }
+  .login-link-signup:hover { opacity: 0.75; text-decoration: none; }
   .field-wrap {
     position: relative;
     margin-bottom: 18px;
@@ -411,17 +405,11 @@
   .btn-login:disabled { opacity: 0.55; cursor: not-allowed; }
   .btn-login.success { background: var(--accent-green) !important; transform: none !important; box-shadow: 0 4px 20px rgba(16,185,129,0.4) !important; }
   .login-link-disabled {
-    color: var(--text-muted); text-decoration: none; cursor: pointer;
+    color: var(--accent-blue); text-decoration: none; cursor: pointer;
     font-size: 12px;
-    transition: color 0.18s ease, text-decoration-color 0.18s ease;
-    text-decoration-color: transparent;
+    transition: opacity 0.15s ease;
   }
-  .login-link-disabled:hover {
-    color: var(--accent-cyan);
-    text-decoration: underline;
-    text-decoration-color: var(--accent-cyan);
-    text-underline-offset: 3px;
-  }
+  .login-link-disabled:hover { opacity: 0.75; text-decoration: none; }
 
   /* error box */
   .error-box {
