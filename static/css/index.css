@@ -765,6 +765,8 @@
   html.light .month-pill.active { color: #ffffff !important; }
   /* Sidebar labels → black in light mode */
   html.light .sidebar-label { color: #0d1117 !important; }
+  /* Active sheet tab text → black in light mode */
+  html.light .sheet-tab.active { color: #0d1117 !important; }
   html.light .brand-text h1 { color: #1e293b; font-weight: 700; }
   html.light .brand-text p  { color: #64748b; }
   html.light .clock { color: #374151; }
@@ -1231,12 +1233,14 @@
   .topbar-back-btn {
     display: flex; align-items: center; justify-content: center;
     width: 30px; height: 30px; border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.25);
-    background: transparent; color: rgba(255,255,255,0.8);
+    border: 1.5px solid #ffffff;
+    background: rgba(255,255,255,0.10);
+    color: #ffffff;
     text-decoration: none; flex-shrink: 0;
-    transition: all 0.18s;
+    transition: all 0.15s cubic-bezier(.34,1.56,.64,1);
   }
-  .topbar-back-btn:hover { background: rgba(255,255,255,0.12); color: #ffffff; }
+  .topbar-back-btn:hover  { background: rgba(255,255,255,0.22); color: #ffffff; transform: scale(1.08); }
+  .topbar-back-btn:active { background: rgba(255,255,255,0.40); transform: scale(0.90); box-shadow: inset 0 2px 4px rgba(0,0,0,0.18); }
 
   /* Big circular avatar */
   .profile-avatar {
