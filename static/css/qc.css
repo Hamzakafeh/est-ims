@@ -251,59 +251,86 @@ textarea:focus { outline: none; border-color: var(--cyan); }
 
 /* ── Light mode button overrides ── */
 html.light .btn {
-  background: #ffffff;
-  border-color: #d1d5db;
-  color: #374151;
+  background: #ffffff !important;
+  border-color: #d1d5db !important;
+  color: #374151 !important;
 }
-html.light .btn:hover { background: #f3f4f6; border-color: #9ca3af; }
+html.light .btn:hover { background: #f3f4f6 !important; border-color: #9ca3af !important; }
 
-html.light .btn.green {
-  background: #059669;
-  border-color: #047857;
-  color: #ffffff;
+html.light .btn.green,
+html.light .actions .btn.green {
+  background: #059669 !important;
+  border-color: #047857 !important;
+  color: #ffffff !important;
 }
-html.light .btn.green:hover { background: #047857; }
+html.light .btn.green:hover,
+html.light .actions .btn.green:hover { background: #047857 !important; }
 
-html.light .btn.red {
-  background: #dc2626;
-  border-color: #b91c1c;
-  color: #ffffff;
+html.light .btn.red,
+html.light .actions .btn.red {
+  background: #dc2626 !important;
+  border-color: #b91c1c !important;
+  color: #ffffff !important;
 }
-html.light .btn.red:hover { background: #b91c1c; }
+html.light .btn.red:hover,
+html.light .actions .btn.red:hover { background: #b91c1c !important; }
 
-html.light .btn.amber {
-  background: #d97706;
-  border-color: #b45309;
-  color: #ffffff;
+html.light .btn.amber,
+html.light .actions .btn.amber {
+  background: #d97706 !important;
+  border-color: #b45309 !important;
+  color: #ffffff !important;
 }
-html.light .btn.amber:hover { background: #b45309; }
+html.light .btn.amber:hover,
+html.light .actions .btn.amber:hover { background: #b45309 !important; }
 
-html.light .btn.cyan {
-  background: #0891b2;
-  border-color: #0e7490;
-  color: #ffffff;
+html.light .btn.cyan,
+html.light .actions .btn.cyan {
+  background: #0891b2 !important;
+  border-color: #0e7490 !important;
+  color: #ffffff !important;
 }
-html.light .btn.cyan:hover { background: #0e7490; }
+html.light .btn.cyan:hover { background: #0e7490 !important; }
 
 html.light .btn.ghost {
-  background: transparent;
-  border-color: #d1d5db;
-  color: #6b7280;
+  background: transparent !important;
+  border-color: #d1d5db !important;
+  color: #6b7280 !important;
 }
-html.light .btn.ghost:hover { background: #f3f4f6; color: #111827; }
+html.light .btn.ghost:hover { background: #f3f4f6 !important; color: #111827 !important; }
 
+/* Delete button — solid red (matches modal Delete) */
 html.light .btn-delete {
-  background: #fee2e2;
-  border-color: #fca5a5;
-  color: #dc2626;
+  background: #dc2626 !important;
+  border-color: #b91c1c !important;
+  color: #ffffff !important;
 }
-html.light .btn-delete:hover { background: #fecaca; border-color: #f87171; }
+html.light .btn-delete:hover { background: #b91c1c !important; border-color: #991b1b !important; }
 
 html.light #notifBanner {
   background: #eff6ff;
   border-color: #bfdbfe;
   color: #1d4ed8;
 }
+
+/* ── Light mode: status badges — clean, no neon ── */
+html.light .status.pending  { background: #fef3c7; color: #92400e; border: 1px solid #f59e0b; }
+html.light .status.approved { background: #d1fae5; color: #065f46; border: 1px solid #10b981; }
+html.light .status.rejected { background: #fee2e2; color: #991b1b; border: 1px solid #ef4444; }
+
+/* ── Light mode: actor badges — clean, no neon ── */
+html.light .actor-submit { background: #eff6ff !important; color: #1d4ed8 !important; border-color: #bfdbfe !important; }
+html.light .actor-review { background: #f9fafb !important; color: #4b5563 !important; border-color: #e5e7eb !important; }
+html.light .actor-review.actor-approved { background: #d1fae5 !important; color: #065f46 !important; border-color: #6ee7b7 !important; }
+html.light .actor-review.actor-rejected { background: #fee2e2 !important; color: #991b1b !important; border-color: #fca5a5 !important; }
+
+/* ── Light mode: delete modal — white, no glow ── */
+html.light .delete-card {
+  background: #ffffff !important;
+  border-color: rgba(0,0,0,0.1) !important;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.12) !important;
+}
+html.light .delete-card::before { display: none; }
 
 html.light .upload-area {
   border-color: rgba(8,145,178,.4);
