@@ -425,7 +425,7 @@ const READ_ONLY_COLS = ['Current Balance', 'IN', 'OUT', '__row__'];
 // Columns that identify it as an inventory sheet
 const NON_INVENTORY_SHEETS = ['Stocktaking'];
 
-// â”€â”€ THEME â”€â”€
+// ── THEME ──
 (function() {
   const saved = localStorage.getItem('est-theme');
   if (saved === 'light') document.documentElement.classList.add('light');
@@ -435,6 +435,27 @@ function toggleTheme() {
   localStorage.setItem('est-theme', isLight ? 'light' : 'dark');
 }
 document.getElementById('themeBtn').addEventListener('click', toggleTheme);
+
+// ── STYLE TOGGLE (New <-> Legacy) ──
+(function initStyle() {
+  const saved = localStorage.getItem('est-index-style');
+  const isLegacy = saved === 'legacy';
+  if (isLegacy) document.documentElement.classList.add('legacy');
+  _updateStyleBtn(isLegacy);
+})();
+
+function _updateStyleBtn(isLegacy) {
+  const btn = document.getElementById('styleToggleBtn');
+  if (!btn) return;
+  btn.textContent = isLegacy ? 'NEW' : 'OLD';
+  btn.title = isLegacy ? 'Switch to New Style' : 'Switch to Legacy Style';
+}
+
+function toggleIndexStyle() {
+  const isLegacy = document.documentElement.classList.toggle('legacy');
+  localStorage.setItem('est-index-style', isLegacy ? 'legacy' : 'new');
+  _updateStyleBtn(isLegacy);
+}
 
 // â”€â”€ CLOCK (disabled per update) â”€â”€
 // function updateClock() { ... }
