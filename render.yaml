@@ -1,0 +1,59 @@
+services:
+  - type: web
+    name: est-ims
+    runtime: python
+    plan: starter
+    region: frankfurt
+    branch: main
+    autoDeploy: true
+    buildCommand: pip install -r requirements.txt
+    startCommand: mkdir -p /var/data/zones /var/data/qc_uploads && cp -Rn zones/. /var/data/zones/ && gunicorn app:app --worker-class gevent --workers 1 --bind 0.0.0.0:$PORT --timeout 120
+    healthCheckPath: /ping
+    disk:
+      name: est-ims-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: est-ims-db
+          property: connectionString
+      - key: RENDER_DISK_PATH
+        value: /var/data
+      - key: ZONES_ROOT
+        value: /var/data/zones
+      - key: QC_UPLOAD_DIR
+        value: /var/data/qc_uploads
+      - key: SECRET_KEY
+        generateValue: true
+      - key: EDIT_PASSWORD
+        sync: false
+      - key: ZONE1_PASSWORD
+        sync: false
+      - key: ZONE2_PASSWORD
+        sync: false
+      - key: ZONE3_PASSWORD
+        sync: false
+      - key: ZONE4_PASSWORD
+        sync: false
+      - key: ZONE5_PASSWORD
+        sync: false
+      - key: QC_PASSWORD
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: DEV_PASSWORD
+        sync: false
+      - key: USER1
+        sync: false
+      - key: PASS1
+        sync: false
+
+databases:
+  - name: est-ims-db
+    databaseName: est_ims
+    user: est_ims
+    plan: free
+    region: frankfurt
+    postgresMajorVersion: "16"
+    ipAllowList: []

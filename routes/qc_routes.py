@@ -220,8 +220,7 @@ def api_qc_submission_delete(item_id):
         # Delete the image file if it exists
         image_url = found_item.get('image_url', '')
         if image_url.startswith('/static/'):
-            from core import APP_DIR
-            img_path = os.path.join(APP_DIR, image_url.lstrip('/'))
+            img_path = os.path.join(QC_UPLOAD_DIR, os.path.basename(image_url))
             try:
                 if os.path.isfile(img_path):
                     os.remove(img_path)

@@ -51,7 +51,7 @@ AUTH_DB_FILE = os.getenv(
 DATA_STORE_DIR = os.getenv('RENDER_DISK_PATH', APP_DIR)
 CONTACT_MESSAGES_FILE = os.path.join(DATA_STORE_DIR, 'contact_messages.json')
 QC_SUBMISSIONS_FILE = os.path.join(DATA_STORE_DIR, 'qc_submissions.json')
-QC_UPLOAD_DIR = os.path.join(APP_DIR, 'static', 'qc_uploads')
+QC_UPLOAD_DIR = os.getenv('QC_UPLOAD_DIR', os.path.join(APP_DIR, 'static', 'qc_uploads'))
 _data_lock = threading.Lock()
 
 _SECRET_KEY = os.getenv('SECRET_KEY')
@@ -586,12 +586,14 @@ def _next_json_id(items):
 
 def get_years_root():
     script_dir = os.path.dirname(os.path.abspath(__file__))
+    configured_root = os.getenv('ZONES_ROOT')
     candidates = [
+        configured_root,
         os.path.join(script_dir, 'zones'),
         os.path.join(os.path.dirname(script_dir), 'zones'),
     ]
     for c in candidates:
-        if os.path.isdir(c):
+        if c and os.path.isdir(c):
             return c
     return None
 

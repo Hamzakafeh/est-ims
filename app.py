@@ -11,14 +11,14 @@ import threading
 import warnings
 import queue as _queue
 
-from flask import Flask, Response, session, stream_with_context
+from flask import Flask, Response, send_from_directory, session, stream_with_context
 
 from routes import (
     auth_bp, zone_bp, excel_bp, qc_bp, admin_bp, reports_bp,
     misc_bp, dashboard_bp, pages_bp, scan_bp,
 )
 from core import (
-    zone_required, APP_DIR,
+    zone_required, APP_DIR, QC_UPLOAD_DIR,
     _push_subs_lock, _read_push_subs, _write_push_subs, _send_push_notification,
 )
 
@@ -153,6 +153,12 @@ def serve_qc_sw():
         mimetype='application/javascript',
         headers={'Service-Worker-Allowed': '/'},
     )
+
+
+@app.route('/static/qc_uploads/<path:filename>')
+def serve_qc_upload(filename):
+    """Serve QC uploads from the configured persistent upload directory."""
+    return send_from_directory(QC_UPLOAD_DIR, filename)
 
 
 # ── Entry point ────────────────────────────────────────────────────

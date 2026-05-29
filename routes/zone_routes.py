@@ -45,6 +45,16 @@ _ZONES_PRESENCE_TTL = 30
 @zone_bp.route('/zones')
 @login_required
 def zones_page():
+    if session.get('zone') == 'qc':
+        session.pop('zone', None)
+        session.pop('zone_name', None)
+        session.pop('zone_label', None)
+        session.pop('can_edit', None)
+        session.pop('is_super', None)
+        session.pop('can_switch_zones', None)
+        session.pop('active_view_zone', None)
+        session.pop('active_view_zone_name', None)
+        session.pop('qc_role', None)
     if session.get('zone'):
         return redirect(url_for('pages.index'))
     return render_template('zones.html', username=session.get('username', ''), zones=ZONES)
