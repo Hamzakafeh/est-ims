@@ -2710,133 +2710,6 @@ html.light .modal-hdr-btn:not(.modal-hdr-close):hover {
   color: #0f172a !important;
 }
 
-/* Dashboard modal */
-html.light .dash-box {
-  background: #f8fafc !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 20px 40px rgba(15,23,42,0.12) !important;
-}
-html.light .dash-box::before { display: none !important; }
-html.light .dash-sidebar {
-  background: #1e293b !important;
-  border-right: 1px solid rgba(255,255,255,0.06) !important;
-  backdrop-filter: none !important;
-}
-html.light .dash-sidebar-title { color: rgba(255,255,255,0.4) !important; }
-html.light .dash-nav-item { color: rgba(255,255,255,0.6) !important; }
-html.light .dash-nav-item:hover { background: rgba(255,255,255,0.07) !important; color: #ffffff !important; }
-html.light .dash-nav-item.active {
-  background: #00c2b5 !important;
-  color: #0f172a !important;
-  font-weight: 700 !important;
-}
-html.light .dash-nav-item.active .dn-dot { background: #0f172a !important; }
-html.light .dn-dot { background: rgba(255,255,255,0.25) !important; }
-html.light .dash-nav-sep { background: rgba(255,255,255,0.08) !important; }
-html.light .dash-content {
-  background: #f8fafc !important;
-  color: #0f172a !important;
-}
-html.light .dash-content-title { color: #0f172a !important; }
-html.light .dash-content-sub   { color: #64748b !important; }
-html.light .dash-kpi-card {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
-}
-html.light .dash-kpi-card:hover { border-color: #93c5fd !important; box-shadow: 0 2px 8px rgba(37,99,235,0.08) !important; }
-html.light .dash-kpi-label { color: #64748b !important; }
-html.light .dash-kpi-value { color: #0f172a !important; }
-html.light .dash-kpi-sub   { color: #94a3b8 !important; }
-html.light .dash-chart-wrap {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
-}
-html.light .dash-chart-title { color: #334155 !important; }
-html.light .dash-zone-table th {
-  background: #f8fafc !important;
-  color: #334155 !important;
-  border-bottom: 2px solid #e2e8f0 !important;
-  font-size: 11px !important;
-  font-weight: 700 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.4px !important;
-}
-html.light .dash-zone-table td {
-  color: #0f172a !important;
-  border-bottom: 1px solid #f1f5f9 !important;
-  background: #ffffff !important;
-}
-html.light .dash-zone-table tr:hover td { background: #f0f9ff !important; }
-html.light .dash-alert-item {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
-}
-html.light .dash-alert-name { color: #0f172a !important; }
-html.light .dash-alert-desc { color: #64748b !important; }
-html.light .dash-alert-badge.amber { background: #fffbeb !important; color: #92400e !important; }
-html.light .dash-alert-badge.red   { background: #fee2e2 !important; color: #991b1b !important; }
-html.light .dash-meta-card {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
-}
-html.light .dash-meta-label { color: #64748b !important; }
-html.light .dash-meta-value { color: #0f172a !important; }
-html.light .dash-leader-card {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
-}
-html.light .dash-leader-zone  { color: #0f172a !important; }
-html.light .dash-leader-row   { border-top: 1px solid #f1f5f9 !important; }
-html.light .dash-leader-label { color: #64748b !important; }
-html.light .dash-leader-name  { color: #0f172a !important; }
-html.light .dash-leader-value { color: #0891b2 !important; }
-html.light .dash-file-item {
-  background: #ffffff !important;
-  border: 1px solid #f1f5f9 !important;
-}
-html.light .dash-file-name { color: #0f172a !important; }
-html.light .dash-file-date { color: #64748b !important; }
-html.light .dash-mini-card {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-}
-html.light .dash-mini-title { color: #64748b !important; }
-html.light .dash-mini-value { color: #0f172a !important; }
-html.light .dash-empty {
-  background: #f8fafc !important;
-  border: 1px dashed #cbd5e1 !important;
-  color: #94a3b8 !important;
-}
-html.light .dash-loading { color: #64748b !important; }
-html.light .dash-refresh-btn {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  color: #334155 !important;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
-}
-html.light .dash-refresh-btn:hover { background: #f1f5f9 !important; border-color: #93c5fd !important; color: #0f172a !important; }
-html.light .dash-countdown {
-  background: #eff6ff !important;
-  border: 1px solid #bfdbfe !important;
-  color: #1d4ed8 !important;
-}
-html.light .dash-print-btn {
-  background: #f8fafc !important;
-  border: 1px solid #e2e8f0 !important;
-  color: #334155 !important;
-}
-html.light .dash-print-btn:hover { background: #f1f5f9 !important; border-color: #cbd5e1 !important; }
-html.light .dash-zone-select {
-  background: #ffffff !important;
-  border: 1px solid #d1d5db !important;
-  color: #0f172a !important;
-}
-
 /* Sidebar toggle visibility override */
 html.light .sidebar-toggle-btn {
   background: #ffffff !important;
@@ -2893,18 +2766,8 @@ html.light .dash-nav-item.active {
 html.light .dash-nav-item.active .dn-dot { background: #0f172a !important; box-shadow: none !important; }
 html.light .dash-nav-item:hover .dn-dot { background: rgba(255,255,255,0.5) !important; }
 
-/* Close button */
-html.light .dash-close-btn {
-  background: rgba(255,255,255,0.10) !important;
-  border: 1px solid rgba(255,255,255,0.18) !important;
-  color: rgba(255,255,255,0.6) !important;
-}
-html.light .dash-close-btn:hover {
-  background: rgba(239,68,68,0.75) !important;
-  color: #ffffff !important;
-  border-color: transparent !important;
-  transform: scale(1.06) !important;
-}
+/* Close button — on white content area, same as other modal close buttons */
+/* Handled by the grouped rule above (.dash-close-btn in the modal-close group) */
 
 /* ── Right content area ── */
 html.light .dash-content {
