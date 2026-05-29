@@ -229,10 +229,10 @@
   #forMoreMessagesBtn:hover { background:#0ea5e9; border-color:#0ea5e9; color:#fff; transform:scale(1.1); box-shadow:0 6px 20px rgba(14,165,233,.3); }
   #adminUsersBtn { background: rgba(132,204,22,0.14); border-color: rgba(132,204,22,0.5); color: #a3e635; }
   #adminUsersBtn:hover { background: #84cc16; border-color: #84cc16; color: #10220a; transform: scale(1.1); box-shadow: 0 6px 20px rgba(132,204,22,0.3); }
-  html.light #adminRequestsBtn { background: rgba(124,58,237,0.12); border-color: rgba(124,58,237,0.42); color: #7c3aed; }
-  html.light #adminRequestsBtn:hover { background: #7c3aed; color: #fff; box-shadow: 0 6px 20px rgba(124,58,237,0.3); }
-  html.light #adminUsersBtn { background: rgba(101,163,13,0.1); border-color: rgba(101,163,13,0.42); color: #4d7c0f; }
-  html.light #adminUsersBtn:hover { background: #65a30d; color: #fff; box-shadow: 0 6px 20px rgba(101,163,13,0.28); }
+  html.light #adminRequestsBtn { background: rgba(0,0,0,0.07); border-color: rgba(0,0,0,0.2); color: #0d1117; }
+  html.light #adminRequestsBtn:hover { background: #0d1117; color: #fff; box-shadow: none; }
+  html.light #adminUsersBtn { background: rgba(0,0,0,0.07); border-color: rgba(0,0,0,0.2); color: #0d1117; }
+  html.light #adminUsersBtn:hover { background: #0d1117; color: #fff; box-shadow: none; }
 
   #langBtn { min-width:58px; height:32px; padding:0 9px; justify-content:center; }
   #langBtn svg { display:none; }
@@ -308,21 +308,47 @@
     box-shadow: 0 6px 20px rgba(239,68,68,0.38);
   }
 
-  /* light mode overrides for new buttons */
-  html.light #refreshBtn { background: rgba(37,99,235,0.1); border-color: rgba(37,99,235,0.45); color: #2563eb; }
-  html.light #reportsBtn { background: rgba(13,148,136,0.1); border-color: rgba(13,148,136,0.42); color: #0d9488; }
-  html.light #reportsBtn:hover { background: #0d9488; color: #fff; box-shadow: 0 6px 20px rgba(13,148,136,0.28); }
-  html.light #refreshBtn:hover { background: #2563eb; color: #fff; box-shadow: 0 6px 20px rgba(37,99,235,0.3); }
-  html.light #printBtn { background: rgba(217,119,6,0.1); border-color: rgba(217,119,6,0.45); color: #d97706; }
-  html.light #printBtn:hover { background: #d97706; color: #fff; box-shadow: 0 6px 20px rgba(217,119,6,0.3); }
-  html.light #csvBtn { background: rgba(5,150,105,0.1); border-color: rgba(5,150,105,0.45); color: #059669; }
-  html.light #csvBtn:hover { background: #059669; color: #fff; box-shadow: 0 6px 20px rgba(5,150,105,0.3); }
-  html.light #aboutBtn { background: rgba(8,145,178,0.1); border-color: rgba(8,145,178,0.45); color: #0891b2; }
-  html.light #aboutBtn:hover { background: #0891b2; color: #fff; box-shadow: 0 6px 20px rgba(8,145,178,0.3); }
-  html.light #logoutBtn { background: rgba(220,38,38,0.1); border-color: rgba(220,38,38,0.45); color: #dc2626; }
-  html.light #logoutBtn:hover { background: #dc2626; color: #fff; box-shadow: 0 6px 20px rgba(220,38,38,0.3); }
-  html.light #logoutThemeBtn { background: rgba(220,38,38,0.1); border-color: rgba(220,38,38,0.45); color: #dc2626; }
-  html.light #logoutThemeBtn:hover { background: #dc2626; color: #fff; }
+  /* light mode — all topbar buttons dark/black */
+  html.light .theme-btn {
+    background: rgba(0,0,0,0.07);
+    border-color: rgba(0,0,0,0.18);
+    color: #0d1117;
+    box-shadow: none;
+  }
+  html.light .theme-btn:hover {
+    background: #0d1117;
+    color: #fff;
+    border-color: #0d1117;
+    box-shadow: none;
+    transform: scale(1.06);
+  }
+  html.light #homeBtn    { background: rgba(0,0,0,0.07); border-color: rgba(0,0,0,0.18); color: #0d1117; box-shadow: none; }
+  html.light #homeBtn:hover { background: #0d1117; color: #fff; box-shadow: none; }
+  html.light #refreshBtn { background: rgba(0,0,0,0.07); border-color: rgba(0,0,0,0.18); color: #0d1117; }
+  html.light #refreshBtn:hover { background: #0d1117; color: #fff; box-shadow: none; transform: scale(1.06) rotate(180deg); }
+  html.light #reportsBtn { background: rgba(0,0,0,0.07); border-color: rgba(0,0,0,0.18); color: #0d1117; }
+  html.light #reportsBtn:hover { background: #0d1117; color: #fff; box-shadow: none; }
+  html.light #printBtn   { background: rgba(0,0,0,0.07); border-color: rgba(0,0,0,0.18); color: #0d1117; }
+  html.light #printBtn:hover { background: #0d1117; color: #fff; box-shadow: none; }
+  html.light #csvBtn     { background: rgba(0,0,0,0.07); border-color: rgba(0,0,0,0.18); color: #0d1117; }
+  html.light #csvBtn:hover { background: #0d1117; color: #fff; box-shadow: none; }
+  html.light #aboutBtn   { background: rgba(0,0,0,0.07); border-color: rgba(0,0,0,0.18); color: #0d1117; }
+  html.light #aboutBtn:hover { background: #0d1117; color: #fff; box-shadow: none; }
+  html.light #logoutBtn, html.light #logoutThemeBtn {
+    background: rgba(0,0,0,0.07); border-color: rgba(0,0,0,0.18); color: #0d1117;
+  }
+  html.light #logoutBtn:hover, html.light #logoutThemeBtn:hover { background: #0d1117; color: #fff; box-shadow: none; }
+  html.light #adminRequestsBtn  { background: rgba(0,0,0,0.07); border-color: rgba(0,0,0,0.18); color: #0d1117; }
+  html.light #adminRequestsBtn:hover  { background: #0d1117; color: #fff; box-shadow: none; }
+  html.light #adminUsersBtn     { background: rgba(0,0,0,0.07); border-color: rgba(0,0,0,0.18); color: #0d1117; }
+  html.light #adminUsersBtn:hover     { background: #0d1117; color: #fff; box-shadow: none; }
+  html.light #forMoreMessagesBtn { background: rgba(0,0,0,0.07); border-color: rgba(0,0,0,0.18); color: #0d1117; }
+  html.light #forMoreMessagesBtn:hover { background: #0d1117; color: #fff; box-shadow: none; }
+  html.light #dashBtn    { background: rgba(0,0,0,0.07); border-color: rgba(0,0,0,0.18); color: #0d1117; box-shadow: none; }
+  html.light #dashBtn:hover { background: #0d1117; color: #fff; box-shadow: none; }
+  html.light #buttonsToggleBtn { background: rgba(0,0,0,0.07); border-color: rgba(0,0,0,0.18); color: #0d1117; }
+  html.light #buttonsToggleBtn:hover { background: #0d1117; color: #fff; }
+  html.light #buttonsToggleBtn.active { background: rgba(0,0,0,0.14); border-color: rgba(0,0,0,0.3); color: #0d1117; }
 
   /* ── LAYOUT ── */
   .layout { display: flex; flex: 1; overflow: hidden; min-height: 0; }
