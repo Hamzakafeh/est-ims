@@ -1620,12 +1620,31 @@
     border-color: #10B981 !important; box-shadow: none !important;
   }
   .btn-in-modal:hover, .btn-success:hover { background: #059669 !important; box-shadow: none !important; }
-  /* Strip neon box-shadow from ALL buttons inside modals */
-  .modal-box .btn:hover, .logout-box .btn:hover, .pwd-box .btn:hover,
-  .csv-modal-box .btn:hover, .users-box .btn:hover, .profile-box .btn:hover,
-  .beta-card .btn:hover, .soon-box .btn:hover {
-    box-shadow: none !important;
+  /* ── UNIVERSAL MODAL BUTTON HOVER — scale + lift, no neon ── */
+  /* Every button/btn inside any modal gets the same clean effect */
+  .modal-box button, .logout-box button, .pwd-box button,
+  .csv-modal-box button, .users-box button, .profile-box button,
+  .beta-card button, .soon-box button,
+  .dash-box button, .dash-content button, .dash-sidebar button {
+    transition: all 0.18s cubic-bezier(.34,1.56,.64,1) !important;
   }
+  .modal-box button:hover:not([disabled]):not(.modal-close):not(.modal-hdr-close):not(.csv-modal-close):not(.profile-close),
+  .logout-box button:hover:not([disabled]):not(.modal-hdr-close),
+  .pwd-box button:hover:not([disabled]),
+  .csv-modal-box button:hover:not([disabled]):not(.csv-modal-close),
+  .users-box button:hover:not([disabled]):not(.modal-hdr-close),
+  .profile-box button:hover:not([disabled]):not(.profile-close),
+  .beta-card button:hover:not([disabled]),
+  .soon-box button:hover:not([disabled]),
+  .dash-box button:hover:not([disabled]):not(.dash-close-btn),
+  .dash-content button:hover:not([disabled]) {
+    transform: translateY(-2px) scale(1.04) !important;
+    box-shadow: 0 4px 14px rgba(15,33,55,0.15) !important;
+  }
+  /* Colored solid buttons keep their shadow tinted */
+  .btn-logout:hover, .btn-out-modal:hover { box-shadow: 0 4px 14px rgba(239,68,68,0.25) !important; }
+  .btn-in-modal:hover, .btn-success:hover  { box-shadow: 0 4px 14px rgba(16,185,129,0.25) !important; }
+  .btn-primary:hover { box-shadow: 0 4px 14px rgba(26,74,122,0.20) !important; }
 
   /* Universal border override — ALL modal boxes use #0F2137 */
   .modal-box, .pwd-box, .print-modal-box, .soon-box, .beta-card,
