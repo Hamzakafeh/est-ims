@@ -1825,6 +1825,7 @@ function drawDashChart(canvasId, type, labels, datasets, extra={}, yLabel='') {
 
 // DASHBOARD FINAL OVERRIDES
 let _dashSelectedZone = 'all';
+let _dashSelectedFile = 'both';  // 'both' | 'sacks' | 'others'
 let _dashAutoTimer = null;
 let _dashRefreshRemaining = 1800;
 let _dashLastSignature = '';
@@ -1888,7 +1889,10 @@ async function loadDashData(silent=false, isAuto=false) {
   if (refreshBtn) { refreshBtn.disabled = true; refreshBtn.textContent = 'Refreshing...'; }
   if (!silent) setDashContent('<div class="dash-loading"><div class="spinner"></div><span>Refreshing dashboard...</span></div>');
   try {
-    const query = _dashSelectedZone ? `?zone=${encodeURIComponent(_dashSelectedZone)}` : '';
+    const qp = new URLSearchParams();
+    if (_dashSelectedZone && _dashSelectedZone !== 'all') qp.set('zone', _dashSelectedZone);
+    if (_dashSelectedFile && _dashSelectedFile !== 'both') qp.set('file', _dashSelectedFile);
+    const query = qp.toString() ? '?' + qp.toString() : '';
     const res = await fetch('/api/dashboard' + query, { cache: 'no-store' });
     const data = await res.json();
     if (!res.ok || data.error) throw new Error(data.error || 'Dashboard request failed');
@@ -1917,11 +1921,22 @@ function onDashZoneChange(value) {
   _dashLastSignature = '';
   loadDashData();
 }
+function onDashFileChange(value) {
+  _dashSelectedFile = value || 'both';
+  _dashLastSignature = '';
+  loadDashData();
+}
 
 function dashHeader(title, sub) {
   const d = _dashData || {};
   const options = (d.dashboard_zones || []).map(z => `<option value="${escHtml(String(z.id))}" ${String(z.id) === String(d.selected_zone || _dashSelectedZone) ? 'selected' : ''}>${escHtml(String(z.name || z.id))}</option>`).join('');
   const selector = options ? `<select class="dash-zone-select" onchange="onDashZoneChange(this.value)">${options}</select>` : '';
+  const selFile  = _dashSelectedFile || 'both';
+  const fileSelector = `<select class="dash-zone-select" onchange="onDashFileChange(this.value)" title="Filter by file">
+    <option value="both"   ${selFile === 'both'   ? 'selected' : ''}>Both Files</option>
+    <option value="sacks"  ${selFile === 'sacks'  ? 'selected' : ''}>Sacks</option>
+    <option value="others" ${selFile === 'others' ? 'selected' : ''}>Others+</option>
+  </select>`;
   return `
     <div class="dash-top-row">
       <div>
@@ -1930,6 +1945,7 @@ function dashHeader(title, sub) {
       </div>
       <div class="dash-actions">
         ${selector}
+        ${fileSelector}
         <span class="dash-countdown" id="dashCountdown">Next refresh in 01:00</span>
         <button class="dash-refresh-btn" id="dashRefreshBtn" onclick="loadDashData(false, true)">Refresh</button>
       </div>
@@ -1950,7 +1966,9 @@ function dashLeaderCards(d) {
     : (d.zone_consumption || {});
   const entries = Object.entries(consumption);
   if (!entries.length) return '<div class="dash-empty">No consumption data found yet. Log sheet data will appear here once operations are recorded.</div>';
-  return `<div class="dash-leader-grid">${entries.map(([zone, data]) => `
+
+  // Per-zone cards
+  const zoneCards = entries.map(([zone, data]) => `
     <div class="dash-leader-card">
       <div class="dash-leader-zone">${escHtml(zone)}</div>
       <div class="dash-leader-row">
@@ -1961,7 +1979,29 @@ function dashLeaderCards(d) {
         <div><div class="dash-leader-label">Least consumed</div><div class="dash-leader-name">${escHtml(data.lowest?.name || 'N/A')}</div></div>
         <div class="dash-leader-value">${fmtDashNum(data.lowest?.out)} OUT</div>
       </div>
-    </div>`).join('')}</div>`;
+    </div>`).join('');
+
+  // Per-file cards (shown when "Both" is selected)
+  const fileConsumption = d.log_file_consumption || {};
+  const fileEntries = Object.entries(fileConsumption);
+  const fileCards = (_dashSelectedFile === 'both' && fileEntries.length > 0) ? `
+    <div class="dash-leader-grid" style="margin-top:12px;">
+      ${fileEntries.map(([fname, data]) => `
+        <div class="dash-leader-card" style="border-top:2px solid var(--accent-cyan);">
+          <div class="dash-leader-zone" style="color:var(--accent-cyan);">${escHtml(fname)}</div>
+          <div class="dash-leader-row">
+            <div><div class="dash-leader-label">Most consumed</div><div class="dash-leader-name">${escHtml(data.top?.name || 'N/A')}</div></div>
+            <div class="dash-leader-value">${fmtDashNum(data.top?.out)} OUT</div>
+          </div>
+          ${(data.top5 || []).slice(1, 4).map(item => `
+          <div class="dash-leader-row" style="opacity:0.75;">
+            <div><div class="dash-leader-name" style="font-size:11px;">${escHtml(item.name)}</div></div>
+            <div class="dash-leader-value" style="font-size:11px;">${fmtDashNum(item.out)}</div>
+          </div>`).join('')}
+        </div>`).join('')}
+    </div>` : '';
+
+  return `<div class="dash-leader-grid">${zoneCards}</div>${fileCards}`;
 }
 
 function dashRiskCards(d) {

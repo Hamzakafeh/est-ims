@@ -28,6 +28,16 @@ def api_dashboard():
     zone_id = session.get('active_view_zone') or session.get('zone', '')
     is_super = session.get('is_super', False)
     requested_zone = request.args.get('zone', '').strip()
+    requested_file = request.args.get('file', 'both').strip().lower()  # 'sacks' | 'others' | 'both'
+
+    FILE_DISPLAY = {'sacks.xlsm': 'Sacks', 'other+.xlsm': 'Others+'}
+    # Determine which filenames to scan based on filter
+    if requested_file == 'sacks':
+        allowed_files = {'sacks.xlsm'}
+    elif requested_file in ('others', 'other+', 'others+'):
+        allowed_files = {'other+.xlsm'}
+    else:
+        allowed_files = {'sacks.xlsm', 'other+.xlsm'}
 
     root = get_years_root()
     if not root:
@@ -54,7 +64,7 @@ def api_dashboard():
                 lf = f.lower()
                 if f.startswith('~$'):
                     continue
-                if lf in ('other+.xlsm', 'sacks.xlsm'):
+                if lf in allowed_files:
                     files_to_scan.append((zid, os.path.join(root_dir, f)))
 
     total_items = 0
@@ -81,6 +91,7 @@ def api_dashboard():
     log_zone_in       = {}   # zone_label -> total IN qty  (from Log)
     log_zone_out      = {}   # zone_label -> total OUT qty (from Log)
     log_zone_item_out = {}   # zone_label -> item -> OUT qty
+    log_file_item_out = {}   # filename   -> item -> OUT qty  (per-file breakdown)
     log_daily_out     = {}   # date_str  -> total OUT qty (for trend chart)
     log_recent_ops    = []   # latest operations for activity feed
 
@@ -204,6 +215,8 @@ def api_dashboard():
                         log_zone_out[zone_label] = log_zone_out.get(zone_label, 0) + qty
                         zb = log_zone_item_out.setdefault(zone_label, {})
                         zb[item_label] = zb.get(item_label, 0) + qty
+                        fb = log_file_item_out.setdefault(os.path.basename(fpath).lower(), {})
+                        fb[item_label] = fb.get(item_label, 0) + qty
                         log_recent_ops.append({'time': time_str, 'op': 'OUT', 'qty': qty, 'item': item_label, 'zone': zone_label})
                         if date_str:
                             log_daily_out[date_str] = log_daily_out.get(date_str, 0) + qty
@@ -342,6 +355,16 @@ def api_dashboard():
             'top5': [{'name': n, 'out': round(v, 2)} for n, v in ranked[:5]],
             'moving_items': len(positive),
         }
+    # Per-file consumption (for the file filter cards)
+    log_file_consumption = {}
+    for fname, items in log_file_item_out.items():
+        ranked = sorted(items.items(), key=lambda kv: kv[1], reverse=True)
+        positive = [kv for kv in ranked if kv[1] > 0]
+        log_file_consumption[FILE_DISPLAY.get(fname, fname)] = {
+            'top':  {'name': ranked[0][0],  'out': round(ranked[0][1],  2)} if ranked   else None,
+            'top5': [{'name': n, 'out': round(v, 2)} for n, v in ranked[:5]],
+            'moving_items': len(positive),
+        }
     # Recalculate most_active_zone and high_usage from Log data (more accurate)
     if log_zone_in or log_zone_out:
         log_most_active = None
@@ -391,9 +414,11 @@ def api_dashboard():
         'log_ops_count':        len(log_in_ops) + len(log_out_ops),
         'log_daily_out':        log_daily_out_sorted,
         'log_recent_ops':       log_recent_ops_sorted,
-        'log_zone_in':          {k: round(v, 2) for k, v in log_zone_in.items()},
-        'log_zone_out':         {k: round(v, 2) for k, v in log_zone_out.items()},
-        'log_zone_consumption': log_zone_consumption,
+        'log_zone_in':           {k: round(v, 2) for k, v in log_zone_in.items()},
+        'log_zone_out':          {k: round(v, 2) for k, v in log_zone_out.items()},
+        'log_zone_consumption':  log_zone_consumption,
+        'log_file_consumption':  log_file_consumption,
+        'selected_file':         requested_file,
     })
 
 @dashboard_bp.route('/api/login_log')
