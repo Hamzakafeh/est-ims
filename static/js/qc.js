@@ -1,9 +1,10 @@
-// Intercept browser back button → redirect to zones page
+// Intercept browser back button → always redirect to /zones
 (function() {
   history.pushState(null, '', window.location.href);
-  window.addEventListener('popstate', function() {
-    window.location.href = '/zones';
-  });
+  function _goZones() { window.location.replace('/zones'); }
+  window.addEventListener('popstate', _goZones);
+  // Backup for bfcache (mobile browsers restore from cache)
+  window.addEventListener('pageshow', function(e) { if (e.persisted) _goZones(); });
 })();
 
 // Bootstrap window.QC_CONFIG + window.QC_FIREBASE_CONFIG from JSON data island
