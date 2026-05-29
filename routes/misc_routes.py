@@ -178,8 +178,19 @@ def ai_chat():
     )
 
     try:
-        res = http_requests.post(url, json=gemini_payload, timeout=30)
-        result = res.json()
+        old_limit = sys.getrecursionlimit()
+        sys.setrecursionlimit(10000)
+        try:
+            res = http_requests.post(
+                url,
+                data=json.dumps(gemini_payload).encode('utf-8'),
+                headers={'Content-Type': 'application/json'},
+                timeout=30,
+            )
+            result = json.loads(res.text)
+        finally:
+            sys.setrecursionlimit(old_limit)
+
         candidates = result.get('candidates', [])
         if candidates:
             parts = candidates[0].get('content', {}).get('parts', [])
@@ -187,5 +198,7 @@ def ai_chat():
             return jsonify({'content': [{'type': 'text', 'text': reply_text}]}), 200
         error_msg = result.get('error', {}).get('message', 'No response from AI.')
         return jsonify({'error': error_msg}), 500
+    except RecursionError:
+        return jsonify({'error': 'Sorry, try again.'}), 500
     except Exception as e:
         return jsonify({'error': str(e)}), 500
