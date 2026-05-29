@@ -50,18 +50,20 @@ html.light {
 html.light .dock-icon { background:rgba(255,255,255,0.8); }
 .dock-item:hover .dock-icon { background:var(--blue,#3b82f6);color:#fff;border-color:var(--blue,#3b82f6); }
 .dock-label {
-  position:absolute;left:44px;white-space:nowrap;
+  position:absolute;left:44px;top:50%;
+  transform:translateY(-50%) translateX(-8px);
+  white-space:nowrap;
   font-family:'Inter',sans-serif;font-size:12px;font-weight:600;
-  color:var(--text,#e2e8f0);
+  color:#e2e8f0;
   background:rgba(28,34,48,0.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   border:1px solid var(--border-light,#33415c);border-left:none;
   border-radius:0 10px 10px 0;padding:0 16px;height:36px;
   display:flex;align-items:center;pointer-events:none;
-  opacity:0;transform:translateX(-8px);
+  opacity:0;
   transition:opacity 0.2s ease,transform 0.2s ease;z-index:1;
 }
 html.light .dock-label { background:rgba(255,255,255,0.9);color:#1a2332; }
-.dock-item:hover .dock-label { opacity:1;transform:translateX(0); }
+.dock-item:hover .dock-label { opacity:1;transform:translateY(-50%) translateX(0); }
 .dock-icon .icon-sun  { display:block; }
 .dock-icon .icon-moon { display:none; }
 html.light .dock-icon .icon-sun  { display:none; }
