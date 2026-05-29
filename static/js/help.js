@@ -33,6 +33,7 @@ function applyHelpLang(lang) {
   document.documentElement.lang = lang;
   document.documentElement.dir = isAr ? 'rtl' : 'ltr';
   document.getElementById('langDockText').textContent = ht('lang');
+  const _dl = document.getElementById('langDockLabel'); if(_dl) _dl.textContent = lang === 'en' ? 'عربي' : 'English';
   document.getElementById('badgeText').textContent = ht('badge');
   document.getElementById('heroTitle').textContent = ht('heroTitle');
   document.getElementById('heroSub').textContent = ht('heroSub');

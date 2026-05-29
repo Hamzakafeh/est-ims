@@ -45,6 +45,7 @@ function applyForMoreLang(lang) {
   document.documentElement.dir = isAr ? 'rtl' : 'ltr';
 
   document.getElementById('langDockText').textContent = text.lang;
+  const _dl = document.getElementById('langDockLabel'); if(_dl) _dl.textContent = lang === 'en' ? 'عربي' : 'English';
   document.getElementById('badgeText').textContent = text.badge;
   document.getElementById('heroTitle').textContent = text.heroTitle;
   document.getElementById('heroSub').textContent = text.heroSub;

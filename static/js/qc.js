@@ -93,6 +93,8 @@ function applyQcLang(){
   document.documentElement.lang = qcLang;
   const btn = document.getElementById('langBtn');
   if(btn) btn.textContent = isAr ? 'EN' : 'AR';
+  const dl = document.getElementById('langDockLabel');
+  if(dl) dl.textContent = isAr ? 'English' : 'عربي';
   document.querySelectorAll('[data-en][data-ar]').forEach(el => {
     el.textContent = isAr ? el.getAttribute('data-ar') : el.getAttribute('data-en');
   });

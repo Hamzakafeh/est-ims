@@ -41,6 +41,7 @@ function applyScanLang(lang) {
   document.documentElement.lang = lang;
   document.documentElement.dir = isAr ? 'rtl' : 'ltr';
   document.getElementById('langDockText').textContent = t('lang');
+  const _dl = document.getElementById('langDockLabel'); if(_dl) _dl.textContent = lang === 'en' ? 'عربي' : 'English';
   document.getElementById('badgeText').textContent = t('badge');
   document.getElementById('heroTitle').textContent = t('heroTitle');
   document.getElementById('heroSub').textContent = t('heroSub');

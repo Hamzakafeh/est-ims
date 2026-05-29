@@ -33,6 +33,7 @@ function applyContactLang(lang) {
   document.documentElement.lang = lang;
   document.documentElement.dir = isAr ? 'rtl' : 'ltr';
   document.getElementById('langDockText').textContent = ct('lang');
+  const _dl = document.getElementById('langDockLabel'); if(_dl) _dl.textContent = lang === 'en' ? 'عربي' : 'English';
   document.getElementById('badgeText').textContent = ct('badge');
   document.getElementById('heroTitle').textContent = ct('heroTitle');
   document.getElementById('heroSub').textContent = ct('heroSub');
