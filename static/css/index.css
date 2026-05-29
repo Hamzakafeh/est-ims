@@ -522,14 +522,69 @@
   .no-data-row td { text-align: center; color: var(--text-dim); padding: 30px; font-style: italic; }
 
   /* ── LOG SHEET ROW COLORS ── */
+  /* ── Log sheet IN/OUT row colors ── */
   .row-in  { background: rgba(16,185,129,0.08) !important; }
   .row-out { background: rgba(239,68,68,0.07)  !important; }
   .row-in:hover  { background: rgba(16,185,129,0.15) !important; }
   .row-out:hover { background: rgba(239,68,68,0.13) !important; }
   .row-in  td:first-child { border-left: 3px solid #10B981 !important; }
   .row-out td:first-child { border-left: 3px solid #EF4444 !important; }
-  .row-in  td { border-bottom-color: rgba(16,185,129,0.14) !important; color: #0F2137 !important; }
-  .row-out td { border-bottom-color: rgba(239,68,68,0.12)  !important; color: #0F2137 !important; }
+  .row-in  td { border-bottom-color: rgba(16,185,129,0.14) !important; color: #10B981 !important; font-weight: 600 !important; }
+  .row-out td { border-bottom-color: rgba(239,68,68,0.12)  !important; color: #EF4444 !important; font-weight: 600 !important; }
+
+  /* ── Sidebar selects (Zone View / Year) ── */
+  #zoneViewSelect option, #yearSelect option {
+    background: #0F2137;
+    color: #ffffff;
+  }
+  #zoneViewSelect:focus, #yearSelect:focus {
+    border-color: rgba(0,194,181,0.6) !important;
+    outline: none;
+  }
+
+  /* ── LOGOUT MODAL — dashboard style ── */
+  .logout-box {
+    background: #F0F4F8 !important;
+    border: 2px solid #0F2137 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: 0 24px 72px rgba(15,33,55,0.28) !important;
+  }
+  html.light .logout-box { background: #F0F4F8 !important; border: 2px solid #0F2137 !important; }
+  .logout-box::before {
+    background: linear-gradient(90deg, transparent, #00C2B5, #0F2137, transparent) !important;
+    animation: none !important;
+  }
+  .logout-header {
+    background: #0F2137 !important;
+    border-bottom: 1px solid rgba(0,194,181,0.2) !important;
+  }
+  .logout-icon {
+    background: rgba(239,68,68,0.18) !important;
+    border-color: rgba(239,68,68,0.35) !important;
+  }
+  .logout-title { color: #ffffff !important; }
+  .logout-msg   { color: #64748B !important; }
+  .logout-body  { background: #F0F4F8 !important; }
+
+  /* ── STRIP ALL REMAINING NEON/ANIMATION EFFECTS ── */
+  /* betaBlink animation removed */
+  @keyframes betaBlink { 0%,100%{opacity:1;} 50%{opacity:0.7;} }
+  /* betaShine animation: static, no movement */
+  @keyframes betaShine { 0%,100%{opacity:1;transform:none;} }
+  /* Remove all box-shadow glows on hover except close btn */
+  .btn:hover:not(.modal-close):not(.modal-hdr-close):not(.dash-close-btn) {
+    box-shadow: 0 4px 14px rgba(15,33,55,0.15) !important;
+  }
+  /* Remove neon from specific topbar buttons */
+  #logoutBtn:hover, #logoutThemeBtn:hover,
+  #refreshBtn:hover, #csvBtn:hover, #printBtn:hover,
+  #aboutBtn:hover, #reportsBtn:hover, #homeBtn:hover,
+  #adminRequestsBtn:hover, #adminUsersBtn:hover, #forMoreMessagesBtn:hover {
+    box-shadow: none !important;
+  }
+  /* Remove animation from admin-badge glow */
+  .admin-badge { animation: none !important; box-shadow: none !important; }
 
   /* Status bar */
   .statusbar {

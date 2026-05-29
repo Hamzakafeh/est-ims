@@ -139,7 +139,7 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
       <button class="theme-btn hideable-btn" id="aboutBtn" onclick="showAbout()" title="About">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
       </button>
-      <button class="theme-btn hideable-btn" id="logoutBtn" onclick="confirmLogout()" title="Logout" style="color:#ef4444;border-color:rgba(239,68,68,0.3)">
+      <button class="theme-btn hideable-btn" id="logoutBtn" onclick="confirmLogout()" title="Logout">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       </button>
       <!-- TOGGLE BUTTONS VISIBILITY -->
@@ -173,20 +173,31 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
 
 <!-- ══ PRINT MODAL ══ -->
 <div id="printModal" onclick="if(event.target===this)closePrintModal()" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
-  <div class="beta-card" style="max-width:400px;">
-    <div style="position:absolute;top:14px;right:14px;"><button class="modal-hdr-btn modal-hdr-close" onclick="closePrintModal()" title="Close"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
-    <div class="beta-badge"><span class="beta-dot"></span>Print</div>
-    <div class="beta-title">Print Data</div>
-    <div style="height:1px;background:var(--border);margin-bottom:16px;"></div>
-    <div class="print-modal-info" style="margin-bottom:20px;">
-      <div class="print-modal-info-row"><span class="pmi-label">File</span><span class="pmi-val" id="printInfoFile">—</span></div>
-      <div class="print-modal-info-row"><span class="pmi-label">Sheet</span><span class="pmi-val" id="printInfoSheet">—</span></div>
-      <div class="print-modal-info-row"><span class="pmi-label">Period</span><span class="pmi-val" id="printInfoPeriod">—</span></div>
-      <div class="print-modal-info-row"><span class="pmi-label">Records</span><span class="pmi-val" id="printInfoRecords">—</span></div>
+  <div class="csv-modal-box" style="max-width:420px;">
+    <div class="csv-modal-header">
+      <div class="csv-modal-header-left">
+        <div class="csv-modal-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></div>
+        <div>
+          <div class="csv-modal-title">Print Data</div>
+          <div class="csv-modal-sub">Print the current sheet as a formatted report</div>
+        </div>
+      </div>
+      <button class="modal-hdr-btn modal-hdr-close" onclick="closePrintModal()" title="Close"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
-    <div style="display:flex;gap:10px;justify-content:center;">
-      <button class="beta-btn" onclick="doPrint()">Print Now</button>
-      <button class="beta-btn" style="background:rgba(255,255,255,0.08);color:var(--text-muted);" onclick="closePrintModal()">Cancel</button>
+    <div class="csv-modal-body">
+      <div class="print-modal-info" style="margin-bottom:20px;">
+        <div class="print-modal-info-row"><span class="pmi-label">File</span><span class="pmi-val" id="printInfoFile">—</span></div>
+        <div class="print-modal-info-row"><span class="pmi-label">Sheet</span><span class="pmi-val" id="printInfoSheet">—</span></div>
+        <div class="print-modal-info-row"><span class="pmi-label">Period</span><span class="pmi-val" id="printInfoPeriod">—</span></div>
+        <div class="print-modal-info-row"><span class="pmi-label">Records</span><span class="pmi-val" id="printInfoRecords">—</span></div>
+      </div>
+      <div class="csv-modal-actions">
+        <button class="btn btn-primary" onclick="doPrint()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print Now
+        </button>
+        <button class="btn btn-ghost" onclick="closePrintModal()">Cancel</button>
+      </div>
     </div>
   </div>
 </div>
