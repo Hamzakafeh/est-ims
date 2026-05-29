@@ -878,3 +878,346 @@ html.light .status-dot {
 
 html.light .bg-blob { opacity: 0.03; }
 html.light .bg-grid { display: none !important; }
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   §5  ALL-PAGE COVERAGE
+   Applies mlo5 style light to every page in the project.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ──────────────────────────────────────────────────────────────────────
+   §5.1  SHARED SIDE DOCK (about, contact, help, formore, privacy,
+          terms, qrscan, register, forgot-password, qc pages)
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light .side-dock {
+  background: transparent;
+}
+html.light .dock-icon {
+  background:    rgba(255,255,255,0.92) !important;
+  border:        1px solid var(--mlo5-border) !important;
+  color:         var(--mlo5-text-muted) !important;
+  box-shadow:    var(--mlo5-shadow-sm) !important;
+}
+html.light .dock-item:hover .dock-icon {
+  background:    var(--mlo5-accent-primary) !important;
+  color:         var(--mlo5-text-inverted) !important;
+  border-color:  var(--mlo5-accent-primary) !important;
+  box-shadow:    0 2px 8px rgba(37,99,235,0.3) !important;
+}
+html.light .dock-label {
+  background:    rgba(255,255,255,0.96) !important;
+  color:         var(--mlo5-text-primary) !important;
+  border:        1px solid var(--mlo5-border) !important;
+  border-left:   none !important;
+  box-shadow:    var(--mlo5-shadow-sm) !important;
+  font-weight:   var(--mlo5-weight-semibold) !important;
+}
+html.light .dock-item-login .dock-icon { background: var(--mlo5-bg-active) !important; color: var(--mlo5-accent-primary) !important; border-color: var(--mlo5-blue-200) !important; }
+html.light .dock-item-scan  .dock-icon { background: var(--mlo5-bg-surface) !important; color: var(--mlo5-accent-cyan) !important; border-color: var(--mlo5-border) !important; }
+html.light .lang-switch-text { color: var(--mlo5-accent-cyan) !important; }
+/* Copy-line footer */
+html.light .copy-line { color: var(--mlo5-text-dim) !important; }
+html.light .copy-dot  { background: var(--mlo5-accent-teal) !important; box-shadow: 0 0 5px rgba(0,194,181,0.35) !important; }
+/* Mobile bottom dock */
+@media (max-width: 640px) {
+  html.light .side-dock {
+    background:   rgba(255,255,255,0.97) !important;
+    border-top:   1px solid var(--mlo5-border) !important;
+    backdrop-filter: blur(12px) !important;
+  }
+}
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §5.2  WELCOME PAGE
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light .welcome-chip { color: var(--mlo5-accent-teal) !important; }
+html.light .welcome-chip::before,
+html.light .welcome-chip::after { background: var(--mlo5-accent-teal) !important; }
+html.light .sub-heading  { color: var(--mlo5-text-muted) !important; }
+html.light .brand-name   {
+  background: linear-gradient(135deg, #1d4ed8, #0891b2, #7c3aed, #1d4ed8) !important;
+  background-size: 250% 250% !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+html.light .type-cursor  { background: var(--mlo5-accent-primary) !important; }
+html.light .brand-suffix { color: var(--mlo5-text-muted) !important; }
+html.light .tagline      { color: var(--mlo5-text-dim) !important; }
+html.light .divider-line { background: linear-gradient(90deg, transparent, var(--mlo5-border), transparent) !important; }
+html.light .cta-btn {
+  background:   var(--mlo5-accent-primary) !important;
+  box-shadow:   0 4px 16px rgba(37,99,235,0.30) !important;
+}
+html.light .cta-btn:hover { background: var(--mlo5-accent-hover) !important; box-shadow: 0 8px 24px rgba(37,99,235,0.35) !important; }
+html.light .cta-secondary {
+  background:   rgba(37,99,235,0.07) !important;
+  color:        var(--mlo5-accent-primary) !important;
+  border-color: rgba(37,99,235,0.25) !important;
+  box-shadow:   none !important;
+}
+html.light .cta-secondary:hover { background: rgba(37,99,235,0.12) !important; }
+html.light .v-dot, html.light .version-tag .v-dot { background: var(--mlo5-green-500) !important; box-shadow: 0 0 6px rgba(34,197,94,0.4) !important; }
+html.light .scroll-ind-chevron { color: var(--mlo5-text-muted) !important; }
+html.light .logo-wrap {
+  background:   linear-gradient(135deg, var(--mlo5-blue-50), var(--mlo5-bg-active)) !important;
+  border:       1px solid var(--mlo5-blue-200) !important;
+  box-shadow:   0 6px 24px rgba(37,99,235,0.14) !important;
+}
+html.light .welcome-user-chip {
+  background:   rgba(255,255,255,0.88) !important;
+  border:       1px solid var(--mlo5-border) !important;
+  color:        var(--mlo5-text-primary) !important;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §5.3  ZONES PAGE
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light .zone-card {
+  background:   var(--mlo5-bg-elevated) !important;
+  border-color: var(--mlo5-border) !important;
+  box-shadow:   var(--mlo5-shadow-card) !important;
+}
+html.light .zone-card:hover {
+  background:   var(--mlo5-bg-surface) !important;
+  border-color: var(--mlo5-blue-300) !important;
+  box-shadow:   var(--mlo5-shadow-hover) !important;
+}
+html.light .zone-card.active {
+  border-color: var(--mlo5-accent-primary) !important;
+  box-shadow:   0 0 0 2px rgba(37,99,235,0.18) !important;
+}
+html.light .zone-card .zone-name  { color: var(--mlo5-text-primary) !important; }
+html.light .zone-card .zone-label { color: var(--mlo5-text-muted) !important; }
+html.light .zone-card.qc-card .zone-name { color: var(--mlo5-accent-cyan) !important; }
+html.light .zones-title { color: var(--mlo5-text-primary) !important; }
+html.light .zones-sub   { color: var(--mlo5-text-muted) !important; }
+html.light .zones-divider-text { color: var(--mlo5-text-dim) !important; background: var(--mlo5-bg-page) !important; }
+/* Password panel */
+html.light .pw-overlay { background: var(--mlo5-bg-overlay) !important; backdrop-filter: blur(6px) !important; }
+html.light .pw-panel {
+  background:   var(--mlo5-bg-elevated) !important;
+  border:       1px solid var(--mlo5-border) !important;
+  box-shadow:   var(--mlo5-shadow-modal) !important;
+}
+html.light .pw-panel-title { color: var(--mlo5-text-primary) !important; }
+html.light .pw-field-wrap input {
+  background:   var(--mlo5-bg-input) !important;
+  border:       1px solid var(--mlo5-slate-300) !important;
+  color:        var(--mlo5-text-primary) !important;
+}
+html.light .btn-enter {
+  background:   linear-gradient(135deg, var(--mlo5-accent-primary), var(--mlo5-accent-hover)) !important;
+  color:        var(--mlo5-text-inverted) !important;
+}
+html.light .pw-close-btn { background: var(--mlo5-bg-surface) !important; border: 1px solid var(--mlo5-border) !important; color: var(--mlo5-text-muted) !important; }
+html.light .user-corner {
+  background:   rgba(255,255,255,0.88) !important;
+  border:       1px solid var(--mlo5-border) !important;
+}
+html.light .user-corner-name { color: var(--mlo5-text-primary) !important; }
+/* Denied overlay */
+html.light .denied-panel {
+  background:   var(--mlo5-bg-elevated) !important;
+  border:       1px solid var(--mlo5-border) !important;
+  box-shadow:   var(--mlo5-shadow-modal) !important;
+}
+html.light .denied-title { color: var(--mlo5-text-primary) !important; }
+html.light .denied-msg   { color: var(--mlo5-text-muted) !important; }
+html.light .denied-btn {
+  background:   var(--mlo5-red-50) !important;
+  color:        var(--mlo5-red-600) !important;
+  border-color: var(--mlo5-red-200) !important;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §5.4  LOGIN PAGE
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light .login-wrapper { background: var(--mlo5-bg-page) !important; }
+html.light .login-card {
+  background:   var(--mlo5-bg-elevated) !important;
+  border:       1px solid var(--mlo5-border) !important;
+  box-shadow:   var(--mlo5-shadow-xl) !important;
+}
+html.light .login-logo {
+  background:   linear-gradient(135deg, var(--mlo5-blue-50), var(--mlo5-bg-active)) !important;
+  border:       1px solid var(--mlo5-blue-200) !important;
+  box-shadow:   0 4px 16px rgba(37,99,235,0.14) !important;
+}
+html.light .login-title    { color: var(--mlo5-text-primary) !important; }
+html.light .login-subtitle { color: var(--mlo5-text-muted) !important; }
+html.light .field-wrap input {
+  background:   var(--mlo5-bg-input) !important;
+  border:       1px solid var(--mlo5-slate-300) !important;
+  color:        var(--mlo5-text-primary) !important;
+}
+html.light .field-wrap input:focus { border-color: var(--mlo5-focus-ring-color) !important; box-shadow: var(--mlo5-focus-ring) !important; }
+html.light .btn-login {
+  background:   var(--mlo5-accent-primary) !important;
+  border-color: var(--mlo5-accent-primary) !important;
+  color:        var(--mlo5-text-inverted) !important;
+  box-shadow:   0 2px 8px rgba(37,99,235,0.25) !important;
+}
+html.light .btn-login:hover { background: var(--mlo5-accent-hover) !important; border-color: var(--mlo5-accent-hover) !important; }
+html.light .login-link, html.light .login-link-disabled { color: var(--mlo5-accent-primary) !important; }
+html.light .login-alert-box {
+  background:   var(--mlo5-bg-surface) !important;
+  border:       1px solid var(--mlo5-border) !important;
+  color:        var(--mlo5-text-muted) !important;
+}
+html.light .eye-btn { color: var(--mlo5-text-dim) !important; }
+html.light .eye-btn:hover { color: var(--mlo5-text-primary) !important; }
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §5.5  REGISTER & FORGOT PASSWORD PAGES
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light .main { background: var(--mlo5-bg-page) !important; }
+/* Hero */
+html.light .hero-logo {
+  background:   linear-gradient(135deg, var(--mlo5-blue-50), var(--mlo5-bg-active)) !important;
+  border:       1px solid var(--mlo5-blue-200) !important;
+  box-shadow:   0 6px 20px rgba(37,99,235,0.12) !important;
+}
+html.light .hero-badge {
+  background:   var(--mlo5-bg-active) !important;
+  border:       1px solid var(--mlo5-blue-200) !important;
+  color:        var(--mlo5-accent-primary) !important;
+}
+html.light .hero-dot { background: var(--mlo5-green-500) !important; box-shadow: 0 0 5px rgba(34,197,94,0.4) !important; }
+html.light .hero-title {
+  background:   linear-gradient(135deg, #0f172a, #1d4ed8, #0891b2) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+html.light .hero-sub { color: var(--mlo5-text-muted) !important; }
+/* Cards inside register/help/about/etc. */
+html.light .info-card {
+  background:   var(--mlo5-bg-elevated) !important;
+  border:       1px solid var(--mlo5-border) !important;
+  box-shadow:   var(--mlo5-shadow-card) !important;
+}
+html.light .info-card:hover { border-color: var(--mlo5-blue-300) !important; box-shadow: var(--mlo5-shadow-hover) !important; }
+html.light .card-title { color: var(--mlo5-text-primary) !important; }
+html.light .card-text  { color: var(--mlo5-text-muted) !important; }
+html.light .card-icon  { color: var(--mlo5-accent-primary) !important; }
+/* Form sections */
+html.light .section {
+  background:   var(--mlo5-bg-elevated) !important;
+  border:       1px solid var(--mlo5-border) !important;
+  box-shadow:   var(--mlo5-shadow-card) !important;
+}
+html.light .section-title { color: var(--mlo5-text-dim) !important; font-weight: var(--mlo5-weight-bold) !important; }
+html.light .field label    { color: var(--mlo5-text-muted) !important; }
+html.light .field input, html.light .field select, html.light .field textarea {
+  background:   var(--mlo5-bg-input) !important;
+  border:       1px solid var(--mlo5-slate-300) !important;
+  color:        var(--mlo5-text-primary) !important;
+}
+html.light .field input:focus, html.light .field select:focus, html.light .field textarea:focus {
+  border-color: var(--mlo5-focus-ring-color) !important;
+  box-shadow:   var(--mlo5-focus-ring) !important;
+}
+html.light .field-hint-text, html.light .field-hint.err { color: var(--mlo5-red-600) !important; }
+/* Version strip */
+html.light .version-strip { color: var(--mlo5-text-dim) !important; }
+html.light .version-strip::before,
+html.light .version-strip::after { background: var(--mlo5-border) !important; }
+/* Actions */
+html.light .actions .btn { box-shadow: var(--mlo5-shadow-xs) !important; }
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §5.6  QC PAGE
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light .topbar { background: var(--mlo5-bg-elevated) !important; border-bottom: 1px solid var(--mlo5-border) !important; }
+html.light .back-btn { color: var(--mlo5-accent-primary) !important; border-color: rgba(37,99,235,0.3) !important; background: var(--mlo5-bg-active) !important; }
+html.light .back-btn:hover { background: var(--mlo5-bg-hover) !important; }
+html.light .icon-btn { background: var(--mlo5-bg-surface) !important; border: 1px solid var(--mlo5-border) !important; color: var(--mlo5-text-muted) !important; }
+html.light .icon-btn:hover { background: var(--mlo5-bg-hover) !important; color: var(--mlo5-text-primary) !important; }
+html.light .panel-card {
+  background:   var(--mlo5-bg-elevated) !important;
+  border:       1px solid var(--mlo5-border) !important;
+  box-shadow:   var(--mlo5-shadow-card) !important;
+}
+html.light .presence-item { background: transparent !important; }
+html.light .presence-item:hover { background: var(--mlo5-bg-hover) !important; border-radius: var(--mlo5-radius-lg) !important; }
+html.light .presence-name { color: var(--mlo5-text-primary) !important; }
+html.light .chat-panel {
+  background:   var(--mlo5-bg-elevated) !important;
+  border:       1px solid var(--mlo5-border) !important;
+  box-shadow:   var(--mlo5-shadow-xl) !important;
+}
+html.light .chat-panel-header { background: var(--mlo5-bg-surface) !important; border-bottom: 1px solid var(--mlo5-border) !important; }
+html.light .chat-panel-title  { color: var(--mlo5-text-primary) !important; }
+html.light .chat-msg-bubble   { color: var(--mlo5-text-primary) !important; }
+html.light .chat-msg.mine .chat-msg-bubble { background: var(--mlo5-accent-primary) !important; color: var(--mlo5-text-inverted) !important; }
+html.light .chat-input-wrap { background: var(--mlo5-bg-surface) !important; border-top: 1px solid var(--mlo5-border) !important; }
+html.light .chat-input-wrap input { background: var(--mlo5-bg-input) !important; border: 1px solid var(--mlo5-border) !important; color: var(--mlo5-text-primary) !important; }
+html.light .chat-send-btn { background: var(--mlo5-accent-primary) !important; }
+html.light .item-card {
+  background:   var(--mlo5-bg-elevated) !important;
+  border:       1px solid var(--mlo5-border) !important;
+  box-shadow:   var(--mlo5-shadow-card) !important;
+}
+html.light .item-card:hover { border-color: var(--mlo5-blue-300) !important; box-shadow: var(--mlo5-shadow-hover) !important; }
+html.light .notif-banner { background: var(--mlo5-bg-active) !important; border: 1px solid var(--mlo5-blue-200) !important; color: var(--mlo5-blue-700) !important; }
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §5.7  CONTENT PAGES (about, help, contact, formore, privacy, terms)
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light .cards-grid .info-card.blue   { border-left: 3px solid var(--mlo5-accent-primary) !important; }
+html.light .cards-grid .info-card.cyan   { border-left: 3px solid var(--mlo5-accent-cyan) !important; }
+html.light .cards-grid .info-card.green  { border-left: 3px solid var(--mlo5-accent-green) !important; }
+html.light .cards-grid .info-card.amber  { border-left: 3px solid var(--mlo5-accent-amber) !important; }
+html.light .feature-item { color: var(--mlo5-text-secondary) !important; }
+html.light .feature-dot  { box-shadow: 0 0 6px rgba(37,99,235,0.4) !important; }
+html.light .contact-item { border: 1px solid var(--mlo5-border) !important; background: var(--mlo5-bg-elevated) !important; border-radius: var(--mlo5-radius-xl) !important; }
+html.light .ci-label     { color: var(--mlo5-text-dim) !important; }
+html.light .ci-value     { color: var(--mlo5-text-primary) !important; }
+html.light .ci-value a   { color: var(--mlo5-accent-primary) !important; }
+html.light .content-list { gap: 10px !important; }
+html.light .content-item { color: var(--mlo5-text-secondary) !important; }
+html.light .dot  { background: var(--mlo5-accent-primary) !important; box-shadow: 0 0 6px rgba(37,99,235,0.3) !important; }
+html.light .social-btn { background: var(--mlo5-bg-surface) !important; border: 1px solid var(--mlo5-border) !important; color: var(--mlo5-text-muted) !important; }
+html.light .social-btn:hover { background: var(--mlo5-bg-hover) !important; color: var(--mlo5-text-primary) !important; }
+/* QR Scan */
+html.light .scan-btn { background: var(--mlo5-accent-primary) !important; color: var(--mlo5-text-inverted) !important; box-shadow: 0 4px 16px rgba(37,99,235,0.3) !important; }
+html.light .result-card { background: var(--mlo5-bg-elevated) !important; border: 1px solid var(--mlo5-border) !important; box-shadow: var(--mlo5-shadow-md) !important; }
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §5.8  LOADING PAGE
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light .loading-page, html.light #loadingOverlay { background: var(--mlo5-bg-page) !important; }
+html.light .loading-card {
+  background:   var(--mlo5-bg-elevated) !important;
+  border:       1px solid var(--mlo5-border) !important;
+  box-shadow:   var(--mlo5-shadow-xl) !important;
+}
+html.light .loading-title { color: var(--mlo5-text-primary) !important; }
+html.light .loading-sub   { color: var(--mlo5-text-muted) !important; }
+
+
+/* ──────────────────────────────────────────────────────────────────────
+   §5.9  GLOBAL BLOBS & GRID — all pages
+   ────────────────────────────────────────────────────────────────────── */
+
+html.light .blob, html.light .bg-blob { opacity: 0.04; }
+html.light .grid-overlay, html.light .bg-grid { display: none !important; }
+html.light .blob-1 { background: radial-gradient(circle, rgba(37,99,235,0.12), transparent 70%) !important; }
+html.light .blob-2 { background: radial-gradient(circle, rgba(8,145,178,0.10), transparent 70%) !important; }
+html.light .blob-3 { background: radial-gradient(circle, rgba(124,58,237,0.08), transparent 70%) !important; }
