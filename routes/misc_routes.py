@@ -1,5 +1,6 @@
 """Misc APIs: contact, visits, push notifications, AI proxy."""
 import os
+import sys
 import json
 import hashlib
 import requests as http_requests
@@ -169,21 +170,27 @@ def ai_chat():
     }
 
     try:
-        res = http_requests.post(
-            'https://api.groq.com/openai/v1/chat/completions',
-            headers={
-                'Authorization': f'Bearer {api_key}',
-                'Content-Type': 'application/json',
-            },
-            json=groq_payload,
-            timeout=30,
-        )
-        groq_data = res.json()
+        _old_limit = sys.getrecursionlimit()
+        sys.setrecursionlimit(5000)
+        try:
+            res = http_requests.post(
+                'https://api.groq.com/openai/v1/chat/completions',
+                headers={
+                    'Authorization': f'Bearer {api_key}',
+                    'Content-Type': 'application/json',
+                },
+                data=json.dumps(groq_payload),
+                timeout=30,
+            )
+            groq_data = json.loads(res.text)
+        finally:
+            sys.setrecursionlimit(_old_limit)
+
         if 'choices' in groq_data:
             reply_text = groq_data['choices'][0]['message']['content']
             return jsonify({'content': [{'type': 'text', 'text': reply_text}]}), 200
         return jsonify(groq_data), res.status_code
     except RecursionError:
-        return jsonify({'error': 'Response too complex. Please start a new conversation.'}), 500
+        return jsonify({'error': 'Something went wrong. Please try again.'}), 500
     except Exception as e:
         return jsonify({'error': str(e)}), 500
