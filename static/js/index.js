@@ -73,17 +73,9 @@ function closeBetaOverlay() {
 
 
 // â”€â”€ COMING SOON MODAL â”€â”€
-function openSoonModal(feature) {
-  const titles = {
-    dashboard: 'Dashboard',
-    profile:   'User Profiles',
-  };
-  const subs = {
-    dashboard: 'The dashboard with analytics, charts, and KPIs is currently under development.',
-    profile:   'User profile management and settings will be available in a future update.',
-  };
-  document.getElementById('soonTitle').textContent = titles[feature] || 'Feature Under Development';
-  document.getElementById('soonSub').textContent   = subs[feature]   || 'This feature is coming soon!';
+function openSoonModal(feature, customTitle, customSub) {
+  document.getElementById('soonTitle').textContent = customTitle || feature || 'Feature Under Development';
+  document.getElementById('soonSub').textContent   = customSub  || 'This feature will be available in a future update.';
   document.getElementById('soonModal').classList.add('open');
 }
 function closeSoonModal() {
@@ -1123,7 +1115,7 @@ function refreshData() { if (state.selectedSheet) selectSheet(state.selectedShee
 
 function printTable() {
   const table = document.querySelector('.data-table');
-  if (!table) return alert('No data to print');
+  if (!table) return toast('No data to print', false);
   const win = window.open('', '_blank');
   win.document.write(`<html><head><title>EST Inventory System</title>
     <style>
@@ -1304,14 +1296,72 @@ function dashShow(view) {
   updateDashCountdown();
 }
 
-function dashStocktaking() {
+async function dashStocktaking() {
   setDashContent(`<div class="dash-content-title">Inventory Count</div>
-    <div class="dash-content-sub">Latest Stocktaking snapshot from the Excel source. Use print for a clean copy.</div>
-    <div class="dash-chart-wrap" id="stocktakingPrintArea">
-      <div class="dash-chart-title">Stocktaking Print View</div>
-      <div class="dash-empty">This view is ready for the next step: mapping the exact Stocktaking sheet columns from Sacks/Other files.</div>
-      <button class="dash-refresh-btn" onclick="window.print()" style="margin-top:14px;">Print</button>
-    </div>`);
+    <div class="dash-content-sub">Current stock balances from Stocktaking sheets.</div>
+    <div class="dash-loading"><div class="spinner"></div><span>Reading Stocktaking sheets...</span></div>`);
+  try {
+    const zone = _dashSelectedZone && _dashSelectedZone !== 'all' ? `?zone=${_dashSelectedZone}` : '';
+    const res  = await fetch('/api/dashboard/stocktaking' + zone, { cache: 'no-store' });
+    const data = await res.json();
+    const items = data.items || [];
+    if (!items.length) {
+      setDashContent(`<div class="dash-content-title">Inventory Count</div>
+        <div class="dash-content-sub">No Stocktaking sheet found in the current scope.</div>
+        <div class="dash-empty">No data available. Make sure the Excel files contain a sheet named "Stocktaking".</div>`);
+      return;
+    }
+    const zeroCount = items.filter(i => i.balance <= 0).length;
+    const lowCount  = items.filter(i => i.balance > 0 && i.balance < 10).length;
+    const rows = items.map((it, idx) => {
+      const cls = it.balance <= 0 ? 'row-out' : it.balance < 10 ? '' : '';
+      const balColor = it.balance <= 0 ? 'color:#ef4444;font-weight:700'
+                     : it.balance < 10 ? 'color:#f59e0b;font-weight:600'
+                     : 'color:var(--text-main)';
+      return `<tr class="${cls}">
+        <td class="row-num">${idx + 1}</td>
+        <td style="font-weight:600">${escHtml(it.name)}</td>
+        <td>${escHtml(it.category)}</td>
+        <td>${escHtml(it.color)}</td>
+        <td>${escHtml(it.size)}</td>
+        <td style="${balColor};text-align:center">${it.balance}</td>
+        <td style="font-size:10px;color:var(--text-dim)">${escHtml(it.zone)}</td>
+      </tr>`;
+    }).join('');
+    setDashContent(`<div class="dash-content-title">Inventory Count</div>
+      <div class="dash-content-sub">${items.length} items · ${data.files_scanned} file(s) scanned</div>
+      <div class="dash-kpi-grid" style="margin-bottom:20px;">
+        <div class="dash-kpi-card blue"><div class="dash-kpi-label">Total Items</div><div class="dash-kpi-value">${items.length}</div></div>
+        <div class="dash-kpi-card red"><div class="dash-kpi-label">Zero Stock</div><div class="dash-kpi-value">${zeroCount}</div></div>
+        <div class="dash-kpi-card amber"><div class="dash-kpi-label">Low Stock (&lt;10)</div><div class="dash-kpi-value">${lowCount}</div></div>
+      </div>
+      <div class="dash-summary-toolbar">
+        <span style="font-size:12px;color:var(--text-muted)">🔴 Zero &nbsp; 🟡 Low Stock (&lt;10)</span>
+        <button class="dash-print-btn" onclick="printStocktaking()">🖨 Print Count Sheet</button>
+      </div>
+      <div class="dash-zone-table-wrap" id="stocktakingTableWrap">
+        <table class="dash-zone-table">
+          <thead><tr><th>#</th><th>Item</th><th>Category</th><th>Color</th><th>Size</th><th>Balance</th><th>Zone</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`);
+  } catch(e) {
+    setDashContent(`<div class="dash-content-title">Inventory Count</div><div class="dash-empty">Failed to load stocktaking data.</div>`);
+  }
+}
+
+function printStocktaking() {
+  const wrap = document.getElementById('stocktakingTableWrap');
+  if (!wrap) return;
+  const win = window.open('', '_blank');
+  win.document.write(`<html><head><title>Inventory Count — EST-iMs</title>
+    <style>body{font-family:Arial,sans-serif;font-size:12px;}
+    table{border-collapse:collapse;width:100%;}th,td{border:1px solid #ccc;padding:5px 8px;}
+    th{background:#0F2137;color:#fff;}tr:nth-child(even){background:#f5f5f5;}
+    .zero{background:#fee2e2!important;}h2{margin-bottom:8px;}</style></head>
+    <body><h2>Inventory Count Sheet — EST-iMs</h2>${wrap.innerHTML}</body></html>`);
+  win.document.close();
+  win.print();
 }
 async function dashExcelStatus() {
   setDashContent(`<div class="dash-content-title">Excel Link Status</div><div class="dash-loading"><div class="spinner"></div><span>Checking Excel connection...</span></div>`);
@@ -2306,7 +2356,7 @@ async function approveRegistration(id) {
     await loadAdminRequests();
     await loadAdminUsers();
   } catch (e) {
-    alert(e.message || 'Failed to approve request');
+    toast(e.message || 'Failed to approve request', false);
   }
 }
 
@@ -2317,7 +2367,7 @@ async function rejectRegistration(id) {
     if (!res.ok || !data.success) throw new Error(data.message || 'Failed');
     await loadAdminRequests();
   } catch (e) {
-    alert(e.message || 'Failed to reject request');
+    toast(e.message || 'Failed to reject request', false);
   }
 }
 
@@ -2532,7 +2582,7 @@ async function suspendAdminUser(id) {
     toast(data.message || 'Account suspended', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'Failed to suspend user'); }
+  } catch(e) { toast(e.message || 'Failed to suspend user', false); }
 }
 
 async function unsuspendAdminUser(id) {
@@ -2543,7 +2593,7 @@ async function unsuspendAdminUser(id) {
     toast(data.message || 'Account unsuspended', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'Failed to unsuspend user'); }
+  } catch(e) { toast(e.message || 'Failed to unsuspend user', false); }
 }
 
 async function resetAdminUserPassword(id) {
@@ -2556,7 +2606,7 @@ async function resetAdminUserPassword(id) {
     toast(data.message || 'Password updated', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'Failed to update password'); }
+  } catch(e) { toast(e.message || 'Failed to update password', false); }
 }
 
 async function resetAdminUserSecurity(id) {
@@ -2569,7 +2619,7 @@ async function resetAdminUserSecurity(id) {
     toast(data.message || 'Security question updated', true);
     await loadAdminUsers();
     closeAdminUserDetailModal();
-  } catch(e) { alert(e.message || 'Failed to update security question'); }
+  } catch(e) { toast(e.message || 'Failed to update security question', false); }
 }
 
 async function deleteAdminUser(id, username) {

@@ -408,3 +408,78 @@ def api_dashboard_excel_status():
     minutes = max(0, int((datetime.now() - datetime.fromtimestamp(latest_mtime)).total_seconds() // 60))
     return jsonify({'connected': True, 'message': 'متصل', 'file': os.path.basename(latest_path), 'minutes_ago': minutes, 'last_update': datetime.fromtimestamp(latest_mtime).strftime('%Y-%m-%d %H:%M:%S')})
 
+
+@dashboard_bp.route('/api/dashboard/stocktaking')
+@zone_required
+def api_dashboard_stocktaking():
+    """Read 'Stocktaking' sheets from Excel files and return inventory count rows."""
+    zone_id = session.get('active_view_zone') or session.get('zone', '')
+    is_super = session.get('is_super', False)
+    requested_zone = request.args.get('zone', '').strip()
+    root = get_years_root()
+    if not root:
+        return jsonify({'items': [], 'total': 0, 'files_scanned': 0})
+
+    available_zones = [z for z in ZONES if z['id'] not in SUPER_ZONES]
+    valid_zone_ids = {z['id'] for z in available_zones}
+    if is_super and requested_zone and requested_zone != 'all':
+        scan_zones = [requested_zone] if requested_zone in valid_zone_ids else []
+    elif is_super:
+        scan_zones = [z['id'] for z in available_zones]
+    else:
+        scan_zones = [zone_id]
+
+    items = []
+    files_scanned = 0
+    STOCKTAKING_SHEET = 'Stocktaking'
+
+    for zid in scan_zones:
+        zone_path = os.path.join(root, zid)
+        if not os.path.isdir(zone_path):
+            continue
+        for fname in os.listdir(zone_path):
+            if not fname.lower().endswith(('.xlsx', '.xlsm', '.xls')):
+                continue
+            fpath = os.path.join(zone_path, fname)
+            try:
+                wb = openpyxl.load_workbook(fpath, read_only=True, data_only=True)
+                if STOCKTAKING_SHEET not in wb.sheetnames:
+                    wb.close()
+                    continue
+                ws = wb[STOCKTAKING_SHEET]
+                headers = []
+                for i, row in enumerate(ws.iter_rows(values_only=True)):
+                    if i == 0:
+                        headers = [str(c).strip() if c is not None else '' for c in row]
+                        continue
+                    if not any(c for c in row if c is not None):
+                        continue
+                    row_dict = {headers[j]: row[j] for j in range(min(len(headers), len(row)))}
+                    name = row_dict.get(COL_TYPE) or row_dict.get('Item') or row_dict.get('Name') or row_dict.get('اسم الصنف') or ''
+                    balance = row_dict.get(COL_CURRENT) or row_dict.get('Current Balance') or row_dict.get('Balance') or row_dict.get('الرصيد') or 0
+                    category = row_dict.get(COL_CATEGORY) or row_dict.get('Category') or row_dict.get('الفئة') or ''
+                    color = row_dict.get(COL_COLOR) or row_dict.get('Color') or row_dict.get('اللون') or ''
+                    size = row_dict.get(COL_SIZE) or row_dict.get('Size') or row_dict.get('الحجم') or ''
+                    if not name:
+                        continue
+                    try:
+                        balance = float(balance) if balance not in (None, '') else 0
+                    except (ValueError, TypeError):
+                        balance = 0
+                    items.append({
+                        'name': str(name),
+                        'balance': balance,
+                        'category': str(category) if category else '',
+                        'color': str(color) if color else '',
+                        'size': str(size) if size else '',
+                        'zone': zid,
+                        'file': fname,
+                    })
+                files_scanned += 1
+                wb.close()
+            except Exception:
+                pass
+
+    items.sort(key=lambda x: x['name'].lower())
+    return jsonify({'items': items, 'total': len(items), 'files_scanned': files_scanned})
+
