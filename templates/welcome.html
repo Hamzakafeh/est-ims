@@ -3,45 +3,383 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>EST-iMs | Under Maintenance</title>
+<title>EST-iMs | Maintenance</title>
 <link rel="icon" type="image/x-icon" href="/static/icons/low1.ico">
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Inter',system-ui,sans-serif;background:#0d1117;color:#e2e8f0;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-  .blob{position:fixed;border-radius:50%;filter:blur(100px);opacity:.07;pointer-events:none;}
-  .blob-1{width:600px;height:600px;background:radial-gradient(circle,#3b82f6,transparent 70%);top:-150px;left:-150px;animation:b1 20s ease-in-out infinite;}
-  .blob-2{width:500px;height:500px;background:radial-gradient(circle,#06b6d4,transparent 70%);bottom:-120px;right:-120px;animation:b2 24s ease-in-out infinite;}
-  @keyframes b1{0%,100%{transform:translate(0,0)}50%{transform:translate(60px,40px)}}
-  @keyframes b2{0%,100%{transform:translate(0,0)}50%{transform:translate(-50px,-30px)}}
-  .card{position:relative;z-index:10;text-align:center;padding:56px 48px;max-width:520px;width:90%;background:rgba(21,28,45,.9);border:1px solid rgba(59,130,246,.2);border-radius:24px;box-shadow:0 24px 80px rgba(0,0,0,.5);}
-  .card::before{content:'';position:absolute;top:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,rgba(59,130,246,.7),transparent);}
-  .logo{width:56px;height:56px;border-radius:14px;margin:0 auto 28px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(59,130,246,.2),rgba(6,182,212,.15));border:1px solid rgba(59,130,246,.3);}
-  .logo img{width:36px;height:36px;object-fit:contain;}
-  .badge{display:inline-flex;align-items:center;gap:7px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.35);border-radius:50px;padding:5px 16px;font-size:11px;font-weight:700;color:#fcd34d;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:24px;}
-  .dot{width:7px;height:7px;border-radius:50%;background:#f59e0b;box-shadow:0 0 8px #f59e0b;animation:pulse 2s ease-in-out infinite;}
-  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.65)}}
-  h1{font-size:clamp(26px,5vw,36px);font-weight:800;letter-spacing:1px;margin-bottom:14px;background:linear-gradient(135deg,#60a5fa,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-  p{font-size:15px;color:#8b9db8;line-height:1.75;margin-bottom:10px;}
-  .sub{font-size:13px;color:#52627a;margin-top:28px;padding-top:22px;border-top:1px solid rgba(255,255,255,.06);}
-  .sub strong{color:#8b9db8;}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#0d1117;color:#e2e8f0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;user-select:none;}
+
+/* Blobs */
+.blob{position:fixed;border-radius:50%;filter:blur(100px);opacity:.07;pointer-events:none;animation:bfloat 20s ease-in-out infinite;}
+.blob-1{width:500px;height:500px;background:radial-gradient(circle,#3b82f6,transparent 70%);top:-120px;left:-120px;}
+.blob-2{width:450px;height:450px;background:radial-gradient(circle,#8b5cf6,transparent 70%);bottom:-100px;right:-100px;animation-delay:-7s;}
+@keyframes bfloat{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,30px) scale(1.08)}}
+
+/* Stars */
+.stars{position:fixed;inset:0;pointer-events:none;}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,3s) ease-in-out infinite var(--delay,0s);}
+@keyframes twinkle{0%,100%{opacity:.1;transform:scale(1)}50%{opacity:.7;transform:scale(1.4)}}
+
+/* Card */
+.card{position:relative;z-index:10;text-align:center;padding:44px 40px 36px;max-width:560px;width:92%;background:rgba(15,21,36,.92);border:1px solid rgba(59,130,246,.18);border-radius:28px;box-shadow:0 32px 100px rgba(0,0,0,.6);backdrop-filter:blur(20px);}
+.card::before{content:'';position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,rgba(99,102,241,.9),rgba(6,182,212,.7),transparent);}
+
+/* Robot */
+.robot-wrap{position:relative;margin:0 auto 24px;width:100px;height:100px;cursor:pointer;}
+.robot-wrap:hover .robot-body{transform:translateY(-4px) rotate(-3deg);transition:transform .3s;}
+.robot-body{transition:transform .3s;display:flex;align-items:center;justify-content:center;}
+.robot-svg{width:90px;height:90px;filter:drop-shadow(0 0 18px rgba(99,102,241,.45));}
+.robot-eye{animation:blink 3s ease-in-out infinite;}
+@keyframes blink{0%,90%,100%{transform:scaleY(1)}93%{transform:scaleY(0.05)}}
+.antenna{animation:wobble 2s ease-in-out infinite;}
+@keyframes wobble{0%,100%{transform:rotate(0deg) translateX(0)}30%{transform:rotate(6deg) translateX(2px)}70%{transform:rotate(-6deg) translateX(-2px)}}
+.robot-smoke{position:absolute;top:-14px;right:10px;font-size:18px;animation:smoke 2.5s ease-in-out infinite;opacity:0;}
+@keyframes smoke{0%{opacity:0;transform:translateY(0) scale(.6)}40%{opacity:.7}100%{opacity:0;transform:translateY(-28px) scale(1.3)}}
+
+/* Badge */
+.badge{display:inline-flex;align-items:center;gap:7px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.4);border-radius:50px;padding:5px 16px;font-size:11px;font-weight:700;color:#fcd34d;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px;}
+.pulse-dot{width:7px;height:7px;border-radius:50%;background:#f59e0b;box-shadow:0 0 8px #f59e0b;animation:pdot 2s ease-in-out infinite;}
+@keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
+
+h1{font-size:clamp(22px,4vw,30px);font-weight:800;letter-spacing:.5px;margin-bottom:10px;background:linear-gradient(135deg,#a5b4fc,#06b6d4,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* Funny message */
+.funny-msg{font-size:14px;color:#8b9db8;line-height:1.7;min-height:50px;margin-bottom:20px;transition:opacity .4s;}
+.funny-msg.fade{opacity:0;}
+
+/* Progress bar */
+.prog-wrap{margin-bottom:24px;}
+.prog-label{display:flex;justify-content:space-between;font-size:11px;color:#52627a;font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
+.prog-bar{height:8px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;position:relative;}
+.prog-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#6366f1,#06b6d4,#8b5cf6);background-size:200%;animation:shimmer 2s linear infinite;transition:width 1.2s ease;}
+@keyframes shimmer{0%{background-position:200%}100%{background-position:0%}}
+.prog-note{font-size:10px;color:#52627a;margin-top:5px;font-style:italic;}
+
+/* Buttons */
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:22px;}
+.btn-help{padding:10px 22px;border-radius:12px;border:1px solid rgba(99,102,241,.4);background:rgba(99,102,241,.12);color:#a5b4fc;font:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:7px;}
+.btn-help:hover{background:rgba(99,102,241,.24);border-color:rgba(99,102,241,.7);transform:translateY(-2px);}
+.btn-help:active{transform:scale(.96);}
+.btn-coffee{padding:10px 22px;border-radius:12px;border:1px solid rgba(245,158,11,.35);background:rgba(245,158,11,.08);color:#fcd34d;font:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:7px;}
+.btn-coffee:hover{background:rgba(245,158,11,.18);transform:translateY(-2px);}
+.btn-coffee:active{transform:scale(.96);}
+
+/* Click counter */
+.click-counter{font-size:12px;color:#52627a;font-family:'JetBrains Mono',monospace;margin-bottom:16px;min-height:18px;}
+.click-counter span{color:#818cf8;}
+
+/* Footer */
+.footer-line{padding-top:18px;border-top:1px solid rgba(255,255,255,.06);font-size:12px;color:#374151;display:flex;align-items:center;justify-content:center;gap:8px;}
+.footer-line strong{color:#52627a;}
+
+/* Particles */
+.confetti{position:fixed;pointer-events:none;top:0;left:0;width:100%;height:100%;z-index:99;display:none;}
+
+/* Shake */
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px) rotate(-2deg)}40%{transform:translateX(6px) rotate(2deg)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.shaking{animation:shake .5s ease both;}
+
+/* Gear spin */
+.gear{display:inline-block;animation:gspin 4s linear infinite;}
+.gear-r{animation:gspin 4s linear infinite reverse;}
+@keyframes gspin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
+
+<!-- Stars -->
+<div class="stars" id="stars"></div>
+
+<!-- Confetti canvas -->
+<canvas class="confetti" id="confettiCanvas"></canvas>
+
+<!-- Blobs -->
 <div class="blob blob-1"></div>
 <div class="blob blob-2"></div>
 
-<div class="card">
-  <div class="logo"><img src="/static/icons/low.ico" alt="EST-iMs"></div>
-  <div class="badge"><span class="dot"></span> Under Maintenance</div>
-  <h1>We'll be back soon</h1>
-  <p>EST-iMs is currently undergoing scheduled maintenance to improve your experience.</p>
-  <p>We apologize for the inconvenience and appreciate your patience.</p>
-  <div class="sub">
-    <strong>EST-iMs</strong> · Inventory Management System<br>
-    Alestesharia Animal Nutrition
+<div class="card" id="mainCard">
+  <!-- Robot mascot -->
+  <div class="robot-wrap" onclick="robotClick()" title="Click me!">
+    <span class="robot-smoke">💨</span>
+    <div class="robot-body">
+      <svg class="robot-svg" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Antenna -->
+        <g class="antenna" transform-origin="40 18">
+          <line x1="40" y1="18" x2="40" y2="8" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="40" cy="6" r="3.5" fill="#6366f1"/>
+        </g>
+        <!-- Head -->
+        <rect x="20" y="18" width="40" height="28" rx="8" fill="#1e2a45" stroke="#6366f1" stroke-width="1.5"/>
+        <!-- Eyes -->
+        <g class="robot-eye" transform-origin="31 30">
+          <circle cx="31" cy="30" r="5" fill="#0d1117"/>
+          <circle cx="31" cy="30" r="3.5" fill="#06b6d4"/>
+          <circle cx="32.5" cy="28.5" r="1" fill="#e0f2fe"/>
+        </g>
+        <g class="robot-eye" transform-origin="49 30">
+          <circle cx="49" cy="30" r="5" fill="#0d1117"/>
+          <circle cx="49" cy="30" r="3.5" fill="#06b6d4"/>
+          <circle cx="50.5" cy="28.5" r="1" fill="#e0f2fe"/>
+        </g>
+        <!-- Mouth -->
+        <rect x="30" y="38" width="20" height="4" rx="2" fill="#0d1117"/>
+        <rect id="mouthBar" x="31" y="39" width="8" height="2" rx="1" fill="#6366f1"/>
+        <!-- Body -->
+        <rect x="18" y="49" width="44" height="26" rx="8" fill="#1e2a45" stroke="#6366f1" stroke-width="1.5"/>
+        <!-- Belly panel -->
+        <rect x="26" y="55" width="28" height="14" rx="4" fill="#0d1117" stroke="#374151" stroke-width="1"/>
+        <!-- Belly lights -->
+        <circle id="light1" cx="33" cy="62" r="3" fill="#ef4444"/>
+        <circle id="light2" cx="40" cy="62" r="3" fill="#f59e0b"/>
+        <circle id="light3" cx="47" cy="62" r="3" fill="#10b981"/>
+        <!-- Arms -->
+        <rect x="4" y="52" width="12" height="6" rx="3" fill="#1e2a45" stroke="#6366f1" stroke-width="1.5"/>
+        <rect x="64" y="52" width="12" height="6" rx="3" fill="#1e2a45" stroke="#6366f1" stroke-width="1.5"/>
+        <!-- Legs -->
+        <rect x="26" y="76" width="11" height="4" rx="2" fill="#1e2a45" stroke="#6366f1" stroke-width="1.2"/>
+        <rect x="43" y="76" width="11" height="4" rx="2" fill="#1e2a45" stroke="#6366f1" stroke-width="1.2"/>
+        <!-- Tool in hand -->
+        <text x="68" y="56" font-size="10" fill="#fcd34d">🔧</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="badge"><span class="pulse-dot"></span> Under Maintenance</div>
+
+  <h1>We're Fixing Things™</h1>
+
+  <div class="funny-msg" id="funnyMsg">Hold tight — our robot is on it.<br>He's very motivated (we offered him oil).</div>
+
+  <!-- Progress bar -->
+  <div class="prog-wrap">
+    <div class="prog-label">
+      <span id="progTask">Rebooting hamster wheel...</span>
+      <span id="progPct">0%</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+    <div class="prog-note" id="progNote">ETA: somewhere between now and the heat death of the universe</div>
+  </div>
+
+  <!-- Gears -->
+  <div style="font-size:22px;margin-bottom:18px;letter-spacing:4px;">
+    <span class="gear">⚙️</span>
+    <span class="gear-r" style="font-size:16px;">⚙️</span>
+    <span class="gear">⚙️</span>
+  </div>
+
+  <!-- Buttons -->
+  <div class="btns">
+    <button class="btn-help" onclick="helpFix()">
+      <span id="helpIcon">🛠</span> Help us fix it
+    </button>
+    <button class="btn-coffee" onclick="giveCoffee()">
+      ☕ Send coffee
+    </button>
+  </div>
+
+  <div class="click-counter" id="clickCounter"></div>
+
+  <div class="footer-line">
+    <strong>EST-iMs</strong> · Alestesharia Animal Nutrition · 2026
   </div>
 </div>
 
+<script>
+// ── Stars ─────────────────────────────────────────────
+const starsEl = document.getElementById('stars');
+for (let i = 0; i < 80; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  const size = Math.random() * 2.5 + 0.5;
+  s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${Math.random()*3+2}s;--delay:-${Math.random()*5}s`;
+  starsEl.appendChild(s);
+}
+
+// ── Funny messages ────────────────────────────────────
+const msgs = [
+  "Hold tight — our robot is on it.<br>He's very motivated (we offered him oil).",
+  "Error 418: I'm a teapot.<br>The server refused to brew coffee. Investigating.",
+  "Our code is currently doing yoga.<br>Please wait for it to find its balance. 🧘",
+  "We're turning it off and on again.<br>This fixes 97% of all problems. Science.",
+  "A wild bug appeared!<br>Our developers used CTRL+Z... it wasn't super effective.",
+  "The hamster powering the server<br>is on a bathroom break. He'll be right back. 🐹",
+  "Maintenance: noun. What we call it<br>when we have NO idea what happened.",
+  "Currently bribing the servers<br>with compliments and snacks. 🍪",
+  "Debugging: the process of removing bugs.<br>Programming: the process of adding them.",
+  "We asked the AI to fix it.<br>It said 'I don't have access to the internet.' Classic.",
+];
+let msgIdx = 0;
+const msgEl = document.getElementById('funnyMsg');
+function cycleMsg() {
+  msgEl.classList.add('fade');
+  setTimeout(() => {
+    msgIdx = (msgIdx + 1) % msgs.length;
+    msgEl.innerHTML = msgs[msgIdx];
+    msgEl.classList.remove('fade');
+  }, 400);
+}
+setInterval(cycleMsg, 4500);
+
+// ── Progress bar (loops forever) ──────────────────────
+const tasks = [
+  'Rebooting hamster wheel...',
+  'Googling the error message...',
+  'Blaming the intern...',
+  'Copying from Stack Overflow...',
+  'Praying to the server gods...',
+  'rm -rf node_modules && npm install...',
+  'Asking ChatGPT (it said "I cannot help")...',
+  'Reading the docs (first time)...',
+  'Turning it off and on again...',
+  'Sending a strongly worded email...',
+  'Applying duct tape to the database...',
+  'Almost done (for real this time)...',
+];
+let taskIdx = 0, pct = 0;
+const progFill = document.getElementById('progFill');
+const progPct  = document.getElementById('progPct');
+const progTask = document.getElementById('progTask');
+const progNote = document.getElementById('progNote');
+const notes = [
+  'ETA: somewhere between now and the heat death of the universe',
+  "ETA: we'll get there when we get there",
+  'ETA: undefined is not a function',
+  'ETA: loading ETA...',
+  "ETA: don't worry about it",
+];
+let noteIdx = 0;
+function tickProgress() {
+  pct += Math.random() * 4 + 1;
+  if (pct >= 97) {
+    pct = 0;
+    taskIdx = (taskIdx + 1) % tasks.length;
+    progTask.textContent = tasks[taskIdx];
+    noteIdx = (noteIdx + 1) % notes.length;
+    progNote.textContent = notes[noteIdx];
+  }
+  progFill.style.width = pct + '%';
+  progPct.textContent  = Math.floor(pct) + '%';
+}
+setInterval(tickProgress, 500);
+
+// ── Robot lights blink ────────────────────────────────
+const lights = ['light1','light2','light3'];
+let li = 0;
+setInterval(() => {
+  document.getElementById(lights[li]).style.filter = '';
+  li = (li + 1) % 3;
+  document.getElementById(lights[li]).style.filter = 'brightness(2) drop-shadow(0 0 4px currentColor)';
+}, 700);
+
+// ── Robot smoke ───────────────────────────────────────
+const smokeEl = document.querySelector('.robot-smoke');
+setInterval(() => {
+  smokeEl.style.animation = 'none';
+  smokeEl.offsetHeight; // reflow
+  smokeEl.style.animation = 'smoke 2.5s ease-in-out infinite';
+}, 3000);
+
+// ── Robot click ───────────────────────────────────────
+let robotClicks = 0;
+const robotResponses = [
+  "Ow! I'm working on it! 😤",
+  "Please stop poking me. 🤖",
+  "I said WORKING ON IT. 😠",
+  "One more click and I'm filing HR. 😤",
+  "FINE. I'll work faster. 🔥",
+  "That tickles actually... 😅",
+  "OK OK I pressed the big button. 🆘",
+  "You touched me 8 times. This is harassment. 😐",
+  "I called for backup. 📞",
+  "My lawyer will hear about this. 👨‍💼",
+];
+function robotClick() {
+  robotClicks++;
+  const card = document.getElementById('mainCard');
+  card.classList.remove('shaking');
+  void card.offsetWidth;
+  card.classList.add('shaking');
+  const counter = document.getElementById('clickCounter');
+  counter.innerHTML = robotResponses[(robotClicks - 1) % robotResponses.length] +
+    `  <span>(×${robotClicks})</span>`;
+  if (robotClicks === 5) launchConfetti();
+}
+
+// ── Help button ───────────────────────────────────────
+let helpClicks = 0;
+const helpMsgs = [
+  { icon: '🛠', label: 'Help us fix it' },
+  { icon: '🔩', label: 'Tightening bolts...' },
+  { icon: '💧', label: 'Adding WD-40...' },
+  { icon: '🔨', label: 'Percussive maintenance!' },
+  { icon: '✨', label: 'Fixed! (just kidding)' },
+  { icon: '🤷', label: 'No idea anymore' },
+];
+function helpFix() {
+  helpClicks++;
+  const h = helpMsgs[helpClicks % helpMsgs.length];
+  document.getElementById('helpIcon').textContent = h.icon;
+  document.querySelector('.btn-help').childNodes[1].textContent = ' ' + h.label;
+  if (helpClicks === 3) launchConfetti();
+}
+
+// ── Coffee button ──────────────────────────────────────
+let coffeeCount = 0;
+const coffeeNotes = ['☕', '☕☕', '☕☕☕', '⚡','🚀','🌋','💥'];
+function giveCoffee() {
+  coffeeCount++;
+  const btn = document.querySelector('.btn-coffee');
+  btn.textContent = coffeeNotes[Math.min(coffeeCount, coffeeNotes.length-1)] + ' Coffee received! ×' + coffeeCount;
+  if (coffeeCount >= 3) {
+    msgEl.classList.add('fade');
+    setTimeout(() => {
+      msgEl.innerHTML = `The team has had ${coffeeCount} coffees. ☕<br>They're vibrating at this point.`;
+      msgEl.classList.remove('fade');
+    }, 400);
+  }
+}
+
+// ── Confetti ───────────────────────────────────────────
+function launchConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  canvas.style.display = 'block';
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  const colors = ['#6366f1','#06b6d4','#f59e0b','#10b981','#ef4444','#8b5cf6','#ec4899'];
+  const pieces = Array.from({length: 120}, () => ({
+    x: Math.random() * canvas.width,
+    y: -10,
+    r: Math.random() * 7 + 3,
+    d: Math.random() * Math.PI * 2,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    vx: (Math.random() - .5) * 4,
+    vy: Math.random() * 4 + 2,
+    angle: Math.random() * 360,
+    spin: (Math.random() - .5) * 8,
+  }));
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle * Math.PI / 180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.r, -p.r/2, p.r*2, p.r);
+      ctx.restore();
+      p.x += p.vx;
+      p.y += p.vy;
+      p.angle += p.spin;
+      p.vy += .05;
+    });
+    frame++;
+    if (frame < 140) requestAnimationFrame(draw);
+    else { ctx.clearRect(0,0,canvas.width,canvas.height); canvas.style.display='none'; }
+  }
+  draw();
+}
+</script>
 </body>
 </html>
