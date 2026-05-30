@@ -15,7 +15,7 @@ from flask import Flask, Response, send_from_directory, session, stream_with_con
 
 from routes import (
     auth_bp, zone_bp, excel_bp, qc_bp, admin_bp, reports_bp,
-    misc_bp, dashboard_bp, pages_bp, scan_bp,
+    misc_bp, dashboard_bp, pages_bp, scan_bp, zone1_bp,
 )
 from core import (
     zone_required, APP_DIR, QC_UPLOAD_DIR,
@@ -43,6 +43,7 @@ app.register_blueprint(misc_bp)
 app.register_blueprint(dashboard_bp)
 app.register_blueprint(pages_bp)
 app.register_blueprint(scan_bp)
+app.register_blueprint(zone1_bp)
 
 # ── QC real-time SSE ───────────────────────────────────────────────
 _qc_subscribers = []

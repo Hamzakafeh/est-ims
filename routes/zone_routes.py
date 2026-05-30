@@ -157,6 +157,8 @@ def api_zone_login():
     next_url = session.pop('next_after_zone', '/index')
     if zone_id == 'qc':
         next_url = '/qc-workflow'
+    elif zone_id == 'zone1':
+        next_url = '/zone1'
     return jsonify({'success': True, 'redirect': next_url})
 
 

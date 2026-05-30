@@ -1,0 +1,180 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --bg:      #0d1117; --bg-card: #151c2d; --bg-hover: #1e2636;
+  --border:  #2d3748; --border-l: #3d4f6a;
+  --blue:    #3b82f6; --cyan:  #06b6d4; --green: #10b981;
+  --red:     #ef4444; --amber: #f59e0b;
+  --text:    #e2e8f0; --muted: #8b9db8; --dim: #52627a;
+}
+html.light {
+  --bg: #f1f5f9; --bg-card: #ffffff; --bg-hover: #f1f5f9;
+  --border: #d1dae8; --border-l: #b8c6da;
+  --blue: #2563eb; --cyan: #0891b2; --green: #059669;
+  --red: #dc2626; --amber: #d97706;
+  --text: #1a2332; --muted: #4a6080; --dim: #8fa3be;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text);
+       min-height: 100vh; overflow-x: hidden; }
+
+/* ── Topbar ── */
+.z1-topbar {
+  position: sticky; top: 0; z-index: 200;
+  height: 54px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 18px 0 58px;
+  background: rgba(13,17,23,.82); backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(59,130,246,.15);
+}
+html.light .z1-topbar { background: rgba(255,255,255,.9); border-bottom-color: rgba(37,99,235,.15); }
+.z1-topbar-left  { display: flex; align-items: center; gap: 10px; }
+.z1-topbar-right { display: flex; align-items: center; gap: 8px; }
+.z1-brand { font-size: 13px; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.z1-badge { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
+            color: var(--cyan); border: 1px solid rgba(6,182,212,.35);
+            background: rgba(6,182,212,.08); border-radius: 999px; padding: 3px 10px; }
+
+/* ── Main ── */
+.z1-main { padding: 22px 22px 60px 62px; max-width: 100%; }
+
+/* ── File tabs bar ── */
+.z1-file-bar {
+  display: flex; align-items: center; gap: 6px;
+  flex-wrap: wrap; margin-bottom: 16px;
+}
+.z1-file-tab {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 10px;
+  border: 1px solid var(--border-l); background: var(--bg-card);
+  color: var(--muted); font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: .18s;
+}
+.z1-file-tab:hover { border-color: var(--blue); color: var(--text); }
+.z1-file-tab.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+.z1-file-tab-close {
+  width: 16px; height: 16px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.2); font-size: 10px;
+  cursor: pointer; transition: .15s;
+}
+.z1-file-tab-close:hover { background: rgba(239,68,68,.7); }
+.z1-file-tab.active .z1-file-tab-close { background: rgba(255,255,255,.25); }
+
+.btn-import {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 16px; border-radius: 10px;
+  background: rgba(16,185,129,.15); border: 1px solid rgba(16,185,129,.4);
+  color: var(--green); font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: .18s;
+}
+.btn-import:hover { background: var(--green); color: #fff; border-color: var(--green); }
+html.light .btn-import { background: #d1fae5; border-color: #6ee7b7; color: #065f46; }
+html.light .btn-import:hover { background: var(--green); color: #fff; }
+
+/* ── Sheet tabs ── */
+.z1-sheet-bar {
+  display: flex; align-items: center; gap: 4px;
+  margin-bottom: 12px; flex-wrap: wrap;
+}
+.z1-sheet-tab {
+  padding: 5px 14px; border-radius: 8px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--muted); font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: .15s;
+}
+.z1-sheet-tab:hover { border-color: var(--cyan); color: var(--cyan); }
+.z1-sheet-tab.active { background: var(--cyan); border-color: var(--cyan); color: #fff; }
+
+/* ── Table wrap ── */
+.z1-table-wrap {
+  border-radius: 14px; border: 1px solid var(--border-l);
+  background: var(--bg-card);
+  overflow: auto; max-height: calc(100vh - 220px);
+}
+.z1-meta {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; border-bottom: 1px solid var(--border);
+  font-size: 12px; color: var(--muted); flex-wrap: wrap; gap: 8px;
+}
+.z1-meta strong { color: var(--text); }
+.z1-table { border-collapse: collapse; width: max-content; min-width: 100%; font-size: 13px; }
+.z1-table thead th {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg-card); border-bottom: 2px solid var(--border-l);
+  padding: 9px 12px; text-align: left; font-weight: 700;
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  color: var(--muted); white-space: nowrap; min-width: 100px;
+}
+html.light .z1-table thead th { background: #f8fafc; }
+.z1-table tbody tr:nth-child(even) { background: rgba(255,255,255,.02); }
+html.light .z1-table tbody tr:nth-child(even) { background: #f8fafc; }
+.z1-table tbody tr:hover td { background: var(--bg-hover); }
+.z1-table tbody td {
+  padding: 7px 12px; border-bottom: 1px solid rgba(255,255,255,.04);
+  min-width: 100px; max-width: 260px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  vertical-align: middle;
+}
+html.light .z1-table tbody td { border-bottom-color: var(--border); }
+.z1-table tbody td.editing {
+  padding: 0 !important;
+}
+.z1-table tbody td.editing input {
+  width: 100%; height: 100%; min-height: 34px;
+  padding: 7px 12px; border: none;
+  background: rgba(59,130,246,.18); color: var(--text);
+  font: inherit; font-size: 13px; outline: 2px solid var(--blue);
+}
+.z1-row-num {
+  color: var(--dim); font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; text-align: center; min-width: 36px; user-select: none;
+}
+.z1-empty { padding: 48px; text-align: center; color: var(--dim); font-size: 14px; }
+
+/* ── Pagination ── */
+.z1-pager {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 12px; border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.z1-pager button {
+  padding: 5px 14px; border-radius: 8px;
+  border: 1px solid var(--border-l); background: var(--bg-card);
+  color: var(--text); font: inherit; font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: .15s;
+}
+.z1-pager button:hover:not(:disabled) { background: var(--blue); color: #fff; border-color: var(--blue); }
+.z1-pager button:disabled { opacity: .4; cursor: not-allowed; }
+.z1-pager-info { font-size: 12px; color: var(--muted); }
+
+/* ── Saved toast ── */
+.z1-save-indicator {
+  position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+  background: var(--bg-card); border: 1px solid var(--green);
+  border-radius: 10px; padding: 10px 18px;
+  font-size: 13px; font-weight: 600; color: var(--green);
+  opacity: 0; transform: translateY(10px);
+  transition: all .3s; pointer-events: none;
+}
+.z1-save-indicator.show { opacity: 1; transform: translateY(0); }
+
+/* ── Empty state ── */
+.z1-welcome {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 50vh; gap: 18px; text-align: center;
+}
+.z1-welcome-icon { font-size: 52px; opacity: .45; }
+.z1-welcome-title { font-size: 22px; font-weight: 700; color: var(--text); }
+.z1-welcome-sub { font-size: 14px; color: var(--muted); max-width: 320px; line-height: 1.7; }
+
+/* ── Spinner ── */
+.z1-spinner { display: inline-block; width: 18px; height: 18px;
+  border: 2px solid var(--border-l); border-top-color: var(--blue);
+  border-radius: 50%; animation: z1spin .7s linear infinite; }
+@keyframes z1spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 640px) {
+  .z1-main { padding: 14px 12px 80px; }
+  .z1-table-wrap { max-height: calc(100vh - 260px); }
+}
