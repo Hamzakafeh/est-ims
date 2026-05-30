@@ -54,7 +54,68 @@ function _showForceLogout(status, message) {
 
 
 
-// â”€â”€ BETA POPUP (show only once per session) â”€â”€
+// ── FIREBASE RTDB AVATAR (index page) ──
+let _fbIdxDb = null;
+(function _initIndexAvatarFirebase() {
+  const cfgEl = document.getElementById('index-fb-cfg');
+  if (!cfgEl) return;
+  try {
+    const cfg = JSON.parse(cfgEl.textContent);
+    if (cfg.firebase_config?.projectId) {
+      let app;
+      try { app = firebase.app('est-idx-avatar'); }
+      catch(e) { app = firebase.initializeApp(cfg.firebase_config, 'est-idx-avatar'); }
+      _fbIdxDb = firebase.database(app);
+    }
+  } catch(e) {}
+})();
+
+function _fbIdxKey(username) {
+  return username.replace(/[.#$[\]/]/g, '_');
+}
+
+function _compressImgIdx(file, maxSize=400, quality=0.78) {
+  return new Promise(resolve => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const ratio = Math.min(maxSize / img.width, maxSize / img.height, 1);
+      const canvas = document.createElement('canvas');
+      canvas.width  = Math.round(img.width  * ratio);
+      canvas.height = Math.round(img.height * ratio);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(blob => resolve(blob), 'image/jpeg', quality);
+    };
+    img.src = url;
+  });
+}
+
+async function _getAvatarIdxRTDB(username) {
+  if (!_fbIdxDb) return null;
+  try {
+    const snap = await _fbIdxDb.ref('avatars/' + _fbIdxKey(username)).once('value');
+    return snap.val() || null;
+  } catch(e) { return null; }
+}
+
+async function _uploadAvatarIdxRTDB(username, file) {
+  if (!_fbIdxDb) throw new Error('Firebase not ready');
+  const compressed = await _compressImgIdx(file);
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const b64 = e.target.result;
+        await _fbIdxDb.ref('avatars/' + _fbIdxKey(username)).set(b64);
+        resolve(b64);
+      } catch(err) { reject(err); }
+    };
+    reader.readAsDataURL(compressed);
+  });
+}
+
+// ── BETA POPUP (show only once per session) ──
 function closeBetaOverlay() {
   const overlay = document.getElementById('betaOverlay');
   if (!overlay) return;
@@ -119,19 +180,17 @@ function closeProfileModal() {
 async function uploadProfileAvatar(input) {
   const file = input.files[0];
   if (!file) return;
-  const fd = new FormData();
-  fd.append('avatar', file);
+  input.value = '';
+  const cfgEl = document.getElementById('index-fb-cfg');
+  const username = cfgEl ? (JSON.parse(cfgEl.textContent).username || '') : '';
   try {
-    const res = await fetch('/api/profile/avatar', { method: 'POST', body: fd });
-    const data = await res.json();
-    if (!res.ok || !data.success) { toast(data.message || 'Failed to upload', false); return; }
+    const src = await _uploadAvatarIdxRTDB(username, file);
     const avatarEl = document.getElementById('profileAvatar');
-    avatarEl.innerHTML = `<img src="${escAttr(data.avatar_url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-    toast(' Photo updated!');
-  } catch (e) {
+    if (avatarEl) avatarEl.innerHTML = `<img src="${escAttr(src)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    toast('Photo updated!');
+  } catch(e) {
     toast('Upload failed', false);
   }
-  input.value = '';
 }
 
 async function loadProfile() {
@@ -154,8 +213,15 @@ function renderProfile(data) {
   const avatarEl = document.getElementById('profileAvatar');
   const isDevUser = String(data.username || '').toLowerCase() === 'hamza k. ghareb';
   const defaultAvatar = `/static/images/profile_${data.gender === 'female' ? 'female' : 'male'}.png`;
-  const avatarSrc = isDevUser ? '/static/images/me.jpg' : (data.avatar_url || defaultAvatar);
-  avatarEl.innerHTML = `<img src="${escAttr(avatarSrc)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.onerror=null;this.src='${escAttr(defaultAvatar)}'">`;
+  // Show default immediately
+  const initialSrc = isDevUser ? '/static/images/me.jpg' : defaultAvatar;
+  avatarEl.innerHTML = `<img src="${escAttr(initialSrc)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.onerror=null;this.src='${escAttr(defaultAvatar)}'">`;
+  // Then load from RTDB (overwrites default if found)
+  if (!isDevUser) {
+    _getAvatarIdxRTDB(data.username || '').then(src => {
+      if (src) avatarEl.innerHTML = `<img src="${escAttr(src)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    });
+  }
 
   document.getElementById('profileName').textContent = data.username || 'User';
   const profileVerified = document.getElementById('profileVerifiedBadge');

@@ -1,3 +1,62 @@
+// ── FIREBASE RTDB AVATAR ──
+let _fbAvatarDb = null;
+(function _initZonesFirebase() {
+  const cfgEl = document.getElementById('zones-fb-cfg');
+  if (!cfgEl) return;
+  try {
+    const cfg = JSON.parse(cfgEl.textContent);
+    if (cfg.firebase_config?.projectId) {
+      const app = firebase.initializeApp(cfg.firebase_config, 'est-zones');
+      _fbAvatarDb = firebase.database(app);
+    }
+  } catch(e) {}
+})();
+
+function _compressImage(file, maxSize=400, quality=0.78) {
+  return new Promise(resolve => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const ratio = Math.min(maxSize / img.width, maxSize / img.height, 1);
+      const canvas = document.createElement('canvas');
+      canvas.width  = Math.round(img.width  * ratio);
+      canvas.height = Math.round(img.height * ratio);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(blob => resolve(blob), 'image/jpeg', quality);
+    };
+    img.src = url;
+  });
+}
+
+function _fbKey(username) {
+  return username.replace(/[.#$[\]/]/g, '_');
+}
+
+async function _getAvatarRTDB(username) {
+  if (!_fbAvatarDb) return null;
+  try {
+    const snap = await _fbAvatarDb.ref('avatars/' + _fbKey(username)).once('value');
+    return snap.val() || null;
+  } catch(e) { return null; }
+}
+
+async function _uploadAvatarRTDB(username, file) {
+  if (!_fbAvatarDb) throw new Error('Firebase not ready');
+  const compressed = await _compressImage(file);
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const b64 = e.target.result;
+        await _fbAvatarDb.ref('avatars/' + _fbKey(username)).set(b64);
+        resolve(b64);
+      } catch(err) { reject(err); }
+    };
+    reader.readAsDataURL(compressed);
+  });
+}
+
 // ── THEME ──
 (function() {
   if (localStorage.getItem('est-theme') === 'light') document.documentElement.classList.add('light');
@@ -321,9 +380,9 @@ function _devAvatarSrc(username) {
   img.onload = () => { img.style.display = 'block'; if (icon) icon.style.display = 'none'; };
 
   if (!devSrc) {
-    const customImg = new Image();
-    customImg.onload = () => { img.src = customImg.src; };
-    customImg.src = '/api/avatar/' + encodeURIComponent(username);
+    _getAvatarRTDB(username).then(src => {
+      if (src) { img.src = src; }
+    });
   }
 })();
 
@@ -358,9 +417,7 @@ async function openZoneProfile() {
     };
     _showAv(devSrc || genderSrc);
     if (!devSrc) {
-      const customImg = new Image();
-      customImg.onload = () => _showAv(customImg.src);
-      customImg.src = '/api/avatar/' + encodeURIComponent(username);
+      _getAvatarRTDB(username).then(src => { if (src) _showAv(src); });
     }
   }
 
@@ -422,30 +479,27 @@ async function _uploadZoneAvatar(e, username) {
   const file = e.target.files[0];
   if (!file) return;
   e.target.value = '';
-  const fd = new FormData();
-  fd.append('avatar', file);
   try {
-    const res = await fetch('/api/profile/avatar', { method: 'POST', body: fd });
-    const data = await res.json();
-    if (data.success) {
-      const bust = '?v=' + Date.now();
-      const src  = '/api/avatar/' + encodeURIComponent(username) + bust;
-      // Refresh profile modal avatar
-      const avatarEl = document.getElementById('zpAvatar');
-      if (avatarEl) {
-        avatarEl.innerHTML = '';
-        const i = document.createElement('img');
-        i.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
-        i.src = src;
-        avatarEl.appendChild(i);
-        _attachCamOverlay(avatarEl, username);
-      }
-      // Refresh user corner avatar
-      const ucImg = document.getElementById('ucAvatarImg');
-      if (ucImg) ucImg.src = src;
-      _zpData = null; // clear cache so next open re-fetches
+    const src = await _uploadAvatarRTDB(username, file);
+    // Refresh profile modal avatar
+    const avatarEl = document.getElementById('zpAvatar');
+    if (avatarEl) {
+      avatarEl.innerHTML = '';
+      const i = document.createElement('img');
+      i.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
+      i.src = src;
+      avatarEl.appendChild(i);
+      _attachCamOverlay(avatarEl, username);
     }
-  } catch(e) {}
+    // Refresh user corner avatar
+    const ucImg = document.getElementById('ucAvatarImg');
+    if (ucImg) { ucImg.src = src; ucImg.style.display = 'block'; }
+    const ucIcon = document.getElementById('ucAvatarIcon');
+    if (ucIcon) ucIcon.style.display = 'none';
+    _zpData = null;
+  } catch(err) {
+    alert('فشل رفع الصورة. تأكد من الاتصال وحاول مجدداً.');
+  }
 }
 
 // ── ONLINE USERS MODAL ──
@@ -475,9 +529,7 @@ async function openOnlineUsers() {
       avImg.src = uDevSrc || uGenderSrc;
       avDiv.appendChild(avImg);
       if (!uDevSrc) {
-        const customImg = new Image();
-        customImg.onload = () => { avImg.src = customImg.src; };
-        customImg.src = '/api/avatar/' + encodeURIComponent(u.username || u);
+        _getAvatarRTDB(u.username || u).then(src => { if (src) avImg.src = src; });
       }
 
       const infoEl = document.createElement('div');

@@ -33,6 +33,7 @@ from core import (
     EDIT_PASSWORD,
     login_required,
     zone_required,
+    get_firebase_config,
 )
 
 zone_bp = Blueprint('zones', __name__)
@@ -59,7 +60,9 @@ def zones_page():
         return redirect(url_for('pages.index'))
     uname = session.get('username', '')
     show_management = uname.lower() in ('hamza k. ghareb', 'ink')
-    return render_template('zones.html', username=uname, zones=ZONES, show_management=show_management)
+    return render_template('zones.html', username=uname, zones=ZONES,
+                           show_management=show_management,
+                           firebase_config=get_firebase_config())
 
 
 @zone_bp.route('/zone3-qr')
