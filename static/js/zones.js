@@ -308,9 +308,12 @@ function applyLang(lang) {
   const isAr = lang === 'ar';
   document.documentElement.lang = lang;
   document.documentElement.dir  = isAr ? 'rtl' : 'ltr';
-  document.querySelector('.zones-title').textContent = t.title;
-  document.querySelector('.zones-sub').textContent   = t.sub;
-  document.querySelector('.zones-divider-text').textContent = t.mgmt;
+  const _zt = document.querySelector('.zones-title');
+  if (_zt) _zt.textContent = t.title;
+  const _zs = document.querySelector('.zones-sub');
+  if (_zs) _zs.textContent = t.sub;
+  const _zd = document.querySelector('.zones-divider-text');
+  if (_zd) _zd.textContent = t.mgmt;
   const dockItems = document.querySelectorAll('.dock-label');
   // Home, Light/Dark, Lang, Logout
   if (dockItems[0]) dockItems[0].textContent = t.welcome;
