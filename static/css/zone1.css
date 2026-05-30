@@ -90,7 +90,7 @@ html.light .btn-import:hover { background: var(--green); color: #fff; }
 .z1-table-wrap {
   border-radius: 14px; border: 1px solid var(--border-l);
   background: var(--bg-card);
-  overflow: auto; max-height: calc(100vh - 220px);
+  overflow: hidden;
 }
 .z1-meta {
   display: flex; align-items: center; justify-content: space-between;
@@ -98,25 +98,21 @@ html.light .btn-import:hover { background: var(--green); color: #fff; }
   font-size: 12px; color: var(--muted); flex-wrap: wrap; gap: 8px;
 }
 .z1-meta strong { color: var(--text); }
-.z1-table { border-collapse: collapse; width: max-content; min-width: 100%; font-size: 13px; }
-.z1-table thead th {
-  position: sticky; top: 0; z-index: 10;
-  background: var(--bg-card); border-bottom: 2px solid var(--border-l);
-  padding: 9px 12px; text-align: left; font-weight: 700;
-  font-family: 'JetBrains Mono', monospace; font-size: 11px;
-  color: var(--muted); white-space: nowrap; min-width: 100px;
+.z1-table {
+  border-collapse: collapse; width: max-content; min-width: 100%;
+  font-size: 12px; font-family: 'Inter', Calibri, sans-serif;
 }
-html.light .z1-table thead th { background: #f8fafc; }
-.z1-table tbody tr:nth-child(even) { background: rgba(255,255,255,.02); }
-html.light .z1-table tbody tr:nth-child(even) { background: #f8fafc; }
-.z1-table tbody tr:hover td { background: var(--bg-hover); }
-.z1-table tbody td {
-  padding: 7px 12px; border-bottom: 1px solid rgba(255,255,255,.04);
-  min-width: 100px; max-width: 260px;
+.z1-table tr:hover td:not(.z1-row-num) { filter: brightness(0.96); }
+html.light .z1-table tr:hover td:not(.z1-row-num) { filter: brightness(0.93); }
+.z1-table td {
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  min-width: 60px; max-width: 360px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  vertical-align: middle;
+  vertical-align: middle; color: var(--text);
+  background: var(--bg-card);
 }
-html.light .z1-table tbody td { border-bottom-color: var(--border); }
+html.light .z1-table td { border-color: #d0d7de; background: #fff; color: #1a2332; }
 .z1-table tbody td.editing {
   padding: 0 !important;
 }
