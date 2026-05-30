@@ -6,7 +6,7 @@
 <title>EST-iMs — System Tour</title>
 <link rel="icon" type="image/x-icon" href="/static/icons/low1.ico">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/css/light-mode.css">
+<!-- light-mode.css intentionally omitted — demo has its own theme handling -->
 <style>
 /* ── RESET & BASE ── */
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -37,6 +37,7 @@ html.light .blob{opacity:.08;}
 .demo-wrap{position:relative;z-index:10;width:100%;height:100vh;display:flex;flex-direction:column;}
 
 /* ── TOP BAR ── */
+
 .top-bar{
   position:fixed;top:0;left:0;right:0;z-index:100;
   display:flex;align-items:center;justify-content:space-between;
@@ -58,7 +59,11 @@ html.light .top-bar{background:rgba(255,255,255,.8);}
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width .5s cubic-bezier(.4,0,.2,1);}
 
 /* ── SLIDES TRACK ── */
-.slides-track{flex:1;position:relative;margin-top:48px;}
+.slides-track{
+  position:fixed;
+  top:48px; left:0; right:0; bottom:54px;
+  overflow:hidden;
+}
 .slide{
   position:absolute;inset:0;
   display:flex;align-items:center;justify-content:center;
@@ -377,7 +382,7 @@ html.light .kbd{background:rgba(0,0,0,.04);}
   <div class="top-bar-right">
     <span class="slide-counter" id="slideCounter">1 / 10</span>
     <button class="tb-btn" onclick="toggleTheme()">Theme</button>
-    <a class="tb-btn" href="/zones">← Exit Tour</a>
+    <a class="tb-btn" href="/">← Exit Tour</a>
   </div>
 </div>
 <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:10%"></div></div>
@@ -761,7 +766,7 @@ html.light .kbd{background:rgba(0,0,0,.04);}
         <div class="fin-title">YOU'RE READY!</div>
         <p class="fin-sub">أتقنت أساسيات نظام EST-iMs. ابدأ الآن بتسجيل الدخول واختيار الزون المخصص لك.</p>
         <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
-          <a class="fin-btn" href="/zones">ابدأ الآن →</a>
+          <a class="fin-btn" href="/">← العودة</a>
           <button class="fin-btn" style="background:rgba(255,255,255,.08);border:1px solid var(--border);" onclick="goTo(0)">إعادة التشغيل ↺</button>
         </div>
         <p style="font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:8px;">EST-iMs · All Rights Reserved</p>
@@ -848,7 +853,7 @@ function update() {
 document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
   if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
-  if (e.key === 'Escape') window.location.href = '/zones';
+  if (e.key === 'Escape') window.location.href = '/';
 });
 
 // Theme
