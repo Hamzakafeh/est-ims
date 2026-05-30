@@ -99,6 +99,16 @@ async function _getAvatarIdxRTDB(username) {
   } catch(e) { return null; }
 }
 
+function _loadIdxRtdbAvatars(containerEl) {
+  if (!containerEl) return;
+  containerEl.querySelectorAll('img[data-rtdb-user]').forEach(async img => {
+    const u = img.dataset.rtdbUser;
+    if (!u) return;
+    const src = await _getAvatarIdxRTDB(u);
+    if (src) img.src = src;
+  });
+}
+
 async function _uploadAvatarIdxRTDB(username, file) {
   if (!_fbIdxDb) throw new Error('Firebase not ready');
   const compressed = await _compressImgIdx(file);
@@ -2584,14 +2594,17 @@ async function loadAdminRequests() {
       return;
     }
     body.innerHTML = items.map((r) => {
-      const avatarSrc = `/api/avatar/${escAttr(r.username || '')}`;
+      const isDevU   = (r.username || '').toLowerCase() === 'hamza k. ghareb';
+      const defSrc   = `/static/images/profile_${(r.gender||'')  === 'female' ? 'female' : 'male'}.png`;
+      const avatarSrc = isDevU ? '/static/images/me.jpg' : defSrc;
+      const rtdbAttr  = isDevU ? '' : `data-rtdb-user="${escAttr(r.username||'')}"`;
       const initial = escHtml((r.full_name || r.username || '?').charAt(0).toUpperCase());
       return `
       <div style="border:1px solid var(--border);background:var(--bg-card);border-radius:12px;padding:14px 16px;margin-bottom:10px;">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
           <div style="display:flex;gap:14px;align-items:flex-start;min-width:240px;">
             <div style="width:52px;height:52px;border-radius:50%;background:var(--accent-blue);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden;border:2px solid rgba(59,130,246,0.3);">
-              <img src="${avatarSrc}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.textContent='${initial}'">
+              <img src="${avatarSrc}" ${rtdbAttr} style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.textContent='${initial}'">
             </div>
             <div>
               <div style="font-size:15px;font-weight:700;color:var(--text-main);">${escHtml(r.full_name || '—')}</div>
@@ -2608,6 +2621,7 @@ async function loadAdminRequests() {
         </div>
       </div>`;
     }).join('');
+    _loadIdxRtdbAvatars(body);
   } catch (e) {
     body.innerHTML = `<div class="users-empty">Failed to load requests<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
   }
@@ -2666,17 +2680,23 @@ async function loadAdminUsers() {
     body.innerHTML = `
       <div class="users-empty" style="padding:10px 16px;text-align:start;font-size:11px;">Database: ${escHtml(data.db_file || 'auth.sqlite3')} · ${adminUsersCache.length} users</div>
       <div class="admin-user-list">
-        ${adminUsersCache.map((u, i) => `
+        ${adminUsersCache.map((u, i) => {
+          const isDevU  = (u.username||'').toLowerCase() === 'hamza k. ghareb';
+          const defSrc  = `/static/images/profile_${u.gender==='female'?'female':'male'}.png`;
+          const avSrc   = isDevU ? '/static/images/me.jpg' : defSrc;
+          const rtdbAttr = isDevU ? '' : `data-rtdb-user="${escHtml(u.username)}"`;
+          return `
           <button class="admin-user-row" type="button" onclick="openAdminUserDetail(${Number(u.id)})">
-            <img class="admin-user-avatar-img" src="/api/avatar/${escHtml(u.username)}" onerror="this.onerror=null;this.src='/static/images/profile_${u.gender==='female'?'female':'male'}.png'" alt="">
+            <img class="admin-user-avatar-img" src="${avSrc}" ${rtdbAttr} onerror="this.onerror=null;this.src='${defSrc}'" alt="">
             <div class="admin-user-row-text">
               <strong>${i + 1}. ${escHtml(u.username || '—')}${u.full_name ? ' <span class="admin-user-fullname">· ' + escHtml(u.full_name) + '</span>' : ''}</strong>
               <span>${u.suspended_until ? 'Suspended until ' + escHtml(u.suspended_until.slice(0,16)) : (u.job_title ? escHtml(u.job_title) : 'View details')}</span>
             </div>
             ${u.suspended_until ? '<span class="admin-user-suspended-badge">Suspended</span>' : ''}
-          </button>
-        `).join('')}
+          </button>`;
+        }).join('')}
       </div>`;
+    _loadIdxRtdbAvatars(body);
   } catch (e) {
     body.innerHTML = `<div class="users-empty">Failed to load users<br><span style="font-size:11px;color:var(--text-dim);">${escHtml(String(e.message || e))}</span></div>`;
   }
@@ -2695,7 +2715,7 @@ function openAdminUserDetail(id) {
   ];
   body.innerHTML = `
     <div class="admin-detail-header">
-      <img class="admin-detail-avatar-img" src="/api/avatar/${escHtml(u.username)}" onerror="this.onerror=null;this.src='/static/images/profile_${u.gender==='female'?'female':'male'}.png'" alt="Avatar">
+      <img class="admin-detail-avatar-img" src="/static/images/profile_${u.gender==='female'?'female':'male'}.png" data-rtdb-user="${escHtml(u.username)}" alt="Avatar">
       <div class="admin-detail-header-info">
         <div class="admin-detail-header-name">${escHtml(u.full_name || u.username)}</div>
         <div class="admin-detail-header-meta">
@@ -2761,6 +2781,7 @@ function openAdminUserDetail(id) {
       <div class="admin-dz-label" style="color:#ef4444;">Danger Zone</div>
       <button class="btn btn-logout" style="padding:8px 14px;font-size:12px;" onclick="deleteAdminUser(${Number(u.id)}, '${escAttr(u.username || '')}')">Delete Account</button>
     </div>`;
+  _loadIdxRtdbAvatars(body);
   document.getElementById('adminUserDetailModal')?.classList.add('open');
   loadAdminUserZones(Number(u.id));
 }

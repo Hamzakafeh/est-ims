@@ -16,6 +16,40 @@ const CURRENT_USER   = window.QC_CONFIG.username;
 const VERIFIED_USERS = new Set((window.QC_CONFIG.verified_users || []).map(u => u.toLowerCase()));
 
 
+// ── RTDB Avatar helpers (QC) ──────────────────────────
+let _qcAvatarDb = null;
+(function _initQcAvatarDb() {
+  const cfg = window.QC_FIREBASE_CONFIG;
+  if (!cfg?.projectId) return;
+  try {
+    let app;
+    try { app = firebase.app('est-qc-av'); }
+    catch(e) { app = firebase.initializeApp(cfg, 'est-qc-av'); }
+    _qcAvatarDb = firebase.database(app);
+  } catch(e) {}
+})();
+
+function _qcFbKey(u) { return String(u).replace(/[.#$[\]/]/g, '_'); }
+
+async function _qcGetAvatar(username) {
+  if (!_qcAvatarDb) return null;
+  try {
+    const snap = await _qcAvatarDb.ref('avatars/' + _qcFbKey(username)).once('value');
+    return snap.val() || null;
+  } catch(e) { return null; }
+}
+
+// After inserting HTML with data-rtdb-user attributes, call this to load RTDB avatars
+function _loadQcRtdbAvatars(containerEl) {
+  if (!containerEl) return;
+  containerEl.querySelectorAll('img[data-rtdb-user]').forEach(async img => {
+    const u = img.dataset.rtdbUser;
+    if (!u) return;
+    const src = await _qcGetAvatar(u);
+    if (src) { img.src = src; img.style.display = 'block'; }
+  });
+}
+
 // ══════════════════════════════════════════════════════
 // THEME
 // ══════════════════════════════════════════════════════
@@ -326,18 +360,22 @@ function renderPresence(users){
     const roleClass  = u.role === 'qc' ? 'qc' : 'lab';
     const roleLabel  = u.role === 'qc' ? 'QC' : 'Label';
     const initial    = esc(u.username.charAt(0).toUpperCase());
-    const avatarSrc  = u.username.toLowerCase() === 'hamza k. ghareb' ? '/static/images/me.jpg' : '/api/avatar/' + esc(u.username);
+    const isDevUser    = u.username.toLowerCase() === 'hamza k. ghareb';
     const genderDefault = '/static/images/profile_' + (u.gender === 'female' ? 'female' : 'male') + '.png';
+    const avatarSrc    = isDevUser ? '/static/images/me.jpg' : genderDefault;
+    const rtdbAttr     = isDevUser ? '' : `data-rtdb-user="${esc(u.username)}"`;
     const verifiedSvg = isVerified
       ? `<span class="verified-badge" title="Verified"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>`
       : '';
     return `<div class="presence-item${isMe?' me':''}">
-      <div class="presence-avatar">${initial}<img class="presence-avatar-img" src="${avatarSrc}" onload="this.style.display='block'" onerror="this.onerror=null;this.src='${genderDefault}';this.style.display='block'"></div>
+      <div class="presence-avatar">${initial}<img class="presence-avatar-img" src="${avatarSrc}" ${rtdbAttr} onload="this.style.display='block'"></div>
       <span class="presence-dot ${roleClass}"></span>
       <span class="presence-name">${esc(u.username)}${verifiedSvg}${isMe ? `<span style="font-size:9px;color:var(--dim);margin-left:2px">${t.me}</span>` : ''}</span>
       <span class="presence-role">${roleLabel}</span>
     </div>`;
   }).join('');
+  // Load RTDB avatars asynchronously
+  _loadQcRtdbAvatars(panel);
 }
 
 // Sidebar collapse
@@ -749,11 +787,11 @@ function loadChat(){
 }
 
 function _chatAvatarHtml(username) {
-  const initial = esc(username.charAt(0).toUpperCase());
-  const src = username.toLowerCase() === 'hamza k. ghareb'
-    ? '/static/images/me.jpg'
-    : '/api/avatar/' + esc(username);
-  return `<div class="chat-msg-avatar">${initial}<img src="${src}" onload="this.style.display='block'" onerror="this.onerror=null;this.src='/static/images/profile_male.png';this.style.display='block'"></div>`;
+  const initial   = esc(username.charAt(0).toUpperCase());
+  const isDevUser = username.toLowerCase() === 'hamza k. ghareb';
+  const src       = isDevUser ? '/static/images/me.jpg' : '/static/images/profile_male.png';
+  const rtdbAttr  = isDevUser ? '' : `data-rtdb-user="${esc(username)}"`;
+  return `<div class="chat-msg-avatar">${initial}<img src="${src}" ${rtdbAttr} onload="this.style.display='block'"></div>`;
 }
 
 function _chatMsgHtml(m) {
@@ -784,6 +822,7 @@ function renderChatMessages(msgs){
   if(!box) return;
   if(!msgs.length){ box.innerHTML = '<div class="chat-loading">No messages yet. Say hi! 👋</div>'; return; }
   box.innerHTML = msgs.map(_chatMsgHtml).join('');
+  _loadQcRtdbAvatars(box);
   scrollChatBottom();
 }
 
