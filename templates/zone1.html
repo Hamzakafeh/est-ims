@@ -34,24 +34,35 @@
   </div>
 </div>
 
-<!-- USER CORNER -->
-<div style="position:fixed;top:10px;right:14px;z-index:300;display:flex;align-items:center;gap:7px;background:rgba(13,17,23,.72);backdrop-filter:blur(14px);border:1px solid rgba(59,130,246,.18);border-radius:30px;padding:5px 12px;">
-  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--cyan,#06b6d4)" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-  <span style="font-size:11px;font-weight:700;color:var(--text,#e2e8f0)">{{ username }}</span>
-  <span style="font-size:10px;color:var(--cyan,#06b6d4);font-family:'JetBrains Mono',monospace">Zone 1</span>
-</div>
-
-<!-- TOPBAR -->
+<!-- TOP BAR -->
 <div class="z1-topbar">
-  <div class="z1-topbar-left">
-    <div class="z1-brand">
-      <img src="/static/icons/low.ico" style="width:22px;height:22px;border-radius:6px;" alt="">
-      Zone 1 — Import
+  <div class="z1-tb-left">
+    <a href="/logout_zone" class="z1-back-btn" title="Back to Zones">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <div class="z1-brand-wrap">
+      <img src="/static/icons/low.ico" class="z1-brand-ico" alt="">
+      <div>
+        <div class="z1-brand-name">EST-iMs</div>
+        <div class="z1-brand-sub">Zone 1 · Import Viewer</div>
+      </div>
     </div>
-    <span class="z1-badge">EXCEL VIEWER</span>
   </div>
-  <div class="z1-topbar-right">
-    <span id="z1SaveIndicator" style="font-size:12px;color:var(--green);opacity:0;transition:.3s;font-weight:600;">✓ Saved</span>
+
+  <div class="z1-tb-actions" id="z1TbActions">
+    <!-- populated by JS when a file is active -->
+  </div>
+
+  <div class="z1-tb-right">
+    <span class="z1-user-badge">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      {{ username }}
+    </span>
+    <span class="z1-zone-badge">Zone 1</span>
+    <button class="z1-icon-btn" onclick="toggleTheme()" title="Toggle theme">
+      <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
   </div>
 </div>
 
@@ -63,9 +74,13 @@
 
   <!-- File tabs bar -->
   <div class="z1-file-bar" id="z1FileTabs">
-    <button class="btn-import" onclick="document.getElementById('z1FileInput').click()">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      Import Excel
+    <button class="btn-import" id="z1ImportBtn" onclick="document.getElementById('z1FileInput').click()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Import
+    </button>
+    <button class="btn-new-file" onclick="openNewFileModal()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New File
     </button>
   </div>
 
@@ -77,14 +92,44 @@
     <div class="z1-welcome">
       <div class="z1-welcome-icon">📊</div>
       <div class="z1-welcome-title">Zone 1 — Excel Viewer</div>
-      <div class="z1-welcome-sub">Click <strong>Import Excel</strong> to upload a file. Your files are saved and will be here when you return.</div>
+      <div class="z1-welcome-sub">Click <strong>Import</strong> to upload an Excel file, or <strong>New File</strong> to create one from scratch.</div>
     </div>
   </div>
 
 </div>
 
-<!-- Save indicator -->
+<!-- SAVE TOAST -->
 <div class="z1-save-indicator" id="z1SaveToast"></div>
+
+<!-- NEW FILE MODAL -->
+<div class="z1-modal-backdrop" id="z1NewFileModal" onclick="if(event.target===this)closeNewFileModal()">
+  <div class="z1-modal-box">
+    <button class="z1-modal-close" onclick="closeNewFileModal()">✕</button>
+    <div class="z1-modal-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      Create New Excel File
+    </div>
+    <div class="z1-modal-field">
+      <label>File Name</label>
+      <input id="z1NfName" type="text" placeholder="e.g. Inventory 2026.xlsx" class="z1-modal-input">
+    </div>
+    <div class="z1-modal-field">
+      <label>Sheet Name</label>
+      <input id="z1NfSheet" type="text" placeholder="Sheet1" class="z1-modal-input">
+    </div>
+    <div class="z1-modal-field">
+      <label>Column Headers <span style="opacity:.6;font-size:11px;">(comma-separated, optional)</span></label>
+      <input id="z1NfHeaders" type="text" placeholder="e.g. Date, Item, Qty IN, Qty OUT, Balance" class="z1-modal-input">
+    </div>
+    <div class="z1-modal-actions">
+      <button class="z1-modal-btn-cancel" onclick="closeNewFileModal()">Cancel</button>
+      <button class="z1-modal-btn-ok" onclick="z1CreateFile()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Create
+      </button>
+    </div>
+  </div>
+</div>
 
 <script src="/static/js/zone1.js"></script>
 </body>

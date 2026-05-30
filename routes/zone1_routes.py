@@ -4,7 +4,7 @@ import re
 import openpyxl
 from openpyxl.utils import get_column_letter
 from datetime import datetime, date
-from flask import Blueprint, render_template, jsonify, request, session, redirect, url_for
+from flask import Blueprint, render_template, jsonify, request, session, redirect, url_for, send_from_directory
 
 zone1_bp = Blueprint('zone1', __name__)
 
@@ -323,5 +323,56 @@ def api_z1_delete(filename):
     try:
         os.remove(path)
         return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+# ── Download file ─────────────────────────────────────────────────
+
+@zone1_bp.route('/api/zone1/download/<path:filename>')
+def api_z1_download(filename):
+    if not _z1_allowed():
+        return jsonify({'error': 'Unauthorized'}), 403
+    safe = _safe(filename)
+    if not os.path.isfile(os.path.join(_Z1_DIR, safe)):
+        return jsonify({'error': 'Not found'}), 404
+    return send_from_directory(_Z1_DIR, safe, as_attachment=True)
+
+
+# ── Create new Excel file ─────────────────────────────────────────
+
+@zone1_bp.route('/api/zone1/create', methods=['POST'])
+def api_z1_create():
+    if not _z1_allowed():
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 403
+    body       = request.get_json(silent=True) or {}
+    name       = body.get('name', 'New File').strip()
+    sheet_name = body.get('sheet', 'Sheet1').strip() or 'Sheet1'
+    headers    = body.get('headers', [])   # list of column header strings
+
+    if not name:
+        return jsonify({'success': False, 'message': 'File name required'}), 400
+    if not name.lower().endswith(('.xlsx', '.xlsm')):
+        name += '.xlsx'
+    safe = _safe(name)
+    os.makedirs(_Z1_DIR, exist_ok=True)
+    path = os.path.join(_Z1_DIR, safe)
+
+    try:
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = sheet_name
+        # Write header row if provided
+        if headers:
+            for c_idx, h in enumerate(headers, 1):
+                cell = ws.cell(row=1, column=c_idx, value=str(h))
+                cell.font   = openpyxl.styles.Font(bold=True)
+                cell.fill   = openpyxl.styles.PatternFill(
+                    fill_type='solid', fgColor='0F2137')
+                cell.font   = openpyxl.styles.Font(bold=True, color='FFFFFF')
+                cell.alignment = openpyxl.styles.Alignment(horizontal='center')
+        wb.save(path)
+        wb.close()
+        return jsonify({'success': True, 'name': safe, 'sheets': [sheet_name]})
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
