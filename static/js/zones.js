@@ -508,6 +508,98 @@ async function _uploadZoneAvatar(e, username) {
   }
 }
 
+// ── DEV OWNER PROFILE ──
+function _buildDevOwnerRow() {
+  const row = document.createElement('div');
+  row.className = 'zu-user';
+  row.style.cssText = 'cursor:pointer;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15);border-radius:8px;padding:6px 10px;';
+  row.title = 'View profile';
+  row.onclick = openDevOwnerProfile;
+
+  const avDiv = document.createElement('div');
+  avDiv.className = 'zu-user-av';
+  const avImg = document.createElement('img');
+  avImg.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
+  avImg.src = '/static/images/me.jpg';
+  avImg.onerror = () => { avImg.src = '/static/images/profile_male.png'; };
+  avDiv.appendChild(avImg);
+
+  const infoEl = document.createElement('div');
+  infoEl.style.cssText = 'flex:1;min-width:0;';
+
+  const nameEl = document.createElement('div');
+  nameEl.className = 'zu-user-name';
+  nameEl.style.cssText = 'display:flex;align-items:center;gap:4px;';
+  nameEl.innerHTML = 'Hamza K. Ghareb'
+    + '<span class="zu-verified" title="Verified" style="display:inline-flex;align-items:center;justify-content:center;width:12px;height:12px;border-radius:50%;background:var(--blue,#3b82f6);flex-shrink:0;">'
+    + '<svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>'
+    + '<span style="font-size:9px;font-weight:700;color:var(--cyan,#06b6d4);border:1px solid rgba(6,182,212,.4);border-radius:4px;padding:1px 5px;margin-left:2px;">OWNER</span>';
+
+  const jobEl = document.createElement('div');
+  jobEl.className = 'zu-user-job';
+  jobEl.textContent = 'Warehouse Keeper · IT & Development';
+
+  infoEl.appendChild(nameEl);
+  infoEl.appendChild(jobEl);
+
+  const dot = document.createElement('span');
+  dot.className = 'zu-user-dot';
+  dot.style.cssText = 'background:#10b981;box-shadow:0 0 6px #10b981;';
+  dot.title = 'Online';
+
+  row.appendChild(avDiv);
+  row.appendChild(infoEl);
+  row.appendChild(dot);
+  return row;
+}
+
+function openDevOwnerProfile() {
+  // Remove existing dev modal if any
+  const existing = document.getElementById('devOwnerModal');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'devOwnerModal';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9100;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+
+  overlay.innerHTML = `
+    <div style="background:var(--bg-card,#151c2d);border:1px solid rgba(59,130,246,.25);border-radius:20px;padding:28px 24px;max-width:320px;width:100%;position:relative;box-shadow:0 24px 64px rgba(0,0,0,.5);text-align:center;">
+      <div style="position:absolute;top:0;left:15%;right:15%;height:2px;background:linear-gradient(90deg,transparent,#3b82f6,#06b6d4,transparent);border-radius:2px;"></div>
+      <button onclick="document.getElementById('devOwnerModal').remove()" style="position:absolute;top:12px;right:12px;width:26px;height:26px;border-radius:7px;border:1px solid rgba(255,255,255,.12);background:transparent;color:var(--muted,#8b9db8);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;">✕</button>
+      <div style="width:72px;height:72px;border-radius:50%;overflow:hidden;border:2px solid rgba(59,130,246,.4);margin:0 auto 14px;">
+        <img src="/static/images/me.jpg" onerror="this.src='/static/images/profile_male.png'" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+      <div style="font-size:16px;font-weight:800;color:var(--text,#e2e8f0);margin-bottom:4px;display:flex;align-items:center;justify-content:center;gap:6px;">
+        Hamza K. Ghareb
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:#3b82f6;" title="Verified">
+          <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+      </div>
+      <div style="font-size:12px;color:var(--muted,#8b9db8);margin-bottom:12px;">Warehouse Keeper · IT &amp; Development</div>
+      <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.35);border-radius:50px;padding:4px 14px;font-size:11px;font-weight:700;color:#06b6d4;letter-spacing:1px;margin-bottom:16px;">
+        <span style="width:6px;height:6px;border-radius:50%;background:#06b6d4;box-shadow:0 0 6px #06b6d4;"></span>
+        SYSTEM OWNER
+      </div>
+      <div style="text-align:left;display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:8px;">
+          <span style="font-size:10px;color:var(--muted,#8b9db8);font-weight:700;min-width:80px;">Education</span>
+          <span style="font-size:12px;color:var(--text,#e2e8f0);">MBA — Business Administration</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:8px;">
+          <span style="font-size:10px;color:var(--muted,#8b9db8);font-weight:700;min-width:80px;">Role</span>
+          <span style="font-size:12px;color:var(--text,#e2e8f0);">Warehouse Keeper &amp; Developer</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:8px;">
+          <span style="font-size:10px;color:var(--muted,#8b9db8);font-weight:700;min-width:80px;">Built</span>
+          <span style="font-size:12px;color:var(--text,#e2e8f0);">EST-iMs — Inventory System</span>
+        </div>
+      </div>
+    </div>`;
+
+  document.body.appendChild(overlay);
+}
+
 // ── ONLINE USERS MODAL ──
 async function openOnlineUsers() {
   document.getElementById('zuOverlay').classList.add('open');
@@ -522,6 +614,13 @@ async function openOnlineUsers() {
       return;
     }
     list.innerHTML = '';
+    // ── Pinned Dev (Owner) — always first ──
+    const devRow = _buildDevOwnerRow();
+    list.appendChild(devRow);
+    // Separator
+    const sep = document.createElement('div');
+    sep.style.cssText = 'height:1px;background:rgba(255,255,255,.06);margin:6px 0 8px;';
+    list.appendChild(sep);
     users.forEach(u => {
       const row = document.createElement('div');
       row.className = 'zu-user';

@@ -62,8 +62,8 @@
             </div>
           </div>
         </div>
-        <div class="field full"><label id="fullNameLabel">Full name</label><input id="fullName" dir="auto" autocomplete="name"><span class="field-hint" id="hintFullName"></span></div>
-        <div class="field"><label id="usernameLabel">Username</label><input id="username" dir="ltr" autocomplete="username" placeholder="username"><span class="field-hint" id="hintUsername"></span></div>
+        <div class="field full"><label id="fullNameLabel">Full name</label><input id="fullName" dir="auto" autocomplete="name" oninput="onFullNameInput(this.value)"><span class="field-hint" id="hintFullName"></span></div>
+        <div class="field"><label id="usernameLabel">Username <span id="usernameAutoTag" style="font-size:10px;color:var(--accent-cyan,#06b6d4);font-weight:600;display:none;">✦ auto-generated</span></label><input id="username" dir="ltr" autocomplete="username" placeholder="username" oninput="onUsernameManualEdit()"><span class="field-hint" id="hintUsername"></span></div>
         <div class="field"><label id="emailLabel">Email</label><input id="email" dir="ltr" type="email" autocomplete="email" placeholder="name@example.com"><span class="field-hint" id="hintEmail"></span></div>
         <div class="field"><label id="phoneLabel">Phone</label><input id="phone" dir="ltr" type="tel" inputmode="numeric" autocomplete="tel" placeholder="+962..." oninput="this.value=this.value.replace(/[^0-9+\-\s()]/g,'')"><span class="field-hint" id="hintPhone"></span></div>
         <div class="field"><label id="jobTitleLabel">Job title</label><select id="jobTitle"><option value="" id="jobTitlePlaceholder">Select</option></select><span class="field-hint" id="hintJobTitle"></span></div>

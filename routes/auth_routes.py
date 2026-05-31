@@ -125,16 +125,33 @@ def api_register():
 
     reserved_usernames = {
         'admin', 'administrator', 'dev', 'developer', 'root', 'superadmin',
-        # Protected owner names (case-insensitive check below)
+        # Protected owner — English
         'hamza kafeh ahmad ghareb', 'hamza kafeh ghareb', 'hamza ghareb',
         'hamza k. ghareb', 'hamza k ghareb', 'hamza kafeh', 'ghareb',
+        'hamzakghareb', 'hamzaghareb', 'hamza_ghareb', 'hamza-ghareb',
+        # Protected owner — Arabic
         'حمزة غريب', 'حمزة كافح احمد غريب', 'حمزة كافح غريب',
+        'حمزة كافح', 'حمزة ك. غريب',
     }
+    # Blocked full names (prevents registering with owner identity)
+    blocked_full_names = {
+        'hamza kafeh ahmad ghareb', 'hamza kafeh ghareb', 'hamza ghareb',
+        'hamza k. ghareb', 'hamza k ghareb', 'hamza kafeh',
+        'حمزة غريب', 'حمزة كافح احمد غريب', 'حمزة كافح غريب',
+        'حمزة كافح', 'حمزة ك. غريب',
+    }
+    _full_name_lower = full_name.strip().lower()
+    if _full_name_lower in {n.lower() for n in blocked_full_names}:
+        return jsonify({'success': False, 'message': 'هذا الاسم محجوز ولا يمكن التسجيل به'}), 400
+
     _uname_lower = username.strip().lower()
     if _uname_lower in {r.lower() for r in reserved_usernames}:
         return jsonify({'success': False, 'message': 'اسم المستخدم محمي ولا يمكن التسجيل به'}), 400
     if len(username) < 5:
         return jsonify({'success': False, 'message': 'اسم المستخدم يجب أن يكون 5 أحرف على الأقل'}), 400
+    # Username must be English (ASCII letters, digits, hyphens, underscores, dots only)
+    if not re.match(r'^[A-Za-z0-9\-_.]+$', username):
+        return jsonify({'success': False, 'message': 'اسم المستخدم يجب أن يكون بالأحرف الإنجليزية فقط'}), 400
     if not re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', email):
         return jsonify({'success': False, 'message': 'يرجى إدخال بريد إلكتروني صحيح'}), 400
     if not (re.search(r'[A-Za-z]', password) and re.search(r'\d', password)):
