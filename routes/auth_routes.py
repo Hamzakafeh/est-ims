@@ -135,17 +135,21 @@ def api_register():
     }
     # Blocked full names (prevents registering with owner identity)
     blocked_full_names = {
+        # English
         'hamza kafeh ahmad ghareb', 'hamza kafeh ghareb', 'hamza ghareb',
         'hamza k. ghareb', 'hamza k ghareb', 'hamza kafeh',
+        'hamza k.', 'kafeh', 'kafeh ahmad ghareb', 'kafeh ghareb',
+        # Arabic
         'حمزة غريب', 'حمزة كافح احمد غريب', 'حمزة كافح غريب',
-        'حمزة كافح', 'حمزة ك. غريب',
+        'حمزة كافح', 'حمزة ك. غريب', 'حمزة ك.',
+        'كافح', 'كافح غريب', 'كافح احمد غريب',
     }
     _full_name_lower = full_name.strip().lower()
     if _full_name_lower in {n.lower() for n in blocked_full_names}:
         return jsonify({'success': False, 'message': 'هذا الاسم محجوز ولا يمكن التسجيل به'}), 400
     # Blocked phone numbers
     _phone_digits = re.sub(r'\D', '', phone.strip())
-    if _phone_digits in {'0785211197', '00962785211197', '962785211197'}:
+    if _phone_digits in {'0785211197', '00962785211197', '962785211197', '785211197'}:
         return jsonify({'success': False, 'message': 'رقم الهاتف هذا محظور'}), 400
 
     _uname_lower = username.strip().lower()

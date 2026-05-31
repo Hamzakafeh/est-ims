@@ -50,12 +50,16 @@ function _generateUsername(fullName) {
 }
 
 const _BLOCKED_FULL_NAMES = [
+  // English
   'hamza kafeh ahmad ghareb','hamza kafeh ghareb','hamza ghareb',
   'hamza k. ghareb','hamza k ghareb','hamza kafeh',
+  'hamza k.','kafeh','kafeh ahmad ghareb','kafeh ghareb',
+  // Arabic
   'حمزة غريب','حمزة كافح احمد غريب','حمزة كافح غريب',
-  'حمزة كافح','حمزة ك. غريب',
+  'حمزة كافح','حمزة ك. غريب','حمزة ك.',
+  'كافح','كافح غريب','كافح احمد غريب',
 ];
-const _BLOCKED_PHONES = ['0785211197','00962785211197','+962785211197'];
+const _BLOCKED_PHONES = ['0785211197','00962785211197','+962785211197','962785211197'];
 
 function _isBlockedName(val) {
   return _BLOCKED_FULL_NAMES.some(n => n === val.trim().toLowerCase());
