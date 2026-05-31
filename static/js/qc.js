@@ -22,11 +22,10 @@ let _qcAvatarDb = null;
   const cfg = window.QC_FIREBASE_CONFIG;
   if (!cfg?.projectId) return;
   try {
-    let app;
-    try { app = firebase.app('est-qc-av'); }
-    catch(e) { app = firebase.initializeApp(cfg, 'est-qc-av'); }
+    const existing = (firebase.apps || []).find(a => a.name === 'est-qc-av');
+    const app = existing || firebase.initializeApp(cfg, 'est-qc-av');
     _qcAvatarDb = firebase.database(app);
-  } catch(e) {}
+  } catch(e) { console.warn('[QC Avatar] Firebase init failed', e.message); }
 })();
 
 function _qcFbKey(u) { return String(u).replace(/[.#$[\]/]/g, '_'); }

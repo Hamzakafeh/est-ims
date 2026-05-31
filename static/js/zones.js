@@ -6,10 +6,11 @@ let _fbAvatarDb = null;
   try {
     const cfg = JSON.parse(cfgEl.textContent);
     if (cfg.firebase_config?.projectId) {
-      const app = firebase.initializeApp(cfg.firebase_config, 'est-zones');
+      const existing = (firebase.apps || []).find(a => a.name === 'est-zones');
+      const app = existing || firebase.initializeApp(cfg.firebase_config, 'est-zones');
       _fbAvatarDb = firebase.database(app);
     }
-  } catch(e) {}
+  } catch(e) { console.warn('[Zones Avatar] Firebase init failed', e.message); }
 })();
 
 function _compressImage(file, maxSize=400, quality=0.78) {

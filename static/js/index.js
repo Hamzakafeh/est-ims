@@ -62,9 +62,8 @@ let _fbIdxDb = null;
   try {
     const cfg = JSON.parse(cfgEl.textContent);
     if (cfg.firebase_config?.projectId) {
-      let app;
-      try { app = firebase.app('est-idx-avatar'); }
-      catch(e) { app = firebase.initializeApp(cfg.firebase_config, 'est-idx-avatar'); }
+      const existing = (firebase.apps || []).find(a => a.name === 'est-idx-avatar');
+      const app = existing || firebase.initializeApp(cfg.firebase_config, 'est-idx-avatar');
       _fbIdxDb = firebase.database(app);
     }
   } catch(e) {}
