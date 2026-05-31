@@ -143,6 +143,10 @@ def api_register():
     _full_name_lower = full_name.strip().lower()
     if _full_name_lower in {n.lower() for n in blocked_full_names}:
         return jsonify({'success': False, 'message': 'هذا الاسم محجوز ولا يمكن التسجيل به'}), 400
+    # Blocked phone numbers
+    _phone_digits = re.sub(r'\D', '', phone.strip())
+    if _phone_digits in {'0785211197', '00962785211197', '962785211197'}:
+        return jsonify({'success': False, 'message': 'رقم الهاتف هذا محظور'}), 400
 
     _uname_lower = username.strip().lower()
     if _uname_lower in {r.lower() for r in reserved_usernames}:

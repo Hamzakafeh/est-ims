@@ -540,7 +540,7 @@ function _buildDevOwnerRow() {
   jobEl.textContent = 'Warehouse Keeper · IT & Development';
 
   infoEl.appendChild(nameEl);
-  infoEl.appendChild(jobEl);
+  // job title intentionally omitted — show name only
 
   const dot = document.createElement('span');
   dot.className = 'zu-user-dot';
@@ -554,45 +554,71 @@ function _buildDevOwnerRow() {
 }
 
 function openDevOwnerProfile() {
-  // Remove existing dev modal if any
   const existing = document.getElementById('devOwnerModal');
   if (existing) existing.remove();
 
+  const isLight = document.documentElement.classList.contains('light');
+  const card = {
+    bg:      isLight ? '#ffffff'              : '#0f1729',
+    border:  isLight ? 'rgba(37,99,235,.2)'   : 'rgba(59,130,246,.25)',
+    text:    isLight ? '#0f172a'              : '#e2e8f0',
+    muted:   isLight ? '#475569'              : '#8b9db8',
+    rowBg:   isLight ? 'rgba(241,245,249,.8)' : 'rgba(255,255,255,.04)',
+    rowBdr:  isLight ? '#e2e8f0'              : 'rgba(255,255,255,.08)',
+    closeBdr:isLight ? '#cbd5e1'              : 'rgba(255,255,255,.15)',
+    closeClr:isLight ? '#64748b'              : '#8b9db8',
+    shadow:  isLight ? '0 24px 64px rgba(0,0,0,.12)' : '0 24px 64px rgba(0,0,0,.6)',
+  };
+
   const overlay = document.createElement('div');
   overlay.id = 'devOwnerModal';
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:9100;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9100;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;';
   overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
 
   overlay.innerHTML = `
-    <div style="background:var(--bg-card,#151c2d);border:1px solid rgba(59,130,246,.25);border-radius:20px;padding:28px 24px;max-width:320px;width:100%;position:relative;box-shadow:0 24px 64px rgba(0,0,0,.5);text-align:center;">
+    <div style="background:${card.bg};border:1px solid ${card.border};border-radius:22px;padding:30px 24px 24px;max-width:320px;width:100%;position:relative;box-shadow:${card.shadow};text-align:center;">
       <div style="position:absolute;top:0;left:15%;right:15%;height:2px;background:linear-gradient(90deg,transparent,#3b82f6,#06b6d4,transparent);border-radius:2px;"></div>
-      <button onclick="document.getElementById('devOwnerModal').remove()" style="position:absolute;top:12px;right:12px;width:26px;height:26px;border-radius:7px;border:1px solid rgba(255,255,255,.12);background:transparent;color:var(--muted,#8b9db8);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;">✕</button>
-      <div style="width:72px;height:72px;border-radius:50%;overflow:hidden;border:2px solid rgba(59,130,246,.4);margin:0 auto 14px;">
+      <button onclick="document.getElementById('devOwnerModal').remove()"
+        style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;border:1px solid ${card.closeBdr};background:transparent;color:${card.closeClr};cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:.15s;"
+        onmouseover="this.style.color='#ef4444';this.style.borderColor='rgba(239,68,68,.4)'"
+        onmouseout="this.style.color='${card.closeClr}';this.style.borderColor='${card.closeBdr}'">✕</button>
+
+      <!-- Avatar -->
+      <div style="width:80px;height:80px;border-radius:50%;overflow:hidden;border:3px solid rgba(59,130,246,.35);margin:0 auto 16px;box-shadow:0 0 0 4px ${isLight?'rgba(59,130,246,.08)':'rgba(59,130,246,.12)'};">
         <img src="/static/images/me.jpg" onerror="this.src='/static/images/profile_male.png'" style="width:100%;height:100%;object-fit:cover;">
       </div>
-      <div style="font-size:16px;font-weight:800;color:var(--text,#e2e8f0);margin-bottom:4px;display:flex;align-items:center;justify-content:center;gap:6px;">
+
+      <!-- Name + verified + crown -->
+      <div style="font-size:17px;font-weight:800;color:${card.text};margin-bottom:4px;display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;">
         Hamza K. Ghareb
-        <span style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:#3b82f6;" title="Verified">
-          <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span title="Verified" style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#3b82f6;flex-shrink:0;">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        <!-- Crown tag — glass effect -->
+        <span title="System Owner" style="display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:8px;font-size:10px;font-weight:800;letter-spacing:.6px;
+          background:${isLight?'rgba(255,197,0,.18)':'rgba(255,197,0,.14)'};
+          border:1px solid ${isLight?'rgba(255,197,0,.5)':'rgba(255,197,0,.3)'};
+          color:${isLight?'#92400e':'#fcd34d'};
+          backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);">
+          👑 OWNER
         </span>
       </div>
-      <div style="font-size:12px;color:var(--muted,#8b9db8);margin-bottom:12px;">Warehouse Keeper · IT &amp; Development</div>
-      <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.35);border-radius:50px;padding:4px 14px;font-size:11px;font-weight:700;color:#06b6d4;letter-spacing:1px;margin-bottom:16px;">
-        <span style="width:6px;height:6px;border-radius:50%;background:#06b6d4;box-shadow:0 0 6px #06b6d4;"></span>
-        SYSTEM OWNER
-      </div>
-      <div style="text-align:left;display:flex;flex-direction:column;gap:8px;">
-        <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:8px;">
-          <span style="font-size:10px;color:var(--muted,#8b9db8);font-weight:700;min-width:80px;">Education</span>
-          <span style="font-size:12px;color:var(--text,#e2e8f0);">MBA — Business Administration</span>
+
+      <div style="font-size:12px;color:${card.muted};margin-bottom:16px;">Warehouse Keeper · IT &amp; Development</div>
+
+      <!-- Fields -->
+      <div style="text-align:left;display:flex;flex-direction:column;gap:7px;">
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:${card.rowBg};border:1px solid ${card.rowBdr};border-radius:10px;">
+          <span style="font-size:10px;color:${card.muted};font-weight:700;min-width:76px;text-transform:uppercase;letter-spacing:.5px;">Education</span>
+          <span style="font-size:12px;color:${card.text};font-weight:500;">MBA — Business Administration</span>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:8px;">
-          <span style="font-size:10px;color:var(--muted,#8b9db8);font-weight:700;min-width:80px;">Role</span>
-          <span style="font-size:12px;color:var(--text,#e2e8f0);">Warehouse Keeper &amp; Developer</span>
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:${card.rowBg};border:1px solid ${card.rowBdr};border-radius:10px;">
+          <span style="font-size:10px;color:${card.muted};font-weight:700;min-width:76px;text-transform:uppercase;letter-spacing:.5px;">Role</span>
+          <span style="font-size:12px;color:${card.text};font-weight:500;">Warehouse Keeper &amp; Developer</span>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:8px;">
-          <span style="font-size:10px;color:var(--muted,#8b9db8);font-weight:700;min-width:80px;">Built</span>
-          <span style="font-size:12px;color:var(--text,#e2e8f0);">EST-iMs — Inventory System</span>
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:${card.rowBg};border:1px solid ${card.rowBdr};border-radius:10px;">
+          <span style="font-size:10px;color:${card.muted};font-weight:700;min-width:76px;text-transform:uppercase;letter-spacing:.5px;">Built</span>
+          <span style="font-size:12px;color:${card.text};font-weight:500;">EST-iMs — Inventory System</span>
         </div>
       </div>
     </div>`;
@@ -656,12 +682,7 @@ async function openOnlineUsers() {
         nameEl.appendChild(vEl);
       }
       infoEl.appendChild(nameEl);
-      if (u.job_title) {
-        const jobEl = document.createElement('div');
-        jobEl.style.cssText = 'font-size:10px;color:var(--text-dim);margin-top:1px;';
-        jobEl.textContent = u.job_title;
-        infoEl.appendChild(jobEl);
-      }
+      // job_title intentionally omitted — name only
 
       const dot = document.createElement('span');
       dot.className = 'zu-user-dot';
