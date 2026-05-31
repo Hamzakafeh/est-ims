@@ -16,17 +16,8 @@ const CURRENT_USER   = window.QC_CONFIG.username;
 const VERIFIED_USERS = new Set((window.QC_CONFIG.verified_users || []).map(u => u.toLowerCase()));
 
 
-// ── RTDB Avatar helpers (QC) ──────────────────────────
-let _qcAvatarDb = null;
-(function _initQcAvatarDb() {
-  const cfg = window.QC_FIREBASE_CONFIG;
-  if (!cfg?.projectId) return;
-  try {
-    const existing = (firebase.apps || []).find(a => a.name === 'est-qc-av');
-    const app = existing || firebase.initializeApp(cfg, 'est-qc-av');
-    _qcAvatarDb = firebase.database(app);
-  } catch(e) { console.warn('[QC Avatar] Firebase init failed', e.message); }
-})();
+// ── RTDB Avatar helpers (QC) — uses same _db as main Firebase ──
+let _qcAvatarDb = null;  // set in initFirebase() after _db is ready
 
 function _qcFbKey(u) { return String(u).replace(/[.#$[\]/]/g, '_'); }
 
@@ -309,6 +300,7 @@ function initFirebase(){
       ? firebase.app()
       : firebase.initializeApp(window.QC_FIREBASE_CONFIG);
     _db = firebase.database(app);
+    _qcAvatarDb = _db;   // share same connection for avatar reads
     _initFirebasePresence();
     _initFirebaseChat();
   } catch(e){ console.warn('Firebase init failed', e); }

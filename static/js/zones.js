@@ -5,11 +5,13 @@ let _fbAvatarDb = null;
   if (!cfgEl) return;
   try {
     const cfg = JSON.parse(cfgEl.textContent);
-    if (cfg.firebase_config?.projectId) {
-      const existing = (firebase.apps || []).find(a => a.name === 'est-zones');
-      const app = existing || firebase.initializeApp(cfg.firebase_config, 'est-zones');
-      _fbAvatarDb = firebase.database(app);
-    }
+    if (!cfg.firebase_config?.projectId) return;
+    // Reuse DEFAULT app if it exists, otherwise create named app
+    const defaultApp = (firebase.apps || []).find(a => a.name === '[DEFAULT]');
+    const app = defaultApp
+      || (firebase.apps || []).find(a => a.name === 'est-zones')
+      || firebase.initializeApp(cfg.firebase_config, 'est-zones');
+    _fbAvatarDb = firebase.database(app);
   } catch(e) { console.warn('[Zones Avatar] Firebase init failed', e.message); }
 })();
 
