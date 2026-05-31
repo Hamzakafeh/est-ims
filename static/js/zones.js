@@ -609,18 +609,20 @@ async function openOnlineUsers() {
     const res = await fetch('/api/zones/users');
     const data = await res.json();
     const users = data.users || [];
-    if (!users.length) {
-      list.innerHTML = '<div class="zu-empty">No registered users</div>';
-      return;
-    }
     list.innerHTML = '';
-    // ── Pinned Dev (Owner) — always first ──
+    // ── Pinned Dev (Owner) — always first regardless of user count ──
     const devRow = _buildDevOwnerRow();
     list.appendChild(devRow);
-    // Separator
-    const sep = document.createElement('div');
-    sep.style.cssText = 'height:1px;background:rgba(255,255,255,.06);margin:6px 0 8px;';
-    list.appendChild(sep);
+    if (!users.length) {
+      const emptyEl = document.createElement('div');
+      emptyEl.className = 'zu-empty';
+      emptyEl.textContent = 'No other registered users';
+      list.appendChild(emptyEl);
+    } else {
+      const sep = document.createElement('div');
+      sep.style.cssText = 'height:1px;background:rgba(255,255,255,.06);margin:6px 0 8px;';
+      list.appendChild(sep);
+    }
     users.forEach(u => {
       const row = document.createElement('div');
       row.className = 'zu-user';
