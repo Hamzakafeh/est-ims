@@ -182,7 +182,7 @@ def api_dashboard():
                         continue
                     def lget(idx):
                         try: return lrow[idx] if idx < len(lrow) else None
-                        except: return None
+                        except Exception: return None
                     op        = str(lget(ci_op)    or '').strip().upper()
                     qty       = to_number(lget(ci_qty))
                     color     = str(lget(ci_color) or '').strip()
@@ -261,7 +261,7 @@ def api_dashboard():
                 def _fb(val, col_idx):
                     if val is None or str(val).strip() in ('', 'None'):
                         try: return row[col_idx - 1] if col_idx - 1 < len(row) else None
-                        except: return None
+                        except Exception: return None
                     return val
                 color_val = _fb(color_val, COL_COLOR)
                 type_val  = _fb(type_val,  COL_TYPE)
@@ -269,7 +269,7 @@ def api_dashboard():
                 # Category column as extra fallback for type
                 if type_val is None or str(type_val).strip() in ('', 'None'):
                     try: type_val = row[COL_CATEGORY - 1] if COL_CATEGORY - 1 < len(row) else None
-                    except: pass
+                    except Exception: pass
 
                 in_val = to_number(get_cell(row, header_map.get('in')))
                 out_val = to_number(get_cell(row, header_map.get('out')))
@@ -277,7 +277,7 @@ def api_dashboard():
                 # Fallback balance to fixed column
                 if bal_cell is None or str(bal_cell).strip() in ('', 'None'):
                     try: bal_cell = row[COL_CURRENT - 1] if COL_CURRENT - 1 < len(row) else None
-                    except: pass
+                    except Exception: pass
                 bal_val = None if bal_cell in (None, '') else to_number(bal_cell)
 
                 meaningful = any(str(v or '').strip() for v in (color_val, type_val, size_val)) or in_val or out_val or bal_val not in (None, 0)
@@ -492,9 +492,9 @@ def api_alert_count():
                             try:
                                 if ci_bal < len(row) and float(row[ci_bal] or 1) == 0:
                                     zero += 1
-                            except: pass
+                            except Exception: pass
                     wb.close()
-                except: pass
+                except Exception: pass
     return jsonify({'zero': zero})
 @dashboard_bp.route('/api/dashboard/excel_status')
 @zone_required

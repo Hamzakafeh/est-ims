@@ -1,9 +1,6 @@
 """Misc APIs: contact, visits, push notifications, AI proxy."""
 import os
-import sys
-import json
 import hashlib
-import requests as http_requests
 from datetime import datetime
 from flask import Blueprint, jsonify, request, session
 from core import (
@@ -143,62 +140,3 @@ def push_test():
         tag='qc-test',
     )
     return jsonify({'success': ok})
-
-
-@misc_bp.route('/api/ai-chat', methods=['POST'])
-def ai_chat():
-    data = request.get_json(silent=True) or {}
-    api_key = os.getenv('GEMINI_API_KEY')
-    if not api_key:
-        return jsonify({'error': 'AI not configured'}), 503
-
-    messages   = data.get('messages', [])[-16:]
-    system_prompt = data.get('system', '')
-
-    # Build Gemini contents array
-    contents = []
-    for m in messages:
-        role = 'user' if m.get('role') == 'user' else 'model'
-        contents.append({'role': role, 'parts': [{'text': m.get('content', '')}]})
-
-    gemini_payload = {
-        'system_instruction': {'parts': [{'text': system_prompt}]} if system_prompt else None,
-        'contents': contents,
-        'generationConfig': {
-            'maxOutputTokens': 800,
-            'temperature': 0.7,
-        },
-    }
-    if gemini_payload['system_instruction'] is None:
-        del gemini_payload['system_instruction']
-
-    url = (
-        'https://generativelanguage.googleapis.com/v1beta/models/'
-        f'gemini-1.5-flash:generateContent?key={api_key}'
-    )
-
-    try:
-        old_limit = sys.getrecursionlimit()
-        sys.setrecursionlimit(10000)
-        try:
-            res = http_requests.post(
-                url,
-                data=json.dumps(gemini_payload).encode('utf-8'),
-                headers={'Content-Type': 'application/json'},
-                timeout=30,
-            )
-            result = json.loads(res.text)
-        finally:
-            sys.setrecursionlimit(old_limit)
-
-        candidates = result.get('candidates', [])
-        if candidates:
-            parts = candidates[0].get('content', {}).get('parts', [])
-            reply_text = ''.join(p.get('text', '') for p in parts).strip()
-            return jsonify({'content': [{'type': 'text', 'text': reply_text}]}), 200
-        error_msg = result.get('error', {}).get('message', 'No response from AI.')
-        return jsonify({'error': error_msg}), 500
-    except RecursionError:
-        return jsonify({'error': 'Sorry, try again.'}), 500
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
