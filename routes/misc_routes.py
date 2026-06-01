@@ -1,4 +1,4 @@
-"""Misc APIs: contact, visits, push notifications, AI proxy."""
+"""Misc APIs: contact, visits, push notifications."""
 import os
 import hashlib
 from datetime import datetime
