@@ -79,11 +79,15 @@ def zones_page():
     except Exception:
         pass
 
+    all_wh = {'zone1', 'zone2', 'zone3', 'zone4', 'zone5', 'qc'}
+    all_zones_blocked = blocked_zones >= all_wh
+
     return render_template('zones.html', username=uname, zones=ZONES,
                            show_management=show_management,
                            is_dev=is_dev,
                            show_dev_card=show_dev_card,
                            blocked_zones=blocked_zones,
+                           all_zones_blocked=all_zones_blocked,
                            firebase_config=get_firebase_config())
 
 

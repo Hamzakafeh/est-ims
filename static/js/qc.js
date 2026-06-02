@@ -795,7 +795,30 @@ function _chatMsgHtml(m) {
   const verifiedBadge = isVerified
     ? `<span class="verified-badge" title="Verified"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>`
     : '';
-  return `<div class="chat-msg-row ${mine ? 'mine' : 'theirs'}">
+  const msgKey = m._key || '';
+
+  // Reply quote
+  const replyHtml = m.reply_to
+    ? `<div class="chat-msg-reply-quote" onclick="scrollToMsg('${esc(m.reply_to._key || '')}')">
+        <div class="rq-user">${esc(m.reply_to.username)}</div>
+        <div class="rq-text">${esc(m.reply_to.text)}</div>
+       </div>`
+    : '';
+
+  // Likes
+  const likes = m.likes ? Object.keys(m.likes).length : 0;
+  const iLiked = m.likes && m.likes[CURRENT_USER.replace(/[.#$[\]/]/g,'_')];
+  const likesHtml = `<div class="chat-msg-likes${likes > 0 ? ' has-likes' : ''}" id="likes-${esc(msgKey)}">
+    ${likes > 0 ? '❤️ ' + likes : ''}
+  </div>`;
+
+  // Action buttons (reply + like)
+  const actionsHtml = msgKey ? `<div class="chat-msg-actions">
+    <button class="cm-act" onclick="setReply(${JSON.stringify({_key:msgKey,username:m.username,text:m.text.slice(0,80)}).replace(/"/g,'&quot;')})">↩ Reply</button>
+    <button class="cm-act${iLiked ? ' liked' : ''}" id="like-btn-${esc(msgKey)}" onclick="toggleLike('${esc(msgKey)}')">❤️${likes > 0 ? ' '+likes : ''}</button>
+  </div>` : '';
+
+  return `<div class="chat-msg-row ${mine ? 'mine' : 'theirs'}" data-key="${esc(msgKey)}">
     ${mine ? '' : avatar}
     <div class="chat-msg ${mine ? 'mine' : 'theirs'}">
       <div class="chat-msg-meta">
@@ -803,10 +826,18 @@ function _chatMsgHtml(m) {
         <span class="${roleClass}">${roleLabel}</span>
         <span>${esc(m.sent_at)}</span>
       </div>
+      ${replyHtml}
       <div class="chat-msg-bubble">${esc(m.text)}</div>
+      ${actionsHtml}
     </div>
     ${mine ? avatar : ''}
   </div>`;
+}
+
+function scrollToMsg(key) {
+  if (!key) return;
+  const el = document.querySelector(`.chat-msg-row[data-key="${key}"]`);
+  if (el) { el.scrollIntoView({behavior:'smooth', block:'center'}); el.style.background='rgba(59,130,246,0.12)'; setTimeout(()=>el.style.background='',1000); }
 }
 
 function renderChatMessages(msgs){
@@ -823,6 +854,34 @@ function scrollChatBottom(){
   if(box) box.scrollTop = box.scrollHeight;
 }
 
+// ── Reply state ──
+let _replyTo = null; // { _key, username, text }
+
+function setReply(msg) {
+  _replyTo = msg;
+  const bar = document.getElementById('chatReplyBar');
+  if (bar) {
+    document.getElementById('chatReplyName').textContent = '↩ ' + msg.username;
+    document.getElementById('chatReplyText').textContent = msg.text;
+    bar.classList.add('active');
+  }
+  document.getElementById('chatInput')?.focus();
+}
+function clearReply() {
+  _replyTo = null;
+  const bar = document.getElementById('chatReplyBar');
+  if (bar) bar.classList.remove('active');
+}
+
+async function toggleLike(msgKey) {
+  if (!_db || !msgKey) return;
+  const safeUser = CURRENT_USER.replace(/[.#$[\]/]/g, '_');
+  const ref = _db.ref('qc_chat/' + msgKey + '/likes/' + safeUser);
+  const snap = await ref.once('value');
+  if (snap.val()) await ref.remove();
+  else await ref.set(true);
+}
+
 function sendChat(){
   const input = document.getElementById('chatInput');
   const text  = input?.value.trim();
@@ -830,13 +889,18 @@ function sendChat(){
   input.value = '';
   const now     = new Date();
   const sent_at = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-  _db.ref('qc_chat').push({
+  const payload = {
     username: CURRENT_USER,
     role:     window.QC_CONFIG.qc_role,
     text,
     sent_at,
     ts: firebase.database.ServerValue.TIMESTAMP,
-  }).catch(() => {
+  };
+  if (_replyTo) {
+    payload.reply_to = { _key: _replyTo._key, username: _replyTo.username, text: _replyTo.text.slice(0, 80) };
+    clearReply();
+  }
+  _db.ref('qc_chat').push(payload).catch(() => {
     input.value = text;
     toast('Failed to send', false);
   });
@@ -877,13 +941,25 @@ function _initFirebaseChat(){
   };
 
   chatRef.on('child_added', snap => {
-    if(!_initialDone){ _buf.push(snap.val()); return; }
-    _appendChatMsg(snap.val());
+    const msg = { ...snap.val(), _key: snap.key };
+    if(!_initialDone){ _buf.push(msg); return; }
+    _appendChatMsg(msg);
   });
 
-  // error callback handles permission-denied or network errors silently
-  chatRef.once('value', _markDone, _markDone);
+  // Live like updates — update existing DOM elements
+  chatRef.on('child_changed', snap => {
+    const msg = { ...snap.val(), _key: snap.key };
+    const row = document.querySelector(`.chat-msg-row[data-key="${snap.key}"]`);
+    if (!row) return;
+    const likes = msg.likes ? Object.keys(msg.likes).length : 0;
+    const iLiked = msg.likes && msg.likes[CURRENT_USER.replace(/[.#$[\]/]/g,'_')];
+    const btn = row.querySelector(`#like-btn-${snap.key}`);
+    if (btn) {
+      btn.textContent = '❤️' + (likes > 0 ? ' ' + likes : '');
+      btn.classList.toggle('liked', !!iLiked);
+    }
+  });
 
-  // fallback: if once('value') never fires within 6s, show whatever is buffered
+  chatRef.once('value', _markDone, _markDone);
   _fallbackTimer = setTimeout(_markDone, 6000);
 }

@@ -204,6 +204,13 @@
   <div class="chat-messages" id="chatMessages">
     <div class="chat-loading">Loading...</div>
   </div>
+  <div class="chat-reply-bar" id="chatReplyBar">
+    <div class="chat-reply-preview">
+      <div class="chat-reply-name" id="chatReplyName"></div>
+      <div class="chat-reply-text" id="chatReplyText"></div>
+    </div>
+    <span class="chat-reply-cancel" onclick="clearReply()" title="Cancel reply">✕</span>
+  </div>
   <div class="chat-input-row">
     <input class="chat-input" id="chatInput" type="text" maxlength="500"
       data-en-placeholder="Type a message..." data-ar-placeholder="اكتب رسالة..."

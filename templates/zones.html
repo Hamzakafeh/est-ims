@@ -66,13 +66,23 @@
 <!-- MAIN -->
 <div class="zones-wrapper">
 
+  {% if all_zones_blocked %}
+  <div class="zones-header">
+    <div class="zones-title" style="font-size:42px;letter-spacing:2px;">Oops!</div>
+    <div class="zones-sub" style="max-width:320px;margin:0 auto;line-height:1.7;">
+      You don't have access to any zone right now.<br>
+      <span style="font-size:12px;opacity:.6;">Contact the admin for more info.</span>
+    </div>
+  </div>
+  {% else %}
   <div class="zones-header">
     <div class="zones-title">Select Your Zone</div>
     <div class="zones-sub">Choose the warehouse zone you want to access</div>
   </div>
+  {% endif %}
 
   <!-- Warehouse zones 1-5 -->
-  <div class="zone-grid" id="zoneGrid">
+  <div class="zone-grid" id="zoneGrid" {% if all_zones_blocked %}style="display:none"{% endif %}>
     {% if 'zone1' not in blocked_zones %}
     <div class="zone-card" onclick="selectZone('zone1')" id="card-zone1">
       <div class="zone-name">Zone 1</div>
