@@ -136,16 +136,29 @@
     <div id="presencePanel" class="presence-list">
       <div class="presence-loading">—</div>
     </div>
+    {% if is_privileged %}
+    <!-- Live ops feed — dev/admin only -->
+    <div class="ops-feed-wrap">
+      <div class="ops-feed-title">
+        <span class="ops-live-dot"></span>Live Activity
+      </div>
+      <div class="ops-feed-list" id="opsFeedList">
+        <div class="ops-feed-empty">Loading...</div>
+      </div>
+    </div>
+    {% endif %}
     <!-- chat moved to FAB -->
   </aside>
 
 </div><!-- end page-layout -->
 
-<!-- Chat FAB -->
+<!-- Chat FAB — privileged only -->
+{% if is_privileged %}
 <button class="chat-fab" id="chatOpenBtn" onclick="toggleChat()" title="Chat">
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
   <span class="chat-fab-badge" id="chatUnreadBadge" style="display:none">0</span>
 </button>
+{% endif %}
 
 <!-- Toast -->
 <div id="qcToast"></div>
@@ -221,7 +234,7 @@
   </div>
 </div>
 
-<script type="application/json" id="qc-cfg">{"qc_role":{{ qc_role | tojson }},"username":{{ username | tojson }},"verified_users":{{ verified_users | tojson }},"firebase_config":{{ firebase_config | tojson }}}</script>
+<script type="application/json" id="qc-cfg">{"qc_role":{{ qc_role | tojson }},"username":{{ username | tojson }},"verified_users":{{ verified_users | tojson }},"is_privileged":{{ is_privileged | tojson }},"firebase_config":{{ firebase_config | tojson }}}</script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script src="/static/js/qc.js"></script>

@@ -14,6 +14,7 @@
 const role           = window.QC_CONFIG.qc_role;
 const CURRENT_USER   = window.QC_CONFIG.username;
 const VERIFIED_USERS = new Set((window.QC_CONFIG.verified_users || []).map(u => u.toLowerCase()));
+const IS_PRIVILEGED  = !!window.QC_CONFIG.is_privileged;
 
 
 // ── RTDB Avatar helpers (QC) — uses same _db as main Firebase ──
@@ -36,8 +37,14 @@ function _loadQcRtdbAvatars(containerEl) {
     const u = img.dataset.rtdbUser;
     if (!u) return;
     const src = await _qcGetAvatar(u);
-    if (src) { img.src = src; img.style.display = 'block'; }
-    else { img.src = '/api/avatar/' + encodeURIComponent(u); img.style.display = 'block'; }
+    if (src) {
+      img.src = src; img.style.display = 'block';
+    } else {
+      const diskUrl = '/api/avatar/' + encodeURIComponent(u);
+      img.onerror = () => { img.onerror = null; /* keep gender default already set */ };
+      img.src = diskUrl;
+      img.style.display = 'block';
+    }
   });
 }
 
@@ -768,6 +775,34 @@ function updateChatBadge(){
   }
 }
 
+// ── Live Ops Feed (privileged) ──
+async function _loadOpsFeed() {
+  const el = document.getElementById('opsFeedList');
+  if (!el) return;
+  try {
+    const res = await fetch('/api/qc/entries?limit=8');
+    const data = await res.json();
+    const entries = data.entries || data.items || data || [];
+    if (!entries.length) { el.innerHTML = '<div class="ops-feed-empty">No activity yet</div>'; return; }
+    el.innerHTML = entries.slice(0, 8).map(e => {
+      const statusClass = e.status || 'pending';
+      const statusLabel = { approved:'✓ Approved', rejected:'✗ Rejected', pending:'⏳ Pending' }[statusClass] || statusClass;
+      const name = e.submitter_name || e.username || e.submitter || '—';
+      const ts   = e.review_date || e.submitted_at || e.created_at || '';
+      return `<div class="ops-feed-item">
+        <div><span class="ofi-name">${esc(name)}</span><span class="ofi-status ${statusClass}">${statusLabel}</span></div>
+        ${ts ? `<div class="ofi-ts">${esc(String(ts).slice(0,16))}</div>` : ''}
+      </div>`;
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<div class="ops-feed-empty">—</div>';
+  }
+}
+if (IS_PRIVILEGED) {
+  _loadOpsFeed();
+  setInterval(_loadOpsFeed, 20000);
+}
+
 function loadChat(){
   // Firebase handles initial load in _initFirebaseChat
   // If Firebase failed to init, clear the Loading... state
@@ -781,9 +816,12 @@ function loadChat(){
 function _chatAvatarHtml(username) {
   const initial   = esc(username.charAt(0).toUpperCase());
   const isDevUser = username.toLowerCase() === 'hamza k. ghareb';
-  const src       = isDevUser ? '/static/images/me.jpg' : '/static/images/profile_male.png';
-  const rtdbAttr  = isDevUser ? '' : `data-rtdb-user="${esc(username)}"`;
-  return `<div class="chat-msg-avatar">${initial}<img src="${src}" ${rtdbAttr} onload="this.style.display='block'"></div>`;
+  if (isDevUser) {
+    return `<div class="chat-msg-avatar">${initial}<img src="/static/images/me.jpg" onload="this.style.display='block'" onerror="this.src='/static/images/profile_male.png'"></div>`;
+  }
+  // For all other users: try disk avatar first (fastest), RTDB overrides via _loadQcRtdbAvatars
+  const diskUrl = '/api/avatar/' + encodeURIComponent(username);
+  return `<div class="chat-msg-avatar">${initial}<img src="${diskUrl}" data-rtdb-user="${esc(username)}" onload="this.style.display='block'" onerror="this.src='/static/images/profile_male.png';this.style.display='block'"></div>`;
 }
 
 function _chatMsgHtml(m) {
@@ -805,18 +843,29 @@ function _chatMsgHtml(m) {
        </div>`
     : '';
 
-  // Likes
-  const likes = m.likes ? Object.keys(m.likes).length : 0;
+  // Likes — Messenger-style badge (outside bubble at bottom)
+  const likes  = m.likes ? Object.keys(m.likes).length : 0;
   const iLiked = m.likes && m.likes[CURRENT_USER.replace(/[.#$[\]/]/g,'_')];
-  const likesHtml = `<div class="chat-msg-likes${likes > 0 ? ' has-likes' : ''}" id="likes-${esc(msgKey)}">
-    ${likes > 0 ? '❤️ ' + likes : ''}
-  </div>`;
-
-  // Action buttons (reply + like)
-  const actionsHtml = msgKey ? `<div class="chat-msg-actions">
-    <button class="cm-act" onclick="setReply(${JSON.stringify({_key:msgKey,username:m.username,text:m.text.slice(0,80)}).replace(/"/g,'&quot;')})">↩ Reply</button>
-    <button class="cm-act${iLiked ? ' liked' : ''}" id="like-btn-${esc(msgKey)}" onclick="toggleLike('${esc(msgKey)}')">❤️${likes > 0 ? ' '+likes : ''}</button>
+  const likeBadge = msgKey ? `<div class="chat-msg-like-badge${likes > 0 ? ' visible' : ''}" id="like-badge-${esc(msgKey)}" onclick="toggleLike('${esc(msgKey)}')">
+    <span class="like-thumb">👍</span>${likes > 0 ? `<span class="like-count">${likes}</span>` : ''}
   </div>` : '';
+
+  // Action buttons on hover
+  const replyBtn = msgKey
+    ? `<button class="cm-act" onclick="setReply(${JSON.stringify({_key:msgKey,username:m.username,text:m.text.slice(0,80)}).replace(/"/g,'&quot;')})">↩</button>`
+    : '';
+  const likeBtn = msgKey
+    ? `<button class="cm-act${iLiked ? ' liked' : ''}" id="like-btn-${esc(msgKey)}" onclick="toggleLike('${esc(msgKey)}')">👍</button>`
+    : '';
+  const editBtn = (mine && msgKey)
+    ? `<button class="cm-act" onclick="editMsg('${esc(msgKey)}', ${JSON.stringify(m.text).replace(/"/g,'&quot;')})">✏️</button>`
+    : '';
+  const delBtn = (mine && msgKey)
+    ? `<button class="cm-act" onclick="deleteMsg('${esc(msgKey)}')">🗑️</button>`
+    : '';
+  const editedMark = m.edited ? `<span style="font-size:10px;color:var(--dim);margin-left:4px;">edited</span>` : '';
+
+  const actionsHtml = `<div class="chat-msg-actions">${replyBtn}${likeBtn}${editBtn}${delBtn}</div>`;
 
   return `<div class="chat-msg-row ${mine ? 'mine' : 'theirs'}" data-key="${esc(msgKey)}">
     ${mine ? '' : avatar}
@@ -824,11 +873,12 @@ function _chatMsgHtml(m) {
       <div class="chat-msg-meta">
         <span class="cm-user">${esc(m.username)}${verifiedBadge}</span>
         <span class="${roleClass}">${roleLabel}</span>
-        <span>${esc(m.sent_at)}</span>
+        <span>${esc(m.sent_at)}${editedMark}</span>
       </div>
       ${replyHtml}
-      <div class="chat-msg-bubble">${esc(m.text)}</div>
+      <div class="chat-msg-bubble" id="bubble-${esc(msgKey)}">${esc(m.text)}</div>
       ${actionsHtml}
+      ${likeBadge}
     </div>
     ${mine ? avatar : ''}
   </div>`;
@@ -882,6 +932,41 @@ async function toggleLike(msgKey) {
   else await ref.set(true);
 }
 
+function editMsg(key, currentText) {
+  const bubble = document.getElementById('bubble-' + key);
+  if (!bubble) return;
+  bubble.innerHTML = `<div class="chat-edit-wrap">
+    <textarea class="chat-edit-input" id="edit-input-${esc(key)}" rows="2">${esc(currentText)}</textarea>
+    <div class="chat-edit-actions">
+      <button class="chat-edit-save" onclick="saveEdit('${esc(key)}')">Save</button>
+      <button class="chat-edit-cancel" onclick="cancelEdit('${esc(key)}', ${JSON.stringify(currentText).replace(/"/g,'&quot;')})">Cancel</button>
+    </div>
+  </div>`;
+  const ta = document.getElementById('edit-input-' + key);
+  if (ta) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
+}
+
+async function saveEdit(key) {
+  const ta = document.getElementById('edit-input-' + key);
+  if (!ta || !_db) return;
+  const newText = ta.value.trim();
+  if (!newText) return;
+  await _db.ref('qc_chat/' + key).update({ text: newText, edited: true });
+}
+
+function cancelEdit(key, originalText) {
+  const bubble = document.getElementById('bubble-' + key);
+  if (bubble) bubble.innerHTML = esc(originalText);
+}
+
+async function deleteMsg(key) {
+  if (!_db || !key) return;
+  if (!confirm('Delete this message?')) return;
+  await _db.ref('qc_chat/' + key).remove();
+  const row = document.querySelector(`.chat-msg-row[data-key="${key}"]`);
+  if (row) row.remove();
+}
+
 function sendChat(){
   const input = document.getElementById('chatInput');
   const text  = input?.value.trim();
@@ -916,7 +1001,9 @@ function _appendChatMsg(msg){
   const roleLabel = msg.role === 'qc' ? 'QC' : 'Label';
   const el = document.createElement('div');
   el.innerHTML = _chatMsgHtml(msg);
-  box.appendChild(el.firstElementChild);
+  const newRow = el.firstElementChild;
+  box.appendChild(newRow);
+  _loadQcRtdbAvatars(newRow);
   scrollChatBottom();
   if(!_chatOpen && !mine){
     _chatUnread++;
@@ -946,17 +1033,42 @@ function _initFirebaseChat(){
     _appendChatMsg(msg);
   });
 
-  // Live like updates — update existing DOM elements
+  // Live updates: likes + text edits
   chatRef.on('child_changed', snap => {
     const msg = { ...snap.val(), _key: snap.key };
     const row = document.querySelector(`.chat-msg-row[data-key="${snap.key}"]`);
     if (!row) return;
-    const likes = msg.likes ? Object.keys(msg.likes).length : 0;
+
+    // Update like badge
+    const likes  = msg.likes ? Object.keys(msg.likes).length : 0;
     const iLiked = msg.likes && msg.likes[CURRENT_USER.replace(/[.#$[\]/]/g,'_')];
-    const btn = row.querySelector(`#like-btn-${snap.key}`);
-    if (btn) {
-      btn.textContent = '❤️' + (likes > 0 ? ' ' + likes : '');
-      btn.classList.toggle('liked', !!iLiked);
+    const badge  = row.querySelector(`#like-badge-${snap.key}`);
+    if (badge) {
+      badge.classList.toggle('visible', likes > 0);
+      const countEl = badge.querySelector('.like-count');
+      if (countEl) countEl.textContent = likes > 0 ? likes : '';
+      else if (likes > 0) {
+        const c = document.createElement('span');
+        c.className = 'like-count'; c.textContent = likes;
+        badge.appendChild(c);
+      }
+    }
+    const likeBtn = row.querySelector(`#like-btn-${snap.key}`);
+    if (likeBtn) likeBtn.classList.toggle('liked', !!iLiked);
+
+    // Update text if edited (only if not currently in edit mode)
+    const bubble = document.getElementById(`bubble-${snap.key}`);
+    if (bubble && !bubble.querySelector('.chat-edit-wrap') && msg.text) {
+      bubble.textContent = msg.text;
+      // Show "edited" marker in meta
+      const meta = row.querySelector('.chat-msg-meta');
+      if (meta && msg.edited && !meta.querySelector('.edited-mark')) {
+        const em = document.createElement('span');
+        em.className = 'edited-mark';
+        em.style.cssText = 'font-size:10px;color:var(--dim);margin-left:4px;';
+        em.textContent = 'edited';
+        meta.appendChild(em);
+      }
     }
   });
 

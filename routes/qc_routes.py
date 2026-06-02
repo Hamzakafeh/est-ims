@@ -74,11 +74,14 @@ def qc_workflow_page():
     if session.get('zone') != 'qc':
         return redirect(url_for('zones.zones_page'))
     all_verified = VERIFIED_QC_USERS | _all_verified_usernames()
+    uname = session.get('username', '')
+    is_privileged = uname.lower() in ('hamza k. ghareb', 'inc')
     return render_template(
         'qc.html',
         qc_role=session.get('qc_role', 'qc'),
-        username=session.get('username', ''),
+        username=uname,
         verified_users=list(all_verified),
+        is_privileged=is_privileged,
         firebase_config=_FIREBASE_CONFIG,
     )
 

@@ -550,14 +550,17 @@ html.light .modal-textarea { background: rgba(0,0,0,.03); }
 
 /* ── Presence Sidebar ── */
 .presence-sidebar {
-  width: 210px;
+  width: 220px;
   flex-shrink: 0;
-  padding: 24px 14px 24px;
+  padding: 20px 14px 24px;
   position: sticky;
   top: 56px;
   max-height: calc(100vh - 56px);
   overflow-y: auto;
   overflow-x: hidden;
+  background: linear-gradient(180deg, rgba(59,130,246,0.06) 0%, rgba(16,185,129,0.04) 60%, rgba(6,182,212,0.03) 100%);
+  border-left: 1px solid rgba(59,130,246,0.12);
+  border-radius: 0 0 0 16px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -978,6 +981,81 @@ html.light .chat-input { background: rgba(0,0,0,0.03); }
   flex-shrink: 0; transition: .16s;
 }
 .chat-send-btn:hover { background: rgba(59,130,246,0.42); color: #fff; }
+
+/* ── Live Ops Feed (privileged sidebar) ── */
+.ops-feed-wrap {
+  margin-top: 16px;
+  border-top: 1px solid rgba(59,130,246,0.12);
+  padding-top: 12px;
+}
+.ops-feed-title {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .8px; color: var(--cyan); margin-bottom: 8px;
+}
+.ops-live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent-green,#10b981);
+  animation: presencePulse 1.6s ease-in-out infinite;
+  flex-shrink: 0;
+}
+.ops-feed-list { display: flex; flex-direction: column; gap: 5px; }
+.ops-feed-empty { color: var(--dim); font-size: 11px; text-align: center; padding: 6px 0; }
+.ops-feed-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px; padding: 6px 9px;
+  font-size: 11px; line-height: 1.4;
+  transition: background .15s;
+}
+.ops-feed-item:hover { background: rgba(255,255,255,0.06); }
+.ops-feed-item .ofi-name { font-weight: 600; color: var(--text); }
+.ofi-status { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; border-radius: 4px; padding: 1px 5px; margin-left: 4px; }
+.ofi-status.approved { background: rgba(16,185,129,.12); color: #86efac; }
+.ofi-status.rejected { background: rgba(239,68,68,.12); color: #fca5a5; }
+.ofi-status.pending  { background: rgba(245,158,11,.1); color: #fcd34d; }
+.ofi-ts { color: var(--dim); font-size: 10px; margin-top: 1px; }
+html.light .ops-feed-item { background: rgba(0,0,0,.02); border-color: rgba(0,0,0,.07); }
+html.light .ofi-status.approved { background: #d1fae5; color: #065f46; }
+html.light .ofi-status.rejected { background: #fee2e2; color: #991b1b; }
+html.light .ofi-status.pending  { background: #fef3c7; color: #92400e; }
+
+/* ── Like badge Messenger-style ── */
+.chat-msg { position: relative; }
+.chat-msg-like-badge {
+  position: absolute; bottom: -9px;
+  display: none; align-items: center; gap: 3px;
+  background: var(--bg-panel,#1c2230); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px; padding: 1px 6px 1px 4px;
+  font-size: 11px; cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3); transition: transform .15s;
+  z-index: 2;
+}
+.chat-msg-like-badge:hover { transform: scale(1.08); }
+.chat-msg-like-badge.visible { display: flex; }
+.chat-msg.mine .chat-msg-like-badge { left: 4px; }
+.chat-msg.theirs .chat-msg-like-badge { right: 4px; }
+.like-thumb { width: 14px; height: 14px; border-radius: 50%; background: #1877f2; display: inline-flex; align-items: center; justify-content: center; font-size: 8px; flex-shrink: 0; }
+.like-count { color: var(--muted); font-weight: 600; font-size: 11px; }
+html.light .chat-msg-like-badge { background: #fff; border-color: rgba(0,0,0,0.12); box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
+html.light .like-count { color: #4b5563; }
+
+/* ── Edit mode in chat bubble ── */
+.chat-edit-wrap { display: flex; flex-direction: column; gap: 5px; }
+.chat-edit-input {
+  background: var(--bg-deep); border: 1px solid var(--cyan);
+  border-radius: 8px; padding: 5px 8px; color: var(--text);
+  font-family: inherit; font-size: 13px; resize: none;
+  width: 100%; min-height: 34px;
+}
+.chat-edit-input:focus { outline: none; }
+.chat-edit-actions { display: flex; gap: 5px; }
+.chat-edit-save { background: rgba(59,130,246,.15); border: 1px solid rgba(59,130,246,.3); color: var(--cyan); border-radius: 6px; padding: 3px 10px; font-family: inherit; font-size: 11px; font-weight: 600; cursor: pointer; transition: .15s; }
+.chat-edit-save:hover { background: rgba(59,130,246,.28); }
+.chat-edit-cancel { background: transparent; border: 1px solid rgba(255,255,255,.1); color: var(--muted); border-radius: 6px; padding: 3px 10px; font-family: inherit; font-size: 11px; cursor: pointer; transition: .15s; }
+.chat-edit-cancel:hover { background: rgba(255,255,255,.06); }
+html.light .chat-edit-input { background: #f8fafc; color: #1a2332; }
+html.light .chat-edit-cancel { border-color: rgba(0,0,0,.12); }
 
 /* ── Chat Reply Bar ── */
 .chat-reply-bar {
