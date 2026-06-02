@@ -177,7 +177,7 @@
     "category": "C&S",
     "name": "Dark Green(75*50*13)",
     "balance": 903,
-    "svg": "SACKS_C-S_DARK-GREEN-75-50-13_R018-C009.svg"
+    "svg": "SACKS_C-S_DARK-GREEN75-50-13_R018-C009.svg"
   },
   {
     "sku": "STK-ZONE3-2026-06-SACKS-R021-C009",
@@ -185,7 +185,7 @@
     "file": "Sacks.xlsm",
     "category": "C&S",
     "name": "Green",
-    "balance": 5904,
+    "balance": 4979,
     "svg": "SACKS_C-S_GREEN_R021-C009.svg"
   },
   {
@@ -221,7 +221,7 @@
     "file": "Sacks.xlsm",
     "category": "Chicken",
     "name": "Blue",
-    "balance": 1104,
+    "balance": 979,
     "svg": "SACKS_CHICKEN_BLUE_R030-C007.svg"
   },
   {
@@ -248,7 +248,7 @@
     "file": "Sacks.xlsm",
     "category": "Chicken",
     "name": "Dark Blue",
-    "balance": 60632,
+    "balance": 60368,
     "svg": "SACKS_CHICKEN_DARK-BLUE_R033-C007.svg"
   },
   {
@@ -257,7 +257,7 @@
     "file": "Sacks.xlsm",
     "category": "Chicken",
     "name": "Dark Green",
-    "balance": 5136,
+    "balance": 5091,
     "svg": "SACKS_CHICKEN_DARK-GREEN_R024-C007.svg"
   },
   {
@@ -320,7 +320,7 @@
     "file": "Sacks.xlsm",
     "category": "Chicken",
     "name": "Purple",
-    "balance": 41312,
+    "balance": 41046,
     "svg": "SACKS_CHICKEN_PURPLE_R003-C007.svg"
   },
   {
@@ -348,7 +348,7 @@
     "category": "Koptimix",
     "name": "Blue Black(1H)",
     "balance": 9176,
-    "svg": "SACKS_KOPTIMIX_BLUE-BLACK-1H_R012-C015.svg"
+    "svg": "SACKS_KOPTIMIX_BLUE-BLACK1H_R012-C015.svg"
   },
   {
     "sku": "STK-ZONE3-2026-06-SACKS-R015-C015",
@@ -357,7 +357,7 @@
     "category": "Koptimix",
     "name": "Blue Gray(1A)",
     "balance": 8004,
-    "svg": "SACKS_KOPTIMIX_BLUE-GRAY-1A_R015-C015.svg"
+    "svg": "SACKS_KOPTIMIX_BLUE-GRAY1A_R015-C015.svg"
   },
   {
     "sku": "STK-ZONE3-2026-06-SACKS-R006-C015",
@@ -366,7 +366,7 @@
     "category": "Koptimix",
     "name": "Blue Green(1J)",
     "balance": 25695,
-    "svg": "SACKS_KOPTIMIX_BLUE-GREEN-1J_R006-C015.svg"
+    "svg": "SACKS_KOPTIMIX_BLUE-GREEN1J_R006-C015.svg"
   },
   {
     "sku": "STK-ZONE3-2026-06-SACKS-R021-C015",
@@ -375,7 +375,7 @@
     "category": "Koptimix",
     "name": "Blue Purple(1C)",
     "balance": 21187,
-    "svg": "SACKS_KOPTIMIX_BLUE-PURPLE-1C_R021-C015.svg"
+    "svg": "SACKS_KOPTIMIX_BLUE-PURPLE1C_R021-C015.svg"
   },
   {
     "sku": "STK-ZONE3-2026-06-SACKS-R024-C015",
@@ -384,7 +384,7 @@
     "category": "Koptimix",
     "name": "Green Black(GB)",
     "balance": 7194,
-    "svg": "SACKS_KOPTIMIX_GREEN-BLACK-GB_R024-C015.svg"
+    "svg": "SACKS_KOPTIMIX_GREEN-BLACKGB_R024-C015.svg"
   },
   {
     "sku": "STK-ZONE3-2026-06-SACKS-R027-C015",
@@ -402,7 +402,7 @@
     "category": "Koptimix",
     "name": "Purple Dark Blue(1B)",
     "balance": 10090,
-    "svg": "SACKS_KOPTIMIX_PURPLE-DARK-BLUE-1B_R018-C015.svg"
+    "svg": "SACKS_KOPTIMIX_PURPLE-DARK-BLUE1B_R018-C015.svg"
   },
   {
     "sku": "STK-ZONE3-2026-06-SACKS-R003-C015",
@@ -411,7 +411,7 @@
     "category": "Koptimix",
     "name": "Red Black(1i)",
     "balance": 27016,
-    "svg": "SACKS_KOPTIMIX_RED-BLACK-1I_R003-C015.svg"
+    "svg": "SACKS_KOPTIMIX_RED-BLACK1I_R003-C015.svg"
   },
   {
     "sku": "STK-ZONE3-2026-06-SACKS-R009-C015",
@@ -420,7 +420,7 @@
     "category": "Koptimix",
     "name": "Red Dark Blue(1E)",
     "balance": 41655,
-    "svg": "SACKS_KOPTIMIX_RED-DARK-BLUE-1E_R009-C015.svg"
+    "svg": "SACKS_KOPTIMIX_RED-DARK-BLUE1E_R009-C015.svg"
   },
   {
     "sku": "STK-ZONE3-2026-06-SACKS-R027-C013",
@@ -428,7 +428,7 @@
     "file": "Sacks.xlsm",
     "category": "Plastic",
     "name": "Blue KOP",
-    "balance": 10745,
+    "balance": 1140,
     "svg": "SACKS_PLASTIC_BLUE-KOP_R027-C013.svg"
   },
   {
@@ -436,54 +436,54 @@
     "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-06-SACKS-R006-C013",
     "file": "Sacks.xlsm",
     "category": "Plastic",
-    "name": "Blue Popp",
-    "balance": 7150,
-    "svg": "SACKS_PLASTIC_BLUE-POPP_R006-C013.svg"
+    "name": "Blue Popp 25KG",
+    "balance": 6345,
+    "svg": "SACKS_PLASTIC_BLUE-POPP-25KG_R006-C013.svg"
   },
   {
     "sku": "STK-ZONE3-2026-06-SACKS-R021-C013",
     "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-06-SACKS-R021-C013",
     "file": "Sacks.xlsm",
     "category": "Plastic",
-    "name": "Green",
+    "name": "Green 50KG",
     "balance": 10000,
-    "svg": "SACKS_PLASTIC_GREEN_R021-C013.svg"
+    "svg": "SACKS_PLASTIC_GREEN-50KG_R021-C013.svg"
   },
   {
     "sku": "STK-ZONE3-2026-06-SACKS-R009-C013",
     "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-06-SACKS-R009-C013",
     "file": "Sacks.xlsm",
     "category": "Plastic",
-    "name": "Green Popp",
-    "balance": 7092,
-    "svg": "SACKS_PLASTIC_GREEN-POPP_R009-C013.svg"
+    "name": "Green Popp 25KG",
+    "balance": 6287,
+    "svg": "SACKS_PLASTIC_GREEN-POPP-25KG_R009-C013.svg"
   },
   {
     "sku": "STK-ZONE3-2026-06-SACKS-R024-C013",
     "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-06-SACKS-R024-C013",
     "file": "Sacks.xlsm",
     "category": "Plastic",
-    "name": "Purple",
-    "balance": 7710,
-    "svg": "SACKS_PLASTIC_PURPLE_R024-C013.svg"
+    "name": "Purple 50KG",
+    "balance": 6105,
+    "svg": "SACKS_PLASTIC_PURPLE-50KG_R024-C013.svg"
   },
   {
     "sku": "STK-ZONE3-2026-06-SACKS-R003-C013",
     "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-06-SACKS-R003-C013",
     "file": "Sacks.xlsm",
     "category": "Plastic",
-    "name": "Purple Popp",
+    "name": "Purple Popp 25KG",
     "balance": 6208,
-    "svg": "SACKS_PLASTIC_PURPLE-POPP_R003-C013.svg"
+    "svg": "SACKS_PLASTIC_PURPLE-POPP-25KG_R003-C013.svg"
   },
   {
     "sku": "STK-ZONE3-2026-06-SACKS-R018-C013",
     "url": "https://est-ims.onrender.com/qrscan?sku=STK-ZONE3-2026-06-SACKS-R018-C013",
     "file": "Sacks.xlsm",
     "category": "Plastic",
-    "name": "Red",
+    "name": "Red 50KG",
     "balance": 10000,
-    "svg": "SACKS_PLASTIC_RED_R018-C013.svg"
+    "svg": "SACKS_PLASTIC_RED-50KG_R018-C013.svg"
   },
   {
     "sku": "STK-ZONE3-2026-06-SACKS-R030-C013",
@@ -491,7 +491,7 @@
     "file": "Sacks.xlsm",
     "category": "Plastic",
     "name": "Red KOP",
-    "balance": 3010,
+    "balance": 2205,
     "svg": "SACKS_PLASTIC_RED-KOP_R030-C013.svg"
   },
   {
@@ -509,7 +509,7 @@
     "file": "Sacks.xlsm",
     "category": "Plastic",
     "name": "White 50K",
-    "balance": 1640,
+    "balance": 1614,
     "svg": "SACKS_PLASTIC_WHITE-50K_R015-C013.svg"
   },
   {
@@ -518,7 +518,7 @@
     "file": "Sacks.xlsm",
     "category": "Roll",
     "name": "EST",
-    "balance": 1396,
+    "balance": 1393,
     "svg": "SACKS_ROLL_EST_R006-C017.svg"
   },
   {
@@ -527,7 +527,7 @@
     "file": "Sacks.xlsm",
     "category": "Roll",
     "name": "KOP",
-    "balance": 370,
+    "balance": 351,
     "svg": "SACKS_ROLL_KOP_R009-C017.svg"
   },
   {
@@ -536,7 +536,7 @@
     "file": "Sacks.xlsm",
     "category": "Roll",
     "name": "KOP",
-    "balance": 393,
+    "balance": 390,
     "svg": "SACKS_ROLL_KOP_R012-C017.svg"
   },
   {
@@ -563,7 +563,7 @@
     "file": "Sacks.xlsm",
     "category": "Roll",
     "name": "Ribbon",
-    "balance": 1954,
+    "balance": 1944,
     "svg": "SACKS_ROLL_RIBBON_R003-C017.svg"
   },
   {
@@ -626,7 +626,7 @@
     "file": "Sacks.xlsm",
     "category": "WithOut",
     "name": "White",
-    "balance": 4805,
+    "balance": 4795,
     "svg": "SACKS_WITHOUT_WHITE_R018-C011.svg"
   }
 ]
