@@ -87,6 +87,11 @@ const QC_LANG = {
     statusChange:    (id, st) => `Photo #${id} marked as ${st}`,
     noOne:           'No one here yet',
     me:              '(you)',
+    msgSave:         'Save', msgCancel: 'Cancel',
+    msgEdit:         'Edit', msgDelete: 'Delete',
+    msgDeleted:      'This message was deleted',
+    msgEdited:       'edited',
+    msgReply:        'Reply',
   },
   ar: {
     items:           n => n + ' طلب',
@@ -114,6 +119,11 @@ const QC_LANG = {
     statusChange:    (id, st) => `الصورة #${id} تم تعيينها كـ ${st}`,
     noOne:           'لا يوجد أحد هنا بعد',
     me:              '(أنا)',
+    msgSave:         'حفظ', msgCancel: 'إلغاء',
+    msgEdit:         'تعديل', msgDelete: 'حذف',
+    msgDeleted:      'تم حذف هذه الرسالة',
+    msgEdited:       'معدّل',
+    msgReply:        'رد',
   },
 };
 
@@ -851,19 +861,34 @@ function _chatMsgHtml(m) {
   </div>` : '';
 
   // Action buttons on hover
+  const t = QC_LANG[qcLang];
+
+  // Deleted message — show placeholder only
+  if (m.deleted) {
+    return `<div class="chat-msg-row ${mine ? 'mine' : 'theirs'}" data-key="${esc(msgKey)}">
+      ${mine ? '' : avatar}
+      <div class="chat-msg ${mine ? 'mine' : 'theirs'}">
+        <div class="chat-msg-bubble" id="bubble-${esc(msgKey)}" style="opacity:.45;font-style:italic;font-size:12px;">
+          🗑️ ${t.msgDeleted}
+        </div>
+      </div>
+      ${mine ? avatar : ''}
+    </div>`;
+  }
+
   const replyBtn = msgKey
-    ? `<button class="cm-act" onclick="setReply(${JSON.stringify({_key:msgKey,username:m.username,text:m.text.slice(0,80)}).replace(/"/g,'&quot;')})">↩</button>`
+    ? `<button class="cm-act" onclick="setReply(${JSON.stringify({_key:msgKey,username:m.username,text:m.text.slice(0,80)}).replace(/"/g,'&quot;')})">↩ ${t.msgReply}</button>`
     : '';
   const likeBtn = msgKey
     ? `<button class="cm-act${iLiked ? ' liked' : ''}" id="like-btn-${esc(msgKey)}" onclick="toggleLike('${esc(msgKey)}')">👍</button>`
     : '';
   const editBtn = (mine && msgKey)
-    ? `<button class="cm-act" onclick="editMsg('${esc(msgKey)}', ${JSON.stringify(m.text).replace(/"/g,'&quot;')})">✏️</button>`
+    ? `<button class="cm-act" onclick="editMsg('${esc(msgKey)}')">✏️ ${t.msgEdit}</button>`
     : '';
   const delBtn = (mine && msgKey)
     ? `<button class="cm-act" onclick="deleteMsg('${esc(msgKey)}')">🗑️</button>`
     : '';
-  const editedMark = m.edited ? `<span style="font-size:10px;color:var(--dim);margin-left:4px;">edited</span>` : '';
+  const editedMark = m.edited ? `<span style="font-size:10px;color:var(--dim);margin-left:4px;">${t.msgEdited}</span>` : '';
 
   const actionsHtml = `<div class="chat-msg-actions">${replyBtn}${likeBtn}${editBtn}${delBtn}</div>`;
 
@@ -932,18 +957,25 @@ async function toggleLike(msgKey) {
   else await ref.set(true);
 }
 
-function editMsg(key, currentText) {
+function editMsg(key) {
   const bubble = document.getElementById('bubble-' + key);
   if (!bubble) return;
+  const original = bubble.textContent;
+  const t = QC_LANG[qcLang];
   bubble.innerHTML = `<div class="chat-edit-wrap">
-    <textarea class="chat-edit-input" id="edit-input-${esc(key)}" rows="2">${esc(currentText)}</textarea>
+    <textarea class="chat-edit-input" id="edit-input-${key}" rows="2"></textarea>
     <div class="chat-edit-actions">
-      <button class="chat-edit-save" onclick="saveEdit('${esc(key)}')">Save</button>
-      <button class="chat-edit-cancel" onclick="cancelEdit('${esc(key)}', ${JSON.stringify(currentText).replace(/"/g,'&quot;')})">Cancel</button>
+      <button class="chat-edit-save" onclick="saveEdit('${key}')">${t.msgSave}</button>
+      <button class="chat-edit-cancel" onclick="cancelEdit('${key}')">${t.msgCancel}</button>
     </div>
   </div>`;
   const ta = document.getElementById('edit-input-' + key);
-  if (ta) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
+  if (ta) {
+    ta.value = original;
+    ta.dataset.original = original;
+    ta.focus();
+    ta.setSelectionRange(ta.value.length, ta.value.length);
+  }
 }
 
 async function saveEdit(key) {
@@ -951,20 +983,54 @@ async function saveEdit(key) {
   if (!ta || !_db) return;
   const newText = ta.value.trim();
   if (!newText) return;
-  await _db.ref('qc_chat/' + key).update({ text: newText, edited: true });
-}
-
-function cancelEdit(key, originalText) {
   const bubble = document.getElementById('bubble-' + key);
-  if (bubble) bubble.innerHTML = esc(originalText);
+  try {
+    await _db.ref('qc_chat/' + key).update({ text: newText, edited: true });
+    if (bubble) bubble.textContent = newText;
+  } catch(e) {
+    toast(QC_LANG[qcLang].statusFailed, false);
+    if (bubble) bubble.textContent = ta.dataset.original || newText;
+  }
 }
 
-async function deleteMsg(key) {
+function cancelEdit(key) {
+  const ta = document.getElementById('edit-input-' + key);
+  const bubble = document.getElementById('bubble-' + key);
+  if (bubble) bubble.textContent = ta ? (ta.dataset.original || '') : '';
+}
+
+let _pendingDeleteKey = null;
+function deleteMsg(key) {
   if (!_db || !key) return;
-  if (!confirm('Delete this message?')) return;
-  await _db.ref('qc_chat/' + key).remove();
-  const row = document.querySelector(`.chat-msg-row[data-key="${key}"]`);
-  if (row) row.remove();
+  _pendingDeleteKey = key;
+  document.getElementById('deleteMsgOverlay').classList.add('open');
+}
+function closeMsgDeleteModal() {
+  document.getElementById('deleteMsgOverlay').classList.remove('open');
+  _pendingDeleteKey = null;
+}
+async function confirmMsgDelete() {
+  const key = _pendingDeleteKey;
+  closeMsgDeleteModal();
+  if (!key || !_db) return;
+  try {
+    await _db.ref('qc_chat/' + key).update({ deleted: true, text: '' });
+    // Replace with deleted placeholder in DOM
+    const bubble = document.getElementById('bubble-' + key);
+    const row = document.querySelector(`.chat-msg-row[data-key="${key}"]`);
+    if (bubble) {
+      bubble.style.opacity = '.45';
+      bubble.style.fontStyle = 'italic';
+      bubble.style.fontSize = '12px';
+      bubble.textContent = '🗑️ ' + QC_LANG[qcLang].msgDeleted;
+    }
+    if (row) {
+      row.querySelector('.chat-msg-actions')?.remove();
+      row.querySelector('.chat-msg-like-badge')?.remove();
+    }
+  } catch(e) {
+    toast(QC_LANG[qcLang].deleteFailed, false);
+  }
 }
 
 function sendChat(){
@@ -1055,6 +1121,18 @@ function _initFirebaseChat(){
     }
     const likeBtn = row.querySelector(`#like-btn-${snap.key}`);
     if (likeBtn) likeBtn.classList.toggle('liked', !!iLiked);
+
+    // Deleted message
+    if (msg.deleted) {
+      const bubble = document.getElementById(`bubble-${snap.key}`);
+      if (bubble && !bubble.querySelector('.chat-edit-wrap')) {
+        bubble.style.opacity = '.45'; bubble.style.fontStyle = 'italic'; bubble.style.fontSize = '12px';
+        bubble.textContent = '🗑️ ' + QC_LANG[qcLang].msgDeleted;
+        row.querySelector('.chat-msg-actions')?.remove();
+        row.querySelector('.chat-msg-like-badge')?.remove();
+      }
+      return;
+    }
 
     // Update text if edited (only if not currently in edit mode)
     const bubble = document.getElementById(`bubble-${snap.key}`);

@@ -178,7 +178,9 @@ def api_zone_login():
     session['login_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     if zone_id == 'qc':
         role = str(data.get('qc_role', '')).strip()
-        session['qc_role'] = role if role in {'qc', 'labeling'} else 'qc'
+        _priv = current_username in ('hamza k. ghareb', 'inc')
+        _allowed_roles = {'qc', 'labeling'} | ({'admin', 'dev'} if _priv else set())
+        session['qc_role'] = role if role in _allowed_roles else 'qc'
     threading.Thread(target=_record_login, args=(session.get('username', ''), zone_id, zone['label'], ip), daemon=True).start()
     next_url = session.pop('next_after_zone', '/index')
     if zone_id == 'qc':

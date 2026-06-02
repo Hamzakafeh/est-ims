@@ -75,7 +75,8 @@ def qc_workflow_page():
         return redirect(url_for('zones.zones_page'))
     all_verified = VERIFIED_QC_USERS | _all_verified_usernames()
     uname = session.get('username', '')
-    is_privileged = uname.lower() in ('hamza k. ghareb', 'inc')
+    qc_role_session = session.get('qc_role', 'qc')
+    is_privileged = uname.lower() in ('hamza k. ghareb', 'inc') or qc_role_session in ('admin', 'dev')
     return render_template(
         'qc.html',
         qc_role=session.get('qc_role', 'qc'),

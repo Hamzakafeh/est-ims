@@ -152,13 +152,23 @@
 
 </div><!-- end page-layout -->
 
-<!-- Chat FAB — privileged only -->
-{% if is_privileged %}
+<!-- Delete Message Modal -->
+<div class="del-msg-overlay" id="deleteMsgOverlay" onclick="if(event.target===this)closeMsgDeleteModal()">
+  <div class="del-msg-panel">
+    <div class="del-msg-icon">🗑️</div>
+    <div class="del-msg-title" data-en="Delete Message" data-ar="حذف الرسالة">Delete Message</div>
+    <div class="del-msg-text" data-en="This action cannot be undone." data-ar="لا يمكن التراجع عن هذا الإجراء.">This action cannot be undone.</div>
+    <div class="del-msg-actions">
+      <button class="del-msg-cancel" onclick="closeMsgDeleteModal()" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+      <button class="del-msg-confirm" onclick="confirmMsgDelete()" data-en="Delete" data-ar="حذف">Delete</button>
+    </div>
+  </div>
+</div>
+<!-- Chat FAB -->
 <button class="chat-fab" id="chatOpenBtn" onclick="toggleChat()" title="Chat">
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
   <span class="chat-fab-badge" id="chatUnreadBadge" style="display:none">0</span>
 </button>
-{% endif %}
 
 <!-- Toast -->
 <div id="qcToast"></div>
