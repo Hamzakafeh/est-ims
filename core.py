@@ -509,6 +509,12 @@ def _init_auth_db():
                 review_note TEXT
             )
         """)
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS user_zone_restrictions (
+                username TEXT PRIMARY KEY,
+                allowed_zones TEXT
+            )
+        """)
         for column_sql in (
             f"ALTER TABLE users {_add_col} gender TEXT",
             f"ALTER TABLE users {_add_col} birth_date TEXT",

@@ -11,21 +11,28 @@ from core import (
     _firebase_set_user_status, _firebase_clear_user_status, DATA_STORE_DIR,
 )
 
-USER_ZONES_FILE = os.path.join(DATA_STORE_DIR, 'user_zones.json')
-
 
 def _read_user_zones():
+    """Returns {username_lower: [zone_ids]}. Missing key = all zones allowed."""
     try:
-        with open(USER_ZONES_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
+        with _db_connect() as conn:
+            rows = conn.execute("SELECT username, allowed_zones FROM user_zone_restrictions").fetchall()
+        return {row['username']: json.loads(row['allowed_zones']) for row in rows if row['allowed_zones']}
     except Exception:
         return {}
 
 
-def _write_user_zones(data):
-    os.makedirs(DATA_STORE_DIR, exist_ok=True)
-    with open(USER_ZONES_FILE, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+def _write_user_zone(username, zones):
+    """Set allowed zones for one user. zones=None removes restriction."""
+    with _db_connect() as conn:
+        if zones is None:
+            conn.execute("DELETE FROM user_zone_restrictions WHERE username = ?", (username,))
+        else:
+            conn.execute(
+                "INSERT INTO user_zone_restrictions (username, allowed_zones) VALUES (?, ?) "
+                "ON CONFLICT(username) DO UPDATE SET allowed_zones = excluded.allowed_zones",
+                (username, json.dumps([str(z) for z in zones]))
+            )
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -428,8 +435,8 @@ def api_admin_get_user_zones(user_id):
     if not row:
         return jsonify({'error': 'المستخدم غير موجود'}), 404
     username = row['username'].lower()
-    zones = _read_user_zones()
-    return jsonify({'zones': zones.get(username, None)})
+    all_zones = _read_user_zones()
+    return jsonify({'zones': all_zones.get(username, None)})
 
 
 @admin_bp.route('/api/admin/registered_users/<int:user_id>/zones', methods=['POST'])
@@ -444,11 +451,5 @@ def api_admin_set_user_zones(user_id):
     if not row:
         return jsonify({'error': 'المستخدم غير موجود'}), 404
     username = row['username'].lower()
-    with _data_lock:
-        zones = _read_user_zones()
-        if allowed is None:
-            zones.pop(username, None)  # remove restriction = all zones
-        else:
-            zones[username] = [str(z) for z in allowed]
-        _write_user_zones(zones)
+    _write_user_zone(username, allowed)
     return jsonify({'success': True})

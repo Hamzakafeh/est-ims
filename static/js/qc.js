@@ -790,17 +790,18 @@ async function _loadOpsFeed() {
   const el = document.getElementById('opsFeedList');
   if (!el) return;
   try {
-    const res = await fetch('/api/qc/entries?limit=8');
+    const res = await fetch('/api/qc/submissions');
     const data = await res.json();
-    const entries = data.entries || data.items || data || [];
+    const entries = (data.items || []).slice(0, 8);
     if (!entries.length) { el.innerHTML = '<div class="ops-feed-empty">No activity yet</div>'; return; }
-    el.innerHTML = entries.slice(0, 8).map(e => {
-      const statusClass = e.status || 'pending';
-      const statusLabel = { approved:'✓ Approved', rejected:'✗ Rejected', pending:'⏳ Pending' }[statusClass] || statusClass;
-      const name = e.submitter_name || e.username || e.submitter || '—';
-      const ts   = e.review_date || e.submitted_at || e.created_at || '';
+    const statusLabel = { approved:'✓ Approved', rejected:'✗ Rejected', pending:'⏳ Pending' };
+    el.innerHTML = entries.map(e => {
+      const sc   = e.status || 'pending';
+      const name = e.created_by || '—';
+      const ts   = e.reviewed_at || e.created_at || '';
       return `<div class="ops-feed-item">
-        <div><span class="ofi-name">${esc(name)}</span><span class="ofi-status ${statusClass}">${statusLabel}</span></div>
+        <div><span class="ofi-name">${esc(name)}</span><span class="ofi-status ${sc}">${statusLabel[sc] || sc}</span></div>
+        ${e.note ? `<div class="ofi-ts">${esc(e.note.slice(0,40))}</div>` : ''}
         ${ts ? `<div class="ofi-ts">${esc(String(ts).slice(0,16))}</div>` : ''}
       </div>`;
     }).join('');
@@ -885,7 +886,7 @@ function _chatMsgHtml(m) {
   const editBtn = (mine && msgKey)
     ? `<button class="cm-act" onclick="editMsg('${esc(msgKey)}')">✏️ ${t.msgEdit}</button>`
     : '';
-  const delBtn = (mine && msgKey)
+  const delBtn = ((mine || IS_PRIVILEGED) && msgKey)
     ? `<button class="cm-act" onclick="deleteMsg('${esc(msgKey)}')">🗑️</button>`
     : '';
   const editedMark = m.edited ? `<span style="font-size:10px;color:var(--dim);margin-left:4px;">${t.msgEdited}</span>` : '';

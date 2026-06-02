@@ -64,18 +64,19 @@ def zones_page():
     is_dev = uname_lower in ('hamza k. ghareb',)
     show_dev_card = is_dev  # Inc sees admin only, not dev
 
-    # Compute blocked zone IDs for this user
+    # Compute blocked zone IDs from SQLite (persists across deploys)
     blocked_zones = set()
     try:
         import json as _json
-        _uzf = os.path.join(DATA_STORE_DIR, 'user_zones.json')
-        if os.path.exists(_uzf):
-            with open(_uzf, 'r', encoding='utf-8') as _f:
-                _user_zones = _json.load(_f)
-            _allowed = _user_zones.get(uname_lower)
-            if _allowed is not None:
-                all_warehouse = {'zone1', 'zone2', 'zone3', 'zone4', 'zone5', 'qc'}
-                blocked_zones = all_warehouse - set(_allowed)
+        with _db_connect() as _conn:
+            _row = _conn.execute(
+                "SELECT allowed_zones FROM user_zone_restrictions WHERE username = ?",
+                (uname_lower,)
+            ).fetchone()
+        if _row and _row['allowed_zones']:
+            _allowed = _json.loads(_row['allowed_zones'])
+            all_warehouse = {'zone1', 'zone2', 'zone3', 'zone4', 'zone5', 'qc'}
+            blocked_zones = all_warehouse - set(_allowed)
     except Exception:
         pass
 
@@ -141,15 +142,17 @@ def api_zone_login():
         _record_failed_attempt(ip)
         return jsonify({'success': False, 'not_allowed': True, 'message': 'Access Denied'}), 403
 
-    # Dynamic per-user zone restrictions (set by dev via admin panel)
+    # Dynamic per-user zone restrictions (stored in SQLite — persists across deploys)
     try:
-        import json as _json
-        _uzf = os.path.join(DATA_STORE_DIR, 'user_zones.json')
-        if os.path.exists(_uzf):
-            with open(_uzf, 'r', encoding='utf-8') as _f:
-                _user_zones = _json.load(_f)
-            _allowed = _user_zones.get(current_username)
-            if _allowed is not None and zone_id not in _allowed:
+        with _db_connect() as _conn:
+            _row = _conn.execute(
+                "SELECT allowed_zones FROM user_zone_restrictions WHERE username = ?",
+                (current_username,)
+            ).fetchone()
+        if _row and _row['allowed_zones']:
+            import json as _json
+            _allowed = _json.loads(_row['allowed_zones'])
+            if zone_id not in _allowed:
                 _record_failed_attempt(ip)
                 return jsonify({'success': False, 'not_allowed': True, 'message': 'Access Denied'}), 403
     except Exception:
@@ -211,6 +214,21 @@ def api_zone_access_check():
     allowed_list = ZONE_ALLOWED_USERS.get(zone_id)
     if allowed_list and current_username not in [u.lower() for u in allowed_list]:
         return jsonify({'allowed': False}), 200
+
+    # Check SQLite per-user zone restrictions
+    try:
+        import json as _json
+        with _db_connect() as _conn:
+            _row = _conn.execute(
+                "SELECT allowed_zones FROM user_zone_restrictions WHERE username = ?",
+                (current_username,)
+            ).fetchone()
+        if _row and _row['allowed_zones']:
+            _allowed = _json.loads(_row['allowed_zones'])
+            if zone_id not in _allowed:
+                return jsonify({'allowed': False}), 200
+    except Exception:
+        pass
 
     return jsonify({'allowed': True}), 200
 
