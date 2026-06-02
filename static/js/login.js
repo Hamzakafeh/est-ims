@@ -317,6 +317,12 @@ async function doLogin() {
       spinner.style.display = 'none';
       loginBtn.classList.add('success');
       setTimeout(() => { window.location.href = data.redirect || '/zones'; }, 600);
+    } else if (data.pending) {
+      finishProgress(false);
+      document.getElementById('forceLogoutBtn').style.display = 'none';
+      showLoginAlert('⏳ طلبك قيد المراجعة', data.message || 'طلب التسجيل الخاص بك لم تتم الموافقة عليه بعد. يُرجى الانتظار حتى يوافق عليه الأدمن.');
+      shakeCard();
+      resetBtn();
     } else if (data.active_elsewhere) {
       finishProgress(false);
       // Show force-logout button so user can kick the other session

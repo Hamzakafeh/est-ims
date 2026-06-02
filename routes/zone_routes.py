@@ -60,8 +60,10 @@ def zones_page():
         return redirect(url_for('pages.index'))
     uname = session.get('username', '')
     show_management = uname.lower() in ('hamza k. ghareb', 'ink')
+    is_dev = uname.lower() in ('hamza k. ghareb',)
     return render_template('zones.html', username=uname, zones=ZONES,
                            show_management=show_management,
+                           is_dev=is_dev,
                            firebase_config=get_firebase_config())
 
 

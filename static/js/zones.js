@@ -81,6 +81,17 @@ let selectedZone = null;
 let selectedQcRole = 'qc';
 
 const RESTRICTED_ZONES = ['admin', 'dev', 'qc'];
+const SOON_ZONES = ['zone1', 'zone2', 'zone4', 'zone5'];
+const _isDev = document.body.dataset.isDev === 'true';
+
+function showSoon() {
+  document.getElementById('soonOverlay').classList.add('open');
+  document.querySelectorAll('.zone-card').forEach(c => c.classList.remove('active'));
+  selectedZone = null;
+}
+function closeSoon() {
+  document.getElementById('soonOverlay').classList.remove('open');
+}
 
 function showDenied() {
   document.getElementById('deniedOverlay').classList.add('open');
@@ -94,6 +105,11 @@ function closeDenied() {
 }
 
 async function selectZone(zoneId) {
+  // Show "Soon" for zones 1/2/4/5 unless dev
+  if (SOON_ZONES.includes(zoneId) && !_isDev) {
+    showSoon();
+    return;
+  }
   // For restricted zones, check access BEFORE showing password modal
   if (RESTRICTED_ZONES.includes(zoneId)) {
     try {
@@ -223,7 +239,7 @@ document.getElementById('pwToggle').addEventListener('click', function() {
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && selectedZone) submitZone();
-  if (e.key === 'Escape') { closeModal(); closeDenied(); }
+  if (e.key === 'Escape') { closeModal(); closeDenied(); closeSoon(); }
 });
 
 // Click on overlay backdrop to close
@@ -387,7 +403,8 @@ function _devAvatarSrc(username) {
 
   if (!devSrc) {
     _getAvatarRTDB(username).then(src => {
-      if (src) { img.src = src; }
+      if (src) { img.src = src; img.style.display = 'block'; if (icon) icon.style.display = 'none'; }
+      else { img.src = '/api/avatar/' + encodeURIComponent(username); }
     });
   }
 })();
@@ -423,7 +440,10 @@ async function openZoneProfile() {
     };
     _showAv(devSrc || genderSrc);
     if (!devSrc) {
-      _getAvatarRTDB(username).then(src => { if (src) _showAv(src); });
+      _getAvatarRTDB(username).then(src => {
+        if (src) _showAv(src);
+        else _showAv('/api/avatar/' + encodeURIComponent(username));
+      });
     }
   }
 
@@ -533,7 +553,7 @@ function _buildDevOwnerRow() {
   nameEl.innerHTML = 'Hamza K. Ghareb'
     + '<span class="zu-verified" title="Verified" style="display:inline-flex;align-items:center;justify-content:center;width:12px;height:12px;border-radius:50%;background:var(--blue,#3b82f6);flex-shrink:0;">'
     + '<svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>'
-    + '<span style="font-size:9px;font-weight:700;color:var(--cyan,#06b6d4);border:1px solid rgba(6,182,212,.4);border-radius:4px;padding:1px 5px;margin-left:2px;">OWNER</span>';
+    + '<span title="System Owner" style="font-size:11px;line-height:1;">👑</span>';
 
   const jobEl = document.createElement('div');
   jobEl.className = 'zu-user-job';
@@ -594,14 +614,7 @@ function openDevOwnerProfile() {
         <span title="Verified" style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#3b82f6;flex-shrink:0;">
           <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </span>
-        <!-- Crown tag — glass effect -->
-        <span title="System Owner" style="display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:8px;font-size:10px;font-weight:800;letter-spacing:.6px;
-          background:${isLight?'rgba(255,197,0,.18)':'rgba(255,197,0,.14)'};
-          border:1px solid ${isLight?'rgba(255,197,0,.5)':'rgba(255,197,0,.3)'};
-          color:${isLight?'#92400e':'#fcd34d'};
-          backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);">
-          👑 OWNER
-        </span>
+        <span title="System Owner" style="font-size:16px;line-height:1;">👑</span>
       </div>
 
       <div style="font-size:12px;color:${card.muted};margin-bottom:16px;">Warehouse Keeper · IT &amp; Development</div>

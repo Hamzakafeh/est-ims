@@ -2616,7 +2616,7 @@ async function loadAdminRequests() {
             </div>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button class="btn btn-purple" style="padding:8px 14px;font-size:12px;" onclick="approveRegistration(${Number(r.id)})">Approve</button>
+            <button class="btn btn-success" style="padding:8px 14px;font-size:12px;" onclick="approveRegistration(${Number(r.id)})">Approve</button>
             <button class="btn btn-ghost" style="padding:8px 14px;font-size:12px;" onclick="rejectRegistration(${Number(r.id)})">Reject</button>
           </div>
         </div>

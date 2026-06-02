@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="/static/css/zones.css">
 <link rel="stylesheet" href="/static/css/light-mode.css">
 </head>
-<body>
+<body data-is-dev="{{ 'true' if is_dev else 'false' }}">
 
 <div class="blob blob-1"></div>
 <div class="blob blob-2"></div>
@@ -161,6 +161,15 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <script src="/static/js/zones.js"></script>
 
+<!-- SOON MODAL -->
+<div class="soon-overlay" id="soonOverlay" onclick="closeSoon()">
+  <div class="soon-panel" onclick="event.stopPropagation()">
+    <div class="soon-icon">⏳</div>
+    <div class="soon-title">Coming Soon</div>
+    <div class="soon-msg">هذا الزون قيد التطوير<br>سيكون متاحاً قريباً.</div>
+    <button class="soon-btn" onclick="closeSoon()">حسناً</button>
+  </div>
+</div>
 <!-- ACCESS DENIED MODAL -->
 <div class="denied-overlay" id="deniedOverlay">
   <div class="denied-panel">

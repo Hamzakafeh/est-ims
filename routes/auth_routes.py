@@ -2,7 +2,7 @@ import os
 import re
 import secrets
 from datetime import datetime
-from flask import Blueprint, render_template, jsonify, request, session, redirect, url_for
+from flask import Blueprint, render_template, jsonify, request, session, redirect, url_for, send_file
 from core import (
     DATA_STORE_DIR,
     _get_ip,
@@ -270,6 +270,15 @@ def api_password_reset_complete():
     return jsonify({'success': True, 'message': 'تم تغيير كلمة المرور بنجاح'})
 
 
+@auth_bp.route('/api/avatar/<username>')
+def serve_avatar(username):
+    for ext in ('.jpg', '.jpeg', '.png', '.webp'):
+        path = os.path.join(_AVATAR_DIR, username + ext)
+        if os.path.isfile(path):
+            return send_file(path)
+    return jsonify({'error': 'not found'}), 404
+
+
 @auth_bp.route('/contact')
 def contact():
     return render_template('contact.html')
@@ -333,6 +342,16 @@ def do_login():
             session['next_after_zone'] = next_url if next_url.startswith('/') else '/zones'
         session.pop('zone', None)
         return jsonify({'success': True, 'redirect': '/zones'})
+
+    # Check if user has a pending registration request
+    with _db_connect() as conn:
+        pending_row = conn.execute(
+            "SELECT id FROM registration_requests WHERE lower(username) = ? AND status = 'pending' LIMIT 1",
+            (username.lower(),)
+        ).fetchone()
+    if pending_row:
+        return jsonify({'success': False, 'pending': True,
+                        'message': 'طلبك قيد المراجعة. سيتم إخطارك عند قبوله من قِبل الأدمن.'}), 401
 
     _record_failed_attempt(ip)
     return jsonify({'success': False, 'message': 'Incorrect username or password'}), 401
