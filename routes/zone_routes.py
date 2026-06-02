@@ -59,11 +59,31 @@ def zones_page():
     if session.get('zone'):
         return redirect(url_for('pages.index'))
     uname = session.get('username', '')
-    show_management = uname.lower() in ('hamza k. ghareb', 'ink')
-    is_dev = uname.lower() in ('hamza k. ghareb',)
+    uname_lower = uname.lower()
+    show_management = uname_lower in ('hamza k. ghareb', 'inc')
+    is_dev = uname_lower in ('hamza k. ghareb',)
+    show_dev_card = is_dev  # Inc sees admin only, not dev
+
+    # Compute blocked zone IDs for this user
+    blocked_zones = set()
+    try:
+        import json as _json
+        _uzf = os.path.join(DATA_STORE_DIR, 'user_zones.json')
+        if os.path.exists(_uzf):
+            with open(_uzf, 'r', encoding='utf-8') as _f:
+                _user_zones = _json.load(_f)
+            _allowed = _user_zones.get(uname_lower)
+            if _allowed is not None:
+                all_warehouse = {'zone1', 'zone2', 'zone3', 'zone4', 'zone5', 'qc'}
+                blocked_zones = all_warehouse - set(_allowed)
+    except Exception:
+        pass
+
     return render_template('zones.html', username=uname, zones=ZONES,
                            show_management=show_management,
                            is_dev=is_dev,
+                           show_dev_card=show_dev_card,
+                           blocked_zones=blocked_zones,
                            firebase_config=get_firebase_config())
 
 

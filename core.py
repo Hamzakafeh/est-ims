@@ -86,7 +86,7 @@ EDIT_ZONES = {'dev'}
 WAREHOUSE_ZONES = ('zone1', 'zone2', 'zone3', 'zone4', 'zone5', 'qc')
 ZONE_USER_RESTRICTIONS = {
     'dev': 'Hamza K. Ghareb',
-    'admin': 'ink',
+    'admin': 'Inc',
 }
 ZONE_ALLOWED_USERS = {
     'qc': [],

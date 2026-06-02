@@ -3,7 +3,7 @@ const LOGIN_LANG = {
   en: {
     title: 'EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-left:2px">©</sup>',
     subtitle: 'Limited Access',
-    backLabel: 'Back', themeLight: 'Light Mode', themeDark: 'Dark Mode',
+    backLabel: 'Home', themeLight: 'Light Mode', themeDark: 'Dark Mode',
     langLabel: 'عربي',
     userLabel: 'Username', passLabel: 'Password',
     userPlaceholder: 'Enter username', passPlaceholder: 'Enter password',
@@ -15,7 +15,7 @@ const LOGIN_LANG = {
   },
   ar: {
     title: 'نظام EST للمخزون', subtitle: 'وصول محدود',
-    backLabel: 'رجوع', themeLight: 'الوضع الفاتح', themeDark: 'الوضع الداكن',
+    backLabel: 'الرئيسية', themeLight: 'الوضع الفاتح', themeDark: 'الوضع الداكن',
     langLabel: 'English',
     userLabel: 'اسم المستخدم', passLabel: 'كلمة المرور',
     userPlaceholder: 'أدخل اسم المستخدم', passPlaceholder: 'أدخل كلمة المرور',
@@ -320,7 +320,11 @@ async function doLogin() {
     } else if (data.pending) {
       finishProgress(false);
       document.getElementById('forceLogoutBtn').style.display = 'none';
-      showLoginAlert('⏳ طلبك قيد المراجعة', data.message || 'طلب التسجيل الخاص بك لم تتم الموافقة عليه بعد. يُرجى الانتظار حتى يوافق عليه الأدمن.');
+      const _pt = loginLang === 'ar' ? '⏳ طلبك قيد المراجعة' : '⏳ Request Under Review';
+      const _pm = loginLang === 'ar'
+        ? 'لم تتم الموافقة على طلب تسجيلك بعد. يُرجى الانتظار حتى يوافق عليه الأدمن.'
+        : 'Your registration request has not been approved yet. Please wait for admin approval.';
+      showLoginAlert(_pt, _pm);
       shakeCard();
       resetBtn();
     } else if (data.active_elsewhere) {

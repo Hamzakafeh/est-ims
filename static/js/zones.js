@@ -298,6 +298,11 @@ const ZONES_LANG = {
     connErr: 'Connection error. Try again.',
     enterPwd: 'Enter Zone Password',
     enterPwdSub: 'Enter the password for this zone',
+    soonTitle: 'Coming Soon',
+    soonMsg: 'This zone is under development.\nIt will be available soon.',
+    soonBtn: 'OK',
+    pendingTitle: '⏳ Request Under Review',
+    pendingMsg: 'Your registration request has not been approved yet.\nPlease wait for admin approval.',
     zoneNames: { zone1:'Zone 1', zone2:'Zone 2', zone3:'Zone 3', zone4:'Zone 4', zone5:'Zone 5', qc:'QC', admin:'EST', dev:'Dev' },
     zoneLabels: { zone1:'', zone2:'', zone3:'Packaging', zone4:'', zone5:'', qc:'Quality Control', admin:'Administration', dev:'' },
   },
@@ -315,6 +320,11 @@ const ZONES_LANG = {
     connErr: 'خطأ في الاتصال. حاول مرة أخرى.',
     enterPwd: 'أدخل كلمة مرور المنطقة',
     enterPwdSub: 'أدخل كلمة المرور للدخول إلى هذه المنطقة',
+    soonTitle: 'قريباً',
+    soonMsg: 'هذا الزون قيد التطوير\nسيكون متاحاً قريباً.',
+    soonBtn: 'حسناً',
+    pendingTitle: '⏳ طلبك قيد المراجعة',
+    pendingMsg: 'لم تتم الموافقة على طلب تسجيلك بعد.\nيُرجى الانتظار حتى يوافق عليه الأدمن.',
     zoneNames: { zone1:'منطقة 1', zone2:'منطقة 2', zone3:'منطقة 3', zone4:'منطقة 4', zone5:'منطقة 5', qc:'جودة', admin:'EST', dev:'Dev' },
     zoneLabels: { zone1:'', zone2:'', zone3:'التعبئة', zone4:'', zone5:'', qc:'مراقبة الجودة', admin:'الإدارة', dev:'' },
   }
@@ -339,6 +349,13 @@ function applyLang(lang) {
   const dockLangText = document.getElementById('dockLangText');
   if (dockLangText) dockLangText.textContent = isAr ? 'EN' : 'AR';
   if (document.getElementById('dockLangLabel')) document.getElementById('dockLangLabel').textContent = t.lang;
+  // Soon modal text
+  const _soonTitle = document.querySelector('.soon-title');
+  const _soonMsg   = document.querySelector('.soon-msg');
+  const _soonBtn   = document.querySelector('.soon-btn');
+  if (_soonTitle) _soonTitle.textContent = t.soonTitle;
+  if (_soonMsg)   _soonMsg.textContent   = t.soonMsg;
+  if (_soonBtn)   _soonBtn.textContent   = t.soonBtn;
   // zone cards
   document.querySelectorAll('.zone-card').forEach(card => {
     const id = card.id.replace('card-','');
@@ -639,6 +656,42 @@ function openDevOwnerProfile() {
   document.body.appendChild(overlay);
 }
 
+function _buildIncRow() {
+  const row = document.createElement('div');
+  row.className = 'zu-user';
+  row.style.cssText = 'cursor:default;background:rgba(16,185,129,.04);border:1px solid rgba(16,185,129,.12);border-radius:8px;padding:6px 10px;';
+
+  const avDiv = document.createElement('div');
+  avDiv.className = 'zu-user-av';
+  const avImg = document.createElement('img');
+  avImg.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%';
+  avImg.src = '/static/images/profile_male.png';
+  avDiv.appendChild(avImg);
+  _getAvatarRTDB('Inc').then(src => { if (src) avImg.src = src; else avImg.src = '/api/avatar/Inc'; });
+
+  const infoEl = document.createElement('div');
+  infoEl.style.cssText = 'flex:1;min-width:0;';
+
+  const nameEl = document.createElement('div');
+  nameEl.className = 'zu-user-name';
+  nameEl.style.cssText = 'display:flex;align-items:center;gap:4px;';
+  nameEl.innerHTML = 'Al-Estesharia Inc.'
+    + '<span class="zu-verified" title="Verified" style="display:inline-flex;align-items:center;justify-content:center;width:12px;height:12px;border-radius:50%;background:var(--accent-green,#10b981);flex-shrink:0;">'
+    + '<svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>';
+
+  infoEl.appendChild(nameEl);
+
+  const dot = document.createElement('span');
+  dot.className = 'zu-user-dot';
+  dot.style.cssText = 'background:#10b981;box-shadow:0 0 6px #10b981;';
+  dot.title = 'Online';
+
+  row.appendChild(avDiv);
+  row.appendChild(infoEl);
+  row.appendChild(dot);
+  return row;
+}
+
 // ── ONLINE USERS MODAL ──
 async function openOnlineUsers() {
   document.getElementById('zuOverlay').classList.add('open');
@@ -649,9 +702,12 @@ async function openOnlineUsers() {
     const data = await res.json();
     const users = data.users || [];
     list.innerHTML = '';
-    // ── Pinned Dev (Owner) — always first regardless of user count ──
+    // ── Pinned Dev (Owner) — always first ──
     const devRow = _buildDevOwnerRow();
     list.appendChild(devRow);
+    // ── Pinned Inc — second fixed row ──
+    const incRow = _buildIncRow();
+    list.appendChild(incRow);
     if (!users.length) {
       const emptyEl = document.createElement('div');
       emptyEl.className = 'zu-empty';

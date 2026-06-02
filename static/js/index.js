@@ -107,6 +107,7 @@ function _loadIdxRtdbAvatars(containerEl) {
     if (!u) return;
     const src = await _getAvatarIdxRTDB(u);
     if (src) img.src = src;
+    else img.src = '/api/avatar/' + encodeURIComponent(u);
   });
 }
 

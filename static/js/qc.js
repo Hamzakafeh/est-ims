@@ -37,6 +37,7 @@ function _loadQcRtdbAvatars(containerEl) {
     if (!u) return;
     const src = await _qcGetAvatar(u);
     if (src) { img.src = src; img.style.display = 'block'; }
+    else { img.src = '/api/avatar/' + encodeURIComponent(u); img.style.display = 'block'; }
   });
 }
 
