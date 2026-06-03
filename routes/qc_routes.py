@@ -1,10 +1,12 @@
 import os
+import re
 import json
 import secrets
 import threading
 import time as _time
 from datetime import datetime
 from flask import Blueprint, render_template, request, session, jsonify, redirect, url_for
+import requests as _req
 from core import QC_SUBMISSIONS_FILE, QC_UPLOAD_DIR, _read_json_list, _write_json_list, _next_json_id, _data_lock, zone_required, DATA_STORE_DIR
 
 qc_bp = Blueprint('qc', __name__)
@@ -321,3 +323,132 @@ def api_qc_submission_status(item_id):
             body = note if note else f'Your photo was marked {label}'
             _push_bg(_do_push_to_user, creator, f'Photo #{item_id} — {label}', body, tag='qc-status')
     return jsonify({'success': True})
+
+
+# ── Firebase RTDB Bridge (for mobile app) ────────────────────────────────────
+
+def _fb_url(path):
+    db = os.getenv('FIREBASE_DATABASE_URL', '').rstrip('/')
+    secret = os.getenv('FIREBASE_DB_SECRET', '')
+    return f"{db}/{path}.json?auth={secret}", bool(db and secret)
+
+
+def _safe_key(s):
+    return re.sub(r'[.#$\[\]/]', '_', s)
+
+
+@qc_bp.route('/api/qc/rtdb/presence', methods=['GET'])
+@zone_required
+def api_qc_rtdb_presence():
+    if session.get('zone') != 'qc':
+        return jsonify({'error': 'غير مصرح'}), 403
+    url, ok = _fb_url('qc_presence')
+    if not ok:
+        return jsonify({'users': []})
+    try:
+        data = _req.get(url, timeout=6).json() or {}
+        now_ms = _time.time() * 1000
+        users = []
+        for k, v in data.items():
+            if not isinstance(v, dict):
+                continue
+            ts = v.get('ts', 0)
+            if isinstance(ts, (int, float)) and now_ms - ts > 90_000:
+                continue  # older than 90 seconds
+            users.append({
+                'username': v.get('username', k),
+                'role':     v.get('role', ''),
+            })
+        return jsonify({'users': users})
+    except Exception as e:
+        return jsonify({'users': [], 'error': str(e)})
+
+
+@qc_bp.route('/api/qc/rtdb/presence/ping', methods=['POST'])
+@zone_required
+def api_qc_rtdb_presence_ping():
+    if session.get('zone') != 'qc':
+        return jsonify({'error': 'غير مصرح'}), 403
+    url, ok = _fb_url(f"qc_presence/{_safe_key(session.get('username', ''))}")
+    if not ok:
+        return jsonify({'ok': False})
+    payload = {
+        'username': session.get('username', ''),
+        'role':     session.get('qc_role', 'qc'),
+        'ts':       {'.sv': 'timestamp'},
+    }
+    try:
+        _req.put(url, json=payload, timeout=6)
+        return jsonify({'ok': True})
+    except Exception:
+        return jsonify({'ok': False})
+
+
+@qc_bp.route('/api/qc/rtdb/presence/leave', methods=['POST'])
+@zone_required
+def api_qc_rtdb_presence_leave():
+    url, ok = _fb_url(f"qc_presence/{_safe_key(session.get('username', ''))}")
+    if ok:
+        try:
+            _req.delete(url, timeout=4)
+        except Exception:
+            pass
+    return jsonify({'ok': True})
+
+
+@qc_bp.route('/api/qc/rtdb/chat', methods=['GET'])
+@zone_required
+def api_qc_rtdb_chat_get():
+    if session.get('zone') != 'qc':
+        return jsonify({'error': 'غير مصرح'}), 403
+    url, ok = _fb_url('qc_chat')
+    if not ok:
+        return jsonify({'messages': []})
+    try:
+        params_url = url + '&orderBy="$key"&limitToLast=100'
+        data = _req.get(params_url, timeout=6).json() or {}
+        messages = []
+        if isinstance(data, dict):
+            for key in sorted(data.keys()):
+                v = data[key]
+                if not isinstance(v, dict):
+                    continue
+                ts = v.get('ts', v.get('sent_at', ''))
+                if isinstance(ts, (int, float)):
+                    ts = datetime.fromtimestamp(ts / 1000).strftime('%H:%M')
+                messages.append({
+                    'id':       key,
+                    'username': v.get('username', ''),
+                    'role':     v.get('role', ''),
+                    'text':     v.get('text', ''),
+                    'sent_at':  str(ts),
+                })
+        return jsonify({'messages': messages})
+    except Exception as e:
+        return jsonify({'messages': [], 'error': str(e)})
+
+
+@qc_bp.route('/api/qc/rtdb/chat', methods=['POST'])
+@zone_required
+def api_qc_rtdb_chat_post():
+    if session.get('zone') != 'qc':
+        return jsonify({'error': 'غير مصرح'}), 403
+    data = request.get_json(silent=True) or {}
+    text = str(data.get('text', '')).strip()
+    if not text or len(text) > 500:
+        return jsonify({'success': False, 'message': 'Invalid message'}), 400
+    url, ok = _fb_url('qc_chat')
+    if not ok:
+        return jsonify({'success': False, 'message': 'Firebase not configured'})
+    payload = {
+        'username': session.get('username', ''),
+        'role':     session.get('qc_role', 'qc'),
+        'text':     text,
+        'sent_at':  datetime.now().strftime('%H:%M'),
+        'ts':       {'.sv': 'timestamp'},
+    }
+    try:
+        _req.post(url, json=payload, timeout=6)
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
