@@ -6,7 +6,7 @@ import threading
 import time as _time
 from datetime import datetime
 from flask import Blueprint, render_template, request, session, jsonify, redirect, url_for
-import requests as _req
+import concurrent.futures as _cf
 from core import QC_SUBMISSIONS_FILE, QC_UPLOAD_DIR, _read_json_list, _write_json_list, _next_json_id, _data_lock, zone_required, DATA_STORE_DIR
 
 qc_bp = Blueprint('qc', __name__)
@@ -326,6 +326,25 @@ def api_qc_submission_status(item_id):
 
 
 # ── Firebase RTDB Bridge (for mobile app) ────────────────────────────────────
+# All HTTP calls run in OS threads to avoid gevent SSL recursion.
+
+_fb_pool = _cf.ThreadPoolExecutor(max_workers=4, thread_name_prefix='fb')
+
+
+def _fb_url(path):
+    db = os.getenv('FIREBASE_DATABASE_URL', '').rstrip('/')
+    sec = os.getenv('FIREBASE_DB_SECRET', '')
+    return f"{db}/{path}.json?auth={sec}", bool(db and sec)
+
+
+def _safe_key(s):
+    return re.sub(r'[.#$\[\]/]', '_', s)
+
+
+def _fb_call(method, url, **kw):
+    import requests as _r
+    return _fb_pool.submit(getattr(_r, method), url, **kw).result(timeout=9)
+
 
 @qc_bp.route('/api/qc/rtdb/test')
 def api_qc_rtdb_test():
@@ -334,21 +353,12 @@ def api_qc_rtdb_test():
     result = {'db_url': bool(db), 'db_secret': bool(sec)}
     if db and sec:
         try:
-            r = _req.get(f"{db.rstrip('/')}/qc_presence.json?auth={sec}", timeout=5)
+            r = _fb_call('get', f"{db.rstrip('/')}/qc_presence.json?auth={sec}", timeout=6)
             result['firebase_status'] = r.status_code
             result['firebase_ok'] = r.status_code == 200
         except Exception as e:
             result['firebase_error'] = str(e)
     return jsonify(result)
-
-def _fb_url(path):
-    db = os.getenv('FIREBASE_DATABASE_URL', '').rstrip('/')
-    secret = os.getenv('FIREBASE_DB_SECRET', '')
-    return f"{db}/{path}.json?auth={secret}", bool(db and secret)
-
-
-def _safe_key(s):
-    return re.sub(r'[.#$\[\]/]', '_', s)
 
 
 @qc_bp.route('/api/qc/rtdb/presence', methods=['GET'])
@@ -360,7 +370,7 @@ def api_qc_rtdb_presence():
     if not ok:
         return jsonify({'users': []})
     try:
-        data = _req.get(url, timeout=6).json() or {}
+        data = _fb_call('get', url, timeout=6).json() or {}
         now_ms = _time.time() * 1000
         users = []
         for k, v in data.items():
@@ -368,11 +378,8 @@ def api_qc_rtdb_presence():
                 continue
             ts = v.get('ts', 0)
             if isinstance(ts, (int, float)) and now_ms - ts > 90_000:
-                continue  # older than 90 seconds
-            users.append({
-                'username': v.get('username', k),
-                'role':     v.get('role', ''),
-            })
+                continue
+            users.append({'username': v.get('username', k), 'role': v.get('role', '')})
         return jsonify({'users': users})
     except Exception as e:
         return jsonify({'users': [], 'error': str(e)})
@@ -392,7 +399,7 @@ def api_qc_rtdb_presence_ping():
         'ts':       {'.sv': 'timestamp'},
     }
     try:
-        _req.put(url, json=payload, timeout=6)
+        _fb_call('put', url, json=payload, timeout=6)
         return jsonify({'ok': True})
     except Exception:
         return jsonify({'ok': False})
@@ -404,7 +411,7 @@ def api_qc_rtdb_presence_leave():
     url, ok = _fb_url(f"qc_presence/{_safe_key(session.get('username', ''))}")
     if ok:
         try:
-            _req.delete(url, timeout=4)
+            _fb_call('delete', url, timeout=4)
         except Exception:
             pass
     return jsonify({'ok': True})
@@ -419,8 +426,7 @@ def api_qc_rtdb_chat_get():
     if not ok:
         return jsonify({'messages': []})
     try:
-        params_url = url + '&orderBy="$key"&limitToLast=100'
-        data = _req.get(params_url, timeout=6).json() or {}
+        data = _fb_call('get', url + '&orderBy="$key"&limitToLast=100', timeout=6).json() or {}
         messages = []
         if isinstance(data, dict):
             for key in sorted(data.keys()):
@@ -462,7 +468,7 @@ def api_qc_rtdb_chat_post():
         'ts':       {'.sv': 'timestamp'},
     }
     try:
-        _req.post(url, json=payload, timeout=6)
+        _fb_call('post', url, json=payload, timeout=6)
         return jsonify({'success': True})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
