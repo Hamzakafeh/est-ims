@@ -327,6 +327,21 @@ def api_qc_submission_status(item_id):
 
 # ── Firebase RTDB Bridge (for mobile app) ────────────────────────────────────
 
+@qc_bp.route('/api/qc/rtdb/test')
+@zone_required
+def api_qc_rtdb_test():
+    db  = os.getenv('FIREBASE_DATABASE_URL', '')
+    sec = os.getenv('FIREBASE_DB_SECRET', '')
+    result = {'db_url': bool(db), 'db_secret': bool(sec)}
+    if db and sec:
+        try:
+            r = _req.get(f"{db.rstrip('/')}/qc_presence.json?auth={sec}", timeout=5)
+            result['firebase_status'] = r.status_code
+            result['firebase_ok'] = r.status_code == 200
+        except Exception as e:
+            result['firebase_error'] = str(e)
+    return jsonify(result)
+
 def _fb_url(path):
     db = os.getenv('FIREBASE_DATABASE_URL', '').rstrip('/')
     secret = os.getenv('FIREBASE_DB_SECRET', '')
