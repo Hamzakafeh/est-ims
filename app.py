@@ -12,6 +12,7 @@ import warnings
 import queue as _queue
 
 from flask import Flask, Response, send_from_directory, session, stream_with_context
+from flask_cors import CORS
 
 from routes import (
     auth_bp, zone_bp, excel_bp, qc_bp, admin_bp, reports_bp,
@@ -28,6 +29,12 @@ warnings.filterwarnings('ignore')
 app = Flask(__name__, static_folder='static')
 app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-change-me')
 app.config['TEMPLATES_AUTO_RELOAD'] = True
+
+CORS(app, supports_credentials=True, origins=[
+    'http://localhost:8080',
+    'http://127.0.0.1:8080',
+    'https://est-ims.onrender.com',
+])
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
