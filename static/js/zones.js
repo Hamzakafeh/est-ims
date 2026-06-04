@@ -110,23 +110,6 @@ async function selectZone(zoneId) {
     showSoon();
     return;
   }
-  // For restricted zones, check access BEFORE showing password modal
-  if (RESTRICTED_ZONES.includes(zoneId)) {
-    try {
-      const res = await fetch('/api/zone_access_check', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ zone_id: zoneId })
-      });
-      const data = await res.json();
-      if (!data.allowed) {
-        showDenied();
-        return;
-      }
-    } catch(e) {
-      // Network error — fallback to showing the password modal
-    }
-  }
 
   selectedZone = zoneId;
   document.querySelectorAll('.zone-card').forEach(c => c.classList.remove('active'));
@@ -153,8 +136,29 @@ async function selectZone(zoneId) {
   document.getElementById('enterBtn').disabled = false;
   document.getElementById('enterBtn').classList.remove('success');
 
+  // Open the modal immediately — no waiting on the network
   document.getElementById('pwOverlay').classList.add('open');
   setTimeout(() => document.getElementById('pwInput').focus(), 120);
+
+  // For restricted zones, verify access in the background. If denied, close the
+  // modal and show the denied message. zone_login enforces the same rules on
+  // submit, so this is purely an early-deny UX nicety.
+  if (RESTRICTED_ZONES.includes(zoneId)) {
+    try {
+      const res = await fetch('/api/zone_access_check', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ zone_id: zoneId })
+      });
+      const data = await res.json();
+      if (!data.allowed && selectedZone === zoneId) {
+        document.getElementById('pwOverlay').classList.remove('open');
+        showDenied();
+      }
+    } catch(e) {
+      // Network error — ignore; zone_login will enforce access on submit
+    }
+  }
 }
 
 async function submitZone() {
