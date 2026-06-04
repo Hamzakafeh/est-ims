@@ -1308,6 +1308,15 @@ def ttl_cache_clear(prefix=''):
                 _ttl_cache_store.pop(k, None)
 
 
+# Signal a background worker to rebuild the dashboard cache off the request path.
+_dash_warm_event = threading.Event()
+
+
+def request_dashboard_warm():
+    """Ask the background warmer to refresh the dashboard cache (e.g. after a write)."""
+    _dash_warm_event.set()
+
+
 _COUNTER_FILE = os.path.join(APP_DIR, 'visit_counter.json')
 _counter_lock = threading.Lock()
 

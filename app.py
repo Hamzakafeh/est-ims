@@ -21,6 +21,7 @@ from routes import (
 from core import (
     zone_required, APP_DIR, QC_UPLOAD_DIR,
     _push_subs_lock, _read_push_subs, _write_push_subs, _send_push_notification,
+    _dash_warm_event,
 )
 
 warnings.filterwarnings('ignore')
@@ -167,6 +168,44 @@ def serve_qc_sw():
 def serve_qc_upload(filename):
     """Serve QC uploads from the configured persistent upload directory."""
     return send_from_directory(QC_UPLOAD_DIR, filename)
+
+
+# ── Dashboard cache warmer ─────────────────────────────────────────
+def warm_dashboard_cache():
+    """Rebuild the dashboard cache off the request path so the first user load
+    is already warm. Drives the real /api/dashboard endpoint via a synthetic
+    request, so it populates exactly the same cache keys real requests read.
+    Only the active scopes are warmed: super 'all zones' (admin/dev) and zone3."""
+    scopes = [
+        {'is_super': True,  'zone': 'admin', 'url': '/api/dashboard?zone=all'},
+        {'is_super': False, 'zone': 'zone3', 'url': '/api/dashboard'},
+    ]
+    with app.test_client() as client:
+        for sc in scopes:
+            try:
+                with client.session_transaction() as sess:
+                    sess['logged_in'] = True
+                    sess['is_super'] = sc['is_super']
+                    sess['zone']     = sc['zone']
+                client.get(sc['url'])
+            except Exception:
+                pass
+
+
+def _dashboard_warm_loop():
+    import time as _t
+    _t.sleep(8)  # let the server finish booting before the first heavy read
+    while True:
+        _dash_warm_event.clear()
+        try:
+            warm_dashboard_cache()
+        except Exception:
+            pass
+        # Wake on the next write (request_dashboard_warm) or every 10 min as a safety net
+        _dash_warm_event.wait(timeout=600)
+
+
+threading.Thread(target=_dashboard_warm_loop, daemon=True).start()
 
 
 # ── Entry point ────────────────────────────────────────────────────
