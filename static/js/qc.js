@@ -4,7 +4,7 @@
   const el = document.getElementById('qc-cfg');
   if(!el) return;
   const d = JSON.parse(el.textContent);
-  window.QC_CONFIG         = { qc_role: d.qc_role, username: d.username, verified_users: d.verified_users };
+  window.QC_CONFIG         = { qc_role: d.qc_role, username: d.username, verified_users: d.verified_users, is_privileged: d.is_privileged };
   window.QC_FIREBASE_CONFIG = d.firebase_config;
 })();
 
@@ -158,6 +158,13 @@ applyQcLang();
 // ══════════════════════════════════════════════════════
 function esc(s){ return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
+// Status labels — 'waiting' (not yet reviewed) is distinct from 'pending' (a QC hold decision)
+const QC_STATUS_LABELS = {
+  en: { waiting:'Waiting', pending:'Pending', approved:'Approved', rejected:'Rejected' },
+  ar: { waiting:'بالانتظار', pending:'معلّق', approved:'مقبول', rejected:'مرفوض' },
+};
+function qcStatusText(s){ return (QC_STATUS_LABELS[qcLang] || QC_STATUS_LABELS.en)[s] || s; }
+
 function toast(msg, ok=true){
   const el = document.getElementById('qcToast');
   el.textContent = msg;
@@ -170,21 +177,43 @@ function toast(msg, ok=true){
 // SOUNDS — works on mobile via user-gesture unlock
 // ══════════════════════════════════════════════════════
 let _audioCtxUnlocked = false;
+const _sndCache = {};
+function _getSound(file){
+  if(!_sndCache[file]){
+    const a = new Audio('/static/audio/' + file);
+    a.preload = 'auto';
+    _sndCache[file] = a;
+  }
+  return _sndCache[file];
+}
 function _unlockAudio(){
   if(_audioCtxUnlocked) return;
   _audioCtxUnlocked = true;
-  const ac = new (window.AudioContext || window.webkitAudioContext)();
-  const buf = ac.createBuffer(1,1,22050);
-  const src = ac.createBufferSource(); src.buffer = buf;
-  src.connect(ac.destination); src.start(0); ac.close();
+  try{
+    const ac = new (window.AudioContext || window.webkitAudioContext)();
+    const buf = ac.createBuffer(1,1,22050);
+    const src = ac.createBufferSource(); src.buffer = buf;
+    src.connect(ac.destination); src.start(0); ac.close();
+  }catch(e){}
+  // Unlock the HTMLAudio elements too — on iOS/Android `new Audio().play()`
+  // stays blocked unless THAT element was started during a user gesture.
+  ['qcalert.wav', 'drdasha.wav', 'newapp.mp3'].forEach(f => {
+    try{
+      const a = _getSound(f);
+      a.muted = true;
+      const p = a.play();
+      if(p && p.then) p.then(() => { a.pause(); a.currentTime = 0; a.muted = false; }).catch(() => { a.muted = false; });
+    }catch(e){}
+  });
 }
 document.addEventListener('touchstart', _unlockAudio, {once:true});
 document.addEventListener('click', _unlockAudio, {once:true});
 
 function playSound(file){
   try{
-    const a = new Audio('/static/audio/' + file);
-    a.volume = 0.9;
+    const a = _getSound(file);
+    a.muted = false; a.volume = 0.9;
+    try { a.currentTime = 0; } catch(e){}
     const p = a.play();
     if(p && typeof p.catch === 'function') p.catch(()=>{});
   }catch(e){}
@@ -451,12 +480,16 @@ function renderItems(items){
   const t   = QC_LANG[qcLang];
   if(!items.length){ box.innerHTML = `<div class="empty">${t.noSubs}</div>`; return; }
 
-  box.innerHTML = items.map(x => `
+  box.innerHTML = items.map(x => {
+    const imgs = ((x.image_urls && x.image_urls.length) ? x.image_urls : [x.image_url]).filter(Boolean);
+    const imgsHtml = imgs.map(u => `
+        <div class="item-img-wrap" onclick="openLightbox('${esc(u)}')">
+          <img src="${esc(u)}" alt="QC photo #${x.id}" loading="lazy">
+          <span class="img-zoom-hint">Tap to view</span>
+        </div>`).join('');
+    return `
     <article class="item" id="item-${x.id}">
-      <div class="item-img-wrap" onclick="openLightbox('${esc(x.image_url)}')">
-        <img src="${esc(x.image_url)}" alt="QC photo #${x.id}" loading="lazy">
-        <span class="img-zoom-hint">Tap to view</span>
-      </div>
+      <div class="item-imgs${imgs.length > 1 ? ' multi' : ''}">${imgsHtml}</div>
       <div class="item-body">
         <div class="meta">
           <span>#${x.id}</span>
@@ -466,7 +499,7 @@ function renderItems(items){
           <span class="actor-submit">${esc(x.created_by)}</span>
           ${x.reviewed_by ? `<span class="actor-review actor-${esc(x.status)}">${esc(x.reviewed_by)}</span>` : ''}
         </div>
-        <span class="status ${esc(x.status)}">${esc(x.status)}</span>
+        <span class="status ${esc(x.status)}">${esc(qcStatusText(x.status))}</span>
         ${x.note ? `<div class="note" style="margin-top:6px">${esc(x.note)}</div>` : ''}
         ${x.review_note ? `<div class="review-note">${esc(x.review_note)}</div>` : ''}
         <div class="actions">
@@ -480,7 +513,8 @@ function renderItems(items){
           ` : ''}
         </div>
       </div>
-    </article>`).join('');
+    </article>`;
+  }).join('');
 }
 
 // ══════════════════════════════════════════════════════
@@ -570,34 +604,38 @@ function closeDeleteModal(e){
 // ══════════════════════════════════════════════════════
 // PHOTO SELECTION
 // ══════════════════════════════════════════════════════
-let selectedFile = null;
+let selectedFiles = [];   // up to 3 photos (gallery multi-select or camera one-by-one)
 
-function handleFileSelect(file){
-  if(!file) return;
-  selectedFile = file;
+function handleFileSelect(fileList){
+  const incoming = Array.from(fileList || []);
+  if(!incoming.length) return;
+  selectedFiles = selectedFiles.concat(incoming).slice(0, 3);  // accumulate, cap at 3
   const preview = document.getElementById('photoPreview');
-  document.getElementById('uploadLabel').textContent = file.name;
+  const label   = document.getElementById('uploadLabel');
+  label.textContent = selectedFiles.length === 1
+    ? selectedFiles[0].name
+    : selectedFiles.length + (qcLang === 'ar' ? ' صور' : ' photos');
   const reader = new FileReader();
   reader.onload = e => { preview.src = e.target.result; preview.classList.add('show'); };
-  reader.readAsDataURL(file);
+  reader.readAsDataURL(selectedFiles[0]);
 }
 
-document.getElementById('photoFile')?.addEventListener('change', e => handleFileSelect(e.target.files[0]));
-document.getElementById('photoCamera')?.addEventListener('change', e => handleFileSelect(e.target.files[0]));
+document.getElementById('photoFile')?.addEventListener('change', e => handleFileSelect(e.target.files));
+document.getElementById('photoCamera')?.addEventListener('change', e => handleFileSelect(e.target.files));
 
 // ══════════════════════════════════════════════════════
 // SUBMIT PHOTO
 // ══════════════════════════════════════════════════════
 async function submitPhoto(){
   const t = QC_LANG[qcLang];
-  if(!selectedFile){ toast(t.photoRequired, false); return; }
+  if(!selectedFiles.length){ toast(t.photoRequired, false); return; }
   const fd = new FormData();
-  fd.append('photo', selectedFile);
+  selectedFiles.forEach(f => fd.append('photo', f));
   fd.append('note', document.getElementById('note').value);
   const res  = await fetch('/api/qc/submissions', {method:'POST', body:fd});
   const data = await res.json();
   if(!res.ok || !data.success){ toast(data.message || 'Failed', false); return; }
-  selectedFile = null;
+  selectedFiles = [];
   document.getElementById('photoPreview').classList.remove('show');
   document.getElementById('uploadLabel').textContent = QC_LANG[qcLang === 'ar' ? 'ar' : 'en'].photoRequired.replace('required','');
   const lbl = document.getElementById('uploadLabel');
@@ -794,14 +832,18 @@ async function _loadOpsFeed() {
     const data = await res.json();
     const entries = (data.items || []).slice(0, 8);
     if (!entries.length) { el.innerHTML = '<div class="ops-feed-empty">No activity yet</div>'; return; }
-    const statusLabel = { approved:'✓ Approved', rejected:'✗ Rejected', pending:'⏳ Pending' };
+    const statusLabel = { approved:'✓ Approved', rejected:'✗ Rejected', pending:'⏳ Pending', waiting:'• Waiting' };
     el.innerHTML = entries.map(e => {
-      const sc   = e.status || 'pending';
-      const name = e.created_by || '—';
-      const ts   = e.reviewed_at || e.created_at || '';
+      const sc        = e.status || 'waiting';
+      const submitter = e.created_by || '—';
+      const reviewer  = e.reviewed_by || '';
+      const ts        = e.reviewed_at || e.created_at || '';
+      // Headline shows who performed the action (the reviewer) + the decision;
+      // before review it falls back to the submitter with a 'waiting' badge.
+      const actor = reviewer || submitter;
       return `<div class="ops-feed-item">
-        <div><span class="ofi-name">${esc(name)}</span><span class="ofi-status ${sc}">${statusLabel[sc] || sc}</span></div>
-        ${e.note ? `<div class="ofi-ts">${esc(e.note.slice(0,40))}</div>` : ''}
+        <div><span class="ofi-name">${esc(actor)}</span><span class="ofi-status ${sc}">${statusLabel[sc] || sc}</span></div>
+        <div class="ofi-ts">#${esc(String(e.id))} · ${qcLang==='ar'?'من':'by'} ${esc(submitter)}</div>
         ${ts ? `<div class="ofi-ts">${esc(String(ts).slice(0,16))}</div>` : ''}
       </div>`;
     }).join('');

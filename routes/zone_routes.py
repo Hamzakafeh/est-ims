@@ -34,6 +34,8 @@ from core import (
     login_required,
     zone_required,
     get_firebase_config,
+    ttl_cache_get,
+    ttl_cache_set,
 )
 
 zone_bp = Blueprint('zones', __name__)
@@ -142,11 +144,18 @@ def api_zone_login():
         _record_failed_attempt(ip)
         return jsonify({'success': False, 'not_allowed': True, 'message': 'Access Denied'}), 403
 
-    # Dynamic per-user zone restrictions (stored in SQLite — persists across deploys)
+    # Single DB round-trip: fetch per-user zone restrictions AND the user row at once
+    # (on Render each _db_connect() opens a fresh Postgres connection, so two separate
+    # calls doubled the login latency for qc/dev/admin — merged into one connection here).
+    _udb = None
     try:
         with _db_connect() as _conn:
             _row = _conn.execute(
                 "SELECT allowed_zones FROM user_zone_restrictions WHERE username = ?",
+                (current_username,)
+            ).fetchone()
+            _udb = _conn.execute(
+                "SELECT * FROM users WHERE lower(username) = ?",
                 (current_username,)
             ).fetchone()
         if _row and _row['allowed_zones']:
@@ -164,10 +173,8 @@ def api_zone_login():
     session['zone_label'] = zone['label']
     session['can_edit'] = zone_id in EDIT_ZONES
     session['is_super'] = zone_id in SUPER_ZONES
-    # Apply per-user DB permissions
-    _login_username = session.get('username', '')
-    _udb = _approved_db_user(_login_username)
-    if _udb:
+    # Apply per-user DB permissions (only for approved DB users)
+    if _udb is not None and int((_udb['approved'] if 'approved' in _udb.keys() else 0) or 0) == 1:
         try:
             if _udb['perm_can_edit']:
                 session['can_edit'] = True
@@ -421,22 +428,27 @@ def api_zones_users():
     now = _time.time()
     with _zones_presence_lock:
         online_set = {u.lower() for u, d in _zones_presence.items() if now - d['ts'] < _ZONES_PRESENCE_TTL}
-    with _db_connect() as conn:
-        rows = conn.execute(
-            "SELECT username, full_name, job_title, gender, is_verified FROM users WHERE approved = 1 ORDER BY full_name, username"
-        ).fetchall()
-    return jsonify({
-        'users': [
+    # Cache the (rarely-changing) user list to avoid a fresh DB connection on every
+    # zones-page load; live 'online' status is merged in from in-memory presence.
+    cached = ttl_cache_get('zones:users')
+    if cached is None:
+        with _db_connect() as conn:
+            rows = conn.execute(
+                "SELECT username, full_name, job_title, gender, is_verified FROM users WHERE approved = 1 ORDER BY full_name, username"
+            ).fetchall()
+        cached = [
             {
                 'username': r['username'],
                 'full_name': r['full_name'] or '',
                 'job_title': r['job_title'] or '',
                 'gender': r['gender'] or '',
-                'online': r['username'].lower() in online_set,
                 'is_verified': r['username'].lower() in VERIFIED_USERS or bool(r['is_verified'] if 'is_verified' in r.keys() else 0),
             }
             for r in rows
         ]
+        ttl_cache_set('zones:users', cached, ttl=60)
+    return jsonify({
+        'users': [dict(u, online=u['username'].lower() in online_set) for u in cached]
     })
 
 
@@ -463,11 +475,15 @@ def api_zones_presence():
 @login_required
 def api_zones_me():
     username = session.get('username', '')
+    ckey = 'zones:me:' + str(username).lower()
+    cached = ttl_cache_get(ckey)
+    if cached is not None:
+        return jsonify(cached)
     user = _approved_db_user(username)
     if user:
         u = dict(user)
         is_v = str(username).lower() in VERIFIED_USERS or bool(u.get('is_verified', 0))
-        return jsonify({
+        payload = {
             'username': u.get('username', username),
             'full_name': u.get('full_name', ''),
             'job_title': u.get('job_title', ''),
@@ -475,8 +491,11 @@ def api_zones_me():
             'phone': u.get('phone', ''),
             'gender': u.get('gender', ''),
             'is_verified': is_v,
-        })
-    return jsonify({'username': username, 'full_name': '', 'job_title': '', 'email': '', 'phone': '', 'gender': '', 'is_verified': str(username).lower() in VERIFIED_USERS})
+        }
+    else:
+        payload = {'username': username, 'full_name': '', 'job_title': '', 'email': '', 'phone': '', 'gender': '', 'is_verified': str(username).lower() in VERIFIED_USERS}
+    ttl_cache_set(ckey, payload, ttl=60)
+    return jsonify(payload)
 
 
 @zone_bp.route('/logout')

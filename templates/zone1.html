@@ -1,136 +1,39 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zone 1 — EST-iMs</title>
-<link rel="icon" type="image/x-icon" href="/static/icons/low1.ico">
-<link rel="stylesheet" href="/static/css/side-dock.css">
-<link rel="stylesheet" href="/static/css/zone1.css">
-<link rel="stylesheet" href="/static/css/light-mode.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zone 1 — Soon</title>
+  <link rel="icon" type="image/x-icon" href="/static/icons/low1.ico">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: #0d1117; color: #e2e8f0; text-align: center; padding: 24px;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    .soon-wrap { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+    .soon-logo { width: 72px; height: 72px; object-fit: contain; opacity: .9; }
+    .soon-title {
+      font-size: clamp(48px, 12vw, 110px); font-weight: 800; letter-spacing: 4px; line-height: 1;
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .soon-sub { font-size: 14px; color: #94a3b8; letter-spacing: 1px; }
+    .soon-back {
+      margin-top: 10px; text-decoration: none; color: #cbd5e1;
+      border: 1px solid rgba(59,130,246,.35); background: rgba(59,130,246,.12);
+      padding: 9px 22px; border-radius: 30px; font-size: 13px; font-weight: 600; transition: all .18s;
+    }
+    .soon-back:hover { background: rgba(59,130,246,.25); }
+  </style>
 </head>
 <body>
-
-<!-- SIDE DOCK -->
-<div class="side-dock">
-  <div class="dock-item" onclick="window.location.href='/logout_zone'">
-    <div class="dock-icon">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-    </div>
-    <div class="dock-label">Zones</div>
+  <div class="soon-wrap">
+    <img class="soon-logo" src="/static/icons/low.ico" alt="EST-iMs">
+    <div class="soon-title">Soon</div>
+    <div class="soon-sub">Zone 1 is under development</div>
+    <a class="soon-back" href="/zones">← Back to Zones</a>
   </div>
-  <div class="dock-item" onclick="toggleTheme()">
-    <div class="dock-icon">
-      <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-      <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    </div>
-    <div class="dock-label" id="dockThemeLabel">Light Mode</div>
-  </div>
-  <div class="dock-item" onclick="window.location.href='/logout'">
-    <div class="dock-icon" style="color:#ef4444">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-    </div>
-    <div class="dock-label">Logout</div>
-  </div>
-</div>
-
-<!-- TOP BAR -->
-<div class="z1-topbar">
-  <div class="z1-tb-left">
-    <a href="/logout_zone" class="z1-back-btn" title="Back to Zones">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-    </a>
-    <div class="z1-brand-wrap">
-      <img src="/static/icons/low.ico" class="z1-brand-ico" alt="">
-      <div>
-        <div class="z1-brand-name">EST-iMs</div>
-        <div class="z1-brand-sub">Zone 1 · Import Viewer</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="z1-tb-actions" id="z1TbActions">
-    <!-- populated by JS when a file is active -->
-  </div>
-
-  <div class="z1-tb-right">
-    <span class="z1-user-badge">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      {{ username }}
-    </span>
-    <span class="z1-zone-badge">Zone 1</span>
-    <button class="z1-icon-btn" onclick="toggleTheme()" title="Toggle theme">
-      <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-      <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    </button>
-  </div>
-</div>
-
-<!-- HIDDEN FILE INPUT -->
-<input type="file" id="z1FileInput" accept=".xlsx,.xlsm,.xls" style="display:none" onchange="z1ImportFile(this)">
-
-<!-- MAIN -->
-<div class="z1-main">
-
-  <!-- File tabs bar -->
-  <div class="z1-file-bar" id="z1FileTabs">
-    <button class="btn-import" id="z1ImportBtn" onclick="document.getElementById('z1FileInput').click()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      Import
-    </button>
-    <button class="btn-new-file" onclick="openNewFileModal()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      New File
-    </button>
-  </div>
-
-  <!-- Sheet tabs -->
-  <div class="z1-sheet-bar" id="z1SheetTabs" style="display:none"></div>
-
-  <!-- Content area -->
-  <div id="z1Content">
-    <div class="z1-welcome">
-      <div class="z1-welcome-icon">📊</div>
-      <div class="z1-welcome-title">Zone 1 — Excel Viewer</div>
-      <div class="z1-welcome-sub">Click <strong>Import</strong> to upload an Excel file, or <strong>New File</strong> to create one from scratch.</div>
-    </div>
-  </div>
-
-</div>
-
-<!-- SAVE TOAST -->
-<div class="z1-save-indicator" id="z1SaveToast"></div>
-
-<!-- NEW FILE MODAL -->
-<div class="z1-modal-backdrop" id="z1NewFileModal" onclick="if(event.target===this)closeNewFileModal()">
-  <div class="z1-modal-box">
-    <button class="z1-modal-close" onclick="closeNewFileModal()">✕</button>
-    <div class="z1-modal-title">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-      Create New Excel File
-    </div>
-    <div class="z1-modal-field">
-      <label>File Name</label>
-      <input id="z1NfName" type="text" placeholder="e.g. Inventory 2026.xlsx" class="z1-modal-input">
-    </div>
-    <div class="z1-modal-field">
-      <label>Sheet Name</label>
-      <input id="z1NfSheet" type="text" placeholder="Sheet1" class="z1-modal-input">
-    </div>
-    <div class="z1-modal-field">
-      <label>Column Headers <span style="opacity:.6;font-size:11px;">(comma-separated, optional)</span></label>
-      <input id="z1NfHeaders" type="text" placeholder="e.g. Date, Item, Qty IN, Qty OUT, Balance" class="z1-modal-input">
-    </div>
-    <div class="z1-modal-actions">
-      <button class="z1-modal-btn-cancel" onclick="closeNewFileModal()">Cancel</button>
-      <button class="z1-modal-btn-ok" onclick="z1CreateFile()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-        Create
-      </button>
-    </div>
-  </div>
-</div>
-
-<script src="/static/js/zone1.js"></script>
 </body>
 </html>

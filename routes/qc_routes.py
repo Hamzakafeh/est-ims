@@ -167,23 +167,29 @@ def api_qc_submissions():
         return jsonify({'items': items, 'role': session.get('qc_role', 'qc')})
     if session.get('qc_role') != 'labeling':
         return jsonify({'success': False, 'message': 'Only Labeling Assistant can submit photos'}), 403
-    photo = request.files.get('photo')
+    # Accept 1..3 photos (field name 'photo', repeated)
+    photos = [p for p in request.files.getlist('photo') if p and p.filename]
     note = request.form.get('note', '').strip()
-    if not photo:
+    if not photos:
         return jsonify({'success': False, 'message': 'Photo is required'}), 400
+    photos = photos[:3]
     os.makedirs(QC_UPLOAD_DIR, exist_ok=True)
-    ext = os.path.splitext(photo.filename or '')[1].lower()
-    if ext not in {'.jpg', '.jpeg', '.png', '.webp'}:
-        ext = '.jpg'
-    filename = f"qc_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{secrets.token_hex(4)}{ext}"
-    photo.save(os.path.join(QC_UPLOAD_DIR, filename))
+    image_urls = []
+    for photo in photos:
+        ext = os.path.splitext(photo.filename or '')[1].lower()
+        if ext not in {'.jpg', '.jpeg', '.png', '.webp'}:
+            ext = '.jpg'
+        filename = f"qc_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{secrets.token_hex(4)}{ext}"
+        photo.save(os.path.join(QC_UPLOAD_DIR, filename))
+        image_urls.append('/static/qc_uploads/' + filename)
     with _data_lock:
         items = _read_json_list(QC_SUBMISSIONS_FILE)
         item = {
             'id': _next_json_id(items),
-            'image_url': '/static/qc_uploads/' + filename,
+            'image_url': image_urls[0],       # backward-compat: first image
+            'image_urls': image_urls,         # full list (1..3)
             'note': note,
-            'status': 'pending',
+            'status': 'waiting',
             'created_by': session.get('username', ''),
             'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             'reviewed_by': '',
@@ -223,15 +229,16 @@ def api_qc_submission_delete(item_id):
                 new_items.append(item)
         if not found_item:
             return jsonify({'success': False, 'message': 'Not found'}), 404
-        # Delete the image file if it exists
-        image_url = found_item.get('image_url', '')
-        if image_url.startswith('/static/'):
-            img_path = os.path.join(QC_UPLOAD_DIR, os.path.basename(image_url))
-            try:
-                if os.path.isfile(img_path):
-                    os.remove(img_path)
-            except Exception:
-                pass
+        # Delete all image files for this submission if they exist
+        urls = found_item.get('image_urls') or [found_item.get('image_url', '')]
+        for image_url in urls:
+            if image_url and image_url.startswith('/static/'):
+                img_path = os.path.join(QC_UPLOAD_DIR, os.path.basename(image_url))
+                try:
+                    if os.path.isfile(img_path):
+                        os.remove(img_path)
+                except Exception:
+                    pass
         _write_json_list(QC_SUBMISSIONS_FILE, new_items)
     # Broadcast deletion to all QC clients
     sse_payload = 'event: deleted\ndata: ' + json.dumps({'id': item_id}, ensure_ascii=False) + '\n\n'
@@ -295,7 +302,7 @@ def api_qc_submission_status(item_id):
         return jsonify({'success': False, 'message': 'Only QC can review submissions'}), 403
     data = request.get_json(silent=True) or {}
     status = str(data.get('status', '')).strip().lower()
-    if status not in {'approved', 'rejected', 'pending'}:
+    if status not in {'approved', 'rejected', 'pending', 'waiting'}:
         return jsonify({'success': False, 'message': 'Invalid status'}), 400
     with _data_lock:
         items = _read_json_list(QC_SUBMISSIONS_FILE)
@@ -322,7 +329,7 @@ def api_qc_submission_status(item_id):
         # Push notification to the labeling assistant who submitted the photo
         creator = updated.get('created_by', '')
         if creator:
-            label = {'approved': 'Approved', 'rejected': 'Rejected', 'pending': 'Pending'}.get(status, status.capitalize())
+            label = {'approved': 'Approved', 'rejected': 'Rejected', 'pending': 'Pending', 'waiting': 'Waiting'}.get(status, status.capitalize())
             note = updated.get('review_note', '')
             body = note if note else f'Your photo was marked {label}'
             _push_bg(_do_push_to_user, creator, f'Photo #{item_id} — {label}', body, tag='qc-status')

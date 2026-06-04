@@ -66,7 +66,11 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
 
     <div style="display:flex;align-items:center;gap:6px;margin-right:4px;">
       <span class="user-badge" onclick="openProfileModal()" style="cursor:pointer" title="User Profile">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        {% if username|lower == 'hamza k. ghareb' %}
+        <img class="user-badge-avatar" src="/static/images/me.jpg" onerror="this.onerror=null;this.src='/static/images/profile_male.png'" alt="" style="width:18px;height:18px;border-radius:50%;object-fit:cover;flex-shrink:0;">
+        {% else %}
+        <img class="user-badge-avatar" src="/api/avatar/{{ username }}" onerror="this.onerror=null;this.src='/static/images/profile_male.png'" alt="" style="width:18px;height:18px;border-radius:50%;object-fit:cover;flex-shrink:0;">
+        {% endif %}
         {{ username }}
         {% if username|upper == 'MLO5' %}
         <span class="verified-badge" title="Verified account">
@@ -75,7 +79,7 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
         {% endif %}
       </span>
       <span class="zone-badge {% if is_super %}super{% endif %}">
-        {{ zone_label }}
+        {% if zone == 'dev' %}Dev{% elif zone == 'admin' %}Admin{% else %}{{ zone_label }}{% endif %}
       </span>
     </div>
     <div class="topbar-actions">

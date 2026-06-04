@@ -105,8 +105,8 @@ function closeDenied() {
 }
 
 async function selectZone(zoneId) {
-  // Show "Soon" for zones 1/2/4/5 unless dev
-  if (SOON_ZONES.includes(zoneId) && !_isDev) {
+  // Zones 1/2/4/5 are under development — always show "Soon" (for everyone, dev included)
+  if (SOON_ZONES.includes(zoneId)) {
     showSoon();
     return;
   }
