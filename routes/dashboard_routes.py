@@ -17,6 +17,8 @@ from core import (
     _log_lock,
     _read_login_log,
     _LOGIN_LOG_FILE,
+    ttl_cache_get,
+    ttl_cache_set,
 )
 
 dashboard_bp = Blueprint('dashboard', __name__)
@@ -55,6 +57,11 @@ def api_dashboard():
         scan_zones = [z['id'] for z in available_dashboard_zones]
     else:
         scan_zones = [zone_id]
+
+    _cache_key = 'dash:main:' + '|'.join(sorted(scan_zones)) + ':' + requested_file + ':' + requested_sheet
+    _cached = ttl_cache_get(_cache_key)
+    if _cached is not None:
+        return jsonify(_cached)
 
     for zid in scan_zones:
         zone_path = os.path.join(root, zid)
@@ -400,7 +407,7 @@ def api_dashboard():
             if item.get('out', 0) >= log_high_threshold
         ]
 
-    return jsonify({
+    payload = {
         'total_items': total_items,
         'total_in':    round(total_in,  2),
         'total_out':   round(total_out, 2),
@@ -438,7 +445,9 @@ def api_dashboard():
         'log_file_consumption':  log_file_consumption,
         'selected_file':         requested_file,
         'selected_sheet':        requested_sheet,
-    })
+    }
+    ttl_cache_set(_cache_key, payload)
+    return jsonify(payload)
 
 @dashboard_bp.route('/api/login_log')
 @zone_required
@@ -464,6 +473,10 @@ def api_alert_count():
     if not root:
         return jsonify({'zero': 0})
     scan_zones = [z['id'] for z in ZONES if z['id'] not in SUPER_ZONES] if is_super else [zone_id]
+    _cache_key = 'dash:alert:' + '|'.join(sorted(scan_zones))
+    _cached = ttl_cache_get(_cache_key)
+    if _cached is not None:
+        return jsonify(_cached)
     zero = 0
     for zid in scan_zones:
         zone_path = os.path.join(root, zid)
@@ -495,13 +508,18 @@ def api_alert_count():
                             except Exception: pass
                     wb.close()
                 except Exception: pass
-    return jsonify({'zero': zero})
+    _result = {'zero': zero}
+    ttl_cache_set(_cache_key, _result)
+    return jsonify(_result)
 @dashboard_bp.route('/api/dashboard/excel_status')
 @zone_required
 def api_dashboard_excel_status():
     root = get_years_root()
     if not root:
         return jsonify({'connected': False, 'message': 'فشل قراءة الملف', 'last_update': None})
+    _cached = ttl_cache_get('dash:excel_status')
+    if _cached is not None:
+        return jsonify(_cached)
     latest_path = None
     latest_mtime = 0
     for rdir, dirs, files in os.walk(root):
@@ -518,7 +536,9 @@ def api_dashboard_excel_status():
     if not latest_path:
         return jsonify({'connected': False, 'message': 'فشل قراءة الملف', 'last_update': None})
     minutes = max(0, int((datetime.now() - datetime.fromtimestamp(latest_mtime)).total_seconds() // 60))
-    return jsonify({'connected': True, 'message': 'متصل', 'file': os.path.basename(latest_path), 'minutes_ago': minutes, 'last_update': datetime.fromtimestamp(latest_mtime).strftime('%Y-%m-%d %H:%M:%S')})
+    _result = {'connected': True, 'message': 'متصل', 'file': os.path.basename(latest_path), 'minutes_ago': minutes, 'last_update': datetime.fromtimestamp(latest_mtime).strftime('%Y-%m-%d %H:%M:%S')}
+    ttl_cache_set('dash:excel_status', _result)
+    return jsonify(_result)
 
 
 @dashboard_bp.route('/api/dashboard/stocktaking')
@@ -540,6 +560,11 @@ def api_dashboard_stocktaking():
         scan_zones = [z['id'] for z in available_zones]
     else:
         scan_zones = [zone_id]
+
+    _cache_key = 'dash:stock:' + '|'.join(sorted(scan_zones))
+    _cached = ttl_cache_get(_cache_key)
+    if _cached is not None:
+        return jsonify(_cached)
 
     items = []
     files_scanned = 0
@@ -593,7 +618,9 @@ def api_dashboard_stocktaking():
                 pass
 
     items.sort(key=lambda x: x['name'].lower())
-    return jsonify({'items': items, 'total': len(items), 'files_scanned': files_scanned})
+    _result = {'items': items, 'total': len(items), 'files_scanned': files_scanned}
+    ttl_cache_set(_cache_key, _result)
+    return jsonify(_result)
 
 
 @dashboard_bp.route('/api/dashboard/sheets')

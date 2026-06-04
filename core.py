@@ -2,8 +2,6 @@
 from dotenv import load_dotenv
 load_dotenv()
 import os
-import io
-import sys
 import json
 import re
 import sqlite3
@@ -723,6 +721,23 @@ def get_structure(year=None, zone_id=None):
 
 
 def read_sheet_data(filepath, sheet_name):
+    """Parse a sheet into (headers, rows). Cached per (file, sheet, mtime):
+    any save changes the file mtime and so transparently invalidates the cache."""
+    try:
+        mtime = os.path.getmtime(filepath)
+    except OSError:
+        return None, []
+    cache_key = f'sheet:{filepath}:{sheet_name}:{mtime}'
+    cached = ttl_cache_get(cache_key)
+    if cached is not None:
+        return cached
+    result = _read_sheet_data_uncached(filepath, sheet_name)
+    if result[0] is not None:
+        ttl_cache_set(cache_key, result, ttl=600)
+    return result
+
+
+def _read_sheet_data_uncached(filepath, sheet_name):
     try:
         import openpyxl
         wb = openpyxl.load_workbook(filepath, read_only=True, data_only=True)
@@ -1261,6 +1276,38 @@ def _firebase_clear_user_status(username):
     threading.Thread(target=_do, daemon=True).start()
 
 
+# ── Lightweight in-memory TTL cache (for heavy read-only endpoints) ──
+_ttl_cache_store = {}
+_ttl_cache_lock = threading.Lock()
+
+
+def ttl_cache_get(key):
+    """Return cached value for `key` if still fresh, else None."""
+    with _ttl_cache_lock:
+        entry = _ttl_cache_store.get(key)
+        if entry is not None:
+            if _time.time() < entry[0]:
+                return entry[1]
+            _ttl_cache_store.pop(key, None)
+    return None
+
+
+def ttl_cache_set(key, value, ttl=90):
+    """Cache `value` under `key` for `ttl` seconds."""
+    with _ttl_cache_lock:
+        _ttl_cache_store[key] = (_time.time() + ttl, value)
+
+
+def ttl_cache_clear(prefix=''):
+    """Drop all cache entries (or those whose key starts with `prefix`)."""
+    with _ttl_cache_lock:
+        if not prefix:
+            _ttl_cache_store.clear()
+        else:
+            for k in [k for k in _ttl_cache_store if k.startswith(prefix)]:
+                _ttl_cache_store.pop(k, None)
+
+
 _COUNTER_FILE = os.path.join(APP_DIR, 'visit_counter.json')
 _counter_lock = threading.Lock()
 
@@ -1277,39 +1324,5 @@ def _save_counter(data):
     with open(_COUNTER_FILE, 'w') as f:
         json.dump(data, f)
 
-
-def create_app():
-    from flask import Flask
-    app = Flask(__name__, static_folder='static')
-    app.config['TEMPLATES_AUTO_RELOAD'] = True
-    app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-    app.config['SESSION_COOKIE_HTTPONLY'] = True
-    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-    app.config['PERMANENT_SESSION_LIFETIME'] = 28800
-    return app
-
-
-def login_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        if not session.get('logged_in'):
-            if request.is_json or request.path.startswith('/api/'):
-                return jsonify({'error': 'Unauthorized'}), 401
-            return redirect(url_for('auth.login_page'))
-        return f(*args, **kwargs)
-    return decorated
-
-
-def zone_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        if not session.get('logged_in'):
-            if request.is_json or request.path.startswith('/api/'):
-                return jsonify({'error': 'Unauthorized'}), 401
-            return redirect(url_for('auth.login_page'))
-        if not session.get('zone'):
-            return redirect(url_for('zones.zones_page'))
-        return f(*args, **kwargs)
-    return decorated
 
 _init_auth_db()

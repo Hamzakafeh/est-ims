@@ -742,8 +742,8 @@ function startPolling(){
 loadItems();
 connectSSE();
 initFirebase();
-// Backup poll every 5s to catch any missed SSE events
-setInterval(loadItems, 5000);
+// Backup poll — only runs while SSE is down (SSE pushes updates live otherwise)
+setInterval(() => { if (!_sseConnected) loadItems(); }, 15000);
 
 if('serviceWorker' in navigator){
   navigator.serviceWorker.addEventListener('message', e => {

@@ -17,7 +17,8 @@ from core import (
     _col_letter_to_index,
     COL_COLOR, COL_SIZE, COL_TYPE, COL_CATEGORY,
     COL_BASIC, COL_CURRENT, DATA_START_ROW,
-    ZONES, SUPER_ZONES
+    ZONES, SUPER_ZONES,
+    ttl_cache_clear,
 )
 
 excel_bp = Blueprint('excel', __name__)
@@ -130,6 +131,7 @@ def api_transaction():
         _recalc_stocktaking(wb)
         wb.save(filepath)
         wb.close()
+        ttl_cache_clear('dash:')
         return jsonify({
             'success': True,
             'new_balance': new_balance,
@@ -195,6 +197,7 @@ def api_update_cell():
         _recalc_stocktaking(wb)
         wb.save(filepath)
         wb.close()
+        ttl_cache_clear('dash:')
         return jsonify({'success': True, 'row': row, 'col': col_name, 'value': cast_value})
     except Exception:
         return jsonify({'success': False, 'error': 'حدث خطأ أثناء تحديث الخلية'}), 500
@@ -281,6 +284,7 @@ def api_set_opening_balance():
         _recalc_stocktaking(wb)
         wb.save(filepath)
         wb.close()
+        ttl_cache_clear('dash:')
         return jsonify({'success': True, 'balance': balance})
     except Exception:
         return jsonify({'success': False, 'error': 'حدث خطأ أثناء تعيين الرصيد الافتتاحي'}), 500
@@ -365,6 +369,7 @@ def api_clear_row():
         _recalc_stocktaking(wb)
         wb.save(filepath)
         wb.close()
+        ttl_cache_clear('dash:')
         return jsonify({'success': True})
     except Exception:
         return jsonify({'success': False, 'error': 'حدث خطأ أثناء مسح الصف'}), 500
@@ -442,6 +447,7 @@ def api_add_row():
 
         wb.save(filepath)
         wb.close()
+        ttl_cache_clear('dash:')
         return jsonify({'success': True, 'new_row': new_row})
 
     except Exception:
