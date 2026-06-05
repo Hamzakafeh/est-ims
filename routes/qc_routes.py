@@ -295,9 +295,10 @@ def api_qc_submission_delete(item_id):
 def api_qc_chat_clear():
     """Privileged-only: erase all chat messages and broadcast a system notice."""
     from app import _broadcast_qc_event
+    current_username = str(session.get('username', '')).strip().lower()
+    is_priv_user = current_username in ('hamza k. ghareb', 'inc')
     is_priv_role = session.get('qc_role') in ('admin', 'dev')
-    is_super = session.get('is_super', False)
-    if session.get('zone') != 'qc' or (not is_priv_role and not is_super):
+    if session.get('zone') != 'qc' or (not is_priv_user and not is_priv_role):
         return jsonify({'success': False, 'message': 'غير مصرح'}), 403
     with _data_lock:
         _write_json_list(QC_CHAT_FILE, [])

@@ -358,10 +358,9 @@ def api_serve_avatar(username):
         path = os.path.join(_AVATAR_DIR, f'{username}.{ext}')
         if os.path.isfile(path):
             return send_from_directory(_AVATAR_DIR, f'{username}.{ext}')
-    # No custom avatar — return the default gender-neutral placeholder (never 404)
-    return send_from_directory(
-        os.path.join(APP_DIR, 'static', 'images'), 'profile_male.png'
-    )
+    # No custom avatar — redirect to the default static placeholder (never 404)
+    from flask import redirect as _redirect
+    return _redirect('/static/images/profile_male.png', code=302)
 
 
 @zone_bp.route('/api/profile/avatar', methods=['POST'])
