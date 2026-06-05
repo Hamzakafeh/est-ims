@@ -293,9 +293,11 @@ def api_qc_submission_delete(item_id):
 @qc_bp.route('/api/qc/chat/clear', methods=['POST'])
 @zone_required
 def api_qc_chat_clear():
-    """Dev-only: erase all chat messages and broadcast a system notice."""
+    """Privileged-only: erase all chat messages and broadcast a system notice."""
     from app import _broadcast_qc_event
-    if session.get('zone') != 'qc' or session.get('qc_role') not in ('admin', 'dev'):
+    is_priv_role = session.get('qc_role') in ('admin', 'dev')
+    is_super = session.get('is_super', False)
+    if session.get('zone') != 'qc' or (not is_priv_role and not is_super):
         return jsonify({'success': False, 'message': 'غير مصرح'}), 403
     with _data_lock:
         _write_json_list(QC_CHAT_FILE, [])

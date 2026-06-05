@@ -237,12 +237,14 @@
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       <span data-en="QC Chat" data-ar="دردشة QC">QC Chat</span>
     </span>
-    {% if is_privileged %}
-    <button class="chat-clear-btn" onclick="clearAllChat()" title="Clear chat for everyone">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
-    </button>
-    {% endif %}
-    <button class="chat-panel-close" onclick="toggleChat()">✕</button>
+    <div style="display:flex;align-items:center;gap:5px;">
+      {% if is_privileged %}
+      <button class="chat-clear-btn" onclick="clearAllChat()" title="Clear chat for everyone">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+      </button>
+      {% endif %}
+      <button class="chat-panel-close" onclick="toggleChat()">✕</button>
+    </div>
   </div>
   <div class="chat-messages" id="chatMessages">
     <div class="chat-loading">Loading...</div>

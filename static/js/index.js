@@ -242,19 +242,7 @@ function renderProfile(data) {
   document.getElementById('profileRoleChip').textContent = role;
   document.getElementById('profileSessionChip').textContent = formatDuration(Number(data.login_duration_seconds));
 
-  const permissions = [
-    ['Edit Mode', data.permissions?.can_edit],
-    ['Print', data.permissions?.can_print],
-    ['Export CSV', data.permissions?.can_export],
-    ['Reports', data.permissions?.can_reports],
-    ['All Zones', data.permissions?.can_view_all_zones],
-    ['Switch Zones', data.permissions?.can_switch_zones],
-  ];
-  const permissionHtml = permissions.map(([label, enabled]) => `
-    <div class="permission-item">
-      <span class="permission-dot ${enabled ? '' : 'off'}"></span>
-      <span>${escHtml(label)}</span>
-    </div>`).join('');
+  const permissionHtml = ''; // permissions not shown to users
 
   const zones = (data.allowed_zones || []).map(z => `
     <span class="profile-zone-pill">${escHtml(z.label || z.name || z.id)}</span>
@@ -294,11 +282,6 @@ function renderProfile(data) {
         <div class="profile-card-value">${escHtml(data.login_time || '—')}</div>
         <div class="profile-card-sub">Session: ${escHtml(formatDuration(Number(data.login_duration_seconds)))}</div>
       </div>
-    </div>
-
-    <div class="profile-section">
-      <div class="profile-section-title">Permissions</div>
-      <div class="permission-grid">${permissionHtml}</div>
     </div>
 
     <div class="profile-section">

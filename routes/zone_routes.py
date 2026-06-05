@@ -36,6 +36,7 @@ from core import (
     get_firebase_config,
     ttl_cache_get,
     ttl_cache_set,
+    APP_DIR,
 )
 
 zone_bp = Blueprint('zones', __name__)
@@ -357,8 +358,10 @@ def api_serve_avatar(username):
         path = os.path.join(_AVATAR_DIR, f'{username}.{ext}')
         if os.path.isfile(path):
             return send_from_directory(_AVATAR_DIR, f'{username}.{ext}')
-    from flask import abort
-    abort(404)
+    # No custom avatar — return the default gender-neutral placeholder (never 404)
+    return send_from_directory(
+        os.path.join(APP_DIR, 'static', 'images'), 'profile_male.png'
+    )
 
 
 @zone_bp.route('/api/profile/avatar', methods=['POST'])
