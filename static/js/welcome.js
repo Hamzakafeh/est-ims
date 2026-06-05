@@ -253,7 +253,9 @@ function applyWelcomeLang(lang) {
   const tagEl = document.getElementById('taglineEl');
   if (tagEl) tagEl.innerHTML = TAGLINES[lang][taglineIdx];
   const loginText = document.getElementById('welcomeLoginText');
-  if (loginText) loginText.textContent = t.loginBtn;
+  if (loginText && !document.getElementById('welcomeLoginBtn')?.dataset.loggedin) {
+    loginText.textContent = t.loginBtn;
+  }
   const moreText = document.getElementById('welcomeMoreText');
   if (moreText) moreText.textContent = t.moreBtn;
   const langLbl = document.getElementById('welcomeLangLabel');

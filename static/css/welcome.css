@@ -50,6 +50,11 @@ body {
 html.light .blob { opacity: 0.12; }
 html.light body { background: linear-gradient(135deg, #edf2fb 0%, #e5ecf8 100%); }
 html.light .side-dock .dock-icon { background: rgba(255,255,255,0.92); box-shadow: 0 2px 8px rgba(37,99,235,0.08); }
+/* Logout dock: solid red, scale-only hover, both modes — after general !important rule above */
+.dock-item.dock-logout .dock-icon { color:#fff !important; background:#ef4444 !important; border-color:#ef4444 !important; box-shadow:none !important; transition:transform 0.18s !important; }
+.dock-item.dock-logout:hover .dock-icon { background:#ef4444 !important; color:#fff !important; border-color:#ef4444 !important; box-shadow:none !important; transform:scale(1.08) !important; }
+html.light .dock-item.dock-logout .dock-icon { background:#ef4444 !important; color:#fff !important; border-color:#ef4444 !important; box-shadow:none !important; transition:transform 0.18s !important; }
+html.light .dock-item.dock-logout:hover .dock-icon { background:#ef4444 !important; color:#fff !important; border-color:#ef4444 !important; box-shadow:none !important; transform:scale(1.08) !important; }
 .blob-1 { width: 700px; height: 700px; background: radial-gradient(circle, #3b82f6, transparent 70%); top: -200px; left: -200px; animation: bd1 20s ease-in-out infinite; }
 .blob-2 { width: 600px; height: 600px; background: radial-gradient(circle, #06b6d4, transparent 70%); bottom: -160px; right: -160px; animation: bd2 24s ease-in-out infinite; }
 .blob-3 { width: 450px; height: 450px; background: radial-gradient(circle, #6366f1, transparent 70%); top: 38%; left: 52%; animation: bd3 18s ease-in-out infinite; }
