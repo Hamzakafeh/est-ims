@@ -787,6 +787,13 @@
   .zp-field { display:flex;align-items:flex-start;gap:10px;font-size:12px; }
   .zp-field-label { color:var(--text-dim);min-width:72px;flex-shrink:0;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.5px;padding-top:1px; }
   .zp-field-val { color:var(--text-main);flex:1;word-break:break-all; }
+  .zp-perms-section { margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.07); }
+  .zp-perms-title { font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent-blue,#3b82f6);margin-bottom:7px; }
+  .zp-perm-row { display:flex;align-items:center;gap:8px;font-size:11px;padding:2px 0; }
+  .zp-perm-label { color:var(--text-dim);flex:1;font-size:10px;font-family:'JetBrains Mono',monospace;letter-spacing:.3px; }
+  .zp-perm-val { color:var(--text-main);font-size:10px; }
+  .zp-perm-check { color:#10b981;font-size:11px;font-weight:700; }
+  html.light .zp-perms-section { border-color:rgba(0,0,0,.09); }
 
   /* ── ONLINE USERS MODAL ── */
   .zu-overlay {

@@ -630,7 +630,12 @@ function _renderPhotoThumbs(){
   ).join('');
 }
 
-document.getElementById('photoFile')?.addEventListener('change', e => handleFileSelect(e.target.files));
+// Gallery: select up to 3 at once (replaces previous selection)
+document.getElementById('photoFile')?.addEventListener('change', e => {
+  selectedFiles = [];           // replace, not accumulate — gallery is one multi-pick
+  handleFileSelect(e.target.files);
+});
+// Camera: always single shot, accumulate up to 3
 document.getElementById('photoCamera')?.addEventListener('change', e => handleFileSelect(e.target.files));
 document.getElementById('photoThumbs')?.addEventListener('click', e => {
   const btn = e.target.closest('.upload-thumb-x');
@@ -801,7 +806,9 @@ loadItems();
 connectSSE();
 initFirebase();
 // Backup poll — only runs while SSE is down (SSE pushes updates live otherwise)
-setInterval(() => { if (!_sseConnected) loadItems(); }, 15000);
+// Auto-refresh every 5s when SSE is down; every 30s even when SSE is up (safety net)
+setInterval(() => { if (!_sseConnected) loadItems(); }, 5000);
+setInterval(() => { if (_sseConnected) loadItems(); }, 30000);
 
 if('serviceWorker' in navigator){
   navigator.serviceWorker.addEventListener('message', e => {
@@ -871,9 +878,21 @@ async function _loadOpsFeed() {
     el.innerHTML = '<div class="ops-feed-empty">—</div>';
   }
 }
+function openOpsFeedModal() {
+  const m = document.getElementById('opsFeedModal');
+  if(m){ m.classList.add('open'); _loadOpsFeed(); }
+}
+function closeOpsFeedModal() {
+  const m = document.getElementById('opsFeedModal');
+  if(m) m.classList.remove('open');
+}
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') closeOpsFeedModal();
+});
 if (IS_PRIVILEGED) {
   _loadOpsFeed();
-  setInterval(_loadOpsFeed, 20000);
+  // Reload feed every 30s in background; also reloads when modal is opened or on SSE events
+  setInterval(_loadOpsFeed, 30000);
 }
 
 function loadChat(){

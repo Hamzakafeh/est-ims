@@ -9,6 +9,7 @@ from core import (
     _is_single_login_exempt, _clear_active_session, AUTH_DB_FILE,
     CONTACT_MESSAGES_FILE, _read_json_list, _write_json_list, _data_lock,
     _firebase_set_user_status, _firebase_clear_user_status, DATA_STORE_DIR,
+    ttl_cache_clear,
 )
 
 
@@ -421,7 +422,12 @@ def api_admin_toggle_user_verified(user_id):
         row = conn.execute("SELECT id FROM users WHERE id = ? AND approved = 1", (user_id,)).fetchone()
         if not row:
             return jsonify({'success': False, 'message': 'المستخدم غير موجود'}), 404
+        target = conn.execute("SELECT username FROM users WHERE id=?", (user_id,)).fetchone()
         conn.execute("UPDATE users SET is_verified=? WHERE id=?", (is_verified, user_id))
+    # Invalidate profile caches so the badge shows immediately everywhere
+    if target:
+        ttl_cache_clear('zones:me:' + _normalize_username(target['username']))
+    ttl_cache_clear('zones:users')
     return jsonify({'success': True})
 
 

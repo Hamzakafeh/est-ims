@@ -39,7 +39,7 @@
     <div class="dock-label" id="dockLangLabel">Language</div>
   </div>
   <div class="dock-item dock-logout" onclick="window.location.href='/logout'">
-    <div class="dock-icon" style="color:#ef4444">
+    <div class="dock-icon">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
     </div>
     <div class="dock-label">Logout</div>
@@ -209,9 +209,10 @@
         <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
       </svg>
     </div>
-    <div class="denied-title">Access Not Permitted</div>
-    <div class="denied-msg">You are not authorized to access this zone.<br>This area is restricted to specific users only.</div>
-    <button class="denied-btn" onclick="closeDenied()">Understood</button>
+    <div class="denied-title">Oops!</div>
+    <div class="denied-msg" style="font-size:13px;margin-top:4px;opacity:.85">Select Your Zone</div>
+    <div class="denied-msg" style="font-size:12px;margin-top:2px;opacity:.6">Choose the warehouse zone you want to access</div>
+    <button class="denied-btn" onclick="closeDenied()">OK</button>
   </div>
 </div>
 <!-- PROFILE MODAL -->

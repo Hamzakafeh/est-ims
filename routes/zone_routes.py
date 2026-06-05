@@ -153,11 +153,16 @@ def _zone_restriction_denied(zone_id, current_username, allowed_zones):
 
 def _zone_passwordless(zone_id, current_username, allowed_zones):
     """True if this user may enter this zone WITHOUT the shared zone password:
-    - the designated dev/admin user for that zone, or
-    - a user explicitly granted this zone by an admin (per-user allowed_zones)."""
+    - the designated user for that specific zone (e.g. Hamza for dev), OR
+    - a designated super-zone user (dev/admin designated users can enter any zone), OR
+    - a user explicitly granted this zone via per-user allowed_zones."""
     designated = _zone_designated_users(zone_id)
-    if designated:
-        return current_username in designated
+    if designated and current_username in designated:
+        return True
+    # Super-zone designated users (dev/admin) can enter any zone without a password
+    for sz in SUPER_ZONES:
+        if current_username in _zone_designated_users(sz):
+            return True
     if allowed_zones is not None and zone_id in allowed_zones:
         return True
     return False
@@ -534,14 +539,30 @@ def api_zones_presence():
 @login_required
 def api_zones_me():
     username = session.get('username', '')
-    ckey = 'zones:me:' + str(username).lower()
+    uname_lower = str(username).lower()
+    ckey = 'zones:me:' + uname_lower
     cached = ttl_cache_get(ckey)
     if cached is not None:
         return jsonify(cached)
-    user = _approved_db_user(username)
-    if user:
+    # One DB round-trip: get user row + zone restrictions together
+    user = None
+    allowed_zones_list = None
+    try:
+        with _db_connect() as conn:
+            user = conn.execute(
+                "SELECT * FROM users WHERE lower(username) = ?", (uname_lower,)
+            ).fetchone()
+            zrow = conn.execute(
+                "SELECT allowed_zones FROM user_zone_restrictions WHERE username = ?", (uname_lower,)
+            ).fetchone()
+        if zrow and zrow['allowed_zones']:
+            import json as _j
+            allowed_zones_list = _j.loads(zrow['allowed_zones'])
+    except Exception:
+        pass
+    if user and int((user['approved'] if 'approved' in user.keys() else 0) or 0) == 1:
         u = dict(user)
-        is_v = str(username).lower() in VERIFIED_USERS or bool(u.get('is_verified', 0))
+        is_v = uname_lower in VERIFIED_USERS or bool(u.get('is_verified', 0))
         payload = {
             'username': u.get('username', username),
             'full_name': u.get('full_name', ''),
@@ -550,9 +571,18 @@ def api_zones_me():
             'phone': u.get('phone', ''),
             'gender': u.get('gender', ''),
             'is_verified': is_v,
+            'perm_can_edit': bool(u.get('perm_can_edit', 0)),
+            'perm_switch_zones': bool(u.get('perm_switch_zones', 0)),
+            'perm_manage_permissions': bool(u.get('perm_manage_permissions', 0)),
+            'allowed_zones': allowed_zones_list,   # None = no restriction, list = explicit grant
         }
     else:
-        payload = {'username': username, 'full_name': '', 'job_title': '', 'email': '', 'phone': '', 'gender': '', 'is_verified': str(username).lower() in VERIFIED_USERS}
+        payload = {
+            'username': username, 'full_name': '', 'job_title': '', 'email': '',
+            'phone': '', 'gender': '', 'is_verified': uname_lower in VERIFIED_USERS,
+            'perm_can_edit': False, 'perm_switch_zones': False,
+            'perm_manage_permissions': False, 'allowed_zones': None,
+        }
     ttl_cache_set(ckey, payload, ttl=60)
     return jsonify(payload)
 
