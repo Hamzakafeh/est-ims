@@ -28,6 +28,35 @@ _QC_PRESENCE_TTL = 45
 QC_CHAT_FILE = os.path.join(DATA_STORE_DIR, 'qc_chat.json')
 _QC_CHAT_MAX = 200
 
+# Persistent activity log — records every QC operation (submit / review / delete).
+# It is independent of the submissions store, so a record survives even after the
+# photo/submission it refers to is deleted.
+QC_ACTIVITY_FILE = os.path.join(DATA_STORE_DIR, 'qc_activity.json')
+_QC_ACTIVITY_MAX = 500
+_activity_lock = threading.Lock()
+
+
+def _log_qc_activity(action, item_id, submitter='', actor='', status=''):
+    """Append an operation to the persistent QC activity log (best-effort)."""
+    try:
+        with _activity_lock:
+            events = _read_json_list(QC_ACTIVITY_FILE)
+            events.append({
+                'id': int(_time.time() * 1000),
+                'action': action,                 # 'submit' | 'review' | 'delete'
+                'item_id': item_id,
+                'submitter': submitter,
+                'actor': actor or submitter,      # who performed the action
+                'status': status,
+                'ts': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            })
+            if len(events) > _QC_ACTIVITY_MAX:
+                events = events[-_QC_ACTIVITY_MAX:]
+            _write_json_list(QC_ACTIVITY_FILE, events)
+    except Exception:
+        pass
+
+
 VERIFIED_QC_USERS = {'hamza k. ghareb'}
 
 
@@ -198,6 +227,7 @@ def api_qc_submissions():
         }
         items.append(item)
         _write_json_list(QC_SUBMISSIONS_FILE, items)
+    _log_qc_activity('submit', item['id'], submitter=item['created_by'], actor=item['created_by'], status='waiting')
     # Broadcast new submission to all QC clients instantly
     sse_payload = 'event: new_submission\ndata: ' + json.dumps(item, ensure_ascii=False) + '\n\n'
     try:
@@ -208,6 +238,16 @@ def api_qc_submissions():
     submitter = session.get('username', '')
     _push_bg(_do_push_to_qc, 'New QC Submission', f'Photo from {submitter} is waiting for review', tag='qc-new')
     return jsonify({'success': True, 'item': item})
+
+
+@qc_bp.route('/api/qc/activity')
+@zone_required
+def api_qc_activity():
+    """Persistent operation log for the Live Activity feed (survives deletions)."""
+    if session.get('zone') != 'qc':
+        return jsonify({'error': 'غير مصرح'}), 403
+    events = sorted(_read_json_list(QC_ACTIVITY_FILE), key=lambda e: e.get('id', 0), reverse=True)[:30]
+    return jsonify({'events': events})
 
 
 @qc_bp.route('/api/qc/submissions/<int:item_id>', methods=['DELETE'])
@@ -240,6 +280,7 @@ def api_qc_submission_delete(item_id):
                 except Exception:
                     pass
         _write_json_list(QC_SUBMISSIONS_FILE, new_items)
+    _log_qc_activity('delete', item_id, submitter=found_item.get('created_by', ''), actor=session.get('username', ''), status='deleted')
     # Broadcast deletion to all QC clients
     sse_payload = 'event: deleted\ndata: ' + json.dumps({'id': item_id}, ensure_ascii=False) + '\n\n'
     try:
@@ -320,6 +361,8 @@ def api_qc_submission_status(item_id):
         _write_json_list(QC_SUBMISSIONS_FILE, items)
     # Broadcast status update to all QC clients
     updated = next((x for x in items if int(x.get('id',0)) == item_id), None)
+    if updated:
+        _log_qc_activity('review', item_id, submitter=updated.get('created_by', ''), actor=session.get('username', ''), status=status)
     if updated:
         sse_payload = 'event: status_update\ndata: ' + json.dumps(updated, ensure_ascii=False) + '\n\n'
         try:

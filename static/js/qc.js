@@ -395,8 +395,8 @@ function renderPresence(users){
   panel.innerHTML = users.map(u => {
     const isMe       = u.username === CURRENT_USER;
     const isVerified = VERIFIED_USERS.has(u.username.toLowerCase());
-    const roleClass  = u.role === 'qc' ? 'qc' : 'lab';
-    const roleLabel  = u.role === 'qc' ? 'QC' : 'Label';
+    const roleClass  = u.role === 'labeling' ? 'lab' : 'qc';
+    const roleLabel  = { qc:'QC', labeling:'Label', admin:'ADMIN', dev:'DEV' }[u.role] || 'Label';
     const initial    = esc(u.username.charAt(0).toUpperCase());
     const isDevUser    = u.username.toLowerCase() === 'hamza k. ghareb';
     const genderDefault = '/static/images/profile_' + (u.gender === 'female' ? 'female' : 'male') + '.png';
@@ -610,18 +610,34 @@ function handleFileSelect(fileList){
   const incoming = Array.from(fileList || []);
   if(!incoming.length) return;
   selectedFiles = selectedFiles.concat(incoming).slice(0, 3);  // accumulate, cap at 3
+  _renderPhotoThumbs();
+}
+
+function _renderPhotoThumbs(){
+  const label = document.getElementById('uploadLabel');
+  const n = selectedFiles.length;
+  if(label){
+    label.textContent = n === 0
+      ? (qcLang === 'ar' ? 'لم يتم اختيار صورة' : 'No photo selected')
+      : n + (qcLang === 'ar' ? (n === 1 ? ' صورة' : ' صور') : (n === 1 ? ' photo' : ' photos')) + (n >= 3 ? (qcLang === 'ar' ? ' (الحد الأقصى)' : ' (max)') : '');
+  }
   const preview = document.getElementById('photoPreview');
-  const label   = document.getElementById('uploadLabel');
-  label.textContent = selectedFiles.length === 1
-    ? selectedFiles[0].name
-    : selectedFiles.length + (qcLang === 'ar' ? ' صور' : ' photos');
-  const reader = new FileReader();
-  reader.onload = e => { preview.src = e.target.result; preview.classList.add('show'); };
-  reader.readAsDataURL(selectedFiles[0]);
+  if(preview) preview.classList.remove('show');   // replaced by the thumbnails strip
+  const wrap = document.getElementById('photoThumbs');
+  if(!wrap) return;
+  wrap.innerHTML = selectedFiles.map((f, i) =>
+    `<div class="upload-thumb"><img src="${URL.createObjectURL(f)}" alt=""><button type="button" class="upload-thumb-x" data-i="${i}" title="Remove">×</button></div>`
+  ).join('');
 }
 
 document.getElementById('photoFile')?.addEventListener('change', e => handleFileSelect(e.target.files));
 document.getElementById('photoCamera')?.addEventListener('change', e => handleFileSelect(e.target.files));
+document.getElementById('photoThumbs')?.addEventListener('click', e => {
+  const btn = e.target.closest('.upload-thumb-x');
+  if(!btn) return;
+  selectedFiles.splice(parseInt(btn.dataset.i, 10), 1);
+  _renderPhotoThumbs();
+});
 
 // ══════════════════════════════════════════════════════
 // SUBMIT PHOTO
@@ -637,7 +653,8 @@ async function submitPhoto(){
   if(!res.ok || !data.success){ toast(data.message || 'Failed', false); return; }
   selectedFiles = [];
   document.getElementById('photoPreview').classList.remove('show');
-  document.getElementById('uploadLabel').textContent = QC_LANG[qcLang === 'ar' ? 'ar' : 'en'].photoRequired.replace('required','');
+  const thumbs = document.getElementById('photoThumbs');
+  if(thumbs) thumbs.innerHTML = '';
   const lbl = document.getElementById('uploadLabel');
   lbl.setAttribute('data-en','No photo selected');
   lbl.setAttribute('data-ar','لم يتم اختيار صورة');
@@ -733,6 +750,7 @@ function connectSSE(){
         _lastCount = (_lastCount || 0) + 1;
         document.getElementById('countBadge').textContent = QC_LANG[qcLang].items(_allItems.length);
         renderItems(_allItems);
+        if(IS_PRIVILEGED) _loadOpsFeed();
       }
     }catch(err){}
   });
@@ -744,6 +762,7 @@ function connectSSE(){
       document.getElementById('countBadge').textContent = QC_LANG[qcLang].items(_allItems.length);
       const el = document.getElementById('item-' + id);
       if(el){ el.style.opacity='0'; el.style.transform='scale(.95)'; el.style.transition='.25s'; setTimeout(()=>el.remove(),250); }
+      if(IS_PRIVILEGED) _loadOpsFeed();
     }catch(err){}
   });
 
@@ -761,6 +780,7 @@ function connectSSE(){
         }
         renderItems(_allItems);
       }
+      if(IS_PRIVILEGED) _loadOpsFeed();
     }catch(err){}
   });
 
@@ -828,23 +848,23 @@ async function _loadOpsFeed() {
   const el = document.getElementById('opsFeedList');
   if (!el) return;
   try {
-    const res = await fetch('/api/qc/submissions');
+    // Persistent activity log — keeps the record even after a photo is deleted
+    const res = await fetch('/api/qc/activity');
     const data = await res.json();
-    const entries = (data.items || []).slice(0, 8);
+    const entries = (data.events || []).slice(0, 12);
     if (!entries.length) { el.innerHTML = '<div class="ops-feed-empty">No activity yet</div>'; return; }
     const statusLabel = { approved:'✓ Approved', rejected:'✗ Rejected', pending:'⏳ Pending', waiting:'• Waiting' };
     el.innerHTML = entries.map(e => {
-      const sc        = e.status || 'waiting';
-      const submitter = e.created_by || '—';
-      const reviewer  = e.reviewed_by || '';
-      const ts        = e.reviewed_at || e.created_at || '';
-      // Headline shows who performed the action (the reviewer) + the decision;
-      // before review it falls back to the submitter with a 'waiting' badge.
-      const actor = reviewer || submitter;
+      const actor     = e.actor || e.submitter || '—';
+      const submitter = e.submitter || '—';
+      let badge, cls;
+      if (e.action === 'submit')      { badge = (qcLang==='ar'?'＋ أرسل':'＋ Submitted'); cls = 'waiting'; }
+      else if (e.action === 'delete') { badge = (qcLang==='ar'?'🗑 حذف':'🗑 Deleted');    cls = 'rejected'; }
+      else                            { badge = statusLabel[e.status] || e.status;          cls = e.status; }
       return `<div class="ops-feed-item">
-        <div><span class="ofi-name">${esc(actor)}</span><span class="ofi-status ${sc}">${statusLabel[sc] || sc}</span></div>
-        <div class="ofi-ts">#${esc(String(e.id))} · ${qcLang==='ar'?'من':'by'} ${esc(submitter)}</div>
-        ${ts ? `<div class="ofi-ts">${esc(String(ts).slice(0,16))}</div>` : ''}
+        <div><span class="ofi-name">${esc(actor)}</span><span class="ofi-status ${cls}">${badge}</span></div>
+        <div class="ofi-ts">#${esc(String(e.item_id))} · ${qcLang==='ar'?'من':'by'} ${esc(submitter)}</div>
+        ${e.ts ? `<div class="ofi-ts">${esc(String(e.ts).slice(0,16))}</div>` : ''}
       </div>`;
     }).join('');
   } catch(e) {

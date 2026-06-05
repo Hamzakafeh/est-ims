@@ -102,7 +102,8 @@
             <input id="photoFile"   type="file" accept="image/*" multiple>
             <input id="photoCamera" type="file" accept="image/*" capture="environment">
             <img id="photoPreview" class="upload-preview" alt="Preview">
-            <span class="upload-label" id="uploadLabel" data-en="No photo selected" data-ar="لم يتم اختيار صورة">No photo selected</span>
+            <div id="photoThumbs" class="upload-thumbs"></div>
+            <span class="upload-label" id="uploadLabel" data-en="No photo selected (up to 3)" data-ar="لم يتم اختيار صورة (حتى 3)">No photo selected (up to 3)</span>
           </div>
           <textarea id="note" data-en-placeholder="Add a short note (optional)..." data-ar-placeholder="أضف ملاحظة قصيرة (اختياري)..." placeholder="Add a short note (optional)..."></textarea>
           <button class="btn green" type="button" onclick="submitPhoto()" data-en="Send to QC" data-ar="إرسال لـ QC">Send to QC</button>

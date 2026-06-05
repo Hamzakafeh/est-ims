@@ -104,16 +104,13 @@ function closeDenied() {
   document.getElementById('deniedOverlay').classList.remove('open');
 }
 
-async function selectZone(zoneId) {
-  // Zones 1/2/4/5 are under development — always show "Soon" (for everyone, dev included)
-  if (SOON_ZONES.includes(zoneId)) {
-    showSoon();
-    return;
-  }
+let _pwRoleOnly = false;   // true when a passwordless QC user only needs to pick a role
 
+function _openZoneModal(zoneId, roleOnly) {
+  _pwRoleOnly = roleOnly;
   selectedZone = zoneId;
   document.querySelectorAll('.zone-card').forEach(c => c.classList.remove('active'));
-  document.getElementById('card-' + zoneId).classList.add('active');
+  document.getElementById('card-' + zoneId)?.classList.add('active');
 
   const names = {
     zone1:'Zone 1', zone2:'Zone 2', zone3:'Zone 3',
@@ -125,39 +122,56 @@ async function selectZone(zoneId) {
   };
 
   document.getElementById('pwTitle').textContent = names[zoneId] || zoneId;
-  document.getElementById('pwSub').textContent = `Enter password for ${names[zoneId] || zoneId} — ${labels[zoneId] || ''}`;
+  document.getElementById('pwSub').textContent = roleOnly
+    ? `Select your QC mode — ${labels[zoneId] || ''}`
+    : `Enter password for ${names[zoneId] || zoneId} — ${labels[zoneId] || ''}`;
+
   const qcRoleWrap = document.getElementById('qcRoleWrap');
   if (qcRoleWrap) qcRoleWrap.style.display = zoneId === 'qc' ? 'block' : 'none';
   const qcRoleSelect = document.getElementById('qcRoleSelect');
   if (qcRoleSelect) qcRoleSelect.value = 'qc';
+
+  // Hide the password field entirely in role-only (passwordless) mode
+  const fieldWrap = document.getElementById('pwFieldWrap');
+  if (fieldWrap) fieldWrap.style.display = roleOnly ? 'none' : '';
+
   document.getElementById('pwInput').value = '';
   document.getElementById('pwError').classList.remove('show');
   document.getElementById('btnText').textContent = 'Enter Zone';
   document.getElementById('enterBtn').disabled = false;
   document.getElementById('enterBtn').classList.remove('success');
 
-  // Open the modal immediately — no waiting on the network
   document.getElementById('pwOverlay').classList.add('open');
-  setTimeout(() => document.getElementById('pwInput').focus(), 120);
+  if (!roleOnly) setTimeout(() => document.getElementById('pwInput').focus(), 120);
+}
 
-  // For restricted zones, verify access in the background. If denied, close the
-  // modal and show the denied message. zone_login enforces the same rules on
-  // submit, so this is purely an early-deny UX nicety.
-  if (RESTRICTED_ZONES.includes(zoneId)) {
-    try {
-      const res = await fetch('/api/zone_access_check', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ zone_id: zoneId })
-      });
-      const data = await res.json();
-      if (!data.allowed && selectedZone === zoneId) {
-        document.getElementById('pwOverlay').classList.remove('open');
-        showDenied();
-      }
-    } catch(e) {
-      // Network error — ignore; zone_login will enforce access on submit
-    }
+async function selectZone(zoneId) {
+  // Zones 1/2/4/5 are under development — always show "Soon" (for everyone, dev included)
+  if (SOON_ZONES.includes(zoneId)) {
+    showSoon();
+    return;
+  }
+
+  selectedZone = zoneId;
+  document.querySelectorAll('.zone-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('card-' + zoneId)?.classList.add('active');
+
+  // Try passwordless entry first — designated dev/admin, or a user explicitly
+  // granted this zone, enters with no password prompt at all.
+  try {
+    const res = await fetch('/api/zone_enter', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ zone_id: zoneId })
+    });
+    const data = await res.json();
+    if (selectedZone !== zoneId) return;          // user already moved on
+    if (data.success)     { window.location.href = data.redirect || '/index'; return; }
+    if (data.not_allowed) { showDenied(); return; }
+    if (data.needs_role)  { _openZoneModal(zoneId, true);  return; }  // passwordless QC → pick role only
+    _openZoneModal(zoneId, false);                                     // needs_password → normal prompt
+  } catch(e) {
+    _openZoneModal(zoneId, false);                                     // network error → password prompt
   }
 }
 
@@ -165,7 +179,7 @@ async function submitZone() {
   if (!selectedZone) return;
   const pw = document.getElementById('pwInput').value.trim();
   selectedQcRole = document.getElementById('qcRoleSelect')?.value || 'qc';
-  if (!pw) { shakePanel(); return; }
+  if (!_pwRoleOnly && !pw) { shakePanel(); return; }
 
   const spinner  = document.getElementById('btnSpinner');
   const btnText  = document.getElementById('btnText');
@@ -178,10 +192,15 @@ async function submitZone() {
   pwError.classList.remove('show');
 
   try {
-    const res  = await fetch('/api/zone_login', {
+    // Role-only mode = passwordless QC entry (no password sent)
+    const endpoint = _pwRoleOnly ? '/api/zone_enter' : '/api/zone_login';
+    const body = _pwRoleOnly
+      ? { zone_id: selectedZone, qc_role: selectedQcRole }
+      : { zone_id: selectedZone, password: pw, qc_role: selectedQcRole };
+    const res  = await fetch(endpoint, {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ zone_id: selectedZone, password: pw, qc_role: selectedQcRole })
+      body: JSON.stringify(body)
     });
     const data = await res.json();
 
@@ -216,6 +235,9 @@ async function submitZone() {
 
 function closeModal() {
   selectedZone = null;
+  _pwRoleOnly = false;
+  const fieldWrap = document.getElementById('pwFieldWrap');
+  if (fieldWrap) fieldWrap.style.display = '';   // restore password field for next time
   document.getElementById('pwOverlay').classList.remove('open');
   document.querySelectorAll('.zone-card').forEach(c => c.classList.remove('active'));
 }

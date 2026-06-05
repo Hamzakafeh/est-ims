@@ -100,6 +100,128 @@ def zone3_qr():
     return send_from_directory('static', 'zone3_qr.html')
 
 
+def _user_zone_grant(current_username):
+    """Single DB round-trip → (allowed_zones list or None, user row or None).
+    allowed_zones is None when the user has no per-zone restriction record."""
+    allowed_zones = None
+    udb = None
+    try:
+        with _db_connect() as _conn:
+            _row = _conn.execute(
+                "SELECT allowed_zones FROM user_zone_restrictions WHERE username = ?",
+                (current_username,)
+            ).fetchone()
+            udb = _conn.execute(
+                "SELECT * FROM users WHERE lower(username) = ?",
+                (current_username,)
+            ).fetchone()
+        if _row and _row['allowed_zones']:
+            import json as _json
+            parsed = _json.loads(_row['allowed_zones'])
+            if isinstance(parsed, list):
+                allowed_zones = parsed
+    except Exception:
+        pass
+    return allowed_zones, udb
+
+
+def _zone_designated_users(zone_id):
+    """Usernames (lowercased) that own a restricted zone (dev/admin), or [] if none."""
+    restricted_username = ZONE_USER_RESTRICTIONS.get(zone_id)
+    if not restricted_username:
+        return []
+    users = [restricted_username.lower()]
+    if zone_id == 'admin':
+        dev_user = ZONE_USER_RESTRICTIONS.get('dev')
+        if dev_user:
+            users.append(dev_user.lower())
+    return users
+
+
+def _zone_restriction_denied(zone_id, current_username, allowed_zones):
+    """True if the user must NOT enter this zone (identity/grant restrictions)."""
+    designated = _zone_designated_users(zone_id)
+    if designated and current_username not in designated:
+        return True
+    allowed_list = ZONE_ALLOWED_USERS.get(zone_id)
+    if allowed_list and current_username not in [u.lower() for u in allowed_list]:
+        return True
+    if allowed_zones is not None and zone_id not in allowed_zones:
+        return True
+    return False
+
+
+def _zone_passwordless(zone_id, current_username, allowed_zones):
+    """True if this user may enter this zone WITHOUT the shared zone password:
+    - the designated dev/admin user for that zone, or
+    - a user explicitly granted this zone by an admin (per-user allowed_zones)."""
+    designated = _zone_designated_users(zone_id)
+    if designated:
+        return current_username in designated
+    if allowed_zones is not None and zone_id in allowed_zones:
+        return True
+    return False
+
+
+def _grant_zone_session(zone, zone_id, qc_role_input, udb):
+    """Apply the zone session + permissions and return the post-login redirect URL.
+    Shared by password login and passwordless entry so the logic stays identical."""
+    current_username = str(session.get('username', '')).strip().lower()
+    session['zone'] = zone_id
+    session['zone_name'] = zone['name']
+    session['zone_label'] = zone['label']
+    session['can_edit'] = zone_id in EDIT_ZONES
+    session['is_super'] = zone_id in SUPER_ZONES
+    if udb is not None and int((udb['approved'] if 'approved' in udb.keys() else 0) or 0) == 1:
+        try:
+            if udb['perm_can_edit']:
+                session['can_edit'] = True
+        except Exception:
+            pass
+        try:
+            if udb['perm_switch_zones']:
+                session['can_switch_zones'] = True
+        except Exception:
+            pass
+    session['login_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    if zone_id == 'qc':
+        role = str(qc_role_input or '').strip()
+        _priv = current_username in ('hamza k. ghareb', 'inc')
+        _allowed_roles = {'qc', 'labeling'} | ({'admin', 'dev'} if _priv else set())
+        session['qc_role'] = role if role in _allowed_roles else 'qc'
+    threading.Thread(target=_record_login, args=(session.get('username', ''), zone_id, zone['label'], _get_ip()), daemon=True).start()
+    next_url = session.pop('next_after_zone', '/index')
+    if zone_id == 'qc':
+        next_url = '/qc-workflow'
+    elif zone_id == 'zone1':
+        next_url = '/zone1'
+    return next_url
+
+
+@zone_bp.route('/api/zone_enter', methods=['POST'])
+@login_required
+def api_zone_enter():
+    """Passwordless zone entry for authorized users (designated dev/admin, or a
+    user granted this zone). Returns needs_password to fall back to the password
+    prompt, or needs_role when a passwordless QC user must still pick a role."""
+    data = request.get_json(silent=True) or {}
+    zone_id = data.get('zone_id', '').strip()
+    zone = next((z for z in ZONES if z['id'] == zone_id), None)
+    if not zone:
+        return jsonify({'success': False, 'message': 'زون غير معروف'}), 400
+    current_username = str(session.get('username', '')).strip().lower()
+    allowed_zones, udb = _user_zone_grant(current_username)
+    if _zone_restriction_denied(zone_id, current_username, allowed_zones):
+        return jsonify({'success': False, 'not_allowed': True, 'message': 'Access Denied'}), 403
+    if not _zone_passwordless(zone_id, current_username, allowed_zones):
+        return jsonify({'success': False, 'needs_password': True})
+    qc_role = str(data.get('qc_role', '')).strip()
+    if zone_id == 'qc' and not qc_role:
+        return jsonify({'success': False, 'needs_role': True})
+    next_url = _grant_zone_session(zone, zone_id, qc_role, udb)
+    return jsonify({'success': True, 'redirect': next_url})
+
+
 @zone_bp.route('/api/zone_login', methods=['POST'])
 @login_required
 def api_zone_login():
@@ -126,77 +248,14 @@ def api_zone_login():
         _record_failed_attempt(ip)
         return jsonify({'success': False, 'message': 'Incorrect password'}), 401
 
-    restricted_username = ZONE_USER_RESTRICTIONS.get(zone_id)
     current_username = str(session.get('username', '')).strip().lower()
-    allowed_usernames = []
-    if restricted_username:
-        allowed_usernames.append(restricted_username.lower())
-        if zone_id == 'admin':
-            dev_user = ZONE_USER_RESTRICTIONS.get('dev')
-            if dev_user:
-                allowed_usernames.append(dev_user.lower())
-    if restricted_username and current_username not in allowed_usernames:
+    allowed_zones, udb = _user_zone_grant(current_username)
+    if _zone_restriction_denied(zone_id, current_username, allowed_zones):
         _record_failed_attempt(ip)
         return jsonify({'success': False, 'not_allowed': True, 'message': 'Access Denied'}), 403
-
-    allowed_list = ZONE_ALLOWED_USERS.get(zone_id)
-    if allowed_list and current_username not in [u.lower() for u in allowed_list]:
-        _record_failed_attempt(ip)
-        return jsonify({'success': False, 'not_allowed': True, 'message': 'Access Denied'}), 403
-
-    # Single DB round-trip: fetch per-user zone restrictions AND the user row at once
-    # (on Render each _db_connect() opens a fresh Postgres connection, so two separate
-    # calls doubled the login latency for qc/dev/admin — merged into one connection here).
-    _udb = None
-    try:
-        with _db_connect() as _conn:
-            _row = _conn.execute(
-                "SELECT allowed_zones FROM user_zone_restrictions WHERE username = ?",
-                (current_username,)
-            ).fetchone()
-            _udb = _conn.execute(
-                "SELECT * FROM users WHERE lower(username) = ?",
-                (current_username,)
-            ).fetchone()
-        if _row and _row['allowed_zones']:
-            import json as _json
-            _allowed = _json.loads(_row['allowed_zones'])
-            if zone_id not in _allowed:
-                _record_failed_attempt(ip)
-                return jsonify({'success': False, 'not_allowed': True, 'message': 'Access Denied'}), 403
-    except Exception:
-        pass
 
     _clear_attempts(ip)
-    session['zone'] = zone_id
-    session['zone_name'] = zone['name']
-    session['zone_label'] = zone['label']
-    session['can_edit'] = zone_id in EDIT_ZONES
-    session['is_super'] = zone_id in SUPER_ZONES
-    # Apply per-user DB permissions (only for approved DB users)
-    if _udb is not None and int((_udb['approved'] if 'approved' in _udb.keys() else 0) or 0) == 1:
-        try:
-            if _udb['perm_can_edit']:
-                session['can_edit'] = True
-        except Exception:
-            pass
-        try:
-            if _udb['perm_switch_zones']:
-                session['can_switch_zones'] = True
-        except Exception:
-            pass
-    session['login_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    if zone_id == 'qc':
-        role = str(data.get('qc_role', '')).strip()
-        _priv = current_username in ('hamza k. ghareb', 'inc')
-        _allowed_roles = {'qc', 'labeling'} | ({'admin', 'dev'} if _priv else set())
-        session['qc_role'] = role if role in _allowed_roles else 'qc'
-    threading.Thread(target=_record_login, args=(session.get('username', ''), zone_id, zone['label'], ip), daemon=True).start()
-    next_url = session.pop('next_after_zone', '/index')
-    if zone_id == 'qc':
-        next_url = '/qc-workflow'
-    elif zone_id == 'zone1':
-        next_url = '/zone1'
+    next_url = _grant_zone_session(zone, zone_id, data.get('qc_role', ''), udb)
     return jsonify({'success': True, 'redirect': next_url})
 
 
