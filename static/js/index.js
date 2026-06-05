@@ -2691,7 +2691,7 @@ async function loadAdminUsers() {
           <button class="admin-user-row" type="button" onclick="openAdminUserDetail(${Number(u.id)})">
             <img class="admin-user-avatar-img" src="${avSrc}" ${rtdbAttr} onerror="this.onerror=null;this.src='${defSrc}'" alt="">
             <div class="admin-user-row-text">
-              <strong>${i + 1}. ${escHtml(u.username || '—')}${u.full_name ? ' <span class="admin-user-fullname">· ' + escHtml(u.full_name) + '</span>' : ''}</strong>
+              <strong>${i + 1}. ${escHtml(u.username || '—')}${u.is_verified ? ' <span style="display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;border-radius:50%;background:#3b82f6;vertical-align:middle;margin-left:3px;" title="Verified"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>' : ''}${u.full_name ? ' <span class="admin-user-fullname">· ' + escHtml(u.full_name) + '</span>' : ''}</strong>
               <span>${u.suspended_until ? 'Suspended until ' + escHtml(u.suspended_until.slice(0,16)) : (u.job_title ? escHtml(u.job_title) : 'View details')}</span>
             </div>
             ${u.suspended_until ? '<span class="admin-user-suspended-badge">Suspended</span>' : ''}

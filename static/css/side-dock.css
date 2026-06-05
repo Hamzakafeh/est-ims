@@ -18,11 +18,10 @@ html.light .dock-icon .icon-moon { display: block; }
 .lang-switch-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--accent-cyan, #06b6d4); pointer-events: none; transition: color 0.2s; }
 html.light .lang-switch-text { color: #374151; }
 .dock-item:hover .lang-switch-text { color: #ffffff !important; }
-/* ── Logout dock-item: native red, NO glow in dark OR light mode ── */
-.dock-logout .dock-icon,
-html.light .dock-logout .dock-icon { color: #ef4444 !important; background: rgba(239,68,68,.1) !important; border-color: rgba(239,68,68,.35) !important; box-shadow: none !important; }
-.dock-item.dock-logout:hover .dock-icon,
-html.light .dock-item.dock-logout:hover .dock-icon { background: #ef4444 !important; color: #fff !important; border-color: #ef4444 !important; box-shadow: none !important; }
+/* ── Logout dock-item: native red, NO glow (dark mode) ── */
+.dock-item.dock-logout .dock-icon { color: #ef4444 !important; background: rgba(239,68,68,.1) !important; border-color: rgba(239,68,68,.35) !important; box-shadow: none !important; }
+.dock-item.dock-logout:hover .dock-icon { background: #ef4444 !important; color: #fff !important; border-color: #ef4444 !important; box-shadow: none !important; }
+/* Light mode override is in light-mode.css (after general !important rules there) */
 @media (max-width: 640px) {
   .side-dock { position: fixed; left: 0; right: 0; bottom: 0; top: auto; transform: none; flex-direction: row; justify-content: center; padding: 6px; gap: 4px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); border-top: 1px solid var(--border-light); z-index: 200; }
   html.light .side-dock { background: rgba(255,255,255,0.92); border-top-color: var(--border); }

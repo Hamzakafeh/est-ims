@@ -290,6 +290,24 @@ def api_qc_submission_delete(item_id):
     return jsonify({'success': True})
 
 
+@qc_bp.route('/api/qc/chat/clear', methods=['POST'])
+@zone_required
+def api_qc_chat_clear():
+    """Dev-only: erase all chat messages and broadcast a system notice."""
+    from app import _broadcast_qc_event
+    if session.get('zone') != 'qc' or session.get('qc_role') not in ('admin', 'dev'):
+        return jsonify({'success': False, 'message': 'غير مصرح'}), 403
+    with _data_lock:
+        _write_json_list(QC_CHAT_FILE, [])
+    actor = session.get('username', 'Server')
+    sse_payload = 'event: chat_cleared\ndata: ' + json.dumps({'by': actor}, ensure_ascii=False) + '\n\n'
+    try:
+        _broadcast_qc_event(sse_payload)
+    except Exception:
+        pass
+    return jsonify({'success': True})
+
+
 @qc_bp.route('/api/qc/chat', methods=['GET'])
 @zone_required
 def api_qc_chat_get():

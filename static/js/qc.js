@@ -630,13 +630,15 @@ function _renderPhotoThumbs(){
   ).join('');
 }
 
-// Gallery: select up to 3 at once (replaces previous selection)
+// Both gallery and camera: replace previous selection (multi-select allowed on both)
 document.getElementById('photoFile')?.addEventListener('change', e => {
-  selectedFiles = [];           // replace, not accumulate — gallery is one multi-pick
+  selectedFiles = [];
   handleFileSelect(e.target.files);
 });
-// Camera: always single shot, accumulate up to 3
-document.getElementById('photoCamera')?.addEventListener('change', e => handleFileSelect(e.target.files));
+document.getElementById('photoCamera')?.addEventListener('change', e => {
+  selectedFiles = [];
+  handleFileSelect(e.target.files);
+});
 document.getElementById('photoThumbs')?.addEventListener('click', e => {
   const btn = e.target.closest('.upload-thumb-x');
   if(!btn) return;
@@ -786,6 +788,17 @@ function connectSSE(){
         renderItems(_allItems);
       }
       if(IS_PRIVILEGED) _loadOpsFeed();
+    }catch(err){}
+  });
+
+  es.addEventListener('chat_cleared', e => {
+    try {
+      const {by} = JSON.parse(e.data);
+      const box = document.getElementById('chatMessages');
+      if(box){
+        box.innerHTML = `<div class="chat-system-msg" style="text-align:center;padding:14px 8px;font-size:11px;color:var(--dim);font-style:italic;">🗑️ Chat cleared by ${esc(by)}</div>`;
+      }
+      _chatLoaded = true;
     }catch(err){}
   });
 
@@ -1113,6 +1126,12 @@ async function confirmMsgDelete() {
   } catch(e) {
     toast(QC_LANG[qcLang].deleteFailed, false);
   }
+}
+
+async function clearAllChat(){
+  if(!confirm(qcLang === 'ar' ? 'مسح المحادثة للجميع؟ لا يمكن التراجع.' : 'Clear chat for everyone? This cannot be undone.')) return;
+  const res = await fetch('/api/qc/chat/clear', { method: 'POST' });
+  if(!res.ok) toast('Failed to clear chat', false);
 }
 
 function sendChat(){

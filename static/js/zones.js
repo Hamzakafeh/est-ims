@@ -514,27 +514,9 @@ async function openZoneProfile() {
   if (d.phone)    rows.push(['Phone',     d.phone]);
   if (d.gender)   rows.push(['Gender',    d.gender]);
 
-  // Permissions section
-  const perms = [];
-  if (d.perm_can_edit)          perms.push('Edit Mode');
-  if (d.perm_switch_zones)      perms.push('Switch Zones');
-  if (d.perm_manage_permissions) perms.push('Manage Permissions');
-  const zonesLabel = Array.isArray(d.allowed_zones) && d.allowed_zones.length
-    ? d.allowed_zones.join(', ')
-    : (d.allowed_zones === null ? 'All (unrestricted)' : '—');
-
-  const permHtml = `
-    <div class="zp-perms-section">
-      <div class="zp-perms-title">Zones &amp; Permissions</div>
-      <div class="zp-perm-row"><span class="zp-perm-label">Zones</span><span class="zp-perm-val">${zonesLabel}</span></div>
-      ${perms.map(p => `<div class="zp-perm-row"><span class="zp-perm-label">${p}</span><span class="zp-perm-check">✓</span></div>`).join('')}
-      ${!perms.length ? '<div class="zp-perm-row"><span class="zp-perm-label" style="opacity:.5">No extra permissions</span></div>' : ''}
-    </div>`;
-
-  document.getElementById('zpFields').innerHTML = (rows.length
+  document.getElementById('zpFields').innerHTML = rows.length
     ? rows.map(([l, v]) => `<div class="zp-field"><span class="zp-field-label">${l}</span><span class="zp-field-val">${v}</span></div>`).join('')
-    : '<div style="text-align:center;font-size:12px;color:var(--text-dim);padding:8px 0">No details</div>')
-    + permHtml;
+    : '<div style="text-align:center;font-size:12px;color:var(--text-dim);padding:8px 0">No details</div>';
 }
 
 function closeZoneProfile() {
