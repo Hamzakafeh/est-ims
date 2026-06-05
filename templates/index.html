@@ -94,16 +94,9 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       </button>
       {% if is_super %}
-      <div style="position:relative;display:inline-flex;" class="hideable-btn">
-        <button class="theme-btn" onclick="openDashboard()" id="dashBtn" title="Dashboard">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-        </button>
-        <span id="alertBadge" style="display:none;position:absolute;top:-4px;right:-4px;
-          background:var(--accent-red);color:#fff;font-size:9px;font-weight:700;
-          min-width:16px;height:16px;border-radius:8px;
-          align-items:center;justify-content:center;padding:0 3px;
-          box-shadow:0 0 6px rgba(239,68,68,0.6);z-index:10;">0</span>
-      </div>
+      <button class="theme-btn hideable-btn" id="dashBtn" title="Dashboard" disabled style="opacity:0.45;cursor:default;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      </button>
       {% if is_dev %}
       <button class="theme-btn login-history-btn hideable-btn" onclick="openUsersModal()" title="Login History">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -537,57 +530,6 @@ EST-iMs<sup style="font-size:0.45em;opacity:0.55;vertical-align:super;margin-lef
   <div class="wt-text">
     <strong>Welcome, {{ username }}!</strong>
     <span>{{ zone_label }} — {{ login_time }}</span>
-  </div>
-</div>
-
-<!-- ══ DASHBOARD MODAL ══ -->
-<div id="dashModal" onclick="if(event.target===this)closeDashboard()">
-  <div class="dash-box">
-    <!-- CLOSE BUTTON -->
-    <button class="dash-close-btn" onclick="closeDashboard()" title="Close">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-
-    <!-- LEFT NAV -->
-    <div class="dash-sidebar">
-      <div class="dash-sidebar-title">Dashboard</div>
-
-      <div class="dash-nav-item active" onclick="dashShow('overview')" id="dnav-overview">
-        <span class="dn-dot"></span> Overview
-      </div>
-      <div class="dash-nav-item" onclick="dashShow('movement')" id="dnav-movement">
-        <span class="dn-dot"></span> IN / OUT Movement
-      </div>
-      <div class="dash-nav-item" onclick="dashShow('summary')" id="dnav-summary">
-        <span class="dn-dot"></span> Consumption Summary
-      </div>
-      <div class="dash-nav-sep"></div>
-      <div class="dash-nav-item" onclick="dashShow('logactivity')" id="dnav-logactivity">
-        <span class="dn-dot"></span> Log Activity
-      </div>
-      <div class="dash-nav-item" onclick="dashShow('alerts')" id="dnav-alerts">
-        <span class="dn-dot"></span> Stock Alerts
-      </div>
-      <div class="dash-nav-item" onclick="dashShow('top')" id="dnav-top">
-        <span class="dn-dot"></span> Top Items
-      </div>
-      <div class="dash-nav-sep"></div>
-      <div class="dash-nav-item" onclick="dashShow('stocktaking')" id="dnav-stocktaking">
-        <span class="dn-dot"></span> Inventory Count
-      </div>
-      <div class="dash-nav-item" onclick="dashShow('excelstatus')" id="dnav-excelstatus">
-        <span class="dn-dot"></span> Excel Link Status
-      </div>
-      <div class="dash-nav-sep"></div>
-      <div class="dash-nav-item" onclick="dashShow('zones')" id="dnav-zones">
-        <span class="dn-dot"></span> Zones Summary
-      </div>
-    </div>
-
-    <!-- RIGHT CONTENT -->
-    <div class="dash-content" id="dashContent">
-      <div class="dash-loading"><div class="spinner"></div><span>Loading dashboard...</span></div>
-    </div>
   </div>
 </div>
 
